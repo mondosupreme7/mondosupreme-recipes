@@ -1,4 +1,4 @@
-# Mondo Supreme Recipes
+# Mondosupreme Recipes
 
 Personal recipe notebook for [mondosupreme.com](https://mondosupreme.com). Recipes stay in the browser (local storage). Search, filter, favorite, import, and export them as JSON.
 
