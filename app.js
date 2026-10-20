@@ -76,19 +76,246 @@ function route(){
   if(m)renderDetail(decodeURIComponent(m[1])); else renderList();
   window.scrollTo(0,0);
 }
-function openEditor(r){
+function setPhotoField(url){
+  const f=$('#recipeForm');
+  const preview=$('#photoPreview');
+  const img=$('#photoPreviewImg');
+  if(url&&String(url).startsWith('data:')){
+    f.photo.value='';
+    f.photoData.value=url;
+    img.src=url;
+    preview.hidden=false;
+  }else{
+    f.photoData.value='';
+    f.photo.value=url||'';
+    img.removeAttribute('src');
+    preview.hidden=true;
+  }
+}
+function showScanReview(text){
+  const box=$('#scanReview');
+  if(text){$('#ocrRaw').textContent=text;$('#ocrDetails').open=false;box.hidden=false;}
+  else{$('#ocrRaw').textContent='';box.hidden=true;}
+}
+function openEditor(r,prefill){
   const f=$('#recipeForm'); f.reset();
-  $('#formTitle').textContent=r?'Edit Recipe':'Add Recipe';
-  if(r){f.id.value=r.id;f.title.value=r.title||'';f.photo.value=r.photo||'';f.category.value=r.category||'';f.servings.value=r.servings||'';
+  const scanned=!r&&prefill;
+  $('#formTitle').textContent=r?'Edit Recipe':(scanned?'Review scanned recipe':'Add Recipe');
+  if(r){f.id.value=r.id;f.title.value=r.title||'';f.category.value=r.category||'';f.servings.value=r.servings||'';
     f.prep.value=r.prep||'';f.cook.value=r.cook||'';f.ingredients.value=(r.ingredients||[]).join('\n');f.steps.value=(r.steps||[]).join('\n');
     f.notes.value=r.notes||'';f.tags.value=(r.tags||[]).join(', ');}
   else f.id.value='';
+  let photo=r&&r.photo||'';
+  showScanReview('');
+  if(prefill){
+    if(prefill.title)f.title.value=prefill.title;
+    if(prefill.ingredients)f.ingredients.value=prefill.ingredients.join('\n');
+    if(prefill.steps)f.steps.value=prefill.steps.join('\n');
+    if(prefill.notes)f.notes.value=prefill.notes;
+    if(prefill.photo)photo=prefill.photo;
+    if(prefill.ocrText)showScanReview(prefill.ocrText);
+  }
+  setPhotoField(photo);
   $('#editor').showModal();
+}
+const HEADER_WORD=/^(ingredients?|directions?|instructions?|steps?|method|preparation|notes?|tips?)$/i;
+function sectionKind(line){
+  const core=line.replace(/\([^)]*\)/g,'').replace(/[:.\s]+$/g,'').trim();
+  const parts=core.split(/\s*(?:\/|&|,|\+|\band\b)\s*/i).map(s=>s.trim()).filter(Boolean);
+  if(!parts.length||parts.some(p=>!HEADER_WORD.test(p)))return '';
+  const w=parts[0].toLowerCase();
+  if(w.startsWith('ingredient'))return 'ingredients';
+  if(/^notes?$/.test(w)||/^tips?$/.test(w))return 'notes';
+  return 'steps';
+}
+function isNumberedStep(line){return /^(?:step\s+)?\d{1,2}\s*[.):]\s+\S/i.test(line)}
+function cleanStep(line){return line.replace(/^(?:step\s+)?\d{1,2}\s*[.):]\s+/i,'').trim()||line.trim()}
+function isIngredientLine(line){
+  if(/^[-*•·▪–—]\s+\S/.test(line))return true;
+  return /^(?:\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?(?:\s*-\s*\d+(?:[.,]\d+)?)?|[½¼¾⅓⅔⅛])(?:\s*[a-zA-Zµ]|\s|$)/.test(line);
+}
+function cleanIngredient(line){return line.replace(/^[-*•·▪–—]\s+/,'').trim()}
+function parseRecipeText(raw){
+  const lines=String(raw||'').replace(/\u00a0/g,' ').split(/\r?\n/).map(l=>l.replace(/[ \t]+/g,' ').trim()).filter(Boolean);
+  const ingredients=[],steps=[],notes=[];
+  let title='',titleSet=false,mode='';
+  for(const line of lines){
+    const section=sectionKind(line);
+    if(section){mode=section;continue}
+    if(!titleSet&&!mode){title=line;titleSet=true;continue}
+    if(mode==='ingredients'){ingredients.push(cleanIngredient(line));continue}
+    if(mode==='steps'){steps.push(cleanStep(line));continue}
+    if(mode==='notes'){notes.push(line);continue}
+    if(isNumberedStep(line)){steps.push(cleanStep(line));continue}
+    if(isIngredientLine(line)){ingredients.push(cleanIngredient(line));continue}
+    notes.push(line);
+  }
+  return {title,ingredients,steps,notes:notes.join('\n')};
+}
+const TESS_VERSION='7.0.0';
+let scanToken=0,workerPromise=null,progressHandler=()=>{};
+function setScanProgress(label,pct){
+  const n=Math.max(0,Math.min(100,Math.round(pct||0)));
+  const status=$('#scanStatus'); if(status)status.textContent=label;
+  const bar=$('#scanBar'); if(bar)bar.style.width=n+'%';
+  const track=$('#scanBarTrack'); if(track)track.setAttribute('aria-valuenow',String(n));
+}
+function openProgress(label,pct){setScanProgress(label,pct);const dlg=$('#scanProgress');if(!dlg.open)dlg.showModal()}
+function closeProgress(){const dlg=$('#scanProgress');if(dlg.open)dlg.close()}
+let scanStopLock=false;
+function stopScan(message){
+  if(scanStopLock)return;
+  scanStopLock=true;
+  scanToken++;
+  progressHandler=()=>{};
+  const pending=workerPromise;
+  workerPromise=null;
+  if(pending)pending.then(w=>{try{w&&w.terminate()}catch(e){}}).catch(()=>{});
+  try{closeProgress()}finally{scanStopLock=false}
+  if(message)toast(message);
+}
+function onTessProgress(m){
+  const labels={
+    'loading tesseract core':'Loading text recognition…',
+    'initializing tesseract':'Starting text recognition…',
+    'loading language traineddata':'Downloading language data…',
+    'initializing api':'Preparing…',
+    'recognizing text':'Reading recipe…'
+  };
+  const spans={
+    'loading tesseract core':[8,20],
+    'initializing tesseract':[20,32],
+    'loading language traineddata':[32,70],
+    'initializing api':[70,78],
+    'recognizing text':[78,99]
+  };
+  const span=spans[m.status]||[10,90];
+  const p=span[0]+(span[1]-span[0])*(Number(m.progress)||0);
+  setScanProgress(labels[m.status]||'Reading recipe…',p);
+}
+function loadTesseract(){
+  if(window.Tesseract)return Promise.resolve(window.Tesseract);
+  if(loadTesseract.pending)return loadTesseract.pending;
+  loadTesseract.pending=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/tesseract.js@'+TESS_VERSION+'/dist/tesseract.min.js';
+    s.async=true;
+    s.onload=()=>window.Tesseract?resolve(window.Tesseract):reject(new Error('Text recognition failed to start'));
+    s.onerror=()=>reject(new Error('Could not download text recognition. Check your connection and try again.'));
+    document.head.appendChild(s);
+  }).catch(err=>{loadTesseract.pending=null;throw err});
+  return loadTesseract.pending;
+}
+function getWorker(){
+  if(!workerPromise){
+    workerPromise=loadTesseract().then(Tesseract=>Tesseract.createWorker('eng',1,{
+      workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@'+TESS_VERSION+'/dist/worker.min.js',
+      corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@'+TESS_VERSION,
+      langPath:'https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int',
+      workerBlobURL:true,
+      gzip:true,
+      logger:m=>{try{progressHandler(m)}catch(e){}}
+    })).catch(err=>{workerPromise=null;throw err});
+  }
+  return workerPromise;
+}
+function sourceSize(source){return {w:source.naturalWidth||source.width,h:source.naturalHeight||source.height}}
+function fitSize(w,h,maxEdge){
+  const longest=Math.max(w,h)||1;
+  const scale=longest>maxEdge?maxEdge/longest:1;
+  return {w:Math.max(1,Math.round(w*scale)),h:Math.max(1,Math.round(h*scale))};
+}
+function drawScaled(source,maxEdge){
+  const size=sourceSize(source);
+  const box=fitSize(size.w,size.h,maxEdge);
+  const canvas=document.createElement('canvas');
+  canvas.width=box.w;canvas.height=box.h;
+  const ctx=canvas.getContext('2d',{alpha:false});
+  ctx.fillStyle='#fff';
+  ctx.fillRect(0,0,box.w,box.h);
+  ctx.drawImage(source,0,0,box.w,box.h);
+  return canvas;
+}
+function decodeImage(file){
+  if(typeof createImageBitmap==='function'){
+    return createImageBitmap(file,{imageOrientation:'from-image'}).catch(()=>createImageBitmap(file)).catch(()=>decodeImageElement(file));
+  }
+  return decodeImageElement(file);
+}
+function decodeImageElement(file){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Could not read that image. Try a JPEG or PNG.'))};
+    img.src=url;
+  });
+}
+async function preparePhoto(file){
+  const img=await decodeImage(file);
+  const size=sourceSize(img);
+  if(!size.w||!size.h)throw new Error('Could not read that image. Try a JPEG or PNG.');
+  const ocrCanvas=drawScaled(img,1600);
+  let edge=1000,quality=0.72,dataUrl='';
+  for(let attempt=0;attempt<6;attempt++){
+    try{dataUrl=drawScaled(img,edge).toDataURL('image/jpeg',quality)}catch(e){dataUrl=''}
+    if(dataUrl&&dataUrl.length<=480000)break;
+    if(quality>0.5)quality=Math.round((quality-0.08)*100)/100;
+    else edge=Math.round(edge*0.85);
+    if(edge<480)break;
+  }
+  if(img.close)img.close();
+  if(!dataUrl||!dataUrl.startsWith('data:image/jpeg'))throw new Error('Could not prepare that photo.');
+  return {ocrCanvas,dataUrl};
+}
+function isImageFile(file){
+  if(file.type&&file.type.startsWith('image/'))return true;
+  return /\.(jpe?g|png|gif|webp|heic|heif|bmp|tif|tiff)$/i.test(file.name||'');
+}
+async function onScanFile(e){
+  const file=e.target.files&&e.target.files[0];
+  e.target.value='';
+  const picker=$('#scanPicker');
+  if(picker.open)picker.close();
+  if(!file)return;
+  if(!isImageFile(file)){toast('Please choose an image');return}
+  const token=++scanToken;
+  progressHandler=m=>{if(token===scanToken)onTessProgress(m)};
+  openProgress('Preparing photo…',4);
+  try{
+    const prepared=await preparePhoto(file);
+    if(token!==scanToken)return;
+    setScanProgress('Starting text recognition…',8);
+    const worker=await getWorker();
+    if(token!==scanToken)return;
+    const result=await worker.recognize(prepared.ocrCanvas);
+    if(token!==scanToken)return;
+    const text=(result&&result.data&&result.data.text)||'';
+    const parsed=parseRecipeText(text);
+    closeProgress();
+    openEditor(null,{
+      title:parsed.title,
+      ingredients:parsed.ingredients,
+      steps:parsed.steps,
+      notes:parsed.notes,
+      photo:prepared.dataUrl,
+      ocrText:text.trim()||'(No text recognized)'
+    });
+    if(!text.trim())toast('No text found — you can fill the recipe in yourself');
+  }catch(err){
+    if(token!==scanToken)return;
+    const pending=workerPromise;
+    workerPromise=null;
+    if(pending)pending.then(w=>{try{w&&w.terminate()}catch(e){}}).catch(()=>{});
+    closeProgress();
+    toast(err&&err.message?err.message:'Could not read that photo');
+  }
 }
 const lines=s=>s.split('\n').map(x=>x.trim()).filter(Boolean);
 function onSave(e){
   e.preventDefault(); const f=e.target;
-  const data={title:f.title.value.trim(),photo:f.photo.value.trim(),category:f.category.value.trim(),servings:f.servings.value?+f.servings.value:'',
+  const typedPhoto=f.photo.value.trim();
+  const data={title:f.title.value.trim(),photo:typedPhoto||f.photoData.value,category:f.category.value.trim(),servings:f.servings.value?+f.servings.value:'',
     prep:+f.prep.value||0,cook:+f.cook.value||0,ingredients:lines(f.ingredients.value),steps:lines(f.steps.value),notes:f.notes.value.trim(),
     tags:[...new Set(f.tags.value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean))]};
   if(!data.title)return;
@@ -119,6 +346,13 @@ function importJSON(file){
 function init(){
   load(); $('#yr').textContent=new Date().getFullYear();
   $('#btnAdd').onclick=()=>openEditor(null);
+  $('#btnScan').onclick=()=>{$('#scanCamera').value='';$('#scanLibrary').value='';$('#scanPicker').showModal()};
+  $('#scanPickerCancel').onclick=()=>$('#scanPicker').close();
+  $('#scanCamera').addEventListener('change',onScanFile);
+  $('#scanLibrary').addEventListener('change',onScanFile);
+  $('#scanCancel').onclick=()=>stopScan('Scan cancelled');
+  $('#scanProgress').addEventListener('cancel',e=>{e.preventDefault();stopScan('Scan cancelled')});
+  $('#removePhoto').onclick=()=>setPhotoField('');
   $('#cancelEdit').onclick=()=>$('#editor').close();
   $('#recipeForm').addEventListener('submit',onSave);
   $('#btnExport').onclick=exportJSON;
@@ -134,5 +368,6 @@ function init(){
   $('#grid').addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.key==='Enter')location.hash='#/recipe/'+encodeURIComponent(c.dataset.id)});
   window.addEventListener('hashchange',route); route();
 }
-document.addEventListener('DOMContentLoaded',init);
+if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',init);
+if(typeof module!=='undefined'&&module.exports)module.exports={parseRecipeText};
 })();

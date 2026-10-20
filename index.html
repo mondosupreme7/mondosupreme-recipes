@@ -3,14 +3,16 @@
 <title>Mondosupreme Recipes</title>
 <meta name="description" content="Mondosupreme Recipes — your personal recipe collection at Mondosupreme.com">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css"></head>
 <body>
 <header class="site-header"><div class="wrap hdr">
  <a href="#/" class="brand"><span class="logo">🍲</span><span>Mondosupreme <em>Recipes</em></span></a>
  <nav class="actions">
-  <button id="btnAdd" class="btn primary">+ Add Recipe</button>
-  <button id="btnExport" class="btn ghost">Export</button>
+  <button id="btnAdd" class="btn primary" type="button">+ Add Recipe</button>
+  <button id="btnScan" class="btn ghost" type="button">Scan a recipe</button>
+  <button id="btnExport" class="btn ghost" type="button">Export</button>
   <label class="btn ghost">Import<input type="file" id="importFile" accept="application/json,.json" hidden></label>
  </nav></div></header>
 <main class="wrap" id="app">
@@ -29,9 +31,24 @@
 </main>
 <dialog id="editor"><form id="recipeForm" method="dialog">
  <h2 id="formTitle">Add Recipe</h2>
+ <div id="scanReview" class="scan-review" hidden>
+  <p class="scan-note">Handwriting recognition can be imperfect — check the fields before saving.</p>
+  <details id="ocrDetails">
+   <summary>Scanned text</summary>
+   <pre id="ocrRaw"></pre>
+  </details>
+ </div>
  <input type="hidden" name="id">
+ <input type="hidden" name="photoData">
  <label>Title*<input name="title" required></label>
- <label>Photo URL<input name="photo" type="url" placeholder="https://…"></label>
+ <label>Photo URL<input name="photo" type="url" placeholder="https://…" inputmode="url" autocomplete="off"></label>
+ <div id="photoPreview" class="photo-preview" hidden>
+  <img alt="Scanned recipe photo" id="photoPreviewImg">
+  <div>
+   <p>Scanned photo attached. A URL above replaces it.</p>
+   <button type="button" id="removePhoto" class="btn ghost">Remove photo</button>
+  </div>
+ </div>
  <div class="row">
   <label>Category<input name="category" list="catList" placeholder="e.g. Dinner"></label>
   <label>Servings<input name="servings" type="number" min="1"></label>
@@ -49,5 +66,24 @@
 </form></dialog>
 <footer class="site-footer no-print"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Recipes are stored locally in your browser — use Export to back up.</div></footer>
 <div id="toast" role="status"></div>
+<dialog id="scanPicker" class="scan-dialog">
+ <h2>Scan a recipe</h2>
+ <p>Take a photo or choose an image from your library. Text is read on this device.</p>
+ <div class="scan-actions">
+  <label class="btn primary file-btn">Take photo
+   <input id="scanCamera" type="file" accept="image/*" capture="environment" aria-label="Take a photo of a recipe">
+  </label>
+  <label class="btn primary file-btn">Choose from library
+   <input id="scanLibrary" type="file" accept="image/*" aria-label="Choose a recipe photo from your library">
+  </label>
+  <button type="button" class="btn ghost" id="scanPickerCancel">Cancel</button>
+ </div>
+</dialog>
+<dialog id="scanProgress" class="scan-dialog" aria-labelledby="scanProgressTitle">
+ <h2 id="scanProgressTitle">Reading recipe</h2>
+ <p id="scanStatus">Preparing…</p>
+ <div class="scan-track" id="scanBarTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Scan progress"><span id="scanBar"></span></div>
+ <div class="scan-actions"><button type="button" class="btn ghost" id="scanCancel">Cancel</button></div>
+</dialog>
 <script src="app.js"></script>
 </body></html>
