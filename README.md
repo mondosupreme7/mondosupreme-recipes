@@ -4,4 +4,4 @@ Personal recipe notebook for [mondosupreme.com](https://mondosupreme.com). Recip
 
 The static site at the repo root is published to GitHub Pages on every push to `main`.
 
-[Cruises](https://mondosupreme.com/cruises/) is a map of the Royal Caribbean International fleet. Ship identities live in `cruises/fleet.json`. A scheduled Action reads last-known positions from [Open Waters AIS](https://openwaters.io/ais/) and publishes `cruises/positions.json`. No API key is required. An optional personal token can be stored as the `OPENWATERS_TOKEN` repository secret.
+[Cruises](https://mondosupreme.com/cruises/) is a map of the Royal Caribbean International fleet. Ship identities live in `cruises/fleet.json`. A scheduled Action listens to [aisstream.io](https://aisstream.io/) for about three minutes and publishes `cruises/positions.json`. The key stays in the `AISSTREAM_API_KEY` repository secret. Ships that are quiet during a run keep their last stored position.

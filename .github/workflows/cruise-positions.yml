@@ -1,10 +1,9 @@
 name: Update cruise positions
 
-# Polls Open Waters AIS and publishes cruises/positions.json.
-# No API key is required. Set the OPENWATERS_TOKEN repository secret
-# only if you create an optional personal token at
-# https://openwaters.io/ais/token/ — the job skips the header when it is empty
-# and keeps the previous file when the request fails.
+# Listens to aisstream.io for about three minutes and publishes cruises/positions.json.
+# Set the AISSTREAM_API_KEY repository secret from an aisstream.io account key.
+# The job skips without changing positions when that secret is empty, and it
+# never prints the key. Ships that stay quiet keep their last stored fix.
 # A push made with GITHUB_TOKEN does not start the Pages workflow, so this
 # job deploys the site itself when the snapshot changes.
 
@@ -25,6 +24,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -37,8 +37,10 @@ jobs:
 
       - name: Fetch positions
         env:
-          OPENWATERS_TOKEN: ${{ secrets.OPENWATERS_TOKEN }}
-        run: python3 scripts/update-cruise-positions.py
+          AISSTREAM_API_KEY: ${{ secrets.AISSTREAM_API_KEY }}
+        run: |
+          python3 -m pip install --disable-pip-version-check websockets==15.0.1
+          python3 scripts/update-cruise-positions.py
 
       - name: Commit positions
         id: commit

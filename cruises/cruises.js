@@ -172,6 +172,7 @@
     var eta = etaText(row);
     if (eta) box.append(el('div', eta));
     if (row && row.seen) box.append(el('div', 'Heard ' + localTime(row.seen) + ' (' + agePhrase(row.seen) + ')'));
+    if (row && row.source && row.source !== 'aisstream.io') box.append(el('div', 'Earlier stored report'));
     box.append(el('div', 'IMO ' + ship.imo));
     return box;
   }
@@ -258,6 +259,7 @@
         ? 'Heard ' + localTime(row.seen) + ' (' + agePhrase(row.seen) + ')'
         : 'No report yet';
       button.append(el('span', heardLine, stale(row && row.seen) ? 'meta is-stale' : 'meta'));
+      if (row && row.source && row.source !== 'aisstream.io') button.append(el('span', 'Earlier stored report', 'meta'));
       button.append(el('span', portText(row), 'meta'));
       var eta = etaText(row);
       if (eta) button.append(el('span', eta, 'meta'));
@@ -305,7 +307,7 @@
     } else {
       box.append(el('span', 'No position snapshot has been published yet. '));
     }
-    box.append(el('span', 'Times below are when each ship was last heard, shown in your time zone. Source: Open Waters AIS. Not for navigation.'));
+    box.append(el('span', 'Times below are when each ship was last heard, shown in your time zone. Live samples come from aisstream.io for about three minutes every 30 minutes. A ship that stays quiet keeps its last stored position and time. Not for navigation.'));
   }
 
   function fillCredits() {
@@ -313,7 +315,7 @@
     box.replaceChildren();
     box.append(el('h2', 'Sources'));
     box.append(el('p', 'The fleet list is taken from the current-fleet tables on the English Wikipedia article Royal Caribbean International. IMO and MMSI numbers come from Wikidata. Ships that have left the fleet are left out, and Hero of the Seas is left out until it enters service.'));
-    box.append(el('p', 'Positions are last-known AIS reports from Open Waters, fetched about every 30 minutes. The job runs without an API key. A ship can stay on its last report for hours or days when no receiver hears it. Destination text is the port code the ship broadcast.'));
+    box.append(el('p', 'Live positions are sampled from aisstream.io. The API key stays on the server. A ship that does not transmit during a sample keeps the position and time already stored. Destination text is the port code the ship broadcast. Reports saved before a ship is heard on this stream keep their original credit below.'));
     var lines = [];
     var attr = positions.attribution || {};
     Object.keys(attr).sort().forEach(function (key) {
