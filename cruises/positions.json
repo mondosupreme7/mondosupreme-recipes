@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -122,15 +122,15 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 148.1,
+      "cog": 148.6,
       "destination": "MX ESE",
       "eta": "10-25 14:00",
-      "heading": 150,
-      "lat": 33.1688,
-      "lon": -117.99643,
+      "heading": 152,
+      "lat": 33.1248,
+      "lon": -117.96482,
       "navStatus": 0,
-      "seen": "2026-10-24T02:57:52Z",
-      "sog": 10.0,
+      "seen": "2026-10-24T03:16:32Z",
+      "sog": 9.8,
       "source": "aisstream.io"
     },
     "311000660": {
@@ -149,15 +149,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 348.4,
+      "cog": 0.6,
       "destination": "IT NAP",
       "eta": "10-24 04:00",
-      "heading": 346,
-      "lat": 40.58758,
-      "lon": 14.28541,
+      "heading": 1,
+      "lat": 40.6654,
+      "lon": 14.26915,
       "navStatus": 0,
-      "seen": "2026-10-24T02:57:32Z",
-      "sog": 14.2,
+      "seen": "2026-10-24T03:17:43Z",
+      "sog": 14.0,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -273,7 +273,7 @@
     "311315000": {
       "aisName": "GRANDEUR OF THE SEAS",
       "cog": 270.9,
-      "destination": "ARUBA",
+      "destination": "COLON, PANAMA",
       "eta": "10-20 12:15",
       "heading": 271,
       "lat": 9.90782,
@@ -299,15 +299,15 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 164.1,
+      "cog": 157.7,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
-      "heading": 165,
-      "lat": 32.59149,
-      "lon": -117.77858,
+      "heading": 159,
+      "lat": 32.48823,
+      "lon": -117.73097,
       "navStatus": 0,
-      "seen": "2026-10-24T02:55:24Z",
-      "sog": 17.4,
+      "seen": "2026-10-24T03:18:05Z",
+      "sog": 17.9,
       "source": "aisstream.io"
     },
     "311319000": {
@@ -424,5 +424,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T02:58:09Z"
+  "updated": "2026-10-24T03:18:52Z"
 }
