@@ -1,0 +1,82 @@
+{
+  "rules": {
+    "board": {
+      "meta": {
+        "clearedAt": {
+          ".read": "auth != null",
+          ".write": "auth.token.email == 'cbrooks_911@yahoo.com' && newData.isNumber() && newData.val() == now"
+        }
+      },
+      "c": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.hasChildren(['n', 'day']) && newData.child('n').isNumber() && newData.child('day').isNumber() && newData.child('n').val() >= 1 && newData.child('n').val() <= 40 && newData.child('n').val() % 1 == 0 && newData.child('day').val() % 86400000 == 0 && newData.child('day').val() <= now && now - newData.child('day').val() < 90000000 && ((!data.exists() && newData.child('n').val() == 1) || (data.exists() && data.child('day').val() == newData.child('day').val() && newData.child('n').val() == data.child('n').val() + 1) || (data.exists() && newData.child('day').val() > data.child('day').val() && newData.child('n').val() == 1))",
+          "n": {
+            ".validate": "newData.isNumber()"
+          },
+          "day": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 800)"
+        }
+      },
+      "presence": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth.uid == $uid && (!newData.exists() || (newData.hasChildren(['t']) && newData.child('t').val() == now))",
+          "t": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "s": {
+        ".indexOn": [
+          "t"
+        ],
+        ".read": "auth != null && query.orderByChild == 't' && query.startAt != null && query.limitToLast != null && query.limitToLast <= 400 && query.startAt >= now - 90000000 && (!root.child('board/meta/clearedAt').exists() || query.startAt + 180000 >= root.child('board/meta/clearedAt').val())",
+        "$id": {
+          ".write": "auth != null && ((!data.exists() && newData.exists() && $id == auth.uid + '_' + newData.child('day').val() + '_' + newData.child('seq').val() && newData.child('author').val() == auth.uid && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val() && newData.parent().parent().child('rate').child(auth.uid).val() == now) || (data.exists() && !newData.exists() && (data.child('author').val() == auth.uid || auth.token.email == 'cbrooks_911@yahoo.com')))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['author', 'seq', 'day', 't', 'tool', 'color', 'size', 'points']) && newData.child('author').val() == auth.uid && newData.child('seq').isNumber() && newData.child('seq').val() >= 1 && newData.child('seq').val() <= 40 && newData.child('seq').val() % 1 == 0 && newData.child('day').isNumber() && newData.child('day').val() % 86400000 == 0 && newData.child('day').val() <= now && now - newData.child('day').val() < 90000000 && newData.child('t').val() == now && (newData.child('tool').val() == 'pen' || newData.child('tool').val() == 'eraser') && newData.child('color').val().matches('^#(2d2420|c8553d|f28f3b|2f6f4e|2458a6)$') && (newData.child('size').val() == 3 || newData.child('size').val() == 8 || newData.child('size').val() == 16 || newData.child('size').val() == 28) && newData.child('points').isString() && newData.child('points').val().matches('^\\d{1,4},\\d{1,4}(;\\d{1,4},\\d{1,4}){0,79}$') && newData.child('points').val().length <= 2000)",
+          "author": {
+            ".validate": "newData.isString()"
+          },
+          "seq": {
+            ".validate": "newData.isNumber()"
+          },
+          "day": {
+            ".validate": "newData.isNumber()"
+          },
+          "t": {
+            ".validate": "newData.isNumber()"
+          },
+          "tool": {
+            ".validate": "newData.isString()"
+          },
+          "color": {
+            ".validate": "newData.isString()"
+          },
+          "size": {
+            ".validate": "newData.isNumber()"
+          },
+          "points": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    }
+  }
+}
