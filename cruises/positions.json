@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 265.5,
+      "cog": 284.2,
       "destination": "CA YSJ",
       "eta": "10-21 11:30",
-      "heading": 265,
-      "lat": 40.46542,
-      "lon": -73.58753,
+      "heading": 284,
+      "lat": 40.44539,
+      "lon": -73.78538,
       "navStatus": 0,
-      "seen": "2026-10-24T08:14:47Z",
-      "sog": 13.9,
+      "seen": "2026-10-24T08:55:00Z",
+      "sog": 9.0,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -254,17 +254,16 @@
     },
     "311263000": {
       "aisName": "ADVENTURE OF THE SEA",
-      "cog": 322.5,
+      "cog": 269.5,
       "destination": "PRSJU",
       "eta": "10-19 11:15",
-      "heading": 320,
-      "lat": 18.52817,
-      "lon": -65.26535,
+      "heading": 272,
+      "lat": 28.40992,
+      "lon": -80.60908,
       "navStatus": 0,
-      "near": "Culebra, Puerto Rico",
-      "seen": "2026-10-21T01:52:04Z",
-      "sog": 8.9,
-      "source": "mmsi:367636240"
+      "seen": "2026-10-24T08:57:15Z",
+      "sog": 5.6,
+      "source": "aisstream.io"
     },
     "311315000": {
       "aisName": "GRANDEUR OF THE SEAS",
@@ -390,15 +389,15 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 104.3,
+      "cog": 32.0,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 102,
-      "lat": 27.60523,
-      "lon": -82.74465,
+      "heading": 33,
+      "lat": 27.71014,
+      "lon": -82.54516,
       "navStatus": 0,
-      "seen": "2026-10-24T07:56:04Z",
-      "sog": 13.8,
+      "seen": "2026-10-24T08:57:14Z",
+      "sog": 12.1,
       "source": "aisstream.io"
     },
     "311805000": {
@@ -418,5 +417,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T08:16:15Z"
+  "updated": "2026-10-24T08:57:22Z"
 }
