@@ -7,13 +7,15 @@
 <script src="/landing.js"></script>
 <title>Mondosupreme</title>
 <meta name="description" content="Mondosupreme — recipes, cruise ship positions, a personal wiki, a shared drawing board, a public chat room, and a door with no name.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/landing.css">
+<link rel="stylesheet" href="/retro.css">
 </head>
 <body>
+<div class="ticker"><div class="ticker-track">
+ <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Welcome to Mondosupreme.com ~*~ ★ Under Construction ★ Recipes · Cruises · Wiki · Board is <span class="hot">LIVE!</span> · Chat is <span class="hot">LIVE!</span> · ??? ★ Best viewed in Netscape Navigator 4.0 at 800×600 ★</p>
+ <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Welcome to Mondosupreme.com ~*~ ★ Under Construction ★ Recipes · Cruises · Wiki · Board is <span class="hot">LIVE!</span> · Chat is <span class="hot">LIVE!</span> · ??? ★ Best viewed in Netscape Navigator 4.0 at 800×600 ★</p>
+</div></div>
 <header class="site-header"><div class="wrap hdr">
  <a href="/" class="brand"><span class="logo">🍲</span><span>Mondosupreme</span></a>
  <nav class="site-nav" aria-label="Site">
@@ -27,43 +29,80 @@
  </nav>
 </div></header>
 <main class="wrap">
- <div class="hero">
-  <h1>Mondosupreme</h1>
-  <p>Pick a place to go.</p>
+ <div class="profile-head">
+  <p class="sparkle">~*~ Welcome to Mondosupreme.com ~*~</p>
+  <h1>Mondosupreme's Space</h1>
+  <p class="mood">Mood: supreme ★ Listening to: the dial-up song</p>
+  <p class="network">Cody is in your extended network</p>
  </div>
- <div class="choices">
-  <a class="choice" href="/recipes/">
-   <span class="choice-mark" aria-hidden="true">🍲</span>
-   <span class="choice-title">Recipes</span>
-   <span class="choice-text">Your kitchen notebook, saved in this browser.</span>
-  </a>
-  <a class="choice" href="/cruises/">
-   <span class="choice-mark" aria-hidden="true">🚢</span>
-   <span class="choice-title">Cruises</span>
-   <span class="choice-text">Where every Royal Caribbean ship was last reported.</span>
-  </a>
-  <a class="choice" href="/wiki/">
-   <span class="choice-mark" aria-hidden="true">📝</span>
-   <span class="choice-title">Wiki</span>
-   <span class="choice-text">Notes and how-tos, saved in this browser.</span>
-  </a>
-  <a class="choice" href="/board/">
-   <span class="choice-mark" aria-hidden="true">🎨</span>
-   <span class="choice-title">Board</span>
-   <span class="choice-text">Draw together on one board.</span>
-  </a>
-  <a class="choice" href="/chat/">
-   <span class="choice-mark" aria-hidden="true">💬</span>
-   <span class="choice-title">Chat</span>
-   <span class="choice-text">Talk together in one room.</span>
-  </a>
-  <a class="choice choice-locked" href="/escape/" aria-label="The Locked Room">
-   <svg class="door-ico" viewBox="0 0 64 80" aria-hidden="true"><rect x="14" y="8" width="36" height="68" rx="4" fill="#2a2226" stroke="#8a7358" stroke-width="2"/><circle cx="40" cy="44" r="3" fill="#c4a574"/><rect x="28" y="58" width="8" height="10" rx="1" fill="none" stroke="#6b5848" stroke-width="2"/></svg>
-   <span class="choice-title">???</span>
-   <span class="choice-text">The Locked Room</span>
-  </a>
+ <div class="profile-layout">
+  <aside class="box">
+   <h2>Contacting Mondosupreme</h2>
+   <div class="box-body">
+    <p class="about-line"><b>Name:</b> Mondosupreme</p>
+    <p class="about-line"><b>Here for:</b> recipes, ships, notes, drawing, talking, and one door</p>
+    <p class="about-line"><b>Neighborhood:</b> Kitchen / Harbor / Night</p>
+    <p class="counter-label">You are visitor number</p>
+    <div class="counter" id="counter" role="img" aria-label="Visitor counter"></div>
+    <div class="construction"><span>Under Construction</span></div>
+   </div>
+  </aside>
+  <section class="box navy">
+   <h2>Mondosupreme's Top 6 Spaces</h2>
+   <div class="choices">
+    <a class="choice" href="/recipes/">
+     <span class="rank">1.</span><span class="badge">HOT!</span>
+     <span class="choice-mark" aria-hidden="true">🍲</span>
+     <span class="choice-title">Recipes</span>
+     <span class="choice-text">Your kitchen notebook, saved in this browser.</span>
+    </a>
+    <a class="choice" href="/cruises/">
+     <span class="rank">2.</span><span class="badge">NEW!</span>
+     <span class="choice-mark" aria-hidden="true">🚢</span>
+     <span class="choice-title">Cruises</span>
+     <span class="choice-text">Where every Royal Caribbean ship was last reported.</span>
+    </a>
+    <a class="choice" href="/wiki/">
+     <span class="rank">3.</span>
+     <span class="choice-mark" aria-hidden="true">📝</span>
+     <span class="choice-title">Wiki</span>
+     <span class="choice-text">Notes and how-tos, saved in this browser.</span>
+    </a>
+    <a class="choice" href="/board/">
+     <span class="rank">4.</span><span class="badge">LIVE!</span>
+     <span class="choice-mark" aria-hidden="true">🎨</span>
+     <span class="choice-title">Board</span>
+     <span class="choice-text">Draw together on one board.</span>
+    </a>
+    <a class="choice" href="/chat/">
+     <span class="rank">5.</span><span class="badge">LIVE!</span>
+     <span class="choice-mark" aria-hidden="true">💬</span>
+     <span class="choice-title">Chat</span>
+     <span class="choice-text">Talk together in one room.</span>
+    </a>
+    <a class="choice choice-locked" href="/escape/" aria-label="The Locked Room">
+     <span class="rank">6.</span>
+     <svg class="door-ico" viewBox="0 0 64 80" aria-hidden="true"><rect x="14" y="8" width="36" height="68" rx="2" fill="#14080c" stroke="#39ff14" stroke-width="2"/><circle cx="40" cy="44" r="3" fill="#39ff14"/><rect x="28" y="58" width="8" height="10" fill="none" stroke="#39ff14" stroke-width="2"/></svg>
+     <span class="choice-title">???</span>
+     <span class="choice-text">The Locked Room</span>
+    </a>
+   </div>
+  </section>
  </div>
 </main>
-<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com</div></footer>
+<footer class="site-footer"><div class="wrap">
+ <div class="btnbar" aria-hidden="true">
+  <span class="pixel-btn">Best viewed in Netscape Navigator 4.0 at 800x600</span>
+  <span class="pixel-btn">Made with Notepad</span>
+  <span class="pixel-btn">No frames were harmed</span>
+ </div>
+ <nav class="webring" aria-label="WebRing">
+  <span>WebRing:</span>
+  <a id="ringPrev" href="/escape/">« Prev</a>
+  <a id="ringRand" href="/wiki/">Random</a>
+  <a id="ringNext" href="/recipes/">Next »</a>
+ </nav>
+ <p>© <span id="yr"></span> Mondosupreme.com</p>
+</div></footer>
 </body>
 </html>
