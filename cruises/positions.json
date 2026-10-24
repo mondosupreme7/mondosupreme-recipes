@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -149,15 +149,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 0.6,
+      "cog": 351.6,
       "destination": "IT NAP",
       "eta": "10-24 04:00",
-      "heading": 1,
-      "lat": 40.6654,
-      "lon": 14.26915,
+      "heading": 353,
+      "lat": 40.81205,
+      "lon": 14.287,
       "navStatus": 0,
-      "seen": "2026-10-24T03:17:43Z",
-      "sog": 14.0,
+      "seen": "2026-10-24T03:58:18Z",
+      "sog": 6.4,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -176,17 +176,16 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 244.1,
+      "cog": 242.0,
       "destination": "BS COC",
       "eta": "10-23 10:30",
-      "heading": 245,
-      "lat": 26.16395,
-      "lon": -79.23942,
+      "heading": 236,
+      "lat": 25.98513,
+      "lon": -79.61207,
       "navStatus": 0,
-      "near": "Bimini, Bahamas",
-      "seen": "2026-10-24T02:05:20Z",
-      "sog": 12.8,
-      "source": "aishub"
+      "seen": "2026-10-24T03:57:10Z",
+      "sog": 12.9,
+      "source": "aisstream.io"
     },
     "311001259": {
       "aisName": "UTOPIA OF THE SEAS",
@@ -424,5 +423,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T03:18:52Z"
+  "updated": "2026-10-24T03:59:39Z"
 }
