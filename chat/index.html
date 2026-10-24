@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Mondosupreme Chat</title>
+<meta name="description" content="A public chat room on Mondosupreme.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="chat.css">
+</head>
+<body class="chat-page">
+<header class="site-header"><div class="wrap hdr">
+ <a href="/chat/" class="brand"><span class="logo">💬</span><span>Mondosupreme <em>Chat</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/" aria-current="page">Chat</a>
+ </nav>
+</div></header>
+<main>
+ <div class="chat-bar">
+  <p id="status" class="chat-status" role="status">Loading…</p>
+  <button type="button" id="clear" class="tool" hidden>Clear room</button>
+  <button type="button" id="owner" class="tool" hidden>Owner</button>
+ </div>
+ <p class="chat-rules">One public room. Be kind, and don't post slurs or private information. Messages are plain text. The room keeps about the last 200 messages from the past week. The owner can remove a message or block someone.</p>
+ <div id="bans" class="chat-bans" hidden></div>
+ <div id="log" class="chat-log" role="log" aria-live="polite" aria-relevant="additions"></div>
+ <form id="composer" class="chat-compose">
+  <input id="name" class="name" maxlength="24" autocomplete="nickname" aria-label="Display name" placeholder="Name" required>
+  <input id="text" class="text" maxlength="500" autocomplete="off" aria-label="Message" placeholder="Message" required>
+  <button type="submit" class="btn primary" id="send">Send</button>
+ </form>
+</main>
+<dialog id="ownerDialog">
+ <form id="ownerForm">
+  <h2>Owner sign-in</h2>
+  <p>Sign in to remove messages, clear the room, or block someone. The password is checked by Firebase and is not stored on this site.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="chat-error" hidden></p>
+  <div class="form-actions">
+   <button type="button" id="ownerCancel" class="btn ghost">Cancel</button>
+   <button type="submit" class="btn primary">Sign in</button>
+  </div>
+ </form>
+</dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="chat.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-/* Public board settings.
+/* Public Firebase settings for the board and the chat room.
    The Firebase web config below is safe to commit once it exists. It is not a
    secret. Never put a database secret, service-account JSON, or a password here.
    Leave MONDO_BOARD_CONFIG null until the Firebase project exists.

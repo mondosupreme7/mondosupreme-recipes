@@ -77,6 +77,85 @@
           }
         }
       }
+    },
+    "chat": {
+      "meta": {
+        "clearedAt": {
+          ".read": "auth != null",
+          ".write": "auth.token.email == 'cbrooks_911@yahoo.com' && newData.isNumber() && newData.val() == now"
+        }
+      },
+      "bans": {
+        ".read": "auth.token.email == 'cbrooks_911@yahoo.com'",
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.token.email == 'cbrooks_911@yahoo.com' && (!newData.exists() || newData.val() == true)"
+        }
+      },
+      "c": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && !root.child('chat/bans').child(auth.uid).exists() && newData.hasChildren(['n', 'day']) && newData.child('n').isNumber() && newData.child('day').isNumber() && newData.child('n').val() >= 1 && newData.child('n').val() <= 60 && newData.child('n').val() % 1 == 0 && newData.child('day').isNumber() && newData.child('day').val() % 86400000 == 0 && newData.child('day').val() <= now && now - newData.child('day').val() < 90000000 && ((!data.exists() && newData.child('n').val() == 1) || (data.exists() && data.child('day').val() == newData.child('day').val() && newData.child('n').val() == data.child('n').val() + 1) || (data.exists() && newData.child('day').val() > data.child('day').val() && newData.child('n').val() == 1))",
+          "n": {
+            ".validate": "newData.isNumber()"
+          },
+          "day": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && !root.child('chat/bans').child(auth.uid).exists() && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 2000)"
+        }
+      },
+      "presence": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth.uid == $uid && (!newData.exists() || (!root.child('chat/bans').child(auth.uid).exists() && newData.hasChildren(['t']) && newData.child('t').val() == now))",
+          "t": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "m": {
+        ".indexOn": [
+          "t"
+        ],
+        ".read": "auth != null && query.orderByChild == 't' && query.startAt != null && query.limitToLast != null && query.limitToLast <= 200 && query.startAt >= now - 691200000 && (!root.child('chat/meta/clearedAt').exists() || query.startAt + 180000 >= root.child('chat/meta/clearedAt').val())",
+        "$id": {
+          ".write": "auth != null && ((!data.exists() && newData.exists() && !root.child('chat/bans').child(auth.uid).exists() && $id == auth.uid + '_' + newData.child('day').val() + '_' + newData.child('seq').val() && newData.child('author').val() == auth.uid && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val() && newData.parent().parent().child('rate').child(auth.uid).val() == now) || (data.exists() && !newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['author', 'name', 'text', 't', 'seq', 'day']) && newData.child('author').val() == auth.uid && newData.child('seq').isNumber() && newData.child('seq').val() >= 1 && newData.child('seq').val() <= 60 && newData.child('seq').val() % 1 == 0 && newData.child('day').isNumber() && newData.child('day').val() % 86400000 == 0 && newData.child('day').val() <= now && now - newData.child('day').val() < 90000000 && newData.child('t').val() == now && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 24 && !newData.child('name').val().contains('\\n') && !newData.child('name').val().contains('\\r') && newData.child('text').isString() && newData.child('text').val().length >= 1 && newData.child('text').val().length <= 500 && !newData.child('text').val().contains('\\n') && !newData.child('text').val().contains('\\r'))",
+          "author": {
+            ".validate": "newData.isString()"
+          },
+          "name": {
+            ".validate": "newData.isString()"
+          },
+          "text": {
+            ".validate": "newData.isString()"
+          },
+          "t": {
+            ".validate": "newData.isNumber()"
+          },
+          "seq": {
+            ".validate": "newData.isNumber()"
+          },
+          "day": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
     }
   }
 }
