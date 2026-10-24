@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
+<title>???</title>
+<meta name="description" content="A door in the house that does not introduce itself.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="escape.css">
+</head>
+<body class="night">
+<header class="site-header"><div class="wrap hdr">
+ <a href="/escape/" class="brand"><span class="logo" aria-hidden="true">🚪</span><span>Mondosupreme <em>???</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/escape/" aria-current="page" aria-label="The Locked Room">???</a>
+ </nav>
+</div></header>
+<main class="night-main" id="app">
+ <section id="splash" class="splash">
+  <p class="kicker">Ash House</p>
+  <h1>???</h1>
+  <p>The last road is under the tide. A note on the mat says the house will let you out only if you follow the night's order.</p>
+  <div class="splash-actions">
+   <button type="button" id="begin" class="night-btn">Step inside</button>
+   <button type="button" id="resume" class="night-btn" hidden>Continue</button>
+   <button type="button" id="wipe" class="night-btn quiet" hidden>Forget the night</button>
+  </div>
+ </section>
+ <section id="play" hidden>
+  <div class="hud">
+   <span id="timer" aria-label="Time in the house">0:00</span>
+   <button type="button" id="sound" class="night-btn quiet" aria-pressed="false">Sound off</button>
+   <button type="button" id="hint" class="night-btn quiet">Hint</button>
+   <button type="button" id="notesBtn" class="night-btn quiet">Notes</button>
+   <button type="button" id="reset" class="night-btn quiet">Reset</button>
+  </div>
+  <p id="hintOut" class="hint-out"></p>
+  <h1 id="roomTitle">The Foyer</h1>
+  <p id="roomLine" class="room-line"></p>
+  <div id="art" class="art" aria-hidden="true"></div>
+  <div id="sconces" class="sconces" hidden>
+   <p>The wall sconces</p>
+   <div class="sconce-row">
+    <button type="button" class="night-btn" data-sconce="bell" aria-label="Bell sconce">Bell</button>
+    <button type="button" class="night-btn" data-sconce="star" aria-label="Star sconce">Star</button>
+    <button type="button" class="night-btn" data-sconce="wave" aria-label="Wave sconce">Wave</button>
+    <button type="button" class="night-btn" data-sconce="moon" aria-label="Moon sconce">Moon</button>
+   </div>
+   <p id="sconcePips" class="pips"></p>
+  </div>
+  <div id="objects" class="objects"></div>
+  <p id="status" class="status" role="status"></p>
+  <div class="inv-bar">
+   <span class="inv-label">Pockets</span>
+   <div id="inventory" class="inventory"></div>
+  </div>
+ </section>
+ <section id="ending" class="ending" hidden>
+  <p class="kicker">The door</p>
+  <h1>The house lets you go.</h1>
+  <p>The lantern takes the flame. Rain thins. The road is only water and moonlight, and it is enough.</p>
+  <p id="endingTime" class="ending-time"></p>
+  <button type="button" id="again" class="night-btn">Forget the night and begin again</button>
+ </section>
+</main>
+<div id="sheet" class="sheet" hidden>
+ <div id="sheetBody"></div>
+ <button type="button" id="sheetClose" class="night-btn">Close</button>
+</div>
+<div id="notes" class="sheet" hidden>
+ <h2>Notes</h2>
+ <ul id="noteList"></ul>
+ <button type="button" id="notesClose" class="night-btn">Close</button>
+</div>
+<div id="pad" class="sheet" hidden>
+ <p id="padTitle"></p>
+ <p id="padDigits" class="pad-digits" aria-live="polite"></p>
+ <div class="keys">
+  <button type="button" class="night-btn key" data-key="1">1</button>
+  <button type="button" class="night-btn key" data-key="2">2</button>
+  <button type="button" class="night-btn key" data-key="3">3</button>
+  <button type="button" class="night-btn key" data-key="4">4</button>
+  <button type="button" class="night-btn key" data-key="5">5</button>
+  <button type="button" class="night-btn key" data-key="6">6</button>
+  <button type="button" class="night-btn key" data-key="7">7</button>
+  <button type="button" class="night-btn key" data-key="8">8</button>
+  <button type="button" class="night-btn key" data-key="9">9</button>
+  <button type="button" class="night-btn key" data-key="back" aria-label="Delete digit">⌫</button>
+  <button type="button" class="night-btn key" data-key="0">0</button>
+  <button type="button" class="night-btn key" id="padOk">Try</button>
+ </div>
+ <button type="button" id="padClose" class="night-btn quiet">Close</button>
+</div>
+<script src="escape.js"></script>
+</body>
+</html>

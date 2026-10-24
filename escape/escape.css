@@ -1,0 +1,52 @@
+body.night{background:#120d10;color:#efe6dc;min-height:100dvh}
+body.night .site-header{background:linear-gradient(90deg,#140c0e,#2a1a1c 55%,#3a2a22)}
+.night-main{max-width:760px;margin:0 auto;padding:12px 16px 28px}
+.splash,.ending{min-height:70dvh;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:24px 0 12px}
+.kicker{letter-spacing:.22em;text-transform:uppercase;color:#a89078;font-size:.78rem;margin:0}
+.splash h1,.ending h1,#roomTitle{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:.08em;margin:0}
+.splash h1{font-size:clamp(4rem,14vw,6rem);line-height:.9}
+.splash p,.ending p,.room-line{color:#cbbbaa;font-size:1.05rem}
+.splash-actions,.hud,.sconce-row,.objects,.inventory,.keys{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.night-btn{min-height:44px;min-width:44px;padding:8px 14px;border-radius:999px;border:1px solid #5c4a40;background:#2a201c;color:#efe6dc;font:600 .95rem Inter,system-ui,sans-serif;touch-action:manipulation}
+.night-btn.quiet{background:transparent;color:#d9cbb8}
+.night-btn[aria-pressed=true]{box-shadow:0 0 0 3px #e6b15a;color:#e6b15a}
+.night-btn:focus-visible{outline:2px solid #e6b15a;outline-offset:2px}
+.hud{padding:8px 0}
+#timer{font-variant-numeric:tabular-nums;letter-spacing:.04em;min-width:4.5rem}
+.hint-out{min-height:1.2em;color:#e6b15a;margin:0 0 8px}
+.room-line{margin-top:4px}
+.art{height:140px;border-radius:18px;margin:12px 0;position:relative;overflow:hidden;background:
+ radial-gradient(circle at 70% 30%,rgba(230,177,90,.18),transparent 42%),
+ linear-gradient(#1a1216,#0c090b)}
+.art .pane{position:absolute;inset:18px 22% 22px 18px;border:2px solid #4a3c36;border-radius:8px 8px 0 0;background:linear-gradient(#1c2830,#12161c)}
+.art .rain{position:absolute;inset:0;background:repeating-linear-gradient(100deg,transparent 0 10px,rgba(255,255,255,.05) 11px 12px);animation:drift 2.8s linear infinite}
+.art .door{position:absolute;right:14%;bottom:0;width:54px;height:110px;border:2px solid #6b5848;border-bottom:0;border-radius:8px 8px 0 0;background:#24181a}
+.art .door i{position:absolute;right:8px;top:58px;width:8px;height:8px;border-radius:50%;background:#c4a574}
+@keyframes drift{to{transform:translateY(24px)}}
+.sconces{margin:8px 0}
+.sconces p,.inv-label{color:#a89078;margin:0 0 6px}
+.pips{min-height:1.2em;letter-spacing:.2em}
+.objects{margin:8px 0 16px}
+.objects .door{border-color:#8a7048}
+.inv-bar{position:sticky;bottom:0;z-index:6;display:flex;gap:10px;align-items:center;background:#120d10;border-top:1px solid #3a2e32;padding:8px 0 calc(8px + env(safe-area-inset-bottom));margin-top:8px}
+.inventory{flex:1}
+.status{min-height:1.4em;color:#d9cbb8}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#22181c;color:#efe6dc;border-top:1px solid #6b5848;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:70dvh;overflow:auto;box-shadow:0 -16px 40px rgba(0,0,0,.45)}
+.sheet h2{font-family:Fraunces,Georgia,serif;margin:0 0 8px}
+.sheet p{margin:0 0 12px}
+.sheet ul{margin:0 0 12px;padding-left:18px}
+.sheet input{font-size:16px;min-height:44px;width:min(100%,420px);padding:8px 12px;border-radius:12px;border:1px solid #5c4a40;background:#120d10;color:#efe6dc}
+.soot{display:flex;gap:10px;margin:8px 0 12px}
+.mark{width:56px;height:56px;fill:none;stroke:#e6b15a;stroke-width:2}
+.pad-digits{font:600 1.6rem Fraunces,Georgia,serif;letter-spacing:.28em;min-height:2rem}
+.keys .key{width:64px;justify-content:center}
+.deny{animation:deny .28s}
+@keyframes deny{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.ending-time{font:600 1.8rem Fraunces,Georgia,serif;color:#e6b15a}
+@media(prefers-reduced-motion:reduce){
+ .art .rain,.deny{animation:none}
+}
+@media print{
+ .site-header,.hud,.inv-bar,.sheet{display:none!important}
+ body.night{background:#fff;color:#000}
+}
