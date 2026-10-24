@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -106,15 +106,15 @@
     },
     "311000396": {
       "aisName": "HARMONY OF THE SEAS",
-      "cog": 150.5,
+      "cog": 160.5,
       "destination": "USPCN",
       "eta": "10-24 07:45",
-      "heading": 150,
-      "lat": 28.03204,
-      "lon": -80.21019,
+      "heading": 159,
+      "lat": 27.71712,
+      "lon": -80.06137,
       "navStatus": 0,
-      "seen": "2026-10-24T22:11:23Z",
-      "sog": 21.1,
+      "seen": "2026-10-24T23:10:00Z",
+      "sog": 20.8,
       "source": "aisstream.io"
     },
     "311000397": {
@@ -388,15 +388,15 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 264.1,
+      "cog": 245.6,
       "destination": "MXCOM",
       "eta": "10-26 12:15",
-      "heading": 266,
-      "lat": 27.60175,
-      "lon": -82.88308,
+      "heading": 247,
+      "lat": 27.58752,
+      "lon": -82.9986,
       "navStatus": 0,
-      "seen": "2026-10-24T22:50:36Z",
-      "sog": 16.9,
+      "seen": "2026-10-24T23:12:07Z",
+      "sog": 16.8,
       "source": "aisstream.io"
     },
     "311805000": {
@@ -416,5 +416,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T22:51:32Z"
+  "updated": "2026-10-24T23:12:12Z"
 }
