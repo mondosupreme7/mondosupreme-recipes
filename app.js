@@ -26,7 +26,22 @@ function load(){
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(recipes));localStorage.setItem(FKEY,JSON.stringify([...favs]));}catch(e){toast('Could not save: storage full?')}}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
-const thumbStyle=r=>r.photo?`style="background-image:url('${esc(r.photo).replace(/'/g,'%27')}')"`:'';
+function safePhoto(url){
+  if(typeof url!=='string')return '';
+  const u=url.trim();
+  if(!u||u.length>500000||/[\u0000-\u001f\u007f]/.test(u))return '';
+  if(u.startsWith('https://')){
+    try{const parsed=new URL(u);if(parsed.protocol!=='https:'||!parsed.hostname)return '';return u}catch{return ''}
+  }
+  if(/^data:image\/(?!svg\b)[a-zA-Z0-9.+-]+[;,]/.test(u)&&!/[\s"'()\\<>]/.test(u))return u;
+  return '';
+}
+function paintPhoto(el,url){
+  if(!el)return;
+  const safe=safePhoto(url);
+  el.style.backgroundImage=safe?'url('+JSON.stringify(safe)+')':'';
+  if(safe)el.textContent='';
+}
 const total=r=>(+r.prep||0)+(+r.cook||0);
 
 function fillFilters(){
@@ -45,16 +60,17 @@ function renderList(){
   $('#grid').innerHTML=list.map(r=>`<article class="card" data-id="${esc(r.id)}" tabindex="0">
     ${r.sample?'<span class="sample">SAMPLE</span>':''}
     <button class="fav" data-fav="${esc(r.id)}" aria-label="Toggle favorite">${favs.has(r.id)?'♥':'♡'}</button>
-    <div class="thumb" ${thumbStyle(r)}>${r.photo?'':'🍽️'}</div>
+    <div class="thumb">🍽️</div>
     <div class="card-body"><div class="cat">${esc(r.category||'Uncategorized')}</div><h3>${esc(r.title)}</h3>
     <div class="meta">${total(r)?`<span>⏱ ${total(r)} min</span>`:''}${r.servings?`<span>🍽 ${esc(r.servings)} servings</span>`:''}</div>
     <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div></div></article>`).join('');
+  $('#grid').querySelectorAll('.thumb').forEach((el,i)=>paintPhoto(el,list[i].photo));
   $('#empty').hidden=list.length>0;
 }
 function renderDetail(id){
   const r=recipes.find(x=>x.id===id); if(!r){location.hash='#/';return}
   const v=$('#detailView');
-  v.innerHTML=`<article class="detail"><div class="detail-hero" ${thumbStyle(r)}>${r.photo?'':'🍽️'}</div><div class="detail-inner">
+  v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
    <div class="dbar"><a href="#/" class="btn ghost">← Back</a><button class="btn ghost" id="dFav">${favs.has(r.id)?'♥ Favorited':'♡ Favorite'}</button>
    <button class="btn ghost" id="dPrint">🖨 Print</button><button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button></div>
    <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}</div><h1>${esc(r.title)}</h1>
@@ -64,6 +80,7 @@ function renderDetail(id){
    <div class="cols"><section><h2>Ingredients</h2><ul>${(r.ingredients||[]).map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
    <section><h2>Steps</h2><ol>${(r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section></div>
    ${r.notes?`<div class="notes"><strong>Notes:</strong> ${esc(r.notes)}</div>`:''}</div></article>`;
+  paintPhoto(v.querySelector('.detail-hero'),r.photo);
   $('#dFav').onclick=()=>{toggleFav(r.id);renderDetail(r.id)};
   $('#dPrint').onclick=()=>window.print();
   $('#dEdit').onclick=()=>openEditor(r);
@@ -80,14 +97,15 @@ function setPhotoField(url){
   const f=$('#recipeForm');
   const preview=$('#photoPreview');
   const img=$('#photoPreviewImg');
-  if(url&&String(url).startsWith('data:')){
+  const safe=safePhoto(url);
+  if(safe.startsWith('data:')){
     f.photo.value='';
-    f.photoData.value=url;
-    img.src=url;
+    f.photoData.value=safe;
+    img.src=safe;
     preview.hidden=false;
   }else{
     f.photoData.value='';
-    f.photo.value=url||'';
+    f.photo.value=safe.startsWith('https://')?safe:'';
     img.removeAttribute('src');
     preview.hidden=true;
   }
@@ -152,8 +170,8 @@ function parseRecipeText(raw){
   }
   return {title,ingredients,steps,notes:notes.join('\n')};
 }
-const TESS_VERSION='7.0.0';
 let scanToken=0,workerPromise=null,progressHandler=()=>{};
+function assetURL(path){return new URL(path,document.baseURI).href}
 function setScanProgress(label,pct){
   const n=Math.max(0,Math.min(100,Math.round(pct||0)));
   const status=$('#scanStatus'); if(status)status.textContent=label;
@@ -198,7 +216,7 @@ function loadTesseract(){
   if(loadTesseract.pending)return loadTesseract.pending;
   loadTesseract.pending=new Promise((resolve,reject)=>{
     const s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/tesseract.js@'+TESS_VERSION+'/dist/tesseract.min.js';
+    s.src=assetURL('vendor/tesseract/tesseract.min.js');
     s.async=true;
     s.onload=()=>window.Tesseract?resolve(window.Tesseract):reject(new Error('Text recognition failed to start'));
     s.onerror=()=>reject(new Error('Could not download text recognition. Check your connection and try again.'));
@@ -209,8 +227,8 @@ function loadTesseract(){
 function getWorker(){
   if(!workerPromise){
     workerPromise=loadTesseract().then(Tesseract=>Tesseract.createWorker('eng',1,{
-      workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@'+TESS_VERSION+'/dist/worker.min.js',
-      corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@'+TESS_VERSION,
+      workerPath:assetURL('vendor/tesseract/worker.min.js'),
+      corePath:assetURL('vendor/tesseract/'),
       langPath:'https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int',
       workerBlobURL:true,
       gzip:true,
@@ -315,7 +333,10 @@ const lines=s=>s.split('\n').map(x=>x.trim()).filter(Boolean);
 function onSave(e){
   e.preventDefault(); const f=e.target;
   const typedPhoto=f.photo.value.trim();
-  const data={title:f.title.value.trim(),photo:typedPhoto||f.photoData.value,category:f.category.value.trim(),servings:f.servings.value?+f.servings.value:'',
+  let photo='';
+  if(typedPhoto){photo=safePhoto(typedPhoto);if(!photo){toast('Use an https image link');return}}
+  else photo=safePhoto(f.photoData.value);
+  const data={title:f.title.value.trim(),photo,category:f.category.value.trim(),servings:f.servings.value?+f.servings.value:'',
     prep:+f.prep.value||0,cook:+f.cook.value||0,ingredients:lines(f.ingredients.value),steps:lines(f.steps.value),notes:f.notes.value.trim(),
     tags:[...new Set(f.tags.value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean))]};
   if(!data.title)return;
@@ -330,17 +351,79 @@ function exportJSON(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`mondosupreme-recipes-${new Date().toISOString().slice(0,10)}.json`;
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Backup exported');
 }
+const LIMITS={title:200,category:80,notes:4000,line:400,lines:200,tag:40,tags:30,id:64,recipes:500};
+function clipStr(v,max){
+  if(typeof v==='number'&&Number.isFinite(v))v=String(v);
+  if(typeof v!=='string')return '';
+  return v.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').trim().slice(0,max);
+}
+function clipLines(v,maxLines,maxLen){
+  let arr=[];
+  if(typeof v==='string')arr=v.split(/\r?\n/);
+  else if(Array.isArray(v))arr=v;
+  return arr.map(item=>clipStr(item,maxLen)).filter(Boolean).slice(0,maxLines);
+}
+function clipNum(v,min,max){
+  const n=Number(v);
+  if(!Number.isFinite(n)||n<min||n>max)return null;
+  return Math.round(n);
+}
+function normalizeRecipe(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+  const title=clipStr(raw.title,LIMITS.title);
+  if(!title)return null;
+  let id=clipStr(raw.id,LIMITS.id).replace(/[^A-Za-z0-9_-]/g,'');
+  if(!id)id=uid();
+  const recipe={
+    id,title,
+    category:clipStr(raw.category,LIMITS.category),
+    notes:clipStr(raw.notes,LIMITS.notes),
+    ingredients:clipLines(raw.ingredients,LIMITS.lines,LIMITS.line),
+    steps:clipLines(raw.steps,LIMITS.lines,LIMITS.line),
+    tags:[...new Set(clipLines(Array.isArray(raw.tags)?raw.tags:(typeof raw.tags==='string'?raw.tags.split(','):[]),LIMITS.tags,LIMITS.tag).map(t=>t.toLowerCase()))],
+    photo:safePhoto(raw.photo)
+  };
+  const servings=clipNum(raw.servings,1,999); if(servings!=null)recipe.servings=servings;
+  const prep=clipNum(raw.prep,0,10000); if(prep!=null)recipe.prep=prep;
+  const cook=clipNum(raw.cook,0,10000); if(cook!=null)recipe.cook=cook;
+  return {recipe,favorite:raw.favorite===true};
+}
+function parseBackup(data){
+  let arr,listed=[];
+  if(Array.isArray(data))arr=data;
+  else if(data&&typeof data==='object'&&Array.isArray(data.recipes)){
+    arr=data.recipes;
+    if(Array.isArray(data.favorites))listed=data.favorites;
+  }else return null;
+  const out=[],favIds=[],seen=new Set();
+  for(const item of arr.slice(0,LIMITS.recipes)){
+    const n=normalizeRecipe(item);
+    if(!n)continue;
+    if(seen.has(n.recipe.id))n.recipe.id=uid();
+    seen.add(n.recipe.id);
+    out.push(n.recipe);
+    if(n.favorite)favIds.push(n.recipe.id);
+  }
+  for(const id of listed){
+    const s=clipStr(id,LIMITS.id).replace(/[^A-Za-z0-9_-]/g,'');
+    if(s)favIds.push(s);
+  }
+  if(!out.length)return null;
+  return {recipes:out,favorites:favIds};
+}
 function importJSON(file){
   const rd=new FileReader();
-  rd.onload=()=>{try{
-    const d=JSON.parse(rd.result); const arr=Array.isArray(d)?d:d.recipes;
-    if(!Array.isArray(arr))throw new Error('No recipes array');
-    const clean=arr.filter(r=>r&&r.title).map(r=>({...r,id:String(r.id||uid()),ingredients:[].concat(r.ingredients||[]),steps:[].concat(r.steps||[]),tags:[].concat(r.tags||[])}));
+  rd.onload=()=>{
+    let parsed;
+    try{parsed=parseBackup(JSON.parse(rd.result))}catch{parsed=null}
+    if(!parsed){alert("That file isn't a valid recipe backup.");return}
+    const clean=parsed.recipes;
     const replace=confirm(`Import ${clean.length} recipe(s).\nOK = replace all current recipes\nCancel = merge with existing`);
     if(replace)recipes=clean; else{const m=new Map(recipes.map(r=>[r.id,r]));clean.forEach(r=>m.set(r.id,r));recipes=[...m.values()];}
-    if(Array.isArray(d.favorites))d.favorites.forEach(x=>favs.add(x));
+    parsed.favorites.forEach(id=>{if(recipes.some(r=>r.id===id))favs.add(id)});
     save();toast(`Imported ${clean.length} recipe(s)`);location.hash='#/';route();
-  }catch(err){alert('Import failed: '+err.message)}};
+  };
+  rd.onerror=()=>alert("That file isn't a valid recipe backup.");
   rd.readAsText(file);
 }
 function init(){
@@ -369,5 +452,5 @@ function init(){
   window.addEventListener('hashchange',route); route();
 }
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',init);
-if(typeof module!=='undefined'&&module.exports)module.exports={parseRecipeText};
+if(typeof module!=='undefined'&&module.exports)module.exports={parseRecipeText,safePhoto,parseBackup};
 })();
