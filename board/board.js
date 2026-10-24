@@ -362,7 +362,8 @@ function fromSnap(snap) {
 function listenStrokes() {
   if (strokeQuery) strokeQuery.off();
   const start = Math.max(Date.now() - DAY, (clearedAt || 0) - 120000);
-  strokeQuery = firebase.database().ref('board/s').orderByChild('t').startAt(start).limitToLast(400);
+  // A whole-number startAt fails the rules' >= check. A fraction is accepted.
+  strokeQuery = firebase.database().ref('board/s').orderByChild('t').startAt(start + 0.1).limitToLast(400);
   remote.clear();
   const add = snap => {
     const stroke = fromSnap(snap);

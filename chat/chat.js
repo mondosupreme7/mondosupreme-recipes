@@ -280,7 +280,8 @@ function listenMessages() {
   if (messageQuery) messageQuery.off();
   messages.clear();
   const start = Math.max(Date.now() - WEEK, (clearedAt || 0) - 120000);
-  messageQuery = firebase.database().ref('chat/m').orderByChild('t').startAt(start).limitToLast(200);
+  // A whole-number startAt fails the rules' >= check. A fraction is accepted.
+  messageQuery = firebase.database().ref('chat/m').orderByChild('t').startAt(start + 0.1).limitToLast(200);
   const add = snap => {
     const msg = fromSnap(snap);
     if (!msg) return;
