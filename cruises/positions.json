@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 295.1,
+      "cog": 351.0,
       "destination": "USBYE",
       "eta": "10-24 09:00",
-      "heading": 295,
-      "lat": 40.46849,
-      "lon": -73.86323,
+      "heading": 350,
+      "lat": 40.56862,
+      "lon": -74.03205,
       "navStatus": 0,
-      "seen": "2026-10-24T09:16:03Z",
-      "sog": 16.0,
+      "seen": "2026-10-24T09:54:44Z",
+      "sog": 11.1,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -173,15 +173,15 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 243.7,
+      "cog": 25.6,
       "destination": "US MIA",
       "eta": "10-24 06:00",
-      "heading": 247,
-      "lat": 25.77157,
-      "lon": -80.06366,
-      "navStatus": 0,
-      "seen": "2026-10-24T06:15:20Z",
-      "sog": 13.5,
+      "heading": 116,
+      "lat": 25.77211,
+      "lon": -80.15697,
+      "navStatus": 5,
+      "seen": "2026-10-24T09:54:56Z",
+      "sog": 0.0,
       "source": "aisstream.io"
     },
     "311001259": {
@@ -307,15 +307,15 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 62.4,
+      "cog": 4.1,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 61,
-      "lat": 27.62958,
-      "lon": -82.6355,
+      "heading": 6,
+      "lat": 27.88801,
+      "lon": -82.44021,
       "navStatus": 0,
-      "seen": "2026-10-24T08:15:40Z",
-      "sog": 13.1,
+      "seen": "2026-10-24T09:53:00Z",
+      "sog": 7.6,
       "source": "aisstream.io"
     },
     "311321000": {
@@ -389,15 +389,15 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 0.3,
+      "cog": 5.3,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 3,
-      "lat": 27.76698,
-      "lon": -82.5229,
+      "heading": 6,
+      "lat": 27.84902,
+      "lon": -82.44431,
       "navStatus": 0,
-      "seen": "2026-10-24T09:14:55Z",
-      "sog": 12.4,
+      "seen": "2026-10-24T09:53:16Z",
+      "sog": 10.2,
       "source": "aisstream.io"
     },
     "311805000": {
@@ -417,5 +417,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T09:16:48Z"
+  "updated": "2026-10-24T09:55:52Z"
 }
