@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 117.9,
+      "cog": 98.5,
       "destination": "YSJ CA",
       "eta": "10-26 12:30",
-      "heading": 117,
-      "lat": 40.48753,
-      "lon": -73.9176,
+      "heading": 101,
+      "lat": 40.45201,
+      "lon": -73.81906,
       "navStatus": 0,
-      "seen": "2026-10-24T20:50:55Z",
-      "sog": 17.1,
+      "seen": "2026-10-24T21:11:28Z",
+      "sog": 10.7,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -173,15 +173,15 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 205.7,
+      "cog": 114.6,
       "destination": "SXM PHIL",
       "eta": "10-24 06:00",
-      "heading": 116,
-      "lat": 25.7721,
-      "lon": -80.15697,
-      "navStatus": 5,
-      "seen": "2026-10-24T20:48:54Z",
-      "sog": 0.0,
+      "heading": 112,
+      "lat": 25.76965,
+      "lon": -80.14829,
+      "navStatus": 0,
+      "seen": "2026-10-24T21:11:34Z",
+      "sog": 5.8,
       "source": "aisstream.io"
     },
     "311001259": {
@@ -307,15 +307,15 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 185.6,
+      "cog": 248.9,
       "destination": "MX CZM",
       "eta": "10-26 11:15",
-      "heading": 185,
-      "lat": 27.86337,
-      "lon": -82.44281,
+      "heading": 249,
+      "lat": 27.79865,
+      "lon": -82.48002,
       "navStatus": 0,
-      "seen": "2026-10-24T20:50:18Z",
-      "sog": 13.5,
+      "seen": "2026-10-24T21:12:15Z",
+      "sog": 15.3,
       "source": "aisstream.io"
     },
     "311321000": {
@@ -417,5 +417,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T20:51:18Z"
+  "updated": "2026-10-24T21:13:05Z"
 }
