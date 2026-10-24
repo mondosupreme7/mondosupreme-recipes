@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -106,15 +106,15 @@
     },
     "311000396": {
       "aisName": "HARMONY OF THE SEAS",
-      "cog": 160.5,
+      "cog": 157.6,
       "destination": "USPCN",
       "eta": "10-24 07:45",
-      "heading": 159,
-      "lat": 27.71712,
-      "lon": -80.06137,
+      "heading": 157,
+      "lat": 27.52906,
+      "lon": -79.98188,
       "navStatus": 0,
-      "seen": "2026-10-24T23:10:00Z",
-      "sog": 20.8,
+      "seen": "2026-10-24T23:44:23Z",
+      "sog": 20.5,
       "source": "aisstream.io"
     },
     "311000397": {
@@ -146,15 +146,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 311.7,
+      "cog": 320.1,
       "destination": "IT CIV",
       "eta": "10-25 03:15",
-      "heading": 316,
-      "lat": 41.35312,
-      "lon": 12.43361,
+      "heading": 323,
+      "lat": 41.49303,
+      "lon": 12.26434,
       "navStatus": 0,
-      "seen": "2026-10-24T22:50:23Z",
-      "sog": 11.7,
+      "seen": "2026-10-24T23:45:33Z",
+      "sog": 13.3,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -213,17 +213,16 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 242.3,
+      "cog": 296.3,
       "destination": "ES BCN",
       "eta": "10-25 03:00",
-      "heading": 242,
-      "lat": 40.35758,
-      "lon": 13.43412,
+      "heading": 297,
+      "lat": 40.91075,
+      "lon": 3.06734,
       "navStatus": 0,
-      "near": "Campania, Italy",
-      "seen": "2026-10-23T19:58:58Z",
-      "sog": 20.9,
-      "source": "aishub"
+      "seen": "2026-10-24T23:45:57Z",
+      "sog": 20.0,
+      "source": "aisstream.io"
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
@@ -307,15 +306,15 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 262.5,
+      "cog": 207.3,
       "destination": "MX CZM",
       "eta": "10-26 11:15",
-      "heading": 265,
-      "lat": 27.60536,
-      "lon": -82.84796,
+      "heading": 209,
+      "lat": 27.51465,
+      "lon": -83.05131,
       "navStatus": 0,
-      "seen": "2026-10-24T22:50:03Z",
-      "sog": 11.1,
+      "seen": "2026-10-24T23:44:31Z",
+      "sog": 13.2,
       "source": "aisstream.io"
     },
     "311321000": {
@@ -416,5 +415,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T23:12:12Z"
+  "updated": "2026-10-24T23:46:18Z"
 }
