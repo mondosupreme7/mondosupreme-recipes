@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; object-src 'none'; base-uri 'self'">
+<title>Mondosupreme Cruises</title>
+<meta name="description" content="Last-known position of every Royal Caribbean International ship.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://tile.openstreetmap.org">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="cruises.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap hdr">
+ <a href="./" class="brand"><span class="logo">🚢</span><span>Mondosupreme <em>Cruises</em></span></a>
+ <nav class="actions">
+  <a class="btn ghost" href="../">Recipes</a>
+ </nav>
+</div></header>
+<main class="wrap">
+ <div class="hero">
+  <h1>Where the fleet is.</h1>
+  <p>Last-known position of every Royal Caribbean International ship in service.</p>
+ </div>
+ <p id="freshness" class="cruise-note">Loading ship positions…</p>
+ <div id="map" role="region" aria-label="Map of Royal Caribbean ships"></div>
+ <div class="toolbar">
+  <input id="q" type="search" placeholder="Search ships, classes, places…" aria-label="Search ships" autocomplete="off">
+  <select id="sort" aria-label="Sort ships">
+   <option value="name">Sort by name</option>
+   <option value="class">Sort by class</option>
+   <option value="heard">Sort by last heard</option>
+   <option value="speed">Sort by speed</option>
+  </select>
+  <button id="fit" class="btn ghost" type="button">Whole fleet</button>
+ </div>
+ <p id="count" class="result-count"></p>
+ <div id="list" class="ship-list"></div>
+ <p id="none" class="empty" hidden>No ships match that search.</p>
+ <section id="credits" class="credits"></section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Ship positions are not for navigation. · <a href="../">Recipes</a></div></footer>
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="cruises.js"></script>
+</body>
+</html>
