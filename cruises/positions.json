@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 6,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -146,15 +146,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 307.4,
+      "cog": 311.7,
       "destination": "IT CIV",
       "eta": "10-25 03:15",
-      "heading": 310,
-      "lat": 41.26232,
-      "lon": 12.58572,
+      "heading": 316,
+      "lat": 41.35312,
+      "lon": 12.43361,
       "navStatus": 0,
-      "seen": "2026-10-24T22:13:00Z",
-      "sog": 16.6,
+      "seen": "2026-10-24T22:50:23Z",
+      "sog": 11.7,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -307,15 +307,15 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 242.8,
+      "cog": 262.5,
       "destination": "MX CZM",
       "eta": "10-26 11:15",
-      "heading": 243,
-      "lat": 27.61792,
-      "lon": -82.661,
+      "heading": 265,
+      "lat": 27.60536,
+      "lon": -82.84796,
       "navStatus": 0,
-      "seen": "2026-10-24T22:11:53Z",
-      "sog": 16.7,
+      "seen": "2026-10-24T22:50:03Z",
+      "sog": 11.1,
       "source": "aisstream.io"
     },
     "311321000": {
@@ -388,15 +388,15 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 261.6,
+      "cog": 264.1,
       "destination": "MXCOM",
       "eta": "10-26 12:15",
-      "heading": 262,
-      "lat": 27.60833,
-      "lon": -82.70609,
+      "heading": 266,
+      "lat": 27.60175,
+      "lon": -82.88308,
       "navStatus": 0,
-      "seen": "2026-10-24T22:12:33Z",
-      "sog": 16.5,
+      "seen": "2026-10-24T22:50:36Z",
+      "sog": 16.9,
       "source": "aisstream.io"
     },
     "311805000": {
@@ -416,5 +416,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T22:13:16Z"
+  "updated": "2026-10-24T22:51:32Z"
 }
