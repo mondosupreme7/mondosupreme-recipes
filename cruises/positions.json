@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 1,
+  "heard": 5,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -110,10 +110,10 @@
       "destination": "USPCN",
       "eta": "10-24 07:45",
       "heading": 269,
-      "lat": 28.40873,
-      "lon": -80.61306,
+      "lat": 28.40874,
+      "lon": -80.61307,
       "navStatus": 5,
-      "seen": "2026-10-24T13:51:00Z",
+      "seen": "2026-10-24T16:15:00Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -254,14 +254,14 @@
     },
     "311263000": {
       "aisName": "ADVENTURE OF THE SEA",
-      "cog": 177.6,
+      "cog": 56.3,
       "destination": "USPCV",
       "eta": "10-24 08:15",
       "heading": 270,
-      "lat": 28.41571,
+      "lat": 28.41572,
       "lon": -80.6294,
       "navStatus": 5,
-      "seen": "2026-10-24T14:11:32Z",
+      "seen": "2026-10-24T16:14:33Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -307,14 +307,14 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 183.0,
+      "cog": 302.6,
       "destination": "US TPA",
       "eta": "10-24 07:15",
       "heading": 182,
       "lat": 27.94505,
       "lon": -82.44355,
       "navStatus": 5,
-      "seen": "2026-10-24T14:12:59Z",
+      "seen": "2026-10-24T16:12:58Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -362,16 +362,16 @@
     },
     "311493000": {
       "aisName": "MARINER OF THE SEAS",
-      "cog": 122.6,
+      "cog": 324.8,
       "destination": "CZM-MEX",
       "eta": "10-24 11:15",
-      "heading": 121,
-      "lat": 28.65893,
-      "lon": -93.6123,
-      "navStatus": 0,
-      "seen": "2026-10-23T00:57:15Z",
-      "sog": 18.1,
-      "source": "aishub"
+      "heading": 200,
+      "lat": 20.50955,
+      "lon": -86.9573,
+      "navStatus": 5,
+      "seen": "2026-10-24T16:13:36Z",
+      "sog": 0.0,
+      "source": "aisstream.io"
     },
     "311583000": {
       "aisName": "JEWEL OF THE SEAS",
@@ -389,14 +389,14 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 145.8,
+      "cog": 143.7,
       "destination": "US TPA",
       "eta": "10-24 07:15",
       "heading": 73,
-      "lat": 27.94274,
+      "lat": 27.94275,
       "lon": -82.44536,
       "navStatus": 5,
-      "seen": "2026-10-24T13:51:34Z",
+      "seen": "2026-10-24T16:12:34Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -417,5 +417,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T15:54:27Z"
+  "updated": "2026-10-24T16:15:24Z"
 }
