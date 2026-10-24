@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 5,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 351.0,
+      "cog": 346.0,
       "destination": "USBYE",
       "eta": "10-24 09:00",
-      "heading": 350,
-      "lat": 40.56862,
-      "lon": -74.03205,
+      "heading": 345,
+      "lat": 40.621,
+      "lon": -74.04964,
       "navStatus": 0,
-      "seen": "2026-10-24T09:54:44Z",
-      "sog": 11.1,
+      "seen": "2026-10-24T10:14:24Z",
+      "sog": 10.1,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -146,15 +146,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 352.5,
+      "cog": 356.8,
       "destination": "IT NAP",
       "eta": "10-24 04:00",
-      "heading": 355,
-      "lat": 40.82178,
-      "lon": 14.28318,
-      "navStatus": 0,
-      "seen": "2026-10-24T04:18:28Z",
-      "sog": 5.9,
+      "heading": 107,
+      "lat": 40.83822,
+      "lon": 14.26188,
+      "navStatus": 5,
+      "seen": "2026-10-24T10:14:38Z",
+      "sog": 0.0,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -173,14 +173,14 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 25.6,
+      "cog": 205.6,
       "destination": "US MIA",
       "eta": "10-24 06:00",
       "heading": 116,
       "lat": 25.77211,
-      "lon": -80.15697,
+      "lon": -80.15698,
       "navStatus": 5,
-      "seen": "2026-10-24T09:54:56Z",
+      "seen": "2026-10-24T10:15:54Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -255,8 +255,8 @@
     "311263000": {
       "aisName": "ADVENTURE OF THE SEA",
       "cog": 269.5,
-      "destination": "PRSJU",
-      "eta": "10-19 11:15",
+      "destination": "USPCV",
+      "eta": "10-24 08:15",
       "heading": 272,
       "lat": 28.40992,
       "lon": -80.60908,
@@ -307,15 +307,15 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 4.1,
+      "cog": 336.3,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 6,
-      "lat": 27.88801,
-      "lon": -82.44021,
+      "heading": 338,
+      "lat": 27.91993,
+      "lon": -82.44634,
       "navStatus": 0,
-      "seen": "2026-10-24T09:53:00Z",
-      "sog": 7.6,
+      "seen": "2026-10-24T10:15:19Z",
+      "sog": 4.4,
       "source": "aisstream.io"
     },
     "311321000": {
@@ -389,15 +389,15 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 5.3,
+      "cog": 5.8,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 6,
-      "lat": 27.84902,
-      "lon": -82.44431,
+      "heading": 8,
+      "lat": 27.88519,
+      "lon": -82.44051,
       "navStatus": 0,
-      "seen": "2026-10-24T09:53:16Z",
-      "sog": 10.2,
+      "seen": "2026-10-24T10:13:35Z",
+      "sog": 5.7,
       "source": "aisstream.io"
     },
     "311805000": {
@@ -417,5 +417,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T09:55:52Z"
+  "updated": "2026-10-24T10:16:06Z"
 }
