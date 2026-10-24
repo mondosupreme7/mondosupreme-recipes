@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https:; connect-src 'self'; object-src 'none'; base-uri 'self'">
+<title>Mondosupreme Wiki</title>
+<meta name="description" content="Mondosupreme Wiki — personal notes and how-tos saved in this browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="wiki.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap hdr">
+ <a href="#/" class="brand"><span class="logo">📝</span><span>Mondosupreme <em>Wiki</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/" aria-current="page">Wiki</a>
+ </nav>
+ <nav class="actions">
+  <button id="btnNew" class="btn primary" type="button">+ New page</button>
+  <button id="btnExport" class="btn ghost" type="button">Export</button>
+  <label class="btn ghost file-btn">Import<input type="file" id="importFile" accept="application/json,.json" aria-label="Import wiki backup"></label>
+ </nav>
+</div></header>
+<main class="wrap" id="app">
+ <section id="homeView">
+  <div class="hero">
+   <h1>Notes and how-tos.</h1>
+   <p class="wiki-note">Pages are saved on this device's browser. Use Export to back up or move them.</p>
+  </div>
+  <div class="toolbar">
+   <input id="search" type="search" placeholder="Search titles, tags, and page text…" aria-label="Search pages" autocomplete="off">
+  </div>
+  <div id="tagBar" class="tags" hidden></div>
+  <h2 class="wiki-h" id="recentHead" hidden>Recently edited</h2>
+  <div id="recent" class="wiki-list"></div>
+  <h2 class="wiki-h" id="allHead" hidden>All pages <span id="allCount"></span></h2>
+  <div id="all" class="wiki-list"></div>
+  <p id="empty" class="empty" hidden>No pages yet. Tap New page to start one.</p>
+ </section>
+ <section id="pageView" hidden></section>
+ <section id="editorView" hidden>
+  <form id="pageForm" class="wiki-form">
+   <h2 id="editorHeading">New page</h2>
+   <label>Title<input id="title" name="title" required maxlength="200" autocomplete="off" enterkeyhint="next"></label>
+   <p class="meta">Changing the title renames this page and updates [[links]] that use the old name.</p>
+   <label>Tags (comma separated)<input id="tags" name="tags" maxlength="800" placeholder="how-to, home" autocomplete="off" autocapitalize="off"></label>
+   <div class="wiki-label-row">
+    <span>Page</span>
+    <button type="button" id="btnPreview" class="btn ghost" aria-pressed="false">Preview</button>
+   </div>
+   <div id="panes" class="wiki-panes">
+    <textarea id="body" aria-label="Page text in Markdown" spellcheck="true"></textarea>
+    <div id="preview" class="wiki-preview" hidden>
+     <h2 id="previewTitle"></h2>
+     <div id="previewBody" class="wiki-body"></div>
+    </div>
+   </div>
+   <div class="form-actions">
+    <button type="button" class="btn danger" id="btnDeleteEdit" hidden>Delete</button>
+    <span class="end">
+     <button type="button" class="btn ghost" id="btnCancel">Cancel</button>
+     <button type="submit" class="btn primary">Save</button>
+    </span>
+   </div>
+  </form>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Pages are saved on this device's browser — use Export to back up or move them.</div></footer>
+<div id="toast" role="status"></div>
+<script src="wiki.js"></script>
+</body>
+</html>
