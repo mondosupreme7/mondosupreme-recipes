@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -175,15 +175,15 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 237.0,
+      "cog": 243.7,
       "destination": "BS COC",
       "eta": "10-23 10:30",
-      "heading": 233,
-      "lat": 25.78255,
-      "lon": -80.01945,
+      "heading": 247,
+      "lat": 25.77157,
+      "lon": -80.06366,
       "navStatus": 0,
-      "seen": "2026-10-24T05:55:40Z",
-      "sog": 8.8,
+      "seen": "2026-10-24T06:15:20Z",
+      "sog": 13.5,
       "source": "aisstream.io"
     },
     "311001259": {
@@ -310,15 +310,15 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 31.6,
+      "cog": 19.4,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 32,
-      "lat": 27.43354,
-      "lon": -83.09656,
+      "heading": 22,
+      "lat": 27.49372,
+      "lon": -83.05985,
       "navStatus": 0,
-      "seen": "2026-10-24T05:55:08Z",
-      "sog": 13.5,
+      "seen": "2026-10-24T06:15:57Z",
+      "sog": 9.1,
       "source": "aisstream.io"
     },
     "311321000": {
@@ -421,5 +421,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T05:56:26Z"
+  "updated": "2026-10-24T06:16:28Z"
 }
