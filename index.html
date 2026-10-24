@@ -33,7 +33,10 @@
 <dialog id="editor"><form id="recipeForm" method="dialog">
  <h2 id="formTitle">Add Recipe</h2>
  <div id="scanReview" class="scan-review" hidden>
-  <p class="scan-note">Handwriting recognition can be imperfect — check the fields before saving.</p>
+  <p class="scan-note">Handwriting recognition is imperfect, and cursive is often missed. Check every field before saving.</p>
+  <p id="scanConfidence" class="scan-confidence" hidden></p>
+  <p id="scanHint" class="scan-hint" hidden></p>
+  <button type="button" id="scanRetry" class="btn ghost" hidden>Try again</button>
   <details id="ocrDetails">
    <summary>Scanned text</summary>
    <pre id="ocrRaw"></pre>
@@ -78,6 +81,25 @@
    <input id="scanLibrary" type="file" accept="image/*" aria-label="Choose a recipe photo from your library">
   </label>
   <button type="button" class="btn ghost" id="scanPickerCancel">Cancel</button>
+ </div>
+</dialog>
+<dialog id="scanCrop" class="scan-dialog">
+ <h2>Frame the recipe</h2>
+ <p>Drag the box onto the card. Rotate if the photo is sideways.</p>
+ <div id="cropStage" class="crop-stage">
+  <div id="cropFrame" class="crop-frame">
+   <canvas id="cropCanvas"></canvas>
+   <div id="cropBox" class="crop-box" role="group" aria-label="Crop area">
+    <span data-h="nw"></span><span data-h="ne"></span><span data-h="sw"></span><span data-h="se"></span>
+   </div>
+  </div>
+ </div>
+ <label class="scan-check"><input type="checkbox" id="handwritingToggle"> Enhance for handwriting</label>
+ <p class="scan-hint">Neat print reads best. Cursive is often missed, so check the words after.</p>
+ <div class="scan-actions">
+  <button type="button" class="btn ghost" id="cropRotate">Rotate</button>
+  <button type="button" class="btn primary" id="cropRead">Read recipe</button>
+  <button type="button" class="btn ghost" id="cropCancel">Cancel</button>
  </div>
 </dialog>
 <dialog id="scanProgress" class="scan-dialog" aria-labelledby="scanProgressTitle">

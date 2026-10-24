@@ -110,10 +110,36 @@ function setPhotoField(url){
     preview.hidden=true;
   }
 }
-function showScanReview(text){
+function showScanReview(text, meta){
   const box=$('#scanReview');
-  if(text){$('#ocrRaw').textContent=text;$('#ocrDetails').open=false;box.hidden=false;}
-  else{$('#ocrRaw').textContent='';box.hidden=true;}
+  const confEl=$('#scanConfidence');
+  const hint=$('#scanHint');
+  const retry=$('#scanRetry');
+  if(!text){
+    $('#ocrRaw').textContent='';
+    box.hidden=true;
+    if(confEl)confEl.hidden=true;
+    if(hint)hint.hidden=true;
+    if(retry)retry.hidden=true;
+    return;
+  }
+  $('#ocrRaw').textContent=text;
+  $('#ocrDetails').open=false;
+  box.hidden=false;
+  if(retry)retry.hidden=!scanBitmap;
+  const conf=meta&&Number(meta.confidence);
+  if(confEl&&Number.isFinite(conf)){
+    const n=Math.max(0,Math.min(100,Math.round(conf)));
+    confEl.hidden=false;
+    confEl.textContent='Read confidence: '+n+'%';
+    if(hint){
+      hint.hidden=n>=80;
+      hint.textContent=n>=80?'':'This read is uncertain. Brighter, even light and a tighter crop help. Printed text and neat handwriting work best — cursive is often missed. Turn on Enhance for handwriting if the letters are faint, then try again.';
+    }
+  }else{
+    if(confEl)confEl.hidden=true;
+    if(hint)hint.hidden=true;
+  }
 }
 function openEditor(r,prefill){
   const f=$('#recipeForm'); f.reset();
@@ -131,38 +157,138 @@ function openEditor(r,prefill){
     if(prefill.steps)f.steps.value=prefill.steps.join('\n');
     if(prefill.notes)f.notes.value=prefill.notes;
     if(prefill.photo)photo=prefill.photo;
-    if(prefill.ocrText)showScanReview(prefill.ocrText);
+    if(prefill.ocrText)showScanReview(prefill.ocrText,{confidence:prefill.confidence});
   }
   setPhotoField(photo);
   $('#editor').showModal();
 }
+function editDistance(a,b){
+  if(Math.abs(a.length-b.length)>2)return 3;
+  const m=a.length,n=b.length;
+  let prev=new Uint8Array(n+1),cur=new Uint8Array(n+1);
+  for(let j=0;j<=n;j++)prev[j]=j;
+  for(let i=1;i<=m;i++){
+    cur[0]=i; let rowMin=cur[0];
+    for(let j=1;j<=n;j++){
+      const cost=a.charCodeAt(i-1)===b.charCodeAt(j-1)?0:1;
+      cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+cost);
+      if(cur[j]<rowMin)rowMin=cur[j];
+    }
+    if(rowMin>2)return 3;
+    const swap=prev; prev=cur; cur=swap;
+  }
+  return prev[n];
+}
 const HEADER_WORD=/^(ingredients?|directions?|instructions?|steps?|method|preparation|notes?|tips?)$/i;
-function sectionKind(line){
+const HEADER_FUZZY=[['ingredients','ingredients'],['directions','steps'],['instructions','steps'],['preparation','steps'],['method','steps'],['steps','steps'],['notes','notes'],['tips','notes']];
+function headerKind(line){
   const core=line.replace(/\([^)]*\)/g,'').replace(/[:.\s]+$/g,'').trim();
   const parts=core.split(/\s*(?:\/|&|,|\+|\band\b)\s*/i).map(s=>s.trim()).filter(Boolean);
-  if(!parts.length||parts.some(p=>!HEADER_WORD.test(p)))return '';
-  const w=parts[0].toLowerCase();
-  if(w.startsWith('ingredient'))return 'ingredients';
-  if(/^notes?$/.test(w)||/^tips?$/.test(w))return 'notes';
-  return 'steps';
+  if(!parts.length||parts.length>3)return '';
+  if(parts.every(p=>HEADER_WORD.test(p))){
+    const w=parts[0].toLowerCase();
+    if(w.startsWith('ingredient'))return 'ingredients';
+    if(/^notes?$/.test(w)||/^tips?$/.test(w))return 'notes';
+    return 'steps';
+  }
+  const words=core.split(/\s+/).filter(Boolean);
+  if(!words.length||words.length>3)return '';
+  const w=words[0].toLowerCase().replace(/[^a-z]/g,'');
+  if(w.length<4)return '';
+  let best='',bestD=99;
+  for(const [name,kind] of HEADER_FUZZY){
+    const lim=name.length>=8?2:1;
+    if(Math.abs(name.length-w.length)>lim)continue;
+    const d=editDistance(w,name);
+    if(d<=lim&&d<bestD){bestD=d;best=kind;}
+  }
+  if(!best)return '';
+  const rest=words.slice(1).join('');
+  return rest.length<=8?best:'';
 }
-function isNumberedStep(line){return /^(?:step\s+)?\d{1,2}\s*[.):]\s+\S/i.test(line)}
-function cleanStep(line){return line.replace(/^(?:step\s+)?\d{1,2}\s*[.):]\s+/i,'').trim()||line.trim()}
+function isNumberedStep(line){return /^(?:step\s+)?\d{1,2}\s*[.):,]\s*[A-Za-z]/.test(line)}
+function cleanStep(line){return line.replace(/^(?:step\s+)?\d{1,2}\s*[.):,]\s*/i,'').trim()||line.trim()}
 function isIngredientLine(line){
-  if(/^[-*•·▪–—]\s+\S/.test(line))return true;
+  if(/^[-*•·▪◦‣–—]\s+\S/.test(line))return true;
   return /^(?:\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?(?:\s*-\s*\d+(?:[.,]\d+)?)?|[½¼¾⅓⅔⅛])(?:\s*[a-zA-Zµ]|\s|$)/.test(line);
 }
-function cleanIngredient(line){return line.replace(/^[-*•·▪–—]\s+/,'').trim()}
+function cleanIngredient(line){return line.replace(/^[-*•·▪◦‣–—]\s+/,'').trim()}
+const RECIPE_DICT=new Set('spaghetti garlic clove cloves olive tomato tomatoes basil crushed simmer minute minutes until dente pasta sauce serve ingredient ingredients direction directions instruction instructions method preparation note notes tip tips tablespoon tablespoons teaspoon teaspoons onion butter flour sugar pepper chicken cheese vanilla baking powder water milk fresh sliced grated canned boil warm cook toss salt'.split(' '));
+function correctToken(token){
+  const m=token.match(/^([^A-Za-z]*)([A-Za-z]+)([^A-Za-z]*)$/);
+  if(!m)return token;
+  const lower=m[2].toLowerCase();
+  if(lower.length<4||RECIPE_DICT.has(lower))return token;
+  let hit='';
+  for(const dict of RECIPE_DICT){
+    if(dict.length<4||Math.abs(dict.length-lower.length)>1)continue;
+    if(editDistance(lower,dict)!==1)continue;
+    if(!hit)hit=dict;
+    else if(dict.length===lower.length&&hit.length!==lower.length)hit=dict;
+    else if(dict.length===hit.length)return token;
+  }
+  return hit?m[1]+hit+m[3]:token;
+}
+function fixOcrLine(line){
+  line=line.replace(/\bfen(?=\s+minutes?\b)/gi,'ten');
+  line=line.replace(/\b(\d{3,})9(?=\s+[A-Za-z]{4,})/g,'$1 g');
+  line=line.replace(/\b[lI|]\/([2348])\b/g,'1/$1');
+  line=line.replace(/\b(\d)\s*\/\s*(\d)\b/g,'$1/$2');
+  line=line.replace(/\b[0-9OoIl|.]*[Oo][0-9OoIl|.]*\b/g,tok=>{
+    if(!/\d/.test(tok))return tok;
+    return tok.replace(/[Oo]/g,'0').replace(/[Il|]/g,'1');
+  });
+  line=line.replace(/(^|\s)([lI|])(?=\s+(?:cups?|tbsps?|tablespoons?|tsps?|teaspoons?|oz|ounces?|lbs?|pounds?|kg|mg|ml|pinch(?:es)?|cloves?|cans?)\b)/gi,'$11');
+  line=line.replace(/\btbps\b/gi,'tbsp').replace(/\btps\b/gi,'tsp').replace(/\b0z\b/gi,'oz');
+  return line.split(' ').map(correctToken).join(' ');
+}
+function usefulLine(line){
+  const compact=line.replace(/\s/g,'');
+  if(!compact)return false;
+  if(headerKind(line)||isIngredientLine(line)||isNumberedStep(line))return true;
+  const words=line.split(/\s+/).filter(Boolean);
+  if(!words.some(w=>/[A-Za-z]{4,}/.test(w))&&!/\d/.test(line))return false;
+  const alnum=(compact.match(/[A-Za-z0-9]/g)||[]).length;
+  return alnum>=3&&alnum/compact.length>=0.45;
+}
+function fixOcrText(raw){
+  let text=String(raw||'').replace(/\u00a0/g,' ');
+  try{text=text.normalize('NFKD').replace(/\p{M}/gu,'')}catch(e){}
+  const out=[];
+  for(let line of text.split(/\r?\n/)){
+    line=line.replace(/[ \t]+/g,' ').trim();
+    if(!line)continue;
+    line=fixOcrLine(line);
+    if(usefulLine(line))out.push(line);
+  }
+  return out.join('\n');
+}
+function tidyTitle(title){
+  const parts=title.split(/\s+/).filter(Boolean);
+  const anchored=parts.some(w=>{const bare=w.toLowerCase().replace(/[^a-z]/g,'');return bare.length>=6||RECIPE_DICT.has(bare);});
+  if(!anchored)return title;
+  while(parts.length>1){
+    const bare=parts[parts.length-1].toLowerCase().replace(/[^a-z]/g,'');
+    if(bare.length>=5||RECIPE_DICT.has(bare))break;
+    parts.pop();
+  }
+  return parts.join(' ');
+}
 function parseRecipeText(raw){
   const lines=String(raw||'').replace(/\u00a0/g,' ').split(/\r?\n/).map(l=>l.replace(/[ \t]+/g,' ').trim()).filter(Boolean);
   const ingredients=[],steps=[],notes=[];
   let title='',titleSet=false,mode='';
   for(const line of lines){
-    const section=sectionKind(line);
+    const section=headerKind(line);
     if(section){mode=section;continue}
-    if(!titleSet&&!mode){title=line;titleSet=true;continue}
+    if(!titleSet&&!mode){title=tidyTitle(line);titleSet=true;continue}
     if(mode==='ingredients'){ingredients.push(cleanIngredient(line));continue}
-    if(mode==='steps'){steps.push(cleanStep(line));continue}
+    if(mode==='steps'){
+      const prev=steps[steps.length-1]||'';
+      if(!isNumberedStep(line)&&steps.length&&/^[a-z("]/.test(line)&&!/[.!?:"']$/.test(prev))steps[steps.length-1]=prev+' '+line;
+      else steps.push(cleanStep(line));
+      continue;
+    }
     if(mode==='notes'){notes.push(line);continue}
     if(isNumberedStep(line)){steps.push(cleanStep(line));continue}
     if(isIngredientLine(line)){ingredients.push(cleanIngredient(line));continue}
@@ -170,7 +296,7 @@ function parseRecipeText(raw){
   }
   return {title,ingredients,steps,notes:notes.join('\n')};
 }
-let scanToken=0,workerPromise=null,progressHandler=()=>{};
+let scanToken=0,workerPromise=null,progressHandler=()=>{},scanBitmap=null,cropSession=null,scanDraft=null,cropDrag=null;
 function assetURL(path){return new URL(path,document.baseURI).href}
 function setScanProgress(label,pct){
   const n=Math.max(0,Math.min(100,Math.round(pct||0)));
@@ -178,9 +304,10 @@ function setScanProgress(label,pct){
   const bar=$('#scanBar'); if(bar)bar.style.width=n+'%';
   const track=$('#scanBarTrack'); if(track)track.setAttribute('aria-valuenow',String(n));
 }
-function openProgress(label,pct){setScanProgress(label,pct);const dlg=$('#scanProgress');if(!dlg.open)dlg.showModal()}
-function closeProgress(){const dlg=$('#scanProgress');if(dlg.open)dlg.close()}
+function openProgress(label,pct){setScanProgress(label,pct);const dlg=$('#scanProgress');if(dlg&&!dlg.open)dlg.showModal()}
+function closeProgress(){const dlg=$('#scanProgress');if(dlg&&dlg.open)dlg.close()}
 let scanStopLock=false;
+function releaseBitmap(){try{scanBitmap&&scanBitmap.close&&scanBitmap.close()}catch(e){} scanBitmap=null}
 function stopScan(message){
   if(scanStopLock)return;
   scanStopLock=true;
@@ -201,13 +328,13 @@ function onTessProgress(m){
     'recognizing text':'Reading recipe…'
   };
   const spans={
-    'loading tesseract core':[8,20],
-    'initializing tesseract':[20,32],
-    'loading language traineddata':[32,70],
-    'initializing api':[70,78],
-    'recognizing text':[78,99]
+    'loading tesseract core':[18,32],
+    'initializing tesseract':[32,42],
+    'loading language traineddata':[42,70],
+    'initializing api':[70,76],
+    'recognizing text':[76,96]
   };
-  const span=spans[m.status]||[10,90];
+  const span=spans[m.status]||[20,90];
   const p=span[0]+(span[1]-span[0])*(Number(m.progress)||0);
   setScanProgress(labels[m.status]||'Reading recipe…',p);
 }
@@ -238,21 +365,241 @@ function getWorker(){
   return workerPromise;
 }
 function sourceSize(source){return {w:source.naturalWidth||source.width,h:source.naturalHeight||source.height}}
-function fitSize(w,h,maxEdge){
+function fitCanvas(img,maxEdge){
+  const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
   const longest=Math.max(w,h)||1;
-  const scale=longest>maxEdge?maxEdge/longest:1;
-  return {w:Math.max(1,Math.round(w*scale)),h:Math.max(1,Math.round(h*scale))};
+  const minEdge=Math.min(1500,maxEdge);
+  let scale=1;
+  if(longest>maxEdge)scale=maxEdge/longest;
+  else if(longest<minEdge)scale=minEdge/longest;
+  const c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(w*scale));
+  c.height=Math.max(1,Math.round(h*scale));
+  const ctx=c.getContext('2d',{alpha:false,willReadFrequently:true});
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
+  ctx.drawImage(img,0,0,c.width,c.height);
+  return c;
 }
-function drawScaled(source,maxEdge){
-  const size=sourceSize(source);
-  const box=fitSize(size.w,size.h,maxEdge);
-  const canvas=document.createElement('canvas');
-  canvas.width=box.w;canvas.height=box.h;
-  const ctx=canvas.getContext('2d',{alpha:false});
-  ctx.fillStyle='#fff';
-  ctx.fillRect(0,0,box.w,box.h);
-  ctx.drawImage(source,0,0,box.w,box.h);
-  return canvas;
+function rotateCanvas(src,degrees){
+  if(!degrees)return src;
+  const rad=degrees*Math.PI/180;
+  const w=src.width,h=src.height;
+  const sin=Math.abs(Math.sin(rad)),cos=Math.abs(Math.cos(rad));
+  const nw=Math.max(1,Math.ceil(w*cos+h*sin)),nh=Math.max(1,Math.ceil(w*sin+h*cos));
+  const c=document.createElement('canvas');
+  c.width=nw; c.height=nh;
+  const ctx=c.getContext('2d',{alpha:false,willReadFrequently:true});
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,nw,nh);
+  ctx.translate(nw/2,nh/2); ctx.rotate(rad); ctx.drawImage(src,-w/2,-h/2);
+  return c;
+}
+function rotateCenter(src,degrees){
+  const c=document.createElement('canvas');
+  c.width=src.width; c.height=src.height;
+  const ctx=c.getContext('2d',{alpha:false,willReadFrequently:true});
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+  ctx.translate(c.width/2,c.height/2);
+  ctx.rotate(degrees*Math.PI/180);
+  ctx.drawImage(src,-src.width/2,-src.height/2);
+  return c;
+}
+function grayOf(canvas){
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+  const g=new Uint8Array(canvas.width*canvas.height);
+  const d=img.data;
+  for(let i=0,p=0;i<d.length;i+=4,p++)g[p]=(d[i]*77+d[i+1]*150+d[i+2]*29)>>8;
+  return g;
+}
+function paintGray(g,w,h){
+  const c=document.createElement('canvas');
+  c.width=w; c.height=h;
+  const ctx=c.getContext('2d');
+  const img=ctx.createImageData(w,h);
+  const d=img.data;
+  for(let i=0,p=0;i<g.length;i++,p+=4){const v=g[i]; d[p]=d[p+1]=d[p+2]=v; d[p+3]=255;}
+  ctx.putImageData(img,0,0);
+  return c;
+}
+function boxBlur(g,w,h,r){
+  if(r<1)return g;
+  const tmp=new Float64Array(g.length);
+  const out=new Uint8Array(g.length);
+  const div=r*2+1;
+  for(let y=0;y<h;y++){
+    let sum=0;
+    for(let k=-r;k<=r;k++)sum+=g[y*w+Math.min(w-1,Math.max(0,k))];
+    for(let x=0;x<w;x++){
+      tmp[y*w+x]=sum/div;
+      sum-=g[y*w+Math.min(w-1,Math.max(0,x-r))];
+      sum+=g[y*w+Math.min(w-1,Math.max(0,x+r+1))];
+    }
+  }
+  for(let x=0;x<w;x++){
+    let sum=0;
+    for(let k=-r;k<=r;k++)sum+=tmp[Math.min(h-1,Math.max(0,k))*w+x];
+    for(let y=0;y<h;y++){
+      out[y*w+x]=sum/div;
+      sum-=tmp[Math.min(h-1,Math.max(0,y-r))*w+x];
+      sum+=tmp[Math.min(h-1,Math.max(0,y+r+1))*w+x];
+    }
+  }
+  return out;
+}
+function stretch(g){
+  const hist=new Uint32Array(256);
+  for(let i=0;i<g.length;i+=4)hist[g[i]]++;
+  let total=0; for(let i=0;i<256;i++)total+=hist[i];
+  const cut=total*0.02;
+  let lo=0,hi=255,acc=0;
+  for(let i=0;i<256;i++){acc+=hist[i]; if(acc>=cut){lo=i;break}}
+  acc=0;
+  for(let i=255;i>=0;i--){acc+=hist[i]; if(acc>=cut){hi=i;break}}
+  if(hi-lo<20)return g;
+  const scale=255/(hi-lo);
+  const out=new Uint8Array(g.length);
+  for(let i=0;i<g.length;i++){
+    let v=(g[i]-lo)*scale;
+    out[i]=v<0?0:v>255?255:v|0;
+  }
+  return out;
+}
+function sauvola(g,w,h,k){
+  let win=Math.round(Math.min(w,h)/28);
+  if(win%2===0)win++;
+  win=Math.max(21,Math.min(81,win));
+  const r=win>>1;
+  const ii=new Float64Array(w*h);
+  const ii2=new Float64Array(w*h);
+  for(let y=0,i=0;y<h;y++){
+    let row=0,row2=0;
+    for(let x=0;x<w;x++,i++){
+      const v=g[i];
+      row+=v; row2+=v*v;
+      ii[i]=row+(y?ii[i-w]:0);
+      ii2[i]=row2+(y?ii2[i-w]:0);
+    }
+  }
+  const out=new Uint8Array(g.length);
+  const R=128;
+  function areaSum(intg,x0,y0,x1,y1){
+    const A=(y0>0&&x0>0)?intg[(y0-1)*w+(x0-1)]:0;
+    const B=y0>0?intg[(y0-1)*w+x1]:0;
+    const C=x0>0?intg[y1*w+(x0-1)]:0;
+    return intg[y1*w+x1]-B-C+A;
+  }
+  for(let y=0;y<h;y++){
+    const y0=Math.max(0,y-r),y1=Math.min(h-1,y+r);
+    for(let x=0;x<w;x++){
+      const x0=Math.max(0,x-r),x1=Math.min(w-1,x+r);
+      const area=(x1-x0+1)*(y1-y0+1);
+      const s=areaSum(ii,x0,y0,x1,y1);
+      const s2=areaSum(ii2,x0,y0,x1,y1);
+      const mean=s/area;
+      const variance=Math.max(0,s2/area-mean*mean);
+      const T=mean*(1+k*((Math.sqrt(variance)/R)-1));
+      out[y*w+x]=g[y*w+x]<T?0:255;
+    }
+  }
+  return out;
+}
+function rowScore(g,w,h){
+  let sum=0,sum2=0;
+  for(let y=0;y<h;y++){
+    let c=0; const row=y*w;
+    for(let x=0;x<w;x++)if(g[row+x]<128)c++;
+    sum+=c; sum2+=c*c;
+  }
+  const mean=sum/h;
+  return sum2/h-mean*mean;
+}
+function roughBinary(canvas){
+  const g=grayOf(canvas);
+  let sum=0; for(let i=0;i<g.length;i+=3)sum+=g[i];
+  const t=(sum/Math.ceil(g.length/3))*0.92;
+  for(let i=0;i<g.length;i++)g[i]=g[i]<t?0:255;
+  return {g,w:canvas.width,h:canvas.height};
+}
+function cardinal(canvas){
+  const small=fitCanvas(canvas,420);
+  const a=roughBinary(small);
+  const b=roughBinary(rotateCanvas(small,90));
+  const s0=rowScore(a.g,a.w,a.h);
+  const s90=rowScore(b.g,b.w,b.h);
+  return s90>s0*1.18?90:0;
+}
+function deskewAngle(canvas){
+  const small=fitCanvas(canvas,520);
+  let best=0,bestScore=-1,zero=0;
+  for(let a=-12;a<=12;a+=1){
+    const rot=a?rotateCenter(small,a):small;
+    const g=sauvola(stretch(grayOf(rot)),rot.width,rot.height,0.34);
+    const score=rowScore(g,rot.width,rot.height);
+    if(a===0)zero=score;
+    if(score>bestScore){bestScore=score;best=a;}
+  }
+  if(Math.abs(best)<2||!zero||bestScore<zero*1.08)return 0;
+  return best;
+}
+function padCanvas(src,pad){
+  const c=document.createElement('canvas');
+  c.width=src.width+pad*2; c.height=src.height+pad*2;
+  const ctx=c.getContext('2d',{alpha:false});
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+  ctx.drawImage(src,pad,pad);
+  return c;
+}
+function binarize(canvas,handwriting){
+  const w=canvas.width,h=canvas.height;
+  let g=boxBlur(grayOf(canvas),w,h,1);
+  g=stretch(g);
+  if(handwriting){
+    const blur=boxBlur(g,w,h,1);
+    const sharp=new Uint8Array(g.length);
+    for(let i=0;i<g.length;i++){
+      let v=g[i]+0.9*(g[i]-blur[i]);
+      sharp[i]=v<0?0:v>255?255:v|0;
+    }
+    g=sauvola(sharp,w,h,0.2);
+  }else g=sauvola(g,w,h,0.34);
+  return padCanvas(paintGray(g,w,h),24);
+}
+function orientedSize(bitmap,rotation){
+  return rotation%2?{w:bitmap.height,h:bitmap.width}:{w:bitmap.width,h:bitmap.height};
+}
+function renderOrientedCrop(bitmap,rotation,norm,maxEdge){
+  const o=orientedSize(bitmap,rotation);
+  const sx=norm.x*o.w,sy=norm.y*o.h,sw=Math.max(1,norm.w*o.w),sh=Math.max(1,norm.h*o.h);
+  const scale=Math.min(1,maxEdge/Math.max(sw,sh));
+  const dw=Math.max(1,Math.round(sw*scale)),dh=Math.max(1,Math.round(sh*scale));
+  const c=document.createElement('canvas');
+  c.width=dw; c.height=dh;
+  const ctx=c.getContext('2d',{alpha:false});
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,dw,dh);
+  ctx.save();
+  ctx.translate(-sx*scale,-sy*scale);
+  ctx.scale(scale,scale);
+  ctx.translate(o.w/2,o.h/2);
+  ctx.rotate(rotation*Math.PI/2);
+  ctx.drawImage(bitmap,-bitmap.width/2,-bitmap.height/2);
+  ctx.restore();
+  return c;
+}
+function canvasJpeg(canvas){
+  let quality=0.72,cur=canvas,edge=Math.max(canvas.width,canvas.height);
+  for(let attempt=0;attempt<6;attempt++){
+    let data='';
+    try{data=cur.toDataURL('image/jpeg',quality)}catch(e){data=''}
+    if(data&&data.length<=480000&&safePhoto(data))return data;
+    if(quality>0.5)quality=Math.round((quality-0.08)*100)/100;
+    else{
+      edge=Math.round(edge*0.85);
+      cur=fitCanvas(cur,edge);
+    }
+    if(edge<480)break;
+  }
+  return '';
 }
 function decodeImage(file){
   if(typeof createImageBitmap==='function'){
@@ -269,26 +616,170 @@ function decodeImageElement(file){
     img.src=url;
   });
 }
-async function preparePhoto(file){
-  const img=await decodeImage(file);
-  const size=sourceSize(img);
-  if(!size.w||!size.h)throw new Error('Could not read that image. Try a JPEG or PNG.');
-  const ocrCanvas=drawScaled(img,1600);
-  let edge=1000,quality=0.72,dataUrl='';
-  for(let attempt=0;attempt<6;attempt++){
-    try{dataUrl=drawScaled(img,edge).toDataURL('image/jpeg',quality)}catch(e){dataUrl=''}
-    if(dataUrl&&dataUrl.length<=480000)break;
-    if(quality>0.5)quality=Math.round((quality-0.08)*100)/100;
-    else edge=Math.round(edge*0.85);
-    if(edge<480)break;
-  }
-  if(img.close)img.close();
-  if(!dataUrl||!dataUrl.startsWith('data:image/jpeg'))throw new Error('Could not prepare that photo.');
-  return {ocrCanvas,dataUrl};
-}
 function isImageFile(file){
   if(file.type&&file.type.startsWith('image/'))return true;
   return /\.(jpe?g|png|gif|webp|heic|heif|bmp|tif|tiff)$/i.test(file.name||'');
+}
+function applyCropBox(){
+  if(!cropSession)return;
+  const n=cropSession.norm;
+  const box=$('#cropBox');
+  box.style.left=(n.x*100)+'%';
+  box.style.top=(n.y*100)+'%';
+  box.style.width=(n.w*100)+'%';
+  box.style.height=(n.h*100)+'%';
+}
+function drawCropPreview(){
+  if(!scanBitmap||!cropSession)return;
+  const stage=$('#cropStage');
+  const frame=$('#cropFrame');
+  const canvas=$('#cropCanvas');
+  const o=orientedSize(scanBitmap,cropSession.rotation);
+  const maxW=stage.clientWidth||300;
+  const maxH=stage.clientHeight||360;
+  const scale=Math.min(maxW/o.w,maxH/o.h);
+  const dw=Math.max(1,Math.round(o.w*scale));
+  const dh=Math.max(1,Math.round(o.h*scale));
+  canvas.width=dw; canvas.height=dh;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#1c1614';
+  ctx.fillRect(0,0,dw,dh);
+  ctx.save();
+  ctx.translate(dw/2,dh/2);
+  ctx.rotate(cropSession.rotation*Math.PI/2);
+  ctx.drawImage(scanBitmap,-scanBitmap.width*scale/2,-scanBitmap.height*scale/2,scanBitmap.width*scale,scanBitmap.height*scale);
+  ctx.restore();
+  frame.style.width=dw+'px';
+  frame.style.height=dh+'px';
+  applyCropBox();
+}
+function finishCrop(value){
+  const resolve=cropSession&&cropSession.resolve;
+  cropSession=null;
+  const dlg=$('#scanCrop');
+  if(dlg&&dlg.open)dlg.close();
+  if(resolve)resolve(value);
+}
+function openCropper(){
+  cropSession={rotation:0,norm:{x:0.03,y:0.03,w:0.94,h:0.94},resolve:null};
+  const dlg=$('#scanCrop');
+  if(!dlg.open)dlg.showModal();
+  return new Promise(resolve=>{
+    cropSession.resolve=resolve;
+    requestAnimationFrame(()=>drawCropPreview());
+  });
+}
+function clampCrop(x,y,w,h){
+  const min=0.12;
+  w=Math.max(min,Math.min(w,1));
+  h=Math.max(min,Math.min(h,1));
+  x=Math.max(0,Math.min(x,1-w));
+  y=Math.max(0,Math.min(y,1-h));
+  return {x,y,w,h};
+}
+function onCropDown(e){
+  if(!cropSession)return;
+  const box=$('#cropBox');
+  const frame=box.parentElement.getBoundingClientRect();
+  cropDrag={handle:e.target.dataset.h||'move',px:e.clientX,py:e.clientY,start:{...cropSession.norm},frame};
+  box.setPointerCapture(e.pointerId);
+  e.preventDefault();
+}
+function onCropMove(e){
+  if(!cropDrag||!cropSession)return;
+  const dx=(e.clientX-cropDrag.px)/cropDrag.frame.width;
+  const dy=(e.clientY-cropDrag.py)/cropDrag.frame.height;
+  let {x,y,w,h}=cropDrag.start;
+  const handle=cropDrag.handle;
+  if(handle==='move'){x+=dx;y+=dy;}
+  else{
+    if(handle.includes('w')){x+=dx;w-=dx;}
+    if(handle.includes('e'))w+=dx;
+    if(handle.includes('n')){y+=dy;h-=dy;}
+    if(handle.includes('s'))h+=dy;
+  }
+  cropSession.norm=clampCrop(x,y,w,h);
+  applyCropBox();
+}
+function onCropUp(){cropDrag=null}
+function draftFromForm(){
+  const f=$('#recipeForm');
+  return {
+    title:f.title.value,
+    ingredients:f.ingredients.value.split('\n').filter(Boolean),
+    steps:f.steps.value.split('\n').filter(Boolean),
+    notes:f.notes.value,
+    photo:f.photoData.value||f.photo.value,
+    ocrText:$('#ocrRaw').textContent,
+    confidence:($('#scanConfidence').textContent.match(/\d+/)||[])[0]
+  };
+}
+async function recognizeSession(session){
+  const token=++scanToken;
+  progressHandler=m=>{if(token===scanToken)onTessProgress(m)};
+  openProgress('Preparing photo…',4);
+  try{
+    const target=session.handwriting?2500:2200;
+    await new Promise(r=>setTimeout(r,20));
+    if(token!==scanToken)return;
+    let color=renderOrientedCrop(session.bitmap,session.rotation,session.norm,target);
+    setScanProgress('Straightening the photo…',8);
+    await new Promise(r=>setTimeout(r,20));
+    const turn=cardinal(color);
+    if(turn)color=rotateCanvas(color,turn);
+    const angle=deskewAngle(color);
+    if(angle)color=rotateCanvas(color,angle);
+    if(token!==scanToken)return;
+    setScanProgress('Cleaning up lighting…',14);
+    await new Promise(r=>setTimeout(r,20));
+    const ocrCanvas=binarize(color,session.handwriting);
+    const photo=canvasJpeg(fitCanvas(color,1000));
+    if(!photo)throw new Error('Could not prepare that photo.');
+    setScanProgress('Starting text recognition…',18);
+    const worker=await getWorker();
+    if(token!==scanToken)return;
+    try{
+      await worker.setParameters({
+        tessedit_pageseg_mode:session.handwriting?'4':'6',
+        preserve_interword_spaces:'1',
+        user_defined_dpi:'300'
+      });
+    }catch(e){}
+    let result=await worker.recognize(ocrCanvas);
+    if(token!==scanToken)return;
+    let confidence=result&&result.data?Number(result.data.confidence)||0:0;
+    if(confidence<75){
+      setScanProgress('Checking the other way up…',90);
+      const flipped=await worker.recognize(rotateCanvas(ocrCanvas,180));
+      if(token!==scanToken)return;
+      const confidence2=flipped&&flipped.data?Number(flipped.data.confidence)||0:0;
+      if(confidence2>confidence+3){result=flipped;confidence=confidence2;}
+    }
+    const text=(result&&result.data&&result.data.text)||'';
+    const fixed=fixOcrText(text);
+    const parsed=parseRecipeText(fixed);
+    closeProgress();
+    const prefill={
+      title:parsed.title,
+      ingredients:parsed.ingredients,
+      steps:parsed.steps,
+      notes:parsed.notes,
+      photo,
+      ocrText:fixed.trim()||'(No text recognized)',
+      confidence
+    };
+    scanDraft=prefill;
+    openEditor(null,prefill);
+    if(!fixed.trim())toast('No text found — you can fill the recipe in yourself');
+  }catch(err){
+    if(token!==scanToken)return;
+    const pending=workerPromise;
+    workerPromise=null;
+    if(pending)pending.then(w=>{try{w&&w.terminate()}catch(e){}}).catch(()=>{});
+    closeProgress();
+    toast(err&&err.message?err.message:'Could not read that photo');
+    if(scanDraft)openEditor(null,scanDraft);
+  }
 }
 async function onScanFile(e){
   const file=e.target.files&&e.target.files[0];
@@ -297,37 +788,28 @@ async function onScanFile(e){
   if(picker.open)picker.close();
   if(!file)return;
   if(!isImageFile(file)){toast('Please choose an image');return}
-  const token=++scanToken;
-  progressHandler=m=>{if(token===scanToken)onTessProgress(m)};
-  openProgress('Preparing photo…',4);
-  try{
-    const prepared=await preparePhoto(file);
-    if(token!==scanToken)return;
-    setScanProgress('Starting text recognition…',8);
-    const worker=await getWorker();
-    if(token!==scanToken)return;
-    const result=await worker.recognize(prepared.ocrCanvas);
-    if(token!==scanToken)return;
-    const text=(result&&result.data&&result.data.text)||'';
-    const parsed=parseRecipeText(text);
-    closeProgress();
-    openEditor(null,{
-      title:parsed.title,
-      ingredients:parsed.ingredients,
-      steps:parsed.steps,
-      notes:parsed.notes,
-      photo:prepared.dataUrl,
-      ocrText:text.trim()||'(No text recognized)'
-    });
-    if(!text.trim())toast('No text found — you can fill the recipe in yourself');
-  }catch(err){
-    if(token!==scanToken)return;
-    const pending=workerPromise;
-    workerPromise=null;
-    if(pending)pending.then(w=>{try{w&&w.terminate()}catch(e){}}).catch(()=>{});
-    closeProgress();
-    toast(err&&err.message?err.message:'Could not read that photo');
-  }
+  let bitmap;
+  try{bitmap=await decodeImage(file)}catch(err){toast(err&&err.message?err.message:'Could not read that image. Try a JPEG or PNG.');return}
+  const size=sourceSize(bitmap);
+  if(!size.w||!size.h){toast('Could not read that image. Try a JPEG or PNG.');return}
+  releaseBitmap();
+  scanBitmap=bitmap;
+  scanDraft=null;
+  const editor=$('#editor');
+  if(editor&&editor.open)editor.close();
+  const session=await openCropper();
+  if(!session){releaseBitmap();return}
+  await recognizeSession(session);
+}
+async function retryScan(){
+  if(!scanBitmap){toast('Choose the photo again');return}
+  scanDraft=draftFromForm();
+  const writing=$('#handwritingToggle').checked;
+  $('#editor').close();
+  $('#handwritingToggle').checked=writing;
+  const session=await openCropper();
+  if(!session){if(scanDraft)openEditor(null,scanDraft);return}
+  await recognizeSession(session);
 }
 const lines=s=>s.split('\n').map(x=>x.trim()).filter(Boolean);
 function onSave(e){
@@ -433,6 +915,23 @@ function init(){
   $('#scanPickerCancel').onclick=()=>$('#scanPicker').close();
   $('#scanCamera').addEventListener('change',onScanFile);
   $('#scanLibrary').addEventListener('change',onScanFile);
+  $('#cropRotate').onclick=()=>{
+    if(!cropSession)return;
+    cropSession.rotation=(cropSession.rotation+1)%4;
+    cropSession.norm={x:0.03,y:0.03,w:0.94,h:0.94};
+    drawCropPreview();
+  };
+  $('#cropRead').onclick=()=>{
+    if(!cropSession||!scanBitmap)return;
+    finishCrop({bitmap:scanBitmap,rotation:cropSession.rotation,norm:{...cropSession.norm},handwriting:$('#handwritingToggle').checked});
+  };
+  $('#cropCancel').onclick=()=>finishCrop(null);
+  $('#scanCrop').addEventListener('cancel',e=>{e.preventDefault();finishCrop(null)});
+  $('#cropBox').addEventListener('pointerdown',onCropDown);
+  $('#cropBox').addEventListener('pointermove',onCropMove);
+  $('#cropBox').addEventListener('pointerup',onCropUp);
+  $('#cropBox').addEventListener('pointercancel',onCropUp);
+  $('#scanRetry').onclick=()=>{retryScan()};
   $('#scanCancel').onclick=()=>stopScan('Scan cancelled');
   $('#scanProgress').addEventListener('cancel',e=>{e.preventDefault();stopScan('Scan cancelled')});
   $('#removePhoto').onclick=()=>setPhotoField('');
@@ -452,5 +951,5 @@ function init(){
   window.addEventListener('hashchange',route); route();
 }
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',init);
-if(typeof module!=='undefined'&&module.exports)module.exports={parseRecipeText,safePhoto,parseBackup};
+if(typeof module!=='undefined'&&module.exports)module.exports={parseRecipeText,safePhoto,parseBackup,fixOcrText};
 })();
