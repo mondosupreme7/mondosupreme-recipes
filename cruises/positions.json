@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 1,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,17 +38,16 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 330.0,
+      "cog": 264.2,
       "destination": "CA YSJ",
       "eta": "10-21 11:30",
-      "heading": 333,
-      "lat": 43.89555,
-      "lon": -66.66213,
+      "heading": 264,
+      "lat": 40.47141,
+      "lon": -73.49457,
       "navStatus": 0,
-      "near": "Nova Scotia, Canada",
-      "seen": "2026-10-21T06:13:51Z",
-      "sog": 18.5,
-      "source": "aishub"
+      "seen": "2026-10-24T07:56:35Z",
+      "sog": 14.0,
+      "source": "aisstream.io"
     },
     "309436000": {
       "aisName": "LIBERTY OF THE SEAS",
@@ -107,17 +106,16 @@
     },
     "311000396": {
       "aisName": "HARMONY OF THE SEAS",
-      "cog": 317.0,
+      "cog": 309.0,
       "destination": "BSPCC",
       "eta": "10-20 09:30",
-      "heading": 316,
-      "lat": 18.3201,
-      "lon": -65.10781,
+      "heading": 311,
+      "lat": 28.38409,
+      "lon": -80.54007,
       "navStatus": 0,
-      "near": "Charlotte Amalie, U.S. Virgin Islands",
-      "seen": "2026-10-20T19:38:33Z",
-      "sog": 20.5,
-      "source": "mmsi:367636240"
+      "seen": "2026-10-24T07:54:51Z",
+      "sog": 14.6,
+      "source": "aisstream.io"
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
@@ -310,15 +308,15 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 19.4,
+      "cog": 81.3,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 22,
-      "lat": 27.49372,
-      "lon": -83.05985,
+      "heading": 79,
+      "lat": 27.60749,
+      "lon": -82.71189,
       "navStatus": 0,
-      "seen": "2026-10-24T06:15:57Z",
-      "sog": 9.1,
+      "seen": "2026-10-24T07:56:08Z",
+      "sog": 14.0,
       "source": "aisstream.io"
     },
     "311321000": {
@@ -392,15 +390,15 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 83.8,
+      "cog": 104.3,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 79,
-      "lat": 27.59694,
-      "lon": -82.92985,
+      "heading": 102,
+      "lat": 27.60523,
+      "lon": -82.74465,
       "navStatus": 0,
-      "seen": "2026-10-24T07:09:50Z",
-      "sog": 10.3,
+      "seen": "2026-10-24T07:56:04Z",
+      "sog": 13.8,
       "source": "aisstream.io"
     },
     "311805000": {
@@ -420,5 +418,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T07:10:19Z"
+  "updated": "2026-10-24T07:56:46Z"
 }
