@@ -4,6 +4,8 @@ body.board-page main{flex:1;display:flex;flex-direction:column;min-height:0;max-
 .board-tools{flex:none;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;background:#fff;border-bottom:1px solid var(--line)}
 .board-tools .swatch,.board-tools .size,.board-tools .tool{min-width:44px;min-height:44px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);font:600 .92rem Inter,system-ui,sans-serif;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation}
 .board-tools .swatch{width:44px;padding:0;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.board-tools .swatch-ink{background:#2d2420}.board-tools .swatch-red{background:#c8553d}.board-tools .swatch-orange{background:#f28f3b}.board-tools .swatch-green{background:#2f6f4e}.board-tools .swatch-blue{background:#2458a6}
+.dot-3{width:7px;height:7px}.dot-8{width:12px;height:12px}.dot-16{width:20px;height:20px}
 .board-tools .swatch[aria-pressed=true],.board-tools .size[aria-pressed=true],.board-tools .tool[aria-pressed=true]{box-shadow:0 0 0 3px var(--ink)}
 .board-tools .size i{display:block;border-radius:50%;background:var(--ink)}
 .board-status{color:var(--muted);font-size:.9rem;flex:1 1 180px;min-height:44px;display:inline-flex;align-items:center}

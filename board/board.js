@@ -78,10 +78,10 @@ function toastStatus(text) { setStatus(text); }
 
 function buildTools() {
   $('#colors').innerHTML = COLORS.map(c =>
-    '<button type="button" class="swatch" data-color="' + c.hex + '" aria-label="' + c.label + '" aria-pressed="' + (c.hex === color) + '" style="background:' + c.hex + '"></button>'
+    '<button type="button" class="swatch swatch-' + c.id + '" data-color="' + c.hex + '" aria-label="' + c.label + '" aria-pressed="' + (c.hex === color) + '"></button>'
   ).join('');
   $('#sizes').innerHTML = SIZES.map(n =>
-    '<button type="button" class="size" data-size="' + n + '" aria-label="Size ' + n + '" aria-pressed="' + (n === size) + '"><i style="width:' + (n + 4) + 'px;height:' + (n + 4) + 'px"></i></button>'
+    '<button type="button" class="size" data-size="' + n + '" aria-label="Size ' + n + '" aria-pressed="' + (n === size) + '"><i class="dot-' + n + '"></i></button>'
   ).join('');
 }
 function syncToggles() {
@@ -204,7 +204,7 @@ function bindPointer() {
   canvas.addEventListener('contextmenu', e => e.preventDefault());
   canvas.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    canvas.setPointerCapture(e.pointerId);
+    try { canvas.setPointerCapture(e.pointerId); } catch { /* drawing still works if the pointer cannot be captured */ }
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.size >= 2) {
       cancelStroke();
