@@ -1,11 +1,13 @@
 {
-  "about": "Last-known AIS positions for the Royal Caribbean ships in cruises/fleet.json. Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard.",
+  "about": "Positions sampled from aisstream.io for the Royal Caribbean ships in cruises/fleet.json. Ships that were quiet during the sample keep their previous coordinates and seen time. Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard.",
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
     "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
+    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -120,17 +122,16 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 137.8,
+      "cog": 148.1,
       "destination": "MX ESE",
       "eta": "10-25 14:00",
-      "heading": 137,
-      "lat": 33.27151,
-      "lon": -118.0853,
+      "heading": 150,
+      "lat": 33.1688,
+      "lon": -117.99643,
       "navStatus": 0,
-      "near": "California",
-      "seen": "2026-10-24T02:12:02Z",
-      "sog": 10.1,
-      "source": "aishub"
+      "seen": "2026-10-24T02:57:52Z",
+      "sog": 10.0,
+      "source": "aisstream.io"
     },
     "311000660": {
       "aisName": "SYMPHONY OF THE SEAS",
@@ -148,17 +149,16 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 335.1,
+      "cog": 348.4,
       "destination": "IT NAP",
       "eta": "10-24 04:00",
-      "heading": 332,
-      "lat": 40.42493,
-      "lon": 14.38068,
+      "heading": 346,
+      "lat": 40.58758,
+      "lon": 14.28541,
       "navStatus": 0,
-      "near": "Capri, Italy",
-      "seen": "2026-10-24T02:11:54Z",
-      "sog": 13.7,
-      "source": "aishub"
+      "seen": "2026-10-24T02:57:32Z",
+      "sog": 14.2,
+      "source": "aisstream.io"
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
@@ -272,17 +272,16 @@
     },
     "311315000": {
       "aisName": "GRANDEUR OF THE SEAS",
-      "cog": 270.0,
+      "cog": 270.9,
       "destination": "ARUBA",
       "eta": "10-20 12:15",
       "heading": 271,
-      "lat": 9.90624,
-      "lon": -78.48723,
+      "lat": 9.90782,
+      "lon": -78.63448,
       "navStatus": 5,
-      "near": "Guna Yala, Panama",
-      "seen": "2026-10-24T02:10:58Z",
-      "sog": 11.2,
-      "source": "aishub"
+      "seen": "2026-10-24T02:57:47Z",
+      "sog": 10.9,
+      "source": "aisstream.io"
     },
     "311316000": {
       "aisName": "EXPLORER OF THE SEAS",
@@ -300,17 +299,16 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 169.6,
+      "cog": 164.1,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
-      "heading": 170,
-      "lat": 32.79392,
-      "lon": -117.83138,
+      "heading": 165,
+      "lat": 32.59149,
+      "lon": -117.77858,
       "navStatus": 0,
-      "near": "California",
-      "seen": "2026-10-24T02:11:23Z",
-      "sog": 16.7,
-      "source": "aishub"
+      "seen": "2026-10-24T02:55:24Z",
+      "sog": 17.4,
+      "source": "aisstream.io"
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
@@ -424,7 +422,7 @@
       "source": "mmsi:367636240"
     }
   },
-  "source": "Open Waters AIS",
-  "sourceUrl": "https://ais.openwaters.io/v1/vessels/{mmsi}",
-  "updated": "2026-10-24T02:12:24Z"
+  "source": "aisstream.io",
+  "sourceUrl": "https://aisstream.io/",
+  "updated": "2026-10-24T02:58:09Z"
 }
