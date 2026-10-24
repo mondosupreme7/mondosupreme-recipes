@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -25,14 +25,14 @@
     },
     "210662000": {
       "aisName": "NAVIGATOR OF THE SEA",
-      "cog": 179.9,
+      "cog": 307.8,
       "destination": "JP NGS > HK HKG",
       "eta": "10-23 21:00",
       "heading": 314,
       "lat": 22.30731,
-      "lon": 114.2108,
+      "lon": 114.21079,
       "navStatus": 5,
-      "seen": "2026-10-24T04:19:29Z",
+      "seen": "2026-10-24T04:55:30Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -121,15 +121,15 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 156.3,
+      "cog": 166.9,
       "destination": "MX ESE",
       "eta": "10-25 14:00",
-      "heading": 157,
-      "lat": 32.97086,
-      "lon": -117.87068,
+      "heading": 168,
+      "lat": 32.87131,
+      "lon": -117.83432,
       "navStatus": 0,
-      "seen": "2026-10-24T04:18:42Z",
-      "sog": 10.5,
+      "seen": "2026-10-24T04:54:33Z",
+      "sog": 10.4,
       "source": "aisstream.io"
     },
     "311000660": {
@@ -175,15 +175,15 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 242.2,
+      "cog": 241.9,
       "destination": "BS COC",
       "eta": "10-23 10:30",
-      "heading": 237,
-      "lat": 25.9482,
-      "lon": -79.68862,
+      "heading": 238,
+      "lat": 25.88837,
+      "lon": -79.81294,
       "navStatus": 0,
-      "seen": "2026-10-24T04:19:09Z",
-      "sog": 12.8,
+      "seen": "2026-10-24T04:54:59Z",
+      "sog": 12.7,
       "source": "aisstream.io"
     },
     "311001259": {
@@ -422,5 +422,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T04:20:06Z"
+  "updated": "2026-10-24T04:56:31Z"
 }
