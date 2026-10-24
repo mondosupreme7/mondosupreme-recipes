@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 1,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -176,8 +176,8 @@
     "311001178": {
       "aisName": "ICON OF THE SEAS",
       "cog": 243.7,
-      "destination": "BS COC",
-      "eta": "10-23 10:30",
+      "destination": "US MIA",
+      "eta": "10-24 06:00",
       "heading": 247,
       "lat": 25.77157,
       "lon": -80.06366,
@@ -392,17 +392,16 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 40.4,
+      "cog": 83.8,
       "destination": "US TPA",
       "eta": "10-24 07:15",
-      "heading": 39,
-      "lat": 20.71932,
-      "lon": -86.81982,
+      "heading": 79,
+      "lat": 27.59694,
+      "lon": -82.92985,
       "navStatus": 0,
-      "near": "Quintana Roo, Mexico",
-      "seen": "2026-10-22T23:25:51Z",
-      "sog": 15.1,
-      "source": "aishub"
+      "seen": "2026-10-24T07:09:50Z",
+      "sog": 10.3,
+      "source": "aisstream.io"
     },
     "311805000": {
       "aisName": "M/V RHAPSODY OTS",
@@ -421,5 +420,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T06:16:28Z"
+  "updated": "2026-10-24T07:10:19Z"
 }
