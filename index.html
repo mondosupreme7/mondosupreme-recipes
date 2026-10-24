@@ -1,113 +1,45 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'">
-<title>Mondosupreme Recipes</title>
-<meta name="description" content="Mondosupreme Recipes — your personal recipe collection at Mondosupreme.com">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
+<script src="/landing.js"></script>
+<title>Mondosupreme</title>
+<meta name="description" content="Mondosupreme — recipes and cruise ship positions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css"></head>
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/landing.css">
+</head>
 <body>
 <header class="site-header"><div class="wrap hdr">
- <a href="#/" class="brand"><span class="logo">🍲</span><span>Mondosupreme <em>Recipes</em></span></a>
- <nav class="actions">
-  <a class="btn ghost" href="cruises/">Cruises</a>
-  <button id="btnAdd" class="btn primary" type="button">+ Add Recipe</button>
-  <button id="btnScan" class="btn ghost" type="button">Scan a recipe</button>
-  <button id="btnExport" class="btn ghost" type="button">Export</button>
-  <label class="btn ghost">Import<input type="file" id="importFile" accept="application/json,.json" hidden></label>
- </nav></div></header>
-<main class="wrap" id="app">
- <section id="listView">
-  <div class="hero"><h1>Cook something supreme.</h1><p>Your personal kitchen notebook — saved right in your browser.</p></div>
-  <div class="toolbar">
-   <input id="search" type="search" placeholder="Search recipes, ingredients, tags…" aria-label="Search">
-   <select id="catFilter" aria-label="Category"><option value="">All categories</option></select>
-   <select id="tagFilter" aria-label="Tag"><option value="">All tags</option></select>
-   <button id="favFilter" class="btn ghost" aria-pressed="false">♡ Favorites</button>
-  </div>
-  <div id="grid" class="grid"></div>
-  <p id="empty" class="empty" hidden>No recipes found. Try a different search or add a new recipe!</p>
- </section>
- <section id="detailView" hidden></section>
+ <a href="/" class="brand"><span class="logo">🍲</span><span>Mondosupreme</span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/" aria-current="page">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+ </nav>
+</div></header>
+<main class="wrap">
+ <div class="hero">
+  <h1>Mondosupreme</h1>
+  <p>Pick a place to go.</p>
+ </div>
+ <div class="choices">
+  <a class="choice" href="/recipes/">
+   <span class="choice-mark" aria-hidden="true">🍲</span>
+   <span class="choice-title">Recipes</span>
+   <span class="choice-text">Your kitchen notebook, saved in this browser.</span>
+  </a>
+  <a class="choice" href="/cruises/">
+   <span class="choice-mark" aria-hidden="true">🚢</span>
+   <span class="choice-title">Cruises</span>
+   <span class="choice-text">Where every Royal Caribbean ship was last reported.</span>
+  </a>
+ </div>
 </main>
-<dialog id="editor"><form id="recipeForm" method="dialog">
- <h2 id="formTitle">Add Recipe</h2>
- <div id="scanReview" class="scan-review" hidden>
-  <p class="scan-note">Handwriting recognition is imperfect, and cursive is often missed. Check every field before saving.</p>
-  <p id="scanConfidence" class="scan-confidence" hidden></p>
-  <p id="scanHint" class="scan-hint" hidden></p>
-  <button type="button" id="scanRetry" class="btn ghost" hidden>Try again</button>
-  <details id="ocrDetails">
-   <summary>Scanned text</summary>
-   <pre id="ocrRaw"></pre>
-  </details>
- </div>
- <input type="hidden" name="id">
- <input type="hidden" name="photoData">
- <label>Title*<input name="title" required></label>
- <label>Photo URL<input name="photo" type="url" placeholder="https://…" inputmode="url" autocomplete="off"></label>
- <div id="photoPreview" class="photo-preview" hidden>
-  <img alt="Scanned recipe photo" id="photoPreviewImg">
-  <div>
-   <p>Scanned photo attached. A URL above replaces it.</p>
-   <button type="button" id="removePhoto" class="btn ghost">Remove photo</button>
-  </div>
- </div>
- <div class="row">
-  <label>Category<input name="category" list="catList" placeholder="e.g. Dinner"></label>
-  <label>Servings<input name="servings" type="number" min="1"></label>
- </div>
- <datalist id="catList"></datalist>
- <div class="row">
-  <label>Prep time (min)<input name="prep" type="number" min="0"></label>
-  <label>Cook time (min)<input name="cook" type="number" min="0"></label>
- </div>
- <label>Ingredients (one per line)<textarea name="ingredients" rows="5"></textarea></label>
- <label>Steps (one per line)<textarea name="steps" rows="6"></textarea></label>
- <label>Notes<textarea name="notes" rows="2"></textarea></label>
- <label>Tags (comma separated)<input name="tags" placeholder="quick, vegetarian"></label>
- <div class="form-actions"><button type="button" id="cancelEdit" class="btn ghost">Cancel</button><button type="submit" class="btn primary">Save Recipe</button></div>
-</form></dialog>
-<footer class="site-footer no-print"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Recipes are stored locally in your browser — use Export to back up.</div></footer>
-<div id="toast" role="status"></div>
-<dialog id="scanPicker" class="scan-dialog">
- <h2>Scan a recipe</h2>
- <p>Take a photo or choose an image from your library. Text is read on this device.</p>
- <div class="scan-actions">
-  <label class="btn primary file-btn">Take photo
-   <input id="scanCamera" type="file" accept="image/*" capture="environment" aria-label="Take a photo of a recipe">
-  </label>
-  <label class="btn primary file-btn">Choose from library
-   <input id="scanLibrary" type="file" accept="image/*" aria-label="Choose a recipe photo from your library">
-  </label>
-  <button type="button" class="btn ghost" id="scanPickerCancel">Cancel</button>
- </div>
-</dialog>
-<dialog id="scanCrop" class="scan-dialog">
- <h2>Frame the recipe</h2>
- <p>Drag the box onto the card. Rotate if the photo is sideways.</p>
- <div id="cropStage" class="crop-stage">
-  <div id="cropFrame" class="crop-frame">
-   <canvas id="cropCanvas"></canvas>
-   <div id="cropBox" class="crop-box" role="group" aria-label="Crop area">
-    <span data-h="nw"></span><span data-h="ne"></span><span data-h="sw"></span><span data-h="se"></span>
-   </div>
-  </div>
- </div>
- <label class="scan-check"><input type="checkbox" id="handwritingToggle"> Enhance for handwriting</label>
- <p class="scan-hint">Neat print reads best. Cursive is often missed, so check the words after.</p>
- <div class="scan-actions">
-  <button type="button" class="btn ghost" id="cropRotate">Rotate</button>
-  <button type="button" class="btn primary" id="cropRead">Read recipe</button>
-  <button type="button" class="btn ghost" id="cropCancel">Cancel</button>
- </div>
-</dialog>
-<dialog id="scanProgress" class="scan-dialog" aria-labelledby="scanProgressTitle">
- <h2 id="scanProgressTitle">Reading recipe</h2>
- <p id="scanStatus">Preparing…</p>
- <div class="scan-track" id="scanBarTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Scan progress"><span id="scanBar"></span></div>
- <div class="scan-actions"><button type="button" class="btn ghost" id="scanCancel">Cancel</button></div>
-</dialog>
-<script src="app.js"></script>
-</body></html>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com</div></footer>
+</body>
+</html>

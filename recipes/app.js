@@ -297,7 +297,7 @@ function parseRecipeText(raw){
   return {title,ingredients,steps,notes:notes.join('\n')};
 }
 let scanToken=0,workerPromise=null,progressHandler=()=>{},scanBitmap=null,cropSession=null,scanDraft=null,cropDrag=null;
-function assetURL(path){return new URL(path,document.baseURI).href}
+function assetURL(path){return new URL('/recipes/'+String(path).replace(/^\//,''),window.location.origin).href}
 function setScanProgress(label,pct){
   const n=Math.max(0,Math.min(100,Math.round(pct||0)));
   const status=$('#scanStatus'); if(status)status.textContent=label;
