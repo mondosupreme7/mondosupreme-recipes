@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -25,17 +25,16 @@
     },
     "210662000": {
       "aisName": "NAVIGATOR OF THE SEA",
-      "cog": 317.0,
+      "cog": 179.9,
       "destination": "JP NGS > HK HKG",
       "eta": "10-23 21:00",
       "heading": 314,
       "lat": 22.30731,
-      "lon": 114.21078,
+      "lon": 114.2108,
       "navStatus": 5,
-      "near": "Hong Kong, Hong Kong",
-      "seen": "2026-10-24T02:10:29Z",
+      "seen": "2026-10-24T04:19:29Z",
       "sog": 0.0,
-      "source": "aishub"
+      "source": "aisstream.io"
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
@@ -122,15 +121,15 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 148.6,
+      "cog": 156.3,
       "destination": "MX ESE",
       "eta": "10-25 14:00",
-      "heading": 152,
-      "lat": 33.1248,
-      "lon": -117.96482,
+      "heading": 157,
+      "lat": 32.97086,
+      "lon": -117.87068,
       "navStatus": 0,
-      "seen": "2026-10-24T03:16:32Z",
-      "sog": 9.8,
+      "seen": "2026-10-24T04:18:42Z",
+      "sog": 10.5,
       "source": "aisstream.io"
     },
     "311000660": {
@@ -149,15 +148,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 351.6,
+      "cog": 352.5,
       "destination": "IT NAP",
       "eta": "10-24 04:00",
-      "heading": 353,
-      "lat": 40.81205,
-      "lon": 14.287,
+      "heading": 355,
+      "lat": 40.82178,
+      "lon": 14.28318,
       "navStatus": 0,
-      "seen": "2026-10-24T03:58:18Z",
-      "sog": 6.4,
+      "seen": "2026-10-24T04:18:28Z",
+      "sog": 5.9,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -176,15 +175,15 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 242.0,
+      "cog": 242.2,
       "destination": "BS COC",
       "eta": "10-23 10:30",
-      "heading": 236,
-      "lat": 25.98513,
-      "lon": -79.61207,
+      "heading": 237,
+      "lat": 25.9482,
+      "lon": -79.68862,
       "navStatus": 0,
-      "seen": "2026-10-24T03:57:10Z",
-      "sog": 12.9,
+      "seen": "2026-10-24T04:19:09Z",
+      "sog": 12.8,
       "source": "aisstream.io"
     },
     "311001259": {
@@ -423,5 +422,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T03:59:39Z"
+  "updated": "2026-10-24T04:20:06Z"
 }
