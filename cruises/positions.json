@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 5,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -92,15 +92,15 @@
     },
     "311000274": {
       "aisName": "ANTHEM OF THE SEAS",
-      "cog": 233.6,
+      "cog": 236.1,
       "destination": "NZ TRG",
       "eta": "10-25 18:15",
-      "heading": 236,
-      "lat": -37.34791,
-      "lon": 176.58964,
+      "heading": 238,
+      "lat": -37.43712,
+      "lon": 176.43484,
       "navStatus": 0,
-      "seen": "2026-10-25T16:14:44Z",
-      "sog": 13.8,
+      "seen": "2026-10-25T16:54:31Z",
+      "sog": 13.1,
       "source": "aisstream.io"
     },
     "311000396": {
@@ -211,15 +211,15 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 26.0,
+      "cog": 165.4,
       "destination": "ES PMI",
       "eta": "10-26 04:30",
-      "heading": 26,
-      "lat": 41.35928,
-      "lon": 2.17852,
-      "navStatus": 5,
-      "seen": "2026-10-25T15:14:20Z",
-      "sog": 0.0,
+      "heading": 164,
+      "lat": 41.31175,
+      "lon": 2.17125,
+      "navStatus": 0,
+      "seen": "2026-10-25T16:54:34Z",
+      "sog": 10.9,
       "source": "aisstream.io"
     },
     "311020600": {
@@ -237,15 +237,15 @@
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 179.2,
+      "cog": 265.9,
       "destination": "US MIA",
       "eta": "10-25 16:30",
-      "heading": 178,
-      "lat": 25.92808,
-      "lon": -79.97723,
+      "heading": 272,
+      "lat": 25.77035,
+      "lon": -80.01243,
       "navStatus": 0,
-      "seen": "2026-10-25T16:15:20Z",
-      "sog": 19.8,
+      "seen": "2026-10-25T16:54:08Z",
+      "sog": 7.6,
       "source": "aisstream.io"
     },
     "311263000": {
@@ -369,15 +369,15 @@
     },
     "311583000": {
       "aisName": "JEWEL OF THE SEAS",
-      "cog": 325.1,
+      "cog": 183.4,
       "destination": "USTPA",
       "eta": "10-27 07:00",
-      "heading": 269,
-      "lat": 26.08624,
-      "lon": -80.11899,
-      "navStatus": 5,
-      "seen": "2026-10-25T15:14:09Z",
-      "sog": 0.0,
+      "heading": 183,
+      "lat": 25.76113,
+      "lon": -79.97703,
+      "navStatus": 0,
+      "seen": "2026-10-25T16:54:34Z",
+      "sog": 20.2,
       "source": "aisstream.io"
     },
     "311733000": {
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T16:15:50Z"
+  "updated": "2026-10-25T16:56:14Z"
 }
