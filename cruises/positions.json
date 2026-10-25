@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 5,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -92,15 +92,15 @@
     },
     "311000274": {
       "aisName": "ANTHEM OF THE SEAS",
-      "cog": 236.2,
-      "destination": "PF PPT",
-      "eta": "10-17 18:00",
-      "heading": 237,
-      "lat": -37.30444,
-      "lon": 176.66978,
+      "cog": 233.6,
+      "destination": "NZ TRG",
+      "eta": "10-25 18:15",
+      "heading": 236,
+      "lat": -37.34791,
+      "lon": 176.58964,
       "navStatus": 0,
-      "seen": "2026-10-25T15:54:15Z",
-      "sog": 13.6,
+      "seen": "2026-10-25T16:14:44Z",
+      "sog": 13.8,
       "source": "aisstream.io"
     },
     "311000396": {
@@ -198,14 +198,14 @@
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 265.1,
+      "cog": 247.9,
       "destination": "KN BAS >>> US PCV",
       "eta": "10-25 08:15",
       "heading": 270,
       "lat": 28.40873,
       "lon": -80.6133,
       "navStatus": 5,
-      "seen": "2026-10-25T15:52:29Z",
+      "seen": "2026-10-25T16:13:29Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -224,28 +224,28 @@
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 183.4,
+      "cog": 265.8,
       "destination": "US BAY",
       "eta": "10-25 09:00",
       "heading": 120,
       "lat": 40.66443,
       "lon": -74.06903,
       "navStatus": 5,
-      "seen": "2026-10-25T15:13:04Z",
+      "seen": "2026-10-25T16:13:03Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 136.6,
+      "cog": 179.2,
       "destination": "US MIA",
       "eta": "10-25 16:30",
-      "heading": 133,
-      "lat": 26.04262,
-      "lon": -80.02702,
+      "heading": 178,
+      "lat": 25.92808,
+      "lon": -79.97723,
       "navStatus": 0,
-      "seen": "2026-10-25T15:52:08Z",
-      "sog": 19.1,
+      "seen": "2026-10-25T16:15:20Z",
+      "sog": 19.8,
       "source": "aisstream.io"
     },
     "311263000": {
@@ -343,14 +343,14 @@
     },
     "311492000": {
       "aisName": "SERENADE OF THE SEAS",
-      "cog": 256.0,
+      "cog": 322.0,
       "destination": "US SAN",
       "eta": "10-25 12:00",
       "heading": 90,
       "lat": 32.71668,
       "lon": -117.17432,
       "navStatus": 5,
-      "seen": "2026-10-25T13:52:05Z",
+      "seen": "2026-10-25T16:13:05Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T15:54:41Z"
+  "updated": "2026-10-25T16:15:50Z"
 }
