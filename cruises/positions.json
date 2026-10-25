@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -132,17 +132,16 @@
     },
     "311000660": {
       "aisName": "SYMPHONY OF THE SEAS",
-      "cog": 33.4,
+      "cog": 211.0,
       "destination": "USGLS",
       "eta": "10-25 10:30",
-      "heading": 32,
-      "lat": 20.6536,
-      "lon": -86.88813,
+      "heading": 205,
+      "lat": 29.31965,
+      "lon": -94.78168,
       "navStatus": 0,
-      "near": "Cozumel, Mexico",
-      "seen": "2026-10-23T22:30:01Z",
-      "sog": 20.7,
-      "source": "aishub"
+      "seen": "2026-10-25T11:13:55Z",
+      "sog": 1.2,
+      "source": "aisstream.io"
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
@@ -213,14 +212,14 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 25.8,
+      "cog": 25.9,
       "destination": "ES BCN",
       "eta": "10-25 03:00",
       "heading": 26,
       "lat": 41.35928,
       "lon": 2.17852,
       "navStatus": 5,
-      "seen": "2026-10-25T07:56:20Z",
+      "seen": "2026-10-25T11:14:19Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -239,14 +238,14 @@
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 269.1,
+      "cog": 174.6,
       "destination": "BS COC",
       "eta": "10-24 10:15",
       "heading": 179,
-      "lat": 26.0868,
+      "lat": 26.08678,
       "lon": -80.11975,
       "navStatus": 5,
-      "seen": "2026-10-25T10:15:01Z",
+      "seen": "2026-10-25T11:15:02Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -345,15 +344,15 @@
     },
     "311492000": {
       "aisName": "SERENADE OF THE SEAS",
-      "cog": 33.2,
+      "cog": 54.7,
       "destination": "US SAN",
       "eta": "10-25 12:00",
-      "heading": 37,
-      "lat": 32.49336,
-      "lon": -117.38422,
+      "heading": 58,
+      "lat": 32.53852,
+      "lon": -117.32512,
       "navStatus": 0,
-      "seen": "2026-10-25T10:54:23Z",
-      "sog": 11.7,
+      "seen": "2026-10-25T11:14:51Z",
+      "sog": 11.5,
       "source": "aisstream.io"
     },
     "311493000": {
@@ -412,5 +411,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T10:55:03Z"
+  "updated": "2026-10-25T11:15:28Z"
 }
