@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -226,28 +226,28 @@
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 232.3,
+      "cog": 359.5,
       "destination": "US BAY",
       "eta": "10-25 09:00",
       "heading": 120,
-      "lat": 40.66456,
-      "lon": -74.06896,
-      "navStatus": 0,
-      "seen": "2026-10-25T09:54:24Z",
-      "sog": 0.1,
+      "lat": 40.66443,
+      "lon": -74.06904,
+      "navStatus": 5,
+      "seen": "2026-10-25T10:13:05Z",
+      "sog": 0.0,
       "source": "aisstream.io"
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 269.8,
+      "cog": 269.1,
       "destination": "BS COC",
       "eta": "10-24 10:15",
-      "heading": 272,
-      "lat": 26.0938,
-      "lon": -80.09598,
-      "navStatus": 0,
-      "seen": "2026-10-25T09:15:59Z",
-      "sog": 10.4,
+      "heading": 179,
+      "lat": 26.0868,
+      "lon": -80.11975,
+      "navStatus": 5,
+      "seen": "2026-10-25T10:15:01Z",
+      "sog": 0.0,
       "source": "aisstream.io"
     },
     "311263000": {
@@ -345,17 +345,16 @@
     },
     "311492000": {
       "aisName": "SERENADE OF THE SEAS",
-      "cog": 291.7,
+      "cog": 32.4,
       "destination": "US SAN",
       "eta": "10-25 12:00",
-      "heading": 297,
-      "lat": 22.66137,
-      "lon": -110.16145,
+      "heading": 34,
+      "lat": 32.38081,
+      "lon": -117.46552,
       "navStatus": 0,
-      "near": "Baja California Sur, Mexico",
-      "seen": "2026-10-23T14:27:27Z",
-      "sog": 17.2,
-      "source": "aishub"
+      "seen": "2026-10-25T10:14:13Z",
+      "sog": 12.1,
+      "source": "aisstream.io"
     },
     "311493000": {
       "aisName": "MARINER OF THE SEAS",
@@ -413,5 +412,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T09:55:45Z"
+  "updated": "2026-10-25T10:15:35Z"
 }
