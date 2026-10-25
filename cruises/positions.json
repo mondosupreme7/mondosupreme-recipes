@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 1,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -290,14 +290,14 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 44.8,
+      "cog": 94.5,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
       "heading": 354,
-      "lat": 22.88497,
-      "lon": -109.89865,
+      "lat": 22.88498,
+      "lon": -109.89841,
       "navStatus": 1,
-      "seen": "2026-10-25T20:49:16Z",
+      "seen": "2026-10-25T22:10:16Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -343,14 +343,14 @@
     },
     "311492000": {
       "aisName": "SERENADE OF THE SEAS",
-      "cog": 64.0,
+      "cog": 291.0,
       "destination": "US SAN",
       "eta": "10-25 12:00",
       "heading": 90,
-      "lat": 32.71667,
+      "lat": 32.71668,
       "lon": -117.17432,
       "navStatus": 5,
-      "seen": "2026-10-25T21:13:05Z",
+      "seen": "2026-10-25T22:10:05Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T21:52:42Z"
+  "updated": "2026-10-25T22:12:27Z"
 }
