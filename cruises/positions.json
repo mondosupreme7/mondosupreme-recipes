@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -146,15 +146,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 320.1,
+      "cog": 321.8,
       "destination": "IT CIV",
       "eta": "10-25 03:15",
-      "heading": 323,
-      "lat": 41.49303,
-      "lon": 12.26434,
+      "heading": 325,
+      "lat": 41.5595,
+      "lon": 12.19087,
       "navStatus": 0,
-      "seen": "2026-10-24T23:45:33Z",
-      "sog": 13.3,
+      "seen": "2026-10-25T00:08:44Z",
+      "sog": 13.5,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -333,15 +333,15 @@
     },
     "311361000": {
       "aisName": "BRILLIANCE OF SEAS",
-      "cog": 294.1,
+      "cog": 309.6,
       "destination": "HRDBV",
       "eta": "10-24 05:20",
-      "heading": 293,
-      "lat": 42.4934,
-      "lon": 16.8067,
+      "heading": 311,
+      "lat": 42.66327,
+      "lon": 16.36566,
       "navStatus": 0,
-      "seen": "2026-10-24T22:11:32Z",
-      "sog": 11.8,
+      "seen": "2026-10-25T00:07:13Z",
+      "sog": 11.4,
       "source": "aisstream.io"
     },
     "311492000": {
@@ -415,5 +415,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-24T23:46:18Z"
+  "updated": "2026-10-25T00:09:28Z"
 }
