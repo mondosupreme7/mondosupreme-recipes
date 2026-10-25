@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 98.5,
+      "cog": 61.4,
       "destination": "YSJ CA",
       "eta": "10-26 12:30",
-      "heading": 101,
-      "lat": 40.45201,
-      "lon": -73.81906,
+      "heading": 63,
+      "lat": 40.49071,
+      "lon": -69.16704,
       "navStatus": 0,
-      "seen": "2026-10-24T21:11:28Z",
-      "sog": 10.7,
+      "seen": "2026-10-25T13:03:01Z",
+      "sog": 13.3,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -132,15 +132,15 @@
     },
     "311000660": {
       "aisName": "SYMPHONY OF THE SEAS",
-      "cog": 211.0,
+      "cog": 77.6,
       "destination": "USGLS",
       "eta": "10-25 10:30",
-      "heading": 205,
-      "lat": 29.31965,
-      "lon": -94.78168,
-      "navStatus": 0,
-      "seen": "2026-10-25T11:13:55Z",
-      "sog": 1.2,
+      "heading": 44,
+      "lat": 29.31792,
+      "lon": -94.7817,
+      "navStatus": 5,
+      "seen": "2026-10-25T13:03:08Z",
+      "sog": 0.0,
       "source": "aisstream.io"
     },
     "311000912": {
@@ -199,14 +199,14 @@
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 229.3,
+      "cog": 297.4,
       "destination": "KN BAS >>> US PCV",
       "eta": "10-25 08:15",
-      "heading": 269,
+      "heading": 270,
       "lat": 28.40873,
       "lon": -80.61329,
       "navStatus": 5,
-      "seen": "2026-10-25T12:13:29Z",
+      "seen": "2026-10-25T13:04:30Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -219,7 +219,7 @@
       "lat": 41.35928,
       "lon": 2.17852,
       "navStatus": 5,
-      "seen": "2026-10-25T11:14:19Z",
+      "seen": "2026-10-25T13:05:19Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -371,8 +371,8 @@
     "311583000": {
       "aisName": "JEWEL OF THE SEAS",
       "cog": 199.9,
-      "destination": "BSNAS",
-      "eta": "10-23 10:45",
+      "destination": "USFLL",
+      "eta": "10-25 10:31",
       "heading": 268,
       "lat": 26.08624,
       "lon": -80.11899,
@@ -411,5 +411,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T12:14:46Z"
+  "updated": "2026-10-25T13:05:35Z"
 }
