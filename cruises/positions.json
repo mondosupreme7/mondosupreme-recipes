@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -92,14 +92,14 @@
     },
     "311000274": {
       "aisName": "ANTHEM OF THE SEAS",
-      "cog": 234.3,
+      "cog": 236.2,
       "destination": "PF PPT",
       "eta": "10-17 18:00",
-      "heading": 235,
-      "lat": -37.21875,
-      "lon": 176.82501,
+      "heading": 237,
+      "lat": -37.30444,
+      "lon": 176.66978,
       "navStatus": 0,
-      "seen": "2026-10-25T15:14:25Z",
+      "seen": "2026-10-25T15:54:15Z",
       "sog": 13.6,
       "source": "aisstream.io"
     },
@@ -198,14 +198,14 @@
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 239.0,
+      "cog": 265.1,
       "destination": "KN BAS >>> US PCV",
       "eta": "10-25 08:15",
       "heading": 270,
       "lat": 28.40873,
       "lon": -80.6133,
       "navStatus": 5,
-      "seen": "2026-10-25T14:52:28Z",
+      "seen": "2026-10-25T15:52:29Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -237,15 +237,15 @@
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 281.2,
+      "cog": 136.6,
       "destination": "US MIA",
       "eta": "10-25 16:30",
-      "heading": 179,
-      "lat": 26.08678,
-      "lon": -80.11973,
-      "navStatus": 5,
-      "seen": "2026-10-25T14:54:00Z",
-      "sog": 0.0,
+      "heading": 133,
+      "lat": 26.04262,
+      "lon": -80.02702,
+      "navStatus": 0,
+      "seen": "2026-10-25T15:52:08Z",
+      "sog": 19.1,
       "source": "aisstream.io"
     },
     "311263000": {
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T15:15:33Z"
+  "updated": "2026-10-25T15:54:41Z"
 }
