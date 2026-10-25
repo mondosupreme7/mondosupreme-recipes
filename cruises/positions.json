@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 7,
+  "heard": 4,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -92,15 +92,15 @@
     },
     "311000274": {
       "aisName": "ANTHEM OF THE SEAS",
-      "cog": 233.2,
+      "cog": 209.4,
       "destination": "NZ TRG",
       "eta": "10-25 18:15",
-      "heading": 236,
-      "lat": -37.53947,
-      "lon": 176.24141,
+      "heading": 210,
+      "lat": -37.58616,
+      "lon": 176.19173,
       "navStatus": 0,
-      "seen": "2026-10-25T17:50:41Z",
-      "sog": 11.4,
+      "seen": "2026-10-25T18:11:21Z",
+      "sog": 10.3,
       "source": "aisstream.io"
     },
     "311000396": {
@@ -211,15 +211,15 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 179.1,
+      "cog": 178.6,
       "destination": "ES PMI",
       "eta": "10-26 04:30",
-      "heading": 186,
-      "lat": 41.12924,
-      "lon": 2.18736,
+      "heading": 184,
+      "lat": 41.0624,
+      "lon": 2.18868,
       "navStatus": 0,
-      "seen": "2026-10-25T17:51:33Z",
-      "sog": 11.3,
+      "seen": "2026-10-25T18:12:44Z",
+      "sog": 11.4,
       "source": "aisstream.io"
     },
     "311020600": {
@@ -237,15 +237,15 @@
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 295.3,
+      "cog": 113.1,
       "destination": "US MIA",
       "eta": "10-25 16:30",
-      "heading": 296,
-      "lat": 25.78055,
-      "lon": -80.1739,
+      "heading": 112,
+      "lat": 25.78043,
+      "lon": -80.1738,
       "navStatus": 0,
-      "seen": "2026-10-25T17:51:32Z",
-      "sog": 5.3,
+      "seen": "2026-10-25T18:12:21Z",
+      "sog": 6.3,
       "source": "aisstream.io"
     },
     "311263000": {
@@ -290,15 +290,15 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 157.7,
+      "cog": 93.1,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
-      "heading": 159,
-      "lat": 32.48823,
-      "lon": -117.73097,
+      "heading": 92,
+      "lat": 22.83231,
+      "lon": -109.94916,
       "navStatus": 0,
-      "seen": "2026-10-24T03:18:05Z",
-      "sog": 17.9,
+      "seen": "2026-10-25T18:13:18Z",
+      "sog": 16.5,
       "source": "aisstream.io"
     },
     "311319000": {
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T17:51:46Z"
+  "updated": "2026-10-25T18:13:40Z"
 }
