@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -92,15 +92,15 @@
     },
     "311000274": {
       "aisName": "ANTHEM OF THE SEAS",
-      "cog": 209.4,
+      "cog": 353.2,
       "destination": "NZ TRG",
       "eta": "10-25 18:15",
-      "heading": 210,
-      "lat": -37.58616,
-      "lon": 176.19173,
-      "navStatus": 0,
-      "seen": "2026-10-25T18:11:21Z",
-      "sog": 10.3,
+      "heading": 350,
+      "lat": -37.64229,
+      "lon": 176.18131,
+      "navStatus": 5,
+      "seen": "2026-10-25T23:45:31Z",
+      "sog": 0.0,
       "source": "aisstream.io"
     },
     "311000396": {
@@ -198,15 +198,15 @@
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 142.2,
+      "cog": 143.8,
       "destination": "USPCV >>> BSCOC",
       "eta": "10-26 11:00",
-      "heading": 138,
-      "lat": 28.05719,
-      "lon": -80.26008,
+      "heading": 135,
+      "lat": 27.83977,
+      "lon": -80.07143,
       "navStatus": 0,
-      "seen": "2026-10-25T22:48:33Z",
-      "sog": 16.6,
+      "seen": "2026-10-25T23:47:03Z",
+      "sog": 16.3,
       "source": "aisstream.io"
     },
     "311001716": {
@@ -290,14 +290,14 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 94.5,
+      "cog": 229.6,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
       "heading": 354,
       "lat": 22.88498,
-      "lon": -109.89841,
+      "lon": -109.8986,
       "navStatus": 1,
-      "seen": "2026-10-25T22:10:16Z",
+      "seen": "2026-10-25T23:46:16Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T23:12:35Z"
+  "updated": "2026-10-25T23:47:49Z"
 }
