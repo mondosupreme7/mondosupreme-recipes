@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -199,14 +199,14 @@
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 213.5,
+      "cog": 229.3,
       "destination": "KN BAS >>> US PCV",
       "eta": "10-25 08:15",
-      "heading": 270,
+      "heading": 269,
       "lat": 28.40873,
       "lon": -80.61329,
       "navStatus": 5,
-      "seen": "2026-10-25T10:52:29Z",
+      "seen": "2026-10-25T12:13:29Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -370,14 +370,14 @@
     },
     "311583000": {
       "aisName": "JEWEL OF THE SEAS",
-      "cog": 217.2,
+      "cog": 199.9,
       "destination": "BSNAS",
       "eta": "10-23 10:45",
       "heading": 268,
-      "lat": 26.08623,
+      "lat": 26.08624,
       "lon": -80.11899,
       "navStatus": 5,
-      "seen": "2026-10-25T11:53:08Z",
+      "seen": "2026-10-25T12:14:09Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -411,5 +411,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T11:53:26Z"
+  "updated": "2026-10-25T12:14:46Z"
 }
