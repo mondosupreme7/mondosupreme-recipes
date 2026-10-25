@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 1,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -213,42 +213,42 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 236.4,
+      "cog": 25.8,
       "destination": "ES BCN",
       "eta": "10-25 03:00",
       "heading": 26,
       "lat": 41.35928,
       "lon": 2.17853,
       "navStatus": 5,
-      "seen": "2026-10-25T05:20:20Z",
+      "seen": "2026-10-25T07:08:20Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 264.5,
+      "cog": 267.3,
       "destination": "US BAY",
       "eta": "10-25 09:00",
-      "heading": 266,
-      "lat": 40.46411,
-      "lon": -73.33121,
+      "heading": 267,
+      "lat": 40.46335,
+      "lon": -73.56767,
       "navStatus": 0,
-      "seen": "2026-10-25T06:16:45Z",
-      "sog": 12.2,
+      "seen": "2026-10-25T07:09:34Z",
+      "sog": 12.3,
       "source": "aisstream.io"
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 342.3,
+      "cog": 259.1,
       "destination": "BS COC",
       "eta": "10-24 10:15",
-      "heading": 342,
-      "lat": 21.83982,
-      "lon": -74.555,
+      "heading": 251,
+      "lat": 26.11997,
+      "lon": -79.73603,
       "navStatus": 0,
-      "seen": "2026-10-23T13:48:37Z",
-      "sog": 19.3,
-      "source": "aishub"
+      "seen": "2026-10-25T07:09:36Z",
+      "sog": 8.8,
+      "source": "aisstream.io"
     },
     "311263000": {
       "aisName": "ADVENTURE OF THE SEA",
@@ -414,5 +414,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T06:16:51Z"
+  "updated": "2026-10-25T07:11:14Z"
 }
