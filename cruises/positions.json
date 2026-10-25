@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 5,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 61.4,
+      "cog": 25.6,
       "destination": "YSJ CA",
       "eta": "10-26 12:30",
-      "heading": 63,
-      "lat": 40.49071,
-      "lon": -69.16704,
+      "heading": 26,
+      "lat": 40.64352,
+      "lon": -69.01882,
       "navStatus": 0,
-      "seen": "2026-10-25T13:03:01Z",
-      "sog": 13.3,
+      "seen": "2026-10-25T13:53:11Z",
+      "sog": 14.6,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -212,27 +212,27 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 25.9,
+      "cog": 26.0,
       "destination": "ES BCN",
       "eta": "10-25 03:00",
       "heading": 26,
       "lat": 41.35928,
       "lon": 2.17852,
       "navStatus": 5,
-      "seen": "2026-10-25T13:05:19Z",
+      "seen": "2026-10-25T13:53:19Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 253.8,
+      "cog": 203.7,
       "destination": "US BAY",
       "eta": "10-25 09:00",
       "heading": 120,
       "lat": 40.66442,
-      "lon": -74.06904,
+      "lon": -74.06903,
       "navStatus": 5,
-      "seen": "2026-10-25T11:52:05Z",
+      "seen": "2026-10-25T13:52:04Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -344,15 +344,15 @@
     },
     "311492000": {
       "aisName": "SERENADE OF THE SEAS",
-      "cog": 12.2,
+      "cog": 256.0,
       "destination": "US SAN",
       "eta": "10-25 12:00",
-      "heading": 14,
-      "lat": 32.59241,
-      "lon": -117.23412,
-      "navStatus": 0,
-      "seen": "2026-10-25T11:52:14Z",
-      "sog": 4.6,
+      "heading": 90,
+      "lat": 32.71668,
+      "lon": -117.17432,
+      "navStatus": 5,
+      "seen": "2026-10-25T13:52:05Z",
+      "sog": 0.0,
       "source": "aisstream.io"
     },
     "311493000": {
@@ -370,14 +370,14 @@
     },
     "311583000": {
       "aisName": "JEWEL OF THE SEAS",
-      "cog": 199.9,
+      "cog": 91.5,
       "destination": "USFLL",
       "eta": "10-25 10:31",
-      "heading": 268,
-      "lat": 26.08624,
+      "heading": 269,
+      "lat": 26.08623,
       "lon": -80.11899,
       "navStatus": 5,
-      "seen": "2026-10-25T12:14:09Z",
+      "seen": "2026-10-25T13:53:09Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -411,5 +411,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-25T13:05:35Z"
+  "updated": "2026-10-25T13:54:22Z"
 }
