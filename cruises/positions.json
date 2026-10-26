@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 1,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 27.1,
+      "cog": 25.4,
       "destination": "YSJ CA",
       "eta": "10-26 12:30",
       "heading": 27,
-      "lat": 42.55604,
-      "lon": -67.91272,
+      "lat": 43.3953,
+      "lon": -67.36445,
       "navStatus": 0,
-      "seen": "2026-10-25T22:49:06Z",
-      "sog": 16.7,
+      "seen": "2026-10-26T02:03:19Z",
+      "sog": 17.2,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -118,15 +118,15 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 169.0,
+      "cog": 306.6,
       "destination": "MX ESE",
       "eta": "10-25 14:00",
-      "heading": 169,
-      "lat": 32.70207,
-      "lon": -117.7869,
+      "heading": 307,
+      "lat": 31.99043,
+      "lon": -117.20916,
       "navStatus": 0,
-      "seen": "2026-10-24T05:54:33Z",
-      "sog": 10.5,
+      "seen": "2026-10-26T02:04:41Z",
+      "sog": 14.8,
       "source": "aisstream.io"
     },
     "311000660": {
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T01:21:13Z"
+  "updated": "2026-10-26T02:05:27Z"
 }
