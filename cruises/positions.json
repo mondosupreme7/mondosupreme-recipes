@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 3,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -157,14 +157,14 @@
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 38.4,
+      "cog": 39.2,
       "destination": "BSNAS>USMIA",
       "eta": "10-26 10:30",
       "heading": 40,
-      "lat": 25.92702,
-      "lon": -79.88113,
+      "lat": 25.96978,
+      "lon": -79.84223,
       "navStatus": 0,
-      "seen": "2026-10-26T22:58:48Z",
+      "seen": "2026-10-26T23:19:18Z",
       "sog": 9.6,
       "source": "aisstream.io"
     },
@@ -288,15 +288,15 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 238.5,
+      "cog": 291.1,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
-      "heading": 353,
-      "lat": 22.88481,
-      "lon": -109.89843,
+      "heading": 354,
+      "lat": 22.885,
+      "lon": -109.89823,
       "navStatus": 0,
-      "seen": "2026-10-26T22:58:11Z",
-      "sog": 0.0,
+      "seen": "2026-10-26T23:21:42Z",
+      "sog": 0.1,
       "source": "aisstream.io"
     },
     "311319000": {
@@ -408,5 +408,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T23:00:39Z"
+  "updated": "2026-10-26T23:21:49Z"
 }
