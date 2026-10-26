@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 1,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -157,17 +157,16 @@
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 20.6,
+      "cog": 243.6,
       "destination": "USMIA>BSCOC",
       "eta": "10-24 10:45",
-      "heading": 28,
-      "lat": 26.37596,
-      "lon": -79.46879,
+      "heading": 240,
+      "lat": 25.90418,
+      "lon": -79.66953,
       "navStatus": 0,
-      "near": "West Grand Bahama, Bahamas",
-      "seen": "2026-10-24T02:09:28Z",
-      "sog": 10.5,
-      "source": "aishub"
+      "seen": "2026-10-26T07:23:27Z",
+      "sog": 14.6,
+      "source": "aisstream.io"
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
@@ -210,14 +209,14 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 46.5,
+      "cog": 284.3,
       "destination": "ES PMI",
       "eta": "10-26 04:30",
       "heading": 47,
       "lat": 39.54921,
       "lon": 2.63327,
       "navStatus": 5,
-      "seen": "2026-10-26T05:58:57Z",
+      "seen": "2026-10-26T07:22:56Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -409,5 +408,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T06:29:50Z"
+  "updated": "2026-10-26T07:25:05Z"
 }
