@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 5,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -38,15 +38,15 @@
     },
     "309374000": {
       "aisName": "INDEPENDENCE OTS",
-      "cog": 26.4,
+      "cog": 27.5,
       "destination": "YSJ CA",
       "eta": "10-26 12:30",
-      "heading": 24,
-      "lat": 43.65779,
-      "lon": -67.18256,
+      "heading": 25,
+      "lat": 43.76598,
+      "lon": -67.10703,
       "navStatus": 0,
-      "seen": "2026-10-26T03:25:27Z",
-      "sog": 11.3,
+      "seen": "2026-10-26T04:03:07Z",
+      "sog": 11.7,
       "source": "aisstream.io"
     },
     "309436000": {
@@ -144,15 +144,15 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 17.7,
+      "cog": 18.1,
       "destination": "IT CIV",
       "eta": "10-25 03:15",
-      "heading": 19,
-      "lat": 43.64189,
-      "lon": 9.79187,
+      "heading": 18,
+      "lat": 43.79962,
+      "lon": 9.85912,
       "navStatus": 0,
-      "seen": "2026-10-26T03:27:11Z",
-      "sog": 17.6,
+      "seen": "2026-10-26T04:00:41Z",
+      "sog": 17.9,
       "source": "aisstream.io"
     },
     "311001033": {
@@ -290,14 +290,14 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 84.1,
+      "cog": 96.2,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
       "heading": 354,
-      "lat": 22.88499,
-      "lon": -109.89884,
+      "lat": 22.88489,
+      "lon": -109.89867,
       "navStatus": 1,
-      "seen": "2026-10-26T03:25:15Z",
+      "seen": "2026-10-26T04:01:16Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -410,5 +410,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T03:28:07Z"
+  "updated": "2026-10-26T04:03:29Z"
 }
