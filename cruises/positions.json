@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -92,15 +92,15 @@
     },
     "311000274": {
       "aisName": "ANTHEM OF THE SEAS",
-      "cog": 353.2,
+      "cog": 26.9,
       "destination": "NZ TRG",
       "eta": "10-25 18:15",
-      "heading": 350,
-      "lat": -37.64229,
-      "lon": 176.18131,
-      "navStatus": 5,
-      "seen": "2026-10-25T23:45:31Z",
-      "sog": 0.0,
+      "heading": 23,
+      "lat": -37.29267,
+      "lon": 176.38392,
+      "navStatus": 0,
+      "seen": "2026-10-26T08:14:06Z",
+      "sog": 20.6,
       "source": "aisstream.io"
     },
     "311000396": {
@@ -157,15 +157,15 @@
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 243.6,
+      "cog": 245.9,
       "destination": "USMIA>BSCOC",
       "eta": "10-24 10:45",
-      "heading": 240,
-      "lat": 25.90418,
-      "lon": -79.66953,
+      "heading": 241,
+      "lat": 25.82482,
+      "lon": -79.87115,
       "navStatus": 0,
-      "seen": "2026-10-26T07:23:27Z",
-      "sog": 14.6,
+      "seen": "2026-10-26T08:12:51Z",
+      "sog": 14.4,
       "source": "aisstream.io"
     },
     "311001178": {
@@ -209,14 +209,14 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 284.3,
+      "cog": 263.3,
       "destination": "ES PMI",
       "eta": "10-26 04:30",
       "heading": 47,
-      "lat": 39.54921,
+      "lat": 39.5492,
       "lon": 2.63327,
       "navStatus": 5,
-      "seen": "2026-10-26T07:22:56Z",
+      "seen": "2026-10-26T08:13:56Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -408,5 +408,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T07:25:05Z"
+  "updated": "2026-10-26T08:14:35Z"
 }
