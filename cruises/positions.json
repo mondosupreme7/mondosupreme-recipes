@@ -119,8 +119,8 @@
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
       "cog": 295.8,
-      "destination": "USLAX",
-      "eta": "10-26 12:30",
+      "destination": "US AOU",
+      "eta": "10-28 12:30",
       "heading": 206,
       "lat": 33.74385,
       "lon": -118.27638,
@@ -183,15 +183,15 @@
     },
     "311001259": {
       "aisName": "UTOPIA OF THE SEAS",
-      "cog": 332.6,
+      "cog": 90.9,
       "destination": "BSNAS",
       "eta": "10-24 11:45",
-      "heading": 336,
-      "lat": 27.45335,
-      "lon": -79.78659,
-      "navStatus": 0,
-      "seen": "2026-10-26T05:02:52Z",
-      "sog": 19.2,
+      "heading": 85,
+      "lat": 28.41025,
+      "lon": -80.60908,
+      "navStatus": 5,
+      "seen": "2026-10-26T19:59:18Z",
+      "sog": 4.0,
       "source": "aisstream.io"
     },
     "311001551": {
@@ -288,14 +288,14 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 57.3,
+      "cog": 243.3,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
       "heading": 354,
-      "lat": 22.88493,
-      "lon": -109.8987,
+      "lat": 22.88501,
+      "lon": -109.89849,
       "navStatus": 1,
-      "seen": "2026-10-26T16:19:16Z",
+      "seen": "2026-10-26T20:01:17Z",
       "sog": 0.0,
       "source": "aisstream.io"
     },
@@ -408,5 +408,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T19:19:44Z"
+  "updated": "2026-10-26T20:01:47Z"
 }
