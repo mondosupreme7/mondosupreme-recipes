@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 4,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -157,15 +157,15 @@
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 341.1,
+      "cog": 112.7,
       "destination": "BSNAS>USMIA",
       "eta": "10-26 10:30",
-      "heading": 116,
-      "lat": 25.77215,
-      "lon": -80.15707,
-      "navStatus": 5,
-      "seen": "2026-10-26T20:23:06Z",
-      "sog": 0.0,
+      "heading": 112,
+      "lat": 25.76309,
+      "lon": -80.13129,
+      "navStatus": 0,
+      "seen": "2026-10-26T21:01:04Z",
+      "sog": 9.6,
       "source": "aisstream.io"
     },
     "311001178": {
@@ -209,15 +209,15 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 234.8,
+      "cog": 235.2,
       "destination": "ES AGP",
       "eta": "10-27 10:00",
-      "heading": 234,
-      "lat": 38.21317,
-      "lon": 1.0158,
+      "heading": 235,
+      "lat": 38.07003,
+      "lon": 0.75718,
       "navStatus": 0,
-      "seen": "2026-10-26T20:23:06Z",
-      "sog": 23.1,
+      "seen": "2026-10-26T21:01:28Z",
+      "sog": 23.6,
       "source": "aisstream.io"
     },
     "311020600": {
@@ -288,15 +288,15 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 243.3,
+      "cog": 262.9,
       "destination": "MX SJD",
       "eta": "10-25 18:30",
       "heading": 354,
-      "lat": 22.88501,
+      "lat": 22.88498,
       "lon": -109.89849,
       "navStatus": 1,
-      "seen": "2026-10-26T20:01:17Z",
-      "sog": 0.0,
+      "seen": "2026-10-26T21:01:17Z",
+      "sog": 0.1,
       "source": "aisstream.io"
     },
     "311319000": {
@@ -408,5 +408,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T20:25:07Z"
+  "updated": "2026-10-26T21:01:34Z"
 }
