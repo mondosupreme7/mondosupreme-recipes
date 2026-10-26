@@ -7,7 +7,7 @@
     "barentswatch": "Open Waters AIS (https://openwaters.io/ais/). Data delivered by BarentsWatch. Contains data under the Norwegian licence for Open Government data (NLOD) distributed by the Norwegian Coastal Administration.",
     "mmsi": "Open Waters AIS (https://openwaters.io/ais/)"
   },
-  "heard": 2,
+  "heard": 1,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -118,15 +118,15 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 332.7,
+      "cog": 335.1,
       "destination": "MX ESE",
       "eta": "10-25 14:00",
-      "heading": 332,
-      "lat": 32.52853,
-      "lon": -117.70213,
+      "heading": 334,
+      "lat": 32.60534,
+      "lon": -117.74651,
       "navStatus": 0,
-      "seen": "2026-10-26T05:59:35Z",
-      "sog": 11.0,
+      "seen": "2026-10-26T06:27:45Z",
+      "sog": 10.9,
       "source": "aisstream.io"
     },
     "311000660": {
@@ -409,5 +409,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-26T06:00:52Z"
+  "updated": "2026-10-26T06:29:50Z"
 }
