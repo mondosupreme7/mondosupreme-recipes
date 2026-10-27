@@ -2,7 +2,7 @@
 .wiki-h{font-size:1.35rem;margin:8px 0 12px}
 .wiki-h span{color:#ddd;font-family:Verdana,"Trebuchet MS",sans-serif;font-size:.95rem;font-weight:700}
 .wiki-list{display:flex;flex-direction:column;gap:10px;margin:0 0 28px}
-.wiki-row{display:flex;flex-direction:column;gap:2px;background:#fff;color:#000;text-decoration:none;border:2px solid #003399;border-top:6px solid #ff6600;border-radius:0;padding:14px 16px;box-shadow:3px 3px 0 #000;min-height:64px}
+.wiki-row{display:flex;flex-direction:column;gap:2px;background:#fff;color:#0000ff;text-decoration:underline;border:3px ridge #dfdfdf;padding:14px 16px;box-shadow:none;min-height:64px}
 .wiki-row:hover{border-color:#f0f}
 .wiki-row:visited{color:#000}
 .wiki-row-title{font-family:"Comic Sans MS","Trebuchet MS",cursive;font-weight:700;font-size:1.25rem}

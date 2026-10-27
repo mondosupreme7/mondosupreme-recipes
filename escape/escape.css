@@ -2,10 +2,10 @@ body.night{background:#07040a;color:#e6d2b0;min-height:100dvh;font-family:"Couri
 body.night .site-header{background:#14080c}
 .night-main{max-width:760px;margin:0 auto;padding:12px 16px 28px}
 .night-main::before{content:"ASH_HOUSE.EXE   —   The Locked Room";display:block;margin:0 0 10px;padding:6px 10px;background:#2a1018;color:#f0d0a0;font-family:"Trebuchet MS",Verdana,sans-serif;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
-.splash,.ending,#play{border:2px solid #5c3a32;background:rgba(0,0,0,.45);box-shadow:inset 0 0 48px rgba(0,0,0,.55);padding:16px}
+.splash,.ending,#play{border:3px ridge #808080;background:#000;box-shadow:none;padding:16px}
 .splash,.ending{min-height:62dvh;display:flex;flex-direction:column;justify-content:flex-end;gap:12px}
 .kicker{letter-spacing:.22em;text-transform:uppercase;color:#c45c2a;font-size:.78rem;margin:0}
-.splash h1,.ending h1,#roomTitle{font-family:"Courier New",Courier,monospace;font-weight:700;letter-spacing:.08em;margin:0;color:#f3e6c8;text-shadow:0 0 12px #c45c2a}
+.splash h1,.ending h1,#roomTitle{font-family:"Courier New",Courier,monospace;font-weight:700;letter-spacing:.08em;margin:0;color:#ffff00;text-shadow:none}
 .splash h1{font-size:clamp(4rem,14vw,6rem);line-height:.9}
 .splash p,.ending p,.room-line{color:#d8c4a4;font-size:1.05rem}
 .splash-actions,.hud,.sconce-row,.objects,.inventory,.keys{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -20,10 +20,10 @@ body.night .site-header{background:#14080c}
 .art{height:140px;border-radius:0;border:2px solid #6a4030;margin:12px 0;position:relative;overflow:hidden;background:
  radial-gradient(circle at 70% 30%,rgba(230,177,90,.18),transparent 42%),
  linear-gradient(#1a1216,#0c090b)}
-.art .pane{position:absolute;inset:18px 22% 22px 18px;border:2px solid #4a3c36;border-radius:8px 8px 0 0;background:linear-gradient(#1c2830,#12161c)}
+.art .pane{position:absolute;inset:18px 22% 22px 18px;border:2px solid #808080;background:#000080}
 .art .rain{position:absolute;inset:0;background:repeating-linear-gradient(100deg,transparent 0 10px,rgba(255,255,255,.05) 11px 12px);animation:drift 2.8s linear infinite}
-.art .door{position:absolute;right:14%;bottom:0;width:54px;height:110px;border:2px solid #6b5848;border-bottom:0;border-radius:8px 8px 0 0;background:#24181a}
-.art .door i{position:absolute;right:8px;top:58px;width:8px;height:8px;border-radius:50%;background:#c4a574}
+.art .door{position:absolute;right:14%;bottom:0;width:54px;height:110px;border:2px solid #c0c0c0;border-bottom:0;background:#404040}
+.art .door i{position:absolute;right:8px;top:58px;width:8px;height:8px;background:#ffff00}
 @keyframes drift{to{transform:translateY(24px)}}
 .sconces{margin:8px 0}
 .sconces p,.inv-label{color:#a89078;margin:0 0 6px}
@@ -33,7 +33,7 @@ body.night .site-header{background:#14080c}
 .inv-bar{position:sticky;bottom:0;z-index:6;display:flex;gap:10px;align-items:center;background:#120d10;border-top:1px solid #3a2e32;padding:8px 0 calc(8px + env(safe-area-inset-bottom));margin-top:8px}
 .inventory{flex:1}
 .status{min-height:1.4em;color:#d9cbb8}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#22181c;color:#efe6dc;border-top:1px solid #6b5848;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:70dvh;overflow:auto;box-shadow:0 -16px 40px rgba(0,0,0,.45)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#c0c0c0;color:#000;border-top:3px ridge #fff;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:70dvh;overflow:auto;box-shadow:none}
 .sheet h2{font-family:"Courier New",Courier,monospace;margin:0 0 8px;color:#f0d0a0}
 .sheet p{margin:0 0 12px}
 .sheet ul{margin:0 0 12px;padding-left:18px}

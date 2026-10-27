@@ -4,21 +4,21 @@
 .freshness-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
 .freshness-row .cruise-note{margin:0;flex:1 1 220px}
 .freshness-row .btn{flex:0 0 auto;min-height:44px}
-.cruise-note{background:#fff7e8;border-left:4px solid var(--accent2);padding:10px 12px;border-radius:8px;margin:0 0 14px}
-#map{height:min(62dvh,560px);min-height:300px;border-radius:0;border:3px ridge #c0c0c0;overflow:hidden;box-shadow:4px 4px 0 #000;margin:0 0 16px;background:#d7e4d4;position:relative;z-index:0;isolation:isolate}
+.cruise-note{background:#ffffcc;color:#000;border:3px ridge #dfdfdf;padding:10px 12px;margin:0 0 14px}
+#map{height:min(62dvh,560px);min-height:300px;border:3px ridge #c0c0c0;overflow:hidden;box-shadow:none;margin:0 0 16px;background:#d7e4d4;position:relative;z-index:0}
 .leaflet-control-attribution{font-size:11px;max-width:72%}
 .toolbar input,.toolbar select{font-size:16px}
 .toolbar .btn{min-height:44px}
 .result-count{margin:-8px 0 12px;color:var(--muted);font-size:.9rem}
 .ship-list{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
-.ship{display:block;width:100%;text-align:left;background:#fff;border:2px solid #003399;border-radius:0;padding:14px 16px;box-shadow:3px 3px 0 #000;cursor:pointer;font:inherit;color:#000;min-height:44px}
-.ship.is-selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.ship{display:block;width:100%;text-align:left;background:#fff;border:3px ridge #dfdfdf;padding:14px 16px;box-shadow:none;cursor:pointer;font:inherit;color:#000;min-height:44px}
+.ship.is-selected{border-style:inset}
 .ship-name{font-family:"Comic Sans MS","Trebuchet MS",cursive;font-weight:700;font-size:1.2rem;display:block}
 .ship .cat{display:block;margin-top:2px}
 .ship-line,.ship .meta{display:block;margin-top:3px}
 .ship .is-stale{color:#8a4b12}
-.ship-marker{background:#c8553d;border:2px solid #fff;border-radius:50%;box-sizing:border-box;box-shadow:0 1px 4px rgba(45,36,32,.4);overflow:visible}
-.ship-marker.is-active{background:#2d2420;box-shadow:0 0 0 4px rgba(200,85,61,.45)}
+.ship-marker{background:#c8553d;border:2px solid #000;box-sizing:border-box;box-shadow:none;overflow:visible}
+.ship-marker.is-active{background:#000080;box-shadow:none}
 .ship-flag{position:absolute;left:26px;top:-6px;padding:1px 6px;background:#ffffcc;color:#000;border:2px solid #000;box-shadow:2px 2px 0 #003399;font:700 12px "Comic Sans MS","Trebuchet MS",cursive;white-space:nowrap;pointer-events:none}
 .credits{color:var(--muted);font-size:.88rem;margin:0 0 28px}
 .credits h2{font-size:1.15rem;color:var(--ink);margin:0 0 6px}
