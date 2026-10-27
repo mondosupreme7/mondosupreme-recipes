@@ -28,7 +28,8 @@
     'mondosupreme.fx.v1',
     'mondosupreme.aim.v1',
     'mondosupreme.wiki.history.v1',
-    'mondosupreme.pogs.v1'
+    'mondosupreme.pogs.v1',
+    'mondosupreme.market.v1'
   ];
   var CLOUD = [
     ['recipes', 'recipes/items'],
@@ -100,6 +101,8 @@
     });
     jobs.push(once('forum/threads').then(function (value) { payload.cloud.forumThreads = value; }));
     jobs.push(once('forum/replies').then(function (value) { payload.cloud.forumReplies = value; }));
+    jobs.push(once('market/items').then(function (value) { payload.cloud.marketItems = value; }));
+    jobs.push(once('market/offers').then(function (value) { payload.cloud.marketOffers = value; }));
     Promise.all(jobs).then(function () { download(payload); }, function () { download(payload); });
   }
   function problems(data) {
@@ -160,6 +163,15 @@
       Object.keys(cloud.forumReplies).forEach(function (tid) {
         if (!idOk(tid, /^[A-Za-z0-9_-]{1,80}$/)) return;
         putMap('forum/replies/' + tid, cloud.forumReplies[tid], /^[A-Za-z0-9_-]{1,80}$/);
+      });
+    }
+    if (cloud.marketItems && typeof cloud.marketItems === 'object') {
+      putMap('market/items', cloud.marketItems, /^[A-Za-z0-9_-]{1,80}$/);
+    }
+    if (cloud.marketOffers && typeof cloud.marketOffers === 'object') {
+      Object.keys(cloud.marketOffers).forEach(function (lid) {
+        if (!idOk(lid, /^[A-Za-z0-9_-]{1,80}$/)) return;
+        putMap('market/offers/' + lid, cloud.marketOffers[lid], /^[A-Za-z0-9_-]{1,80}$/);
       });
     }
     if (cloud.countdown && typeof cloud.countdown === 'object' && /^\d{9}$/.test(cloud.countdown.mmsi || '') && /^\d{4}-\d{2}-\d{2}$/.test(cloud.countdown.date || '')) {

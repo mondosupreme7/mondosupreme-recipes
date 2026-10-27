@@ -687,6 +687,65 @@
           "$other": { ".validate": false }
         }
       }
+    },
+    "market": {
+      "c": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.hasChildren(['n', 'day']) && newData.child('n').isNumber() && newData.child('day').isNumber() && newData.child('n').val() >= 1 && newData.child('n').val() <= 24 && newData.child('n').val() % 1 == 0 && newData.child('day').val() % 86400000 == 0 && newData.child('day').val() <= now && now - newData.child('day').val() < 90000000 && ((!data.exists() && newData.child('n').val() == 1) || (data.exists() && data.child('day').val() == newData.child('day').val() && newData.child('n').val() == data.child('n').val() + 1) || (data.exists() && newData.child('day').val() > data.child('day').val() && newData.child('n').val() == 1))",
+          "n": { ".validate": "newData.isNumber()" },
+          "day": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 6000)"
+        }
+      },
+      "items": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9_-]{1,80}$/)) || (auth != null && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && !data.exists() && newData.exists() && newData.child('author').val() == auth.uid && newData.child('createdAt').val() == now && newData.child('updatedAt').val() == now && newData.child('sold').val() == false && newData.child('featured').val() == false && newData.child('official').val() == false && newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val())",
+          ".validate": "!newData.exists() || (newData.hasChildren(['title', 'price', 'condition', 'category', 'location', 'description', 'seller', 'contact', 'photo', 'author', 'createdAt', 'updatedAt', 'sold', 'featured', 'official']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 80 && !newData.child('title').val().contains('\\n') && !newData.child('title').val().contains('\\r') && newData.child('price').isNumber() && newData.child('price').val() >= 0 && newData.child('price').val() <= 100000000 && newData.child('price').val() % 1 == 0 && newData.child('condition').isString() && newData.child('condition').val().matches(/^(new|mint|good|parts)$/) && newData.child('category').isString() && newData.child('category').val().matches(/^(tech|toys|home|cruise|misc)$/) && newData.child('location').isString() && newData.child('location').val().length <= 80 && !newData.child('location').val().contains('\\n') && !newData.child('location').val().contains('\\r') && newData.child('description').isString() && newData.child('description').val().length >= 1 && newData.child('description').val().length <= 2000 && newData.child('seller').isString() && newData.child('seller').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/) && newData.child('contact').isString() && newData.child('contact').val().length >= 1 && newData.child('contact').val().length <= 160 && !newData.child('contact').val().contains('\\n') && !newData.child('contact').val().contains('\\r') && newData.child('photo').isString() && newData.child('photo').val().length <= 80000 && newData.child('photo').val().matches(/^$|^https:\\/\\/\\S+$|^data:image\\/jpeg;base64,[A-Za-z0-9+\\/=]+$/) && newData.child('author').isString() && newData.child('createdAt').isNumber() && newData.child('updatedAt').isNumber() && newData.child('sold').isBoolean() && newData.child('featured').isBoolean() && newData.child('official').isBoolean())",
+          "title": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "price": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 == 0" },
+          "condition": { ".validate": "newData.isString() && newData.val().matches(/^(new|mint|good|parts)$/)" },
+          "category": { ".validate": "newData.isString() && newData.val().matches(/^(tech|toys|home|cruise|misc)$/)" },
+          "location": { ".validate": "newData.isString() && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "description": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 2000" },
+          "seller": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/)" },
+          "contact": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 160 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "photo": { ".validate": "newData.isString() && newData.val().length <= 80000 && newData.val().matches(/^$|^https:\\/\\/\\S+$|^data:image\\/jpeg;base64,[A-Za-z0-9+\\/=]+$/)" },
+          "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || (!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))" },
+          "createdAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || (!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))" },
+          "updatedAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)" },
+          "sold": { ".validate": "newData.isBoolean()" },
+          "featured": { ".validate": "newData.isBoolean()" },
+          "official": { ".validate": "newData.isBoolean()" },
+          "seq": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 24 && newData.val() % 1 == 0" },
+          "day": { ".validate": "newData.isNumber() && newData.val() % 86400000 == 0 && newData.val() <= now && now - newData.val() < 90000000" },
+          "$other": { ".validate": false }
+        }
+      },
+      "offers": {
+        ".read": "auth != null",
+        "$lid": {
+          "$id": {
+            ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $lid.matches(/^[A-Za-z0-9_-]{1,80}$/) && $id.matches(/^[A-Za-z0-9_-]{1,80}$/)) || (auth != null && $lid.matches(/^[A-Za-z0-9_-]{1,80}$/) && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && root.child('market/items').child($lid).exists() && root.child('market/items').child($lid).child('sold').val() != true && !data.exists() && newData.exists() && newData.child('author').val() == auth.uid && newData.child('createdAt').val() == now && newData.parent().parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('day').val())",
+            ".validate": "!newData.exists() || (newData.hasChildren(['kind', 'name', 'body', 'author', 'createdAt']) && newData.child('kind').isString() && newData.child('kind').val().matches(/^(question|offer)$/) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/) && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 400 && !newData.child('body').val().contains('\\n') && !newData.child('body').val().contains('\\r') && newData.child('author').isString() && newData.child('createdAt').isNumber())",
+            "kind": { ".validate": "newData.isString() && newData.val().matches(/^(question|offer)$/)" },
+            "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/)" },
+            "body": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 400 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+            "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || (!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))" },
+            "createdAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || (!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))" },
+            "seq": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 24 && newData.val() % 1 == 0" },
+            "day": { ".validate": "newData.isNumber() && newData.val() % 86400000 == 0 && newData.val() <= now && now - newData.val() < 90000000" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
     }
   }
 }

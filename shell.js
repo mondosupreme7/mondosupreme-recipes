@@ -39,6 +39,7 @@
     { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
     { group: 'Notes', title: 'Wiki', href: '/wiki/', text: 'notes wiki' },
     { group: 'Notes', title: 'Forum', href: '/forum/', text: 'bulletin posts forum' },
+    { group: 'Shop', title: 'Market', href: '/market/', text: 'ebay classifieds market mondobay for sale' },
     { group: 'Play', title: 'Board', href: '/board/', text: 'drawing whiteboard' },
     { group: 'Play', title: 'Chat', href: '/chat/', text: 'chat room talk' },
     { group: 'Play', title: 'Arcade', href: '/arcade/', text: 'games arcade' },
@@ -110,6 +111,26 @@
           title: thread.title,
           href: '/forum/#/t/' + encodeURIComponent(id),
           text: [thread.category, thread.body, extra].join(' ')
+        });
+      });
+    }
+    var market = readJson('mondosupreme.market.v1');
+    if (market && market.items) {
+      Object.keys(market.items).forEach(function (id) {
+        var item = market.items[id];
+        if (!item || !item.title) return;
+        var extra = '';
+        var bag = market.offers && market.offers[id];
+        if (bag) {
+          Object.keys(bag).forEach(function (oid) {
+            if (bag[oid] && bag[oid].body) extra += ' ' + bag[oid].body;
+          });
+        }
+        addItem(list, {
+          kind: 'Listing',
+          title: item.title,
+          href: '/market/#/item/' + encodeURIComponent(id),
+          text: [item.category, item.description, item.seller, extra].join(' ')
         });
       });
     }
@@ -190,7 +211,8 @@
             db.ref('recipes/items').once('value').catch(function () { return null; }),
             db.ref('wiki/items').once('value').catch(function () { return null; }),
             db.ref('forum/threads').once('value').catch(function () { return null; }),
-            db.ref('forum/replies').once('value').catch(function () { return null; })
+            db.ref('forum/replies').once('value').catch(function () { return null; }),
+            db.ref('market/items').once('value').catch(function () { return null; })
           ]).then(function (snaps) {
             var list = [];
             var recipes = snaps[0] && snaps[0].val();
@@ -221,6 +243,13 @@
                   });
                 }
                 addItem(list, mapNode('Forum', '/forum/#/t/' + encodeURIComponent(id), id, node, [node.category, node.body, extra].join(' ')));
+              });
+            }
+            var listings = snaps[4] && snaps[4].val();
+            if (listings) {
+              Object.keys(listings).forEach(function (id) {
+                var node = listings[id];
+                addItem(list, mapNode('Listing', '/market/#/item/' + encodeURIComponent(id), id, node, [node.category, node.description, node.seller].join(' ')));
               });
             }
             resolve(list);
@@ -297,7 +326,7 @@
     title.id = 'shellFindTitle';
     title.textContent = 'Find';
     var label = document.createElement('label');
-    label.textContent = 'Search recipes, ships, notes, posts, and games';
+    label.textContent = 'Search recipes, ships, notes, posts, listings, and games';
     var input = document.createElement('input');
     input.id = 'shellFindInput';
     input.type = 'search';
@@ -389,6 +418,7 @@
     { title: '90s Arcade', href: '/arcade/', icon: 'joy' },
     { title: 'MondoGotchi Pet', href: '/pet/', icon: 'egg' },
     { title: 'Bulletin Forum', href: '/forum/', icon: 'note' },
+    { title: "MondoBay '98", href: '/market/', icon: 'gavel' },
     { title: 'World of MondoCraft', href: '/mmo/', icon: 'sword' },
     { title: "Half-Strike '99", href: '/fps/', icon: 'gun' },
     { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door' }
@@ -409,6 +439,7 @@
     joy: [[4,2,8,4,'#000'],[6,6,4,2,'#c0c0c0'],[2,8,12,4,'#000080'],[4,9,2,2,'#ff0000'],[10,9,2,2,'#00ff00']],
     egg: [[5,2,6,4,'#fff'],[4,6,8,6,'#ffe14a'],[6,8,4,2,'#000'],[3,12,10,2,'#808080']],
     note: [[3,2,10,12,'#fff'],[5,5,6,1,'#000080'],[5,8,6,1,'#000080'],[5,11,4,1,'#000080'],[11,2,2,3,'#ffcc00']],
+    gavel: [[1,3,9,2,'#c4a574'],[1,5,9,2,'#8b5a2b'],[8,2,3,2,'#e8e8e8'],[4,7,2,6,'#6b3e1e'],[3,12,4,2,'#3a2412']],
     sword: [[8,1,2,8,'#c0c0c0'],[6,8,6,2,'#ffd100'],[8,10,2,4,'#804000'],[4,3,3,2,'#ff0000']],
     gun: [[2,6,8,3,'#404040'],[8,4,4,3,'#808080'],[10,7,4,2,'#000'],[3,9,3,3,'#654321']],
     door: [[4,2,8,12,'#6b3a1f'],[10,8,2,2,'#ffd100'],[5,3,6,4,'#87ceeb'],[6,12,4,2,'#000']],
