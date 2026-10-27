@@ -594,6 +594,65 @@
           "$other": { ".validate": false }
         }
       }
+    },
+    "fps": {
+      "srate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 80)"
+        }
+      },
+      "hrate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 80)"
+        }
+      },
+      "players": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "(auth.uid == $uid && (!newData.exists() || (newData.child('updatedAt').val() == now && root.child('fps').child('srate').child(auth.uid).val() >= now - 2000))) || (auth.token.email == 'cbrooks_911@yahoo.com')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'mode', 'team', 'cls', 'x', 'y', 'ang', 'hp', 'weapon', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('mode').isString() && newData.child('mode').val().matches(/^(hl|cs|tfc)$/) && newData.child('team').isString() && newData.child('team').val().matches(/^(none|ct|t|red|blue)$/) && newData.child('cls').isString() && newData.child('cls').val().matches(/^[a-z]{0,12}$/) && newData.child('x').isNumber() && newData.child('x').val() >= 0 && newData.child('x').val() <= 40 && newData.child('y').isNumber() && newData.child('y').val() >= 0 && newData.child('y').val() <= 40 && newData.child('ang').isNumber() && newData.child('ang').val() >= -1 && newData.child('ang').val() <= 7 && newData.child('hp').isNumber() && newData.child('hp').val() >= 0 && newData.child('hp').val() <= 400 && newData.child('hp').val() % 1 == 0 && newData.child('weapon').isString() && newData.child('weapon').val().matches(/^[a-z0-9]{1,12}$/) && newData.child('updatedAt').val() == now)",
+          "name": { ".validate": "newData.isString()" },
+          "mode": { ".validate": "newData.isString()" },
+          "team": { ".validate": "newData.isString()" },
+          "cls": { ".validate": "newData.isString()" },
+          "x": { ".validate": "newData.isNumber()" },
+          "y": { ".validate": "newData.isNumber()" },
+          "ang": { ".validate": "newData.isNumber()" },
+          "hp": { ".validate": "newData.isNumber()" },
+          "weapon": { ".validate": "newData.isString()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "inbox": {
+        "$uid": {
+          ".read": "auth != null && auth.uid == $uid",
+          "$id": {
+            ".write": "(auth.uid == $uid && !newData.exists()) || (auth != null && !data.exists() && newData.child('from').val() == auth.uid && newData.child('t').val() == now && root.child('fps').child('hrate').child(auth.uid).val() >= now - 2000) || (auth.token.email == 'cbrooks_911@yahoo.com')",
+            ".validate": "!newData.exists() || (newData.hasChildren(['from', 'dmg', 'mode', 't']) && newData.child('from').isString() && newData.child('from').val().length > 0 && newData.child('from').val().length <= 128 && newData.child('dmg').isNumber() && newData.child('dmg').val() >= 1 && newData.child('dmg').val() <= 120 && newData.child('dmg').val() % 1 == 0 && newData.child('mode').isString() && newData.child('mode').val().matches(/^(hl|cs|tfc)$/) && newData.child('t').val() == now)",
+            "from": { ".validate": "newData.isString()" },
+            "dmg": { ".validate": "newData.isNumber()" },
+            "mode": { ".validate": "newData.isString()" },
+            "t": { ".validate": "newData.isNumber()" },
+            "$other": { ".validate": false }
+          }
+        }
+      },
+      "leaderboard": {
+        ".read": true,
+        "$uid": {
+          ".write": "(auth.uid == $uid && newData.child('updatedAt').val() == now && root.child('fps').child('srate').child(auth.uid).val() >= now - 4000) || (auth.token.email == 'cbrooks_911@yahoo.com')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'frags', 'deaths', 'mode', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('frags').isNumber() && newData.child('frags').val() >= 0 && newData.child('frags').val() <= 999999 && newData.child('frags').val() % 1 == 0 && newData.child('deaths').isNumber() && newData.child('deaths').val() >= 0 && newData.child('deaths').val() <= 999999 && newData.child('deaths').val() % 1 == 0 && newData.child('mode').isString() && newData.child('mode').val().matches(/^(hl|cs|tfc)$/) && newData.child('updatedAt').val() == now)",
+          "name": { ".validate": "newData.isString()" },
+          "frags": { ".validate": "newData.isNumber()" },
+          "deaths": { ".validate": "newData.isNumber()" },
+          "mode": { ".validate": "newData.isString()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      }
     }
   }
 }

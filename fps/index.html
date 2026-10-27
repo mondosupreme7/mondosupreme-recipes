@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Half-Strike Fortress '99 — Mondosupreme</title>
+<meta name="description" content="Half-Strike Fortress '99 — a 1998–1999 first-person blast on Mondosupreme. Sector C Labs, de_sandstorm, and 2Fort_99.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="fps.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+</head>
+<body class="fps-page">
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Half-Strike Fortress '99 ~*~ ★ Sector C Labs · de_sandstorm · 2Fort_99 ★ Crowbar · AWP · Sentry ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Half-Strike Fortress '99 ~*~ ★ Sector C Labs · de_sandstorm · 2Fort_99 ★ Crowbar · AWP · Sentry ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/fps/" class="brand"><span class="logo">💥</span><span>Half-Strike <em>'99</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/forum/">Forum</a>
+  <a href="/mmo/">MMO</a>
+  <a href="/fps/" aria-current="page">FPS</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+ <nav class="actions">
+  <button id="ownerBtn" class="btn ghost" type="button">Owner sign in</button>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="sync-banner" role="status" hidden>Arena sync is waiting on updated Firebase rules. Bots are in the match, so you can play right now.</p>
+
+ <section id="browser" class="won">
+  <div class="won-title">WON / GameSpy 98 — Server Browser</div>
+  <div class="won-body">
+   <h1>Half-Strike Fortress '99</h1>
+   <p class="lede">A GoldSrc-era first-person blast. Pick a server, then WASD and the mouse on a desktop, or the stick and FIRE on an iPhone. Stats stay in this browser.</p>
+   <div class="won-row">
+    <label>Player name <input id="pname" maxlength="16" autocomplete="nickname" aria-label="Player name" placeholder="Name"></label>
+    <button type="button" id="sndBrowser" class="btn" aria-pressed="false">Sound off</button>
+   </div>
+   <p id="localStats" class="local-stats"></p>
+   <div class="srv-head" aria-hidden="true"><span>Server</span><span>Game</span><span>Map</span><span>Players</span></div>
+   <button type="button" class="srv" data-mode="hl">
+    <span class="srv-name">Sector C Labs</span>
+    <span class="srv-mode">Half-Life</span>
+    <span class="srv-map">HEV suit, crowbar, tau cannon</span>
+    <span class="srv-pop" id="pop-hl">bots</span>
+   </button>
+   <button type="button" class="srv" data-mode="cs">
+    <span class="srv-name">de_sandstorm</span>
+    <span class="srv-mode">Counter-Strike 1.6</span>
+    <span class="srv-map">Buy menu, bomb site, AWP</span>
+    <span class="srv-pop" id="pop-cs">bots</span>
+   </button>
+   <button type="button" class="srv" data-mode="tfc">
+    <span class="srv-name">2Fort_99</span>
+    <span class="srv-mode">Team Fortress</span>
+    <span class="srv-map">CTF — Scout, Soldier, Heavy, Engineer</span>
+    <span class="srv-pop" id="pop-tfc">bots</span>
+   </button>
+   <p class="hint">Desktop: WASD move, mouse aims, click or Space fires, R reloads, E uses, B buys. iPhone: left stick, drag the view, then the buttons under it.</p>
+   <div id="ownerTools" class="owner-tools" hidden>
+    <button type="button" class="btn" id="clearBoard">Clear top fraggers</button>
+    <button type="button" class="btn" id="clearArena">Clear arena players</button>
+   </div>
+   <h2>Top Fraggers</h2>
+   <ol id="boardList"></ol>
+  </div>
+ </section>
+
+ <section id="lobby" class="won" hidden>
+  <div class="won-title" id="lobbyTitle">Join server</div>
+  <div class="won-body">
+   <h2>Choose a side</h2>
+   <div class="pick-row" id="teamRow">
+    <button type="button" data-team="ct">Counter-Terrorists</button>
+    <button type="button" data-team="t">Terrorists</button>
+    <button type="button" data-team="red">Red team</button>
+    <button type="button" data-team="blue">Blue team</button>
+   </div>
+   <h2 class="class-head">Class</h2>
+   <div class="pick-row class-row" id="classRow">
+    <button type="button" data-class="scout">Scout<span>2x speed, Shotgun, fast flag cap</span></button>
+    <button type="button" data-class="soldier">Soldier<span>Rocket Launcher, splash, high HP</span></button>
+    <button type="button" data-class="heavy">Heavy<span>Minigun, 300 HP</span></button>
+    <button type="button" data-class="engineer">Engineer<span>Shotgun, Wrench, Sentry turret</span></button>
+   </div>
+   <div class="form-actions">
+    <button type="button" class="btn" id="lobbyBack">Back</button>
+    <button type="button" class="btn primary" id="deploy">Join server</button>
+   </div>
+  </div>
+ </section>
+
+ <section id="play" hidden>
+  <div id="playbar">
+   <span id="serverName">Server</span>
+   <button type="button" id="sndPlay" aria-pressed="false">Sound off</button>
+   <button type="button" id="disc">Disconnect</button>
+  </div>
+  <div id="stage">
+   <canvas id="view" width="320" height="180" aria-hidden="true"></canvas>
+   <canvas id="stick" width="100" height="100" aria-label="Move"></canvas>
+   <p id="matchInfo" role="status"></p>
+   <p id="ammoLine"></p>
+   <ul id="feed" aria-label="Kill feed"></ul>
+   <button type="button" id="replay" hidden>Play the sector again</button>
+   <div id="buy" hidden>
+    <h2>[B] Buy Menu</h2>
+    <p id="cashLine">$800</p>
+    <div class="buy-grid">
+     <button type="button" data-buy="deagle">Desert Eagle<span>$700</span></button>
+     <button type="button" data-buy="mp5n">MP5-Navy<span>$1500</span></button>
+     <button type="button" data-buy="ak">AK-47<span>$2500</span></button>
+     <button type="button" data-buy="m4">M4A1<span>$3100</span></button>
+     <button type="button" data-buy="awp">AWP Sniper<span>$4750</span></button>
+     <button type="button" data-buy="kevlar">Kevlar+Helmet<span>$650</span></button>
+     <button type="button" data-buy="kit">Defuse Kit<span>$400</span></button>
+    </div>
+    <p id="buyNote"></p>
+    <button type="button" class="btn" id="buyClose">Close</button>
+   </div>
+  </div>
+  <div id="touch">
+   <button type="button" id="btnFire">FIRE</button>
+   <button type="button" id="btnAim">AIM / SCOPE</button>
+   <button type="button" id="btnReload">RELOAD</button>
+   <button type="button" id="btnNext">NEXT WEAPON</button>
+   <button type="button" id="btnSpecial">BUY / CLASS</button>
+   <button type="button" id="btnUse">USE</button>
+  </div>
+ </section>
+ <p id="toast" role="status" hidden></p>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Half-Strike Fortress '99 is a fan arena. Be decent. · <a href="/">Home</a></div></footer>
+<dialog id="ownerDialog">
+ <form id="ownerForm">
+  <h2>Owner sign-in</h2>
+  <p>Sign in to clear the top fraggers board or arena presence. The same sign-in works across Mondosupreme.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="owner-error" hidden></p>
+  <div class="form-actions">
+   <button type="button" id="ownerCancel" class="btn ghost">Cancel</button>
+   <button type="submit" class="btn primary">Sign in</button>
+  </div>
+ </form>
+</dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="fps.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+.fps-page { background: #1b1b1b; }
+.fps-page .sync-banner { margin: 8px 0; }
+.won { max-width: 760px; margin: 12px auto; background: #c0c0c0; color: #111; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; box-shadow: 2px 2px 0 #000; }
+.won-title { background: #000080; color: #fff; font-family: "Courier New", Courier, monospace; padding: 6px 10px; font-weight: 700; }
+.won-body { padding: 12px; }
+.won h1, .won h2 { font-family: "Courier New", Courier, monospace; margin: 0 0 8px; }
+.lede, .hint, .local-stats { margin: 0 0 10px; }
+.won-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 10px; }
+.won-row label { display: flex; flex-direction: column; gap: 4px; font-weight: 700; flex: 1; min-width: 180px; }
+.won-row input, #ownerDialog input { font: inherit; min-height: 44px; padding: 6px 8px; border: 2px solid #404040; border-right-color: #fff; border-bottom-color: #fff; background: #fff; color: #111; width: 100%; }
+.srv-head, .srv { display: grid; grid-template-columns: 1.3fr 1fr 1.6fr 0.6fr; gap: 6px; width: 100%; text-align: left; }
+.srv-head { font-size: 12px; padding: 0 8px 4px; color: #222; }
+.srv { min-height: 48px; margin: 0 0 6px; padding: 8px; background: #d8d8d8; color: #111; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; font: inherit; cursor: pointer; }
+.srv:hover, .srv:focus-visible { background: #000080; color: #fff; }
+.srv-name { font-weight: 700; }
+.pick-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.pick-row button { min-height: 48px; font: inherit; text-align: left; padding: 8px; background: #d8d8d8; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; cursor: pointer; }
+.pick-row button span { display: block; font-size: 12px; font-weight: 400; }
+.pick-row button.is-on { background: #000080; color: #fff; }
+#lobby.mode-cs [data-team="red"],
+#lobby.mode-cs [data-team="blue"],
+#lobby.mode-cs .class-head,
+#lobby.mode-cs .class-row { display: none; }
+#lobby.mode-tfc [data-team="ct"],
+#lobby.mode-tfc [data-team="t"] { display: none; }
+#boardList { margin: 0; padding-left: 1.2em; min-height: 1.2em; }
+.owner-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+#ownerDialog { border: 2px solid #fff; background: #c0c0c0; color: #111; padding: 12px; max-width: 420px; }
+#ownerDialog label { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; font-weight: 700; }
+.owner-error { color: #900; }
+
+body.fps-live { overflow: hidden; height: 100dvh; width: 100%; background: #000; }
+body.fps-live .ticker,
+body.fps-live .site-header,
+body.fps-live .site-footer,
+body.fps-live .era-top,
+body.fps-live .era-foot,
+body.fps-live #themeSprites,
+body.fps-live .sync-banner { display: none !important; }
+body.fps-page.fps-live main.wrap {
+  max-width: none !important;
+  width: 100% !important;
+  height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  border: 0 !important;
+  background: #000 !important;
+}
+#play { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #000; color: #eee; }
+#play[hidden] { display: none !important; }
+#playbar { display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: #0c0c0c; color: #d5d5d5; font-family: "Courier New", Courier, monospace; }
+#playbar span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#playbar button, #touch button, #replay, #buy .btn, #buy-grid button { font-family: "Courier New", Courier, monospace; }
+#playbar button { min-height: 36px; min-width: 44px; background: #222; color: #eee; border: 1px solid #666; padding: 4px 8px; }
+#stage { position: relative; flex: 1; min-height: 0; background: #000; touch-action: none; overflow: hidden; }
+#view { width: 100%; height: 100%; display: block; image-rendering: pixelated; background: #000; touch-action: none; }
+#stick {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  width: 108px;
+  height: 108px;
+  z-index: 3;
+  touch-action: none;
+}
+#matchInfo, #ammoLine, #feed { pointer-events: none; margin: 0; font-family: "Courier New", Courier, monospace; text-shadow: 1px 1px 0 #000, 0 0 6px #000; }
+#matchInfo { position: absolute; top: 6px; left: 8px; right: 8px; text-align: center; font-size: 16px; letter-spacing: 0.5px; color: #f2f2f2; }
+#stage.mode-hl #matchInfo { color: #ffbf1f; font-size: 18px; letter-spacing: 1px; }
+#ammoLine { position: absolute; right: 10px; bottom: 8px; font-size: 14px; color: #f4e2a0; }
+#feed { position: absolute; top: 32px; right: 8px; list-style: none; padding: 0; text-align: right; max-width: 70%; }
+#feed li { background: rgba(0, 0, 0, 0.45); margin: 0 0 3px; padding: 2px 4px; font-size: 13px; }
+.wico { display: inline-block; width: 16px; height: 8px; margin: 0 4px; vertical-align: middle; background: #ccc; }
+.w-crowbar, .w-knife, .w-wrench { background: #e23b2f; }
+.w-pistol, .w-deagle { background: #d0d0d0; }
+.w-mp5, .w-mp5n, .w-m4 { background: #6a7a3a; }
+.w-ak { background: #c45a1a; }
+.w-shot { background: #8a5a2a; }
+.w-tau { background: #ff9922; }
+.w-awp { background: #222; box-shadow: inset 0 0 0 1px #ddd; }
+.w-rocket { background: #3a7a32; }
+.w-mini { background: #9aa; }
+#replay {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  min-height: 48px;
+  padding: 8px 14px;
+  background: #111;
+  color: #ffbf1f;
+  border: 2px solid #ffbf1f;
+  font-size: 16px;
+}
+#buy {
+  position: absolute;
+  z-index: 5;
+  left: 8px;
+  right: 8px;
+  top: 8px;
+  max-height: calc(100% - 16px);
+  overflow: auto;
+  background: #c0c0c0;
+  color: #111;
+  border: 2px solid #fff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  padding: 8px;
+  text-shadow: none;
+  font-family: "Courier New", Courier, monospace;
+}
+#buy h2 { margin: 0 0 4px; }
+#cashLine, #buyNote { margin: 0 0 6px; }
+.buy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.buy-grid button { min-height: 48px; text-align: left; font: inherit; padding: 6px 8px; background: #d8d8d8; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; cursor: pointer; }
+.buy-grid button span { display: block; color: #063; }
+.buy-grid button.is-poor span { color: #800; }
+#touch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 6px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  background: #141414;
+}
+#touch button { min-height: 48px; font-size: 13px; font-weight: 700; background: #2a2a2a; color: #f0f0f0; border: 2px solid #666; border-bottom-color: #111; border-right-color: #111; }
+#btnFire { background: #6a1a14; color: #fff; }
+#toast { position: fixed; left: 8px; bottom: 8px; background: #111; color: #fff; padding: 8px 10px; z-index: 8; margin: 0; }
+body.fps-live #toast { bottom: 120px; }
+
+@media (max-width: 640px) {
+  .srv-head { display: none; }
+  .srv { grid-template-columns: 1fr 1fr; }
+  .srv-map { grid-column: 1 / -1; font-size: 12px; }
+  .pick-row, .buy-grid { grid-template-columns: 1fr; }
+  #matchInfo { font-size: 14px; }
+  #stick { width: 96px; height: 96px; }
+}
+@media (pointer: fine) and (min-width: 900px) {
+  #touch button { min-height: 44px; }
+}
