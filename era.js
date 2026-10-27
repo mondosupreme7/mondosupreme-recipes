@@ -1,6 +1,6 @@
 /* Shared 1998 page toys. Graphics are DOM/CSS. Sound stays off until Play. */
 (function () {
-  var TRACKS = [
+  var BASE = [
     {
       name: 'canyon.mid',
       tempo: 92,
@@ -20,6 +20,7 @@
       notes: [60, 64, 67, 72, 76, 72, 67, 64, 67, 72, 76, 79, 76, 72, 67, 60]
     }
   ];
+  var TRACKS = BASE.slice();
   var index = 0;
   var ctx = null;
   var live = [];
@@ -93,10 +94,15 @@
   }
   function buildTop() {
     var top = el('div', 'era-top');
+    var sky = el('div', 'theme-sky');
+    sky.setAttribute('aria-hidden', 'true');
+    top.appendChild(sky);
     var row = el('div', 'wordart-row');
     row.appendChild(el('span', 'torch'));
+    row.appendChild(el('span', 'theme-sprites theme-sprites-l'));
     var h = el('h1', 'wordart', "~*~ MONDOSUPREME'S CYBER REALM '98 ~*~");
     row.appendChild(h);
+    row.appendChild(el('span', 'theme-sprites theme-sprites-r'));
     row.appendChild(el('span', 'torch'));
     top.appendChild(row);
     top.appendChild(el('div', 'rainbow-rule'));
@@ -218,8 +224,28 @@
     if (ctx && ctx.state === 'suspended') ctx.resume();
     schedule(TRACKS[index]);
   }
+  function showTrack() {
+    var lcd = document.getElementById('jbTrack');
+    if (lcd && TRACKS[index]) lcd.textContent = (playing ? '▶ ' : '') + TRACKS[index].name;
+  }
+  window.MONDO_JUKEBOX = {
+    setTracks: function (extra, preferName) {
+      silence();
+      TRACKS = (extra && extra.length) ? extra.concat(BASE) : BASE.slice();
+      index = 0;
+      if (preferName) {
+        for (var i = 0; i < TRACKS.length; i++) {
+          if (TRACKS[i].name === preferName) { index = i; break; }
+        }
+      }
+      showTrack();
+    }
+  };
   function boot() {
     if (document.querySelector('.era-top')) return;
+    var extra = window.MONDO_THEME_TRACKS || [];
+    TRACKS = extra.length ? extra.concat(BASE) : BASE.slice();
+    index = 0;
     document.documentElement.dataset.era = '1';
     var ticker = document.querySelector('.ticker');
     var top = buildTop();
@@ -236,11 +262,9 @@
     document.getElementById('jbNext').addEventListener('click', function () {
       index = (index + 1) % TRACKS.length;
       if (playing) play();
-      else {
-        var lcd = document.getElementById('jbTrack');
-        if (lcd) lcd.textContent = TRACKS[index].name;
-      }
+      else showTrack();
     });
+    if (typeof window.MONDO_THEME_MOUNT === 'function') window.MONDO_THEME_MOUNT(top);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
