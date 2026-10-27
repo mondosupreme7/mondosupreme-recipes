@@ -7,7 +7,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://ais.openwaters.io https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
 <title>Mondosupreme Cruises</title>
-<meta name="description" content="Last-known position of every Royal Caribbean International ship.">
+<meta name="description" content="Last-known position of every Royal Caribbean International ship, plus Port Canaveral cruise deals.">
 <link rel="preconnect" href="https://tile.openstreetmap.org">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
@@ -69,6 +69,53 @@
    <div class="radar-sweep" aria-hidden="true"></div>
   </div>
  </div>
+ <section class="deals" id="canaveralDeals" aria-labelledby="dealsTitle">
+  <p class="deals-kicker">Travel Agent '98 · Cape Canaveral 32920</p>
+  <h2 id="dealsTitle">Port Canaveral Royal Caribbean Deal Finder</h2>
+  <p class="deals-lead">Best Royal Caribbean International sailings out of Port Canaveral, Florida. No other cruise lines.</p>
+  <p id="dealsFresh" class="deals-fresh">Loading Port Canaveral deals…</p>
+  <div class="deals-filters">
+   <label>Sort
+    <select id="dealSort" aria-label="Sort Port Canaveral deals">
+     <option value="night">Best Deal ($/Night)</option>
+     <option value="price">Lowest Total Price</option>
+     <option value="date">Soonest Sail Date</option>
+    </select>
+   </label>
+   <label>Ship
+    <select id="dealShip" aria-label="Filter by ship"><option value="">All ships</option></select>
+   </label>
+   <label>Length
+    <select id="dealLength" aria-label="Filter by cruise length">
+     <option value="all">All</option>
+     <option value="short">3–4 Night Getaways</option>
+     <option value="long">6–8+ Night Caribbean</option>
+    </select>
+   </label>
+   <label>Max budget
+    <input id="dealBudget" type="number" inputmode="decimal" min="0" step="25" placeholder="Any $" aria-label="Maximum budget per person">
+   </label>
+  </div>
+  <p id="dealsCount" class="deals-count"></p>
+  <div class="deals-scroll">
+   <table class="deals-table">
+    <caption>Royal Caribbean International sailings from Port Canaveral</caption>
+    <thead>
+     <tr>
+      <th scope="col">Ship</th>
+      <th scope="col">Sailing</th>
+      <th scope="col">Ports of call</th>
+      <th scope="col">From</th>
+      <th scope="col">$/Night</th>
+      <th scope="col">Actions</th>
+     </tr>
+    </thead>
+    <tbody id="dealsBody"></tbody>
+   </table>
+  </div>
+  <p id="dealsEmpty" class="empty" hidden>No Port Canaveral sailings match those filters.</p>
+  <p id="dealsNote" class="deals-note"></p>
+ </section>
  <div class="toolbar">
   <input id="q" type="search" placeholder="Search ships, classes, places…" aria-label="Search ships" autocomplete="off">
   <select id="sort" aria-label="Sort ships">

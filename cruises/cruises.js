@@ -411,6 +411,7 @@
     box.append(el('h2', 'Sources'));
     box.append(el('p', 'The fleet list is taken from the current-fleet tables on the English Wikipedia article Royal Caribbean International. IMO and MMSI numbers come from Wikidata. Ships that have left the fleet are left out, and Hero of the Seas is left out until it enters service.'));
     box.append(el('p', 'Live positions are sampled from aisstream.io about every 5 minutes, with Open Waters filling in ships that stay quiet. This page also reads Open Waters directly when you open it or press Refresh now, and keeps whichever report was heard later. The aisstream key stays on the server. Destination text is the port code the ship broadcast.'));
+    box.append(el('p', 'Port Canaveral fares come from Royal Caribbean\'s public cruise search for Royal Caribbean International ships leaving Port Canaveral. The saved sheet refreshes about once a day. A failed fetch keeps the previous prices.'));
     var lines = [];
     var attr = positions.attribution || {};
     Object.keys(attr).sort().forEach(function (key) {
@@ -782,6 +783,220 @@
     if (!document.hidden) refreshAll(false);
   });
   window.addEventListener('hashchange', openHashedShip);
+
+  var dealRows = [];
+
+  function dollars(value) {
+    if (typeof value !== 'number' || !isFinite(value)) return '';
+    return '$' + Math.round(value).toLocaleString('en-US');
+  }
+
+  function perNightText(value) {
+    var rounded = Math.round(value);
+    if (Math.abs(value - rounded) < 0.05) return '$' + rounded + '/night';
+    return '$' + value.toFixed(2) + '/night';
+  }
+
+  function sailLabel(iso) {
+    var parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    if (!parts) return iso || '';
+    return new Date(+parts[1], +parts[2] - 1, +parts[3]).toLocaleDateString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }
+
+  function cabinLine(cabins) {
+    var parts = [];
+    if (cabins && typeof cabins.interior === 'number') parts.push('Interior ' + dollars(cabins.interior));
+    if (cabins && typeof cabins.oceanView === 'number') parts.push('Ocean View ' + dollars(cabins.oceanView));
+    if (cabins && typeof cabins.balcony === 'number') parts.push('Balcony ' + dollars(cabins.balcony));
+    return parts.join(' · ');
+  }
+
+  function cleanDeal(raw) {
+    if (!raw || raw.line !== 'Royal Caribbean International') return null;
+    if (typeof raw.ship !== 'string' || !raw.ship) return null;
+    if (!validDate(raw.sailDate)) return null;
+    if (typeof raw.nights !== 'number' || raw.nights < 1 || raw.nights > 40) return null;
+    if (typeof raw.startingPrice !== 'number' || typeof raw.perNight !== 'number') return null;
+    if (typeof raw.url !== 'string' || raw.url.indexOf('https://www.royalcaribbean.com/') !== 0) return null;
+    return raw;
+  }
+
+  function fillDealShips() {
+    var select = document.getElementById('dealShip');
+    if (!select) return;
+    var current = select.value;
+    var names = [];
+    dealRows.forEach(function (deal) {
+      if (names.indexOf(deal.ship) === -1) names.push(deal.ship);
+    });
+    names.sort();
+    select.replaceChildren();
+    select.appendChild(new Option('All ships', ''));
+    names.forEach(function (name) { select.appendChild(new Option(name, name)); });
+    if (current) select.value = current;
+  }
+
+  function dealVisible(deal) {
+    var ship = document.getElementById('dealShip').value;
+    var length = document.getElementById('dealLength').value;
+    var budgetText = document.getElementById('dealBudget').value.trim();
+    var budget = budgetText === '' ? NaN : Number(budgetText);
+    if (ship && deal.ship !== ship) return false;
+    if (length === 'short' && (deal.nights < 3 || deal.nights > 4)) return false;
+    if (length === 'long' && deal.nights < 6) return false;
+    if (Number.isFinite(budget) && budget >= 0 && deal.startingPrice > budget) return false;
+    return true;
+  }
+
+  function sortDeals(rows) {
+    var mode = document.getElementById('dealSort').value;
+    rows.sort(function (a, b) {
+      if (mode === 'price') return a.startingPrice - b.startingPrice || a.sailDate.localeCompare(b.sailDate);
+      if (mode === 'date') return a.sailDate.localeCompare(b.sailDate) || a.perNight - b.perNight;
+      return a.perNight - b.perNight || a.startingPrice - b.startingPrice || a.sailDate.localeCompare(b.sailDate);
+    });
+    return rows;
+  }
+
+  function applyDealCountdown(deal) {
+    if (!/^\d{9}$/.test(deal.mmsi || '') || !validDate(deal.sailDate)) {
+      document.getElementById('countCaption').textContent = 'That sailing is not on the fleet countdown list.';
+      return;
+    }
+    var select = document.getElementById('countShip');
+    var dateInput = document.getElementById('countDate');
+    if (select) select.value = deal.mmsi;
+    if (dateInput) dateInput.value = deal.sailDate;
+    countChoice = {mmsi: deal.mmsi, date: deal.sailDate, name: deal.ship || shipName(deal.mmsi)};
+    writeCount(countChoice);
+    paintCount();
+    document.getElementById('countdown').scrollIntoView({behavior: 'smooth', block: 'start'});
+  }
+
+  function renderDeals() {
+    var body = document.getElementById('dealsBody');
+    var empty = document.getElementById('dealsEmpty');
+    var count = document.getElementById('dealsCount');
+    if (!body) return;
+    var rows = sortDeals(dealRows.filter(dealVisible));
+    body.replaceChildren();
+    rows.forEach(function (deal) {
+      var tr = document.createElement('tr');
+      if (deal.bestValue) tr.className = 'is-value';
+      var shipCell = document.createElement('td');
+      shipCell.append(el('span', deal.ship, 'deal-ship'));
+      var sailCell = document.createElement('td');
+      sailCell.append(el('span', deal.title || (deal.nights + '-night sailing')));
+      sailCell.append(document.createElement('br'));
+      sailCell.append(el('span', sailLabel(deal.sailDate)));
+      if (deal.bestValue || deal.under100) {
+        var badges = el('span', null, 'deal-badges');
+        if (deal.bestValue) badges.append(el('span', 'BEST VALUE!', 'deal-badge is-value'));
+        if (deal.under100) badges.append(el('span', 'UNDER $100/NIGHT!', 'deal-badge is-hot'));
+        sailCell.append(badges);
+      }
+      var portCell = document.createElement('td');
+      portCell.textContent = deal.portsLabel || (Array.isArray(deal.ports) ? deal.ports.join(' → ') : '');
+      var priceCell = document.createElement('td');
+      priceCell.append(el('span', dollars(deal.startingPrice), 'deal-price'));
+      var cabinText = cabinLine(deal.cabins);
+      if (cabinText) {
+        priceCell.append(document.createElement('br'));
+        priceCell.append(el('span', cabinText));
+      }
+      if (deal.startingCabin) {
+        priceCell.append(document.createElement('br'));
+        priceCell.append(el('span', 'From ' + deal.startingCabin));
+      }
+      var nightCell = document.createElement('td');
+      nightCell.append(el('span', perNightText(deal.perNight), 'deal-price'));
+      var actionCell = document.createElement('td');
+      var actions = el('div', null, 'deal-actions');
+      var center = el('button', 'Center Ship on Map', 'btn');
+      center.type = 'button';
+      center.addEventListener('click', function () {
+        var ship = fleet.filter(function (item) { return item.mmsi === deal.mmsi; })[0];
+        if (!ship) {
+          document.getElementById('dealsFresh').textContent = deal.ship + ' is not on the fleet map yet.';
+          return;
+        }
+        selectShip(deal.mmsi, false);
+      });
+      var countdown = el('button', 'Set as My Countdown', 'btn');
+      countdown.type = 'button';
+      countdown.addEventListener('click', function () { applyDealCountdown(deal); });
+      var link = document.createElement('a');
+      link.className = 'btn';
+      link.href = deal.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'View / Book';
+      actions.append(center, countdown, link);
+      actionCell.append(actions);
+      tr.append(shipCell, sailCell, portCell, priceCell, nightCell, actionCell);
+      body.append(tr);
+    });
+    empty.hidden = rows.length !== 0;
+    count.textContent = rows.length === dealRows.length
+      ? dealRows.length + ' Port Canaveral sailings'
+      : 'Showing ' + rows.length + ' of ' + dealRows.length + ' Port Canaveral sailings';
+  }
+
+  function fillDealsNote(browseUrl) {
+    var note = document.getElementById('dealsNote');
+    if (!note) return;
+    note.replaceChildren();
+    note.append('Starting fares are per person, before taxes and fees, from Royal Caribbean International. ');
+    var link = document.createElement('a');
+    link.href = browseUrl || 'https://www.royalcaribbean.com/cruises?departureCode_PCN=true';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'All Port Canaveral sailings on Royal Caribbean';
+    note.append(link);
+    note.append('.');
+  }
+
+  function showDeals(data) {
+    var fresh = document.getElementById('dealsFresh');
+    var deals = data && Array.isArray(data.deals) ? data.deals.map(cleanDeal).filter(Boolean) : [];
+    dealRows = deals;
+    fillDealShips();
+    fillDealsNote(data && data.browseUrl);
+    if (fresh) {
+      if (data && data.fetchedAt) {
+        fresh.textContent = 'Prices last fetched ' + localTime(data.fetchedAt) + ' (' + agePhrase(data.fetchedAt) + ').';
+      } else if (!deals.length) {
+        fresh.textContent = 'The Port Canaveral deal sheet has not been fetched yet.';
+      } else {
+        fresh.textContent = 'Prices are from the last saved Royal Caribbean search.';
+      }
+    }
+    renderDeals();
+  }
+
+  function loadDeals() {
+    return fetch('canaveral-deals.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) throw new Error('deals');
+      return response.json();
+    }).then(showDeals, function () {
+      var fresh = document.getElementById('dealsFresh');
+      if (fresh) fresh.textContent = 'The saved Port Canaveral deals could not be loaded.';
+      fillDealsNote();
+    });
+  }
+
+  ['dealSort', 'dealShip', 'dealLength'].forEach(function (id) {
+    var node = document.getElementById(id);
+    if (node) node.addEventListener('change', renderDeals);
+  });
+  var budgetInput = document.getElementById('dealBudget');
+  if (budgetInput) budgetInput.addEventListener('input', renderDeals);
+  loadDeals();
 
   fetch('fleet.json', {cache: 'no-cache'})
     .then(function (response) {

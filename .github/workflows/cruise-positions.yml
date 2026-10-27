@@ -1,7 +1,9 @@
 name: Update cruise positions
 
 # Listens to aisstream.io for about 75 seconds, fills quiet ships from Open
-# Waters, and publishes cruises/positions.json. The cron is every 5 minutes,
+# Waters, and publishes cruises/positions.json. Once a day it also refreshes
+# cruises/canaveral-deals.json from Royal Caribbean's public Port Canaveral
+# search. The cron is every 5 minutes,
 # the shortest interval GitHub Actions allows. Set the AISSTREAM_API_KEY
 # repository secret from an aisstream.io account key. The job never prints
 # the key. A push made with GITHUB_TOKEN does not start the Pages workflow,
@@ -43,18 +45,34 @@ jobs:
           python3 -m pip install --disable-pip-version-check websockets==15.0.1
           python3 scripts/update-cruise-positions.py
 
+      - name: Fetch Port Canaveral deals
+        if: success() || failure()
+        env:
+          CANAVERAL_DEALS_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        run: python3 scripts/update-canaveral-deals.py
+
       - name: Commit positions
         id: commit
+        if: success() || failure()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add cruises/positions.json
+          git add cruises/positions.json cruises/canaveral-deals.json
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Positions unchanged."
             exit 0
           fi
-          git commit -m "Update Royal Caribbean ship positions"
+          if git diff --cached --name-only | grep -q 'canaveral-deals.json'; then
+            if git diff --cached --name-only | grep -q 'positions.json'; then
+              msg="Update Royal Caribbean ship positions and Port Canaveral deals"
+            else
+              msg="Update Port Canaveral Royal Caribbean cruise deals"
+            fi
+          else
+            msg="Update Royal Caribbean ship positions"
+          fi
+          git commit -m "$msg"
           git pull --rebase origin main
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
