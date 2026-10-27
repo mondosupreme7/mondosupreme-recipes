@@ -413,7 +413,7 @@ function updateOwnerUi(user) {
   const isOwner = email && email === ownerEmail();
   $('#clear').hidden = !isOwner;
   $('#owner').hidden = !live;
-  $('#owner').textContent = isOwner ? 'Sign out' : 'Owner';
+  if (!window.MONDO_MEMBER) $('#owner').textContent = isOwner ? 'Sign out' : 'Owner';
 }
 function connect() {
   const config = window.MONDO_BOARD_CONFIG;

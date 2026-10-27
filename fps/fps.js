@@ -172,6 +172,10 @@
     return n;
   }
 
+  function taggedName(uid, name) {
+    var badge = window.MONDO_MEMBER ? window.MONDO_MEMBER.badgeText(uid) : '';
+    return badge ? ((name || '') + ' ' + badge) : (name || '');
+  }
   function cleanName(s) {
     s = String(s || '').replace(/[^A-Za-z0-9 ]/g, '').replace(/\s+/g, ' ').trim().slice(0, 16);
     if (!/^[A-Za-z]/.test(s)) return 'Rookie';
@@ -1551,7 +1555,7 @@
     });
     remotes.forEach(function (r) {
       var color = r.team === 'ct' ? '#8ec0ff' : r.team === 't' ? '#ffb060' : r.team === 'red' ? '#ff6868' : r.team === 'blue' ? '#68a0ff' : '#d0d0d0';
-      pushSprite(r, color, 1, r.name);
+      pushSprite(r, color, 1, taggedName(r.uid, r.name));
     });
     sentries.forEach(function (s) { pushSprite(s, s.team === 'blue' ? '#7aa0c8' : '#c08080', 0.62, 'Sentry'); });
     rockets.forEach(function (r) { sprites.push({ x: r.x, y: r.y, color: '#f0e080', size: 0.28, label: '' }); });
@@ -1869,7 +1873,7 @@
     snap.forEach(function (child) {
       var v = child.val();
       if (!v) return;
-      rows.push(v);
+      rows.push({ uid: child.key, name: v.name, frags: v.frags });
     });
     rows.sort(function (a, b) { return (b.frags || 0) - (a.frags || 0); });
     var list = $('boardList');
@@ -1883,7 +1887,11 @@
     }
     rows.slice(0, 8).forEach(function (row) {
       var li = document.createElement('li');
-      li.textContent = row.name + ' — ' + row.frags + ' frags';
+      var span = document.createElement('span');
+      span.textContent = row.name || 'Rookie';
+      if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(span, row.uid);
+      li.appendChild(span);
+      li.appendChild(document.createTextNode(' — ' + row.frags + ' frags'));
       list.appendChild(li);
     });
   }
@@ -1977,7 +1985,7 @@
         net.uid = user ? user.uid : null;
         var owner = !!(user && user.email === OWNER);
         $('ownerTools').hidden = !owner;
-        $('ownerBtn').textContent = owner ? 'Sign out' : 'Owner sign in';
+        if (!window.MONDO_MEMBER) $('ownerBtn').textContent = owner ? 'Sign out' : 'Owner sign in';
         if (!user) firebase.auth().signInAnonymously().catch(function () { realmDown(); });
         else listenNet();
       });

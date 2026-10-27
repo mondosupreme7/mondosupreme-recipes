@@ -663,11 +663,25 @@ function rowsFor(cart) {
 function renderBoard() {
   const list = rowsFor(current).sort((a, b) => b.score - a.score || (a.t || 0) - (b.t || 0)).slice(0, 10);
   const el = $('#board');
+  el.replaceChildren();
   if (!list.length) {
-    el.innerHTML = '<li><span>No scores yet.</span><b></b></li>';
+    const empty = document.createElement('li');
+    const span = document.createElement('span');
+    span.textContent = 'No scores yet.';
+    empty.append(span, document.createElement('b'));
+    el.appendChild(empty);
     return;
   }
-  el.innerHTML = list.map((s, i) => '<li><span>' + (i + 1) + '. ' + esc(s.name) + '</span><b>' + Math.round(s.score) + '</b></li>').join('');
+  list.forEach((s, i) => {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.textContent = (i + 1) + '. ' + s.name;
+    if (window.MONDO_MEMBER && s.author) window.MONDO_MEMBER.adorn(span, s.author);
+    const score = document.createElement('b');
+    score.textContent = String(Math.round(s.score));
+    li.append(span, score);
+    el.appendChild(li);
+  });
 }
 function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 function updateBest() {
@@ -768,7 +782,7 @@ function listenScores() {
 }
 function ownerEmail() { return String((window.MONDO_BOARD_OWNER) || 'cbrooks_911@yahoo.com').toLowerCase(); }
 function updateOwner() {
-  $('#ownerBtn').textContent = isOwner ? 'Sign out' : 'Owner sign in';
+  if (!window.MONDO_MEMBER) $('#ownerBtn').textContent = isOwner ? 'Sign out' : 'Owner sign in';
   $('#btnClear').hidden = !isOwner;
 }
 function connectArcade() {

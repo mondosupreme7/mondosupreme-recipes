@@ -119,7 +119,7 @@ function refreshViews(){
 function updateOwnerButton(){
   const b=$('#ownerBtn');
   if(!b)return;
-  b.textContent=isOwner?'Sign out':'Owner sign in';
+  if(!window.MONDO_MEMBER)b.textContent=isOwner?'Sign out':'Owner sign in';
 }
 async function ensureQuota(){
   if(quotaLoaded||!myUid||typeof firebase==='undefined')return;

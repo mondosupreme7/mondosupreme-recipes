@@ -86,6 +86,13 @@ body.is-playing .crt{height:calc(100dvh - var(--task-h) - 168px)}
 @media (max-width:640px){
   .win98-cols{flex-direction:column}
   .win98-side{flex-basis:22px}
+  .win98-tray{max-width:46%}
+  .win98-tray select{max-width:22vw}
+  .win98-clock{min-width:0;padding:1px 4px;font-size:12px}
+}
+@media (max-width:420px){
+  .win98-clock{display:none}
+  .win98-taskbar .shell-tool{font-size:12px;padding:2px 6px}
 }
 @media print{
   .win98-taskbar,.win98-menu,#starTrail{display:none!important}
@@ -110,6 +117,28 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);box-sizing:bo
 .shell-kind{font:700 12px Tahoma,Verdana,sans-serif;color:#000080}
 .shell-empty{margin:0;padding:8px;background:#fff}
 html[data-shell-paused="1"] *{animation-play-state:paused!important}
+.member-dialog{overflow:auto}
+.member-dialog h2{margin-bottom:4px}
+.member-tabs{display:flex;gap:6px;margin:0 0 6px;clear:both}
+.member-tabs button{flex:1;min-height:44px;font:700 14px Tahoma,Verdana,sans-serif}
+.member-tabs button[aria-pressed="true"]{background:#000080;color:#fff}
+.member-row{display:flex;flex-wrap:wrap;gap:8px}
+.member-row .shell-tool{min-height:44px}
+.member-err{color:#800;font-weight:700}
+.member-dialog label{margin:0}
+.member-dialog input{font-size:16px;margin:2px 0 4px}
+.member-dialog p{margin:0 0 4px}
+.avatar-picker{display:grid;grid-template-columns:repeat(4,minmax(44px,1fr));gap:4px;margin:0 0 6px}
+.avatar-choice{min-height:44px;background:#fff;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;padding:2px;font:10px/1.1 Tahoma,Verdana,sans-serif}
+.avatar-choice[aria-pressed="true"]{outline:2px solid #000080;background:#ffffcc}
+.avatar-choice .mava{display:block;margin:0 auto;width:24px;height:24px}
+@media (min-width:700px){
+  .avatar-picker{grid-template-columns:repeat(8,minmax(44px,1fr))}
+}
+.member-chip{display:inline-flex;align-items:center;margin:0 6px 0 0;vertical-align:middle}
+.mava{image-rendering:pixelated;vertical-align:middle}
+.mbadge{font:700 11px Tahoma,Verdana,sans-serif;color:#000080;white-space:nowrap}
+.mbadge.is-web{color:#8b0000}
 @media (max-width:900px){
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
   textarea,select{font-size:16px!important;min-height:44px}

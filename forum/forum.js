@@ -9,7 +9,7 @@
     gaming: 'Gaming'
   };
   const MOODS = { smile: ':)', cool: 'B)', chef: 'chef', ship: 'ship', game: 'game', heart: '<3' };
-  const NAME_RE = /^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/;
+  const NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}$/;
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -270,6 +270,7 @@
       const name = document.createElement('span');
       name.className = 'name';
       name.textContent = t.name || 'Guest';
+      if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(name, t.author);
       author.appendChild(name);
       const replies = document.createElement('td');
       replies.setAttribute('data-label', 'Replies');
@@ -318,6 +319,12 @@
     if (extra) b.setAttribute('data-extra', extra);
     return b;
   }
+  function ownsThread(t) {
+    return !!(user && user.email && t && t.author === user.uid);
+  }
+  function ownsReply(r) {
+    return !!(user && user.email && r && r.author === user.uid);
+  }
   function postArticle(item, op, tid) {
     const art = document.createElement('article');
     art.className = 'post' + (op ? ' op' : '');
@@ -328,6 +335,7 @@
     const who = document.createElement('span');
     who.className = 'who';
     who.textContent = item.name || 'Guest';
+    if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(who, item.author);
     head.appendChild(who);
     if (op && item.official) {
       const badge = document.createElement('span');
@@ -343,25 +351,26 @@
     body.className = 'post-body';
     body.innerHTML = renderBody(op ? item.body : String(item.body || '').slice(0, 2000));
     art.append(head, body);
-    if (isOwner) {
+    const own = op ? ownsThread(item) : ownsReply(item);
+    if (isOwner || own) {
       const tools = document.createElement('div');
       tools.className = 'owner-tools';
       if (op) {
-        tools.append(
-          toolButton('edit', item.id, 'Edit'),
-          toolButton('delete', item.id, 'Delete'),
-          toolButton('pin', item.id, item.pinned ? 'Unstick' : 'Sticky'),
-          toolButton('lock', item.id, item.locked ? 'Unlock' : 'Lock'),
-          toolButton('official', item.id, item.official ? 'Clear official' : 'Official')
-        );
+        tools.appendChild(toolButton('edit', item.id, 'Edit'));
+        if (isOwner) {
+          tools.append(
+            toolButton('delete', item.id, 'Delete'),
+            toolButton('pin', item.id, item.pinned ? 'Unstick' : 'Sticky'),
+            toolButton('lock', item.id, item.locked ? 'Unlock' : 'Lock'),
+            toolButton('official', item.id, item.official ? 'Clear official' : 'Official')
+          );
+        }
       } else {
-        tools.append(
-          toolButton('edit-reply', item.id, 'Edit', tid),
-          toolButton('delete-reply', item.id, 'Delete', tid)
-        );
+        tools.appendChild(toolButton('edit-reply', item.id, 'Edit', tid));
+        if (isOwner) tools.appendChild(toolButton('delete-reply', item.id, 'Delete', tid));
       }
-      if (item.author && item.author !== 'local' && /^[A-Za-z0-9]{1,128}$/.test(item.author)) {
-        tools.appendChild(toolButton(op ? 'ban' : 'ban', item.author, 'Ban writer'));
+      if (isOwner && item.author && item.author !== 'local' && /^[A-Za-z0-9]{1,128}$/.test(item.author)) {
+        tools.appendChild(toolButton('ban', item.author, 'Ban writer'));
       }
       art.appendChild(tools);
     }
@@ -452,7 +461,7 @@
   function render() {
     updateBanners();
     const ownerBtn = $('#ownerBtn');
-    if (ownerBtn) ownerBtn.textContent = isOwner ? 'Sign out' : 'Owner sign in';
+    if (ownerBtn && !window.MONDO_MEMBER) ownerBtn.textContent = isOwner ? 'Sign out' : 'Owner sign in';
     const route = parseRoute();
     if (route.name === 'list') {
       $('#listView').hidden = false;
@@ -468,7 +477,7 @@
       if (route.name === 'new') showCompose(null);
       else if (route.name === 'edit') {
         const t = cache.threads[route.id];
-        if (!t || !isOwner) { location.hash = '#/'; return; }
+        if (!t || !(isOwner || ownsThread(t))) { location.hash = '#/'; return; }
         showCompose(t);
       } else showThread(route.id, false);
       return;
@@ -484,7 +493,7 @@
   function fieldsFromForm() {
     const rawName = $('#postName').value.trim();
     const name = rawName ? cleanName(rawName) : 'Guest';
-    if (!name) return formError('Display name should start with a letter or number. Letters, numbers, and spaces, up to 24 characters.');
+    if (!name) return formError('Display name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.');
     const title = cleanTitle($('#postTitle').value);
     if (!title) return formError('Add a title (up to 120 characters).');
     const body = cleanBody($('#postBody').value, 5000);
@@ -595,7 +604,7 @@
     if (!fields) return;
     const editing = $('#topicForm').dataset.id || '';
     const existing = editing ? cache.threads[editing] : null;
-    if (editing && (!existing || !isOwner)) { formError('Only the owner can edit a topic.'); return; }
+    if (editing && (!existing || !(isOwner || ownsThread(existing)))) { formError('Only the writer can edit this topic.'); return; }
     cache.name = fields.name;
     cache.mood = fields.mood;
     posting = true;
@@ -661,7 +670,7 @@
     if (banned && !isOwner) { toast('This browser is banned from posting.'); return; }
     const rawName = $('#replyName').value.trim();
     const name = rawName ? cleanName(rawName) : 'Guest';
-    if (!name) { errEl.textContent = 'Display name should start with a letter or number. Letters, numbers, and spaces, up to 24 characters.'; errEl.hidden = false; return; }
+    if (!name) { errEl.textContent = 'Display name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.'; errEl.hidden = false; return; }
     const body = cleanBody($('#replyBody').value, 2000);
     const mood = cleanMood($('#replyMood').value);
     const errEl = $('#replyError');
@@ -724,8 +733,15 @@
   }
   async function patchThread(id, changes) {
     const t = cache.threads[id];
-    if (!t || !isOwner) return;
+    if (!t || !(isOwner || ownsThread(t))) return;
     const next = Object.assign({}, t, changes, { updatedAt: Date.now() });
+    if (!isOwner) {
+      next.pinned = !!t.pinned;
+      next.locked = !!t.locked;
+      next.official = !!t.official;
+      next.author = t.author;
+      next.createdAt = t.createdAt;
+    }
     if (t.localOnly || !readsOk || !user) {
       cache.threads[id] = next;
       save();
@@ -756,8 +772,37 @@
     }
   }
   async function onTool(act, id, extra) {
+    if (act === 'edit') {
+      if (!isOwner && !ownsThread(cache.threads[id])) return;
+      location.hash = '#/edit/' + id;
+      return;
+    }
+    if (act === 'edit-reply') {
+      const bag = (cache.replies[extra] || {})[id];
+      if (!bag || (!isOwner && !ownsReply(bag))) return;
+      const next = prompt('Edit reply', bag.body);
+      if (next == null) return;
+      const body = cleanBody(next, 2000);
+      if (!body) { toast('Reply cannot be empty.'); return; }
+      if (bag.localOnly || !readsOk || !user) {
+        bag.body = body;
+        save();
+        painted = '';
+        render();
+        return;
+      }
+      try {
+        await firebase.database().ref('forum/replies/' + extra + '/' + id).set({
+          body, name: bag.name, mood: cleanMood(bag.mood), author: bag.author, createdAt: bag.createdAt
+        });
+        bag.body = body;
+        save();
+        painted = '';
+        render();
+      } catch (e) { toast('Could not edit that reply.'); }
+      return;
+    }
     if (!isOwner) return;
-    if (act === 'edit') { location.hash = '#/edit/' + id; return; }
     if (act === 'pin') { await patchThread(id, { pinned: !cache.threads[id].pinned }); render(); return; }
     if (act === 'lock') { await patchThread(id, { locked: !cache.threads[id].locked }); render(); return; }
     if (act === 'official') { await patchThread(id, { official: !cache.threads[id].official }); render(); return; }
@@ -809,30 +854,6 @@
       painted = '';
       render();
       return;
-    }
-    if (act === 'edit-reply') {
-      const bag = (cache.replies[extra] || {})[id];
-      if (!bag) return;
-      const next = prompt('Edit reply', bag.body);
-      if (next == null) return;
-      const body = cleanBody(next, 2000);
-      if (!body) { toast('Reply cannot be empty.'); return; }
-      if (bag.localOnly || !readsOk || !user) {
-        bag.body = body;
-        save();
-        painted = '';
-        render();
-        return;
-      }
-      try {
-        await firebase.database().ref('forum/replies/' + extra + '/' + id).set({
-          body, name: bag.name, mood: cleanMood(bag.mood), author: bag.author, createdAt: bag.createdAt
-        });
-        bag.body = body;
-        save();
-        painted = '';
-        render();
-      } catch (e) { toast('Could not edit that reply.'); }
     }
   }
   async function bumpView(t) {

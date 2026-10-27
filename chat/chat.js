@@ -140,6 +140,7 @@ function renderMessage(msg) {
   const name = document.createElement('strong');
   name.className = 'msg-name';
   name.textContent = msg.name;
+  if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(name, msg.author);
   const time = document.createElement('time');
   const when = new Date(msg.t);
   if (!Number.isNaN(when.getTime())) time.dateTime = when.toISOString();
@@ -432,7 +433,7 @@ function updateOwnerUi(user) {
   document.body.classList.toggle('is-owner', isOwner);
   $('#clear').hidden = !isOwner;
   $('#owner').hidden = !live;
-  $('#owner').textContent = isOwner ? 'Sign out' : 'Owner';
+  if (!window.MONDO_MEMBER) $('#owner').textContent = isOwner ? 'Sign out' : 'Owner';
   scheduleRender(nearBottom());
 }
 function connect() {

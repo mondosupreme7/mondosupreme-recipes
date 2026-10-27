@@ -526,9 +526,30 @@ function renderPark() {
     } catch { /* none */ }
   }
   rows.sort((a, b) => (b.t || 0) - (a.t || 0));
-  if (!rows.length) { list.innerHTML = '<li><span>No pets in the park yet.</span></li>'; return; }
-  list.innerHTML = rows.map(r => '<li><span>' + esc(r.name) + ' · ' + esc(LABELS[r.species] || r.stage || '') + ' · ' + esc(r.owner || '') + ' · ' + (r.age | 0) + 'd</span>' +
-    (isOwner ? '<button type="button" data-remove="' + esc(r.id || '') + '">Remove</button>' : '') + '</li>').join('');
+  list.replaceChildren();
+  if (!rows.length) {
+    const empty = document.createElement('li');
+    const span = document.createElement('span');
+    span.textContent = 'No pets in the park yet.';
+    empty.appendChild(span);
+    list.appendChild(empty);
+    return;
+  }
+  rows.forEach(r => {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.textContent = r.name + ' · ' + (LABELS[r.species] || r.stage || '') + ' · ' + (r.owner || '') + ' · ' + (r.age | 0) + 'd';
+    if (window.MONDO_MEMBER && r.id) window.MONDO_MEMBER.adorn(span, r.id);
+    li.appendChild(span);
+    if (isOwner) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.remove = r.id || '';
+      btn.textContent = 'Remove';
+      li.appendChild(btn);
+    }
+    list.appendChild(li);
+  });
 }
 function listenPark() {
   if (listening || typeof firebase === 'undefined') return;
@@ -552,13 +573,13 @@ function connectPet() {
     if (!user) {
       isOwner = false;
       myUid = '';
-      $('#ownerBtn').textContent = 'Owner sign in';
+      if (!window.MONDO_MEMBER) $('#ownerBtn').textContent = 'Owner sign in';
       try { await firebase.auth().signInAnonymously(); } catch { /* local pet still works */ }
       return;
     }
     myUid = user.uid;
     isOwner = !!(user.email && user.email.toLowerCase() === ownerEmail());
-    $('#ownerBtn').textContent = isOwner ? 'Sign out' : 'Owner sign in';
+    if (!window.MONDO_MEMBER) $('#ownerBtn').textContent = isOwner ? 'Sign out' : 'Owner sign in';
     listenPark();
     renderPark();
   });

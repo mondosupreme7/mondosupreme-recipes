@@ -26,7 +26,7 @@
   }
   function cleanName(value) {
     var text = String(value || '').replace(/\s+/g, ' ').trim();
-    return /^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/.test(text) ? text : '';
+    return /^[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}$/.test(text) ? text : '';
   }
   function cleanNote(value) {
     var text = String(value || '').replace(/[\r\n]+/g, ' ').trim();
@@ -94,6 +94,7 @@
       var title = document.createElement('p');
       var strong = document.createElement('strong');
       strong.textContent = entry.name || 'Guest';
+      if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(strong, entry.author);
       title.appendChild(strong);
       if (entry.location) title.appendChild(document.createTextNode(' · ' + entry.location));
       if (entry.createdAt) title.appendChild(document.createTextNode(' · ' + when(entry.createdAt)));
@@ -196,7 +197,7 @@
     var location = cleanWhere($('gbWhere').value);
     var stampNode = document.querySelector('input[name="stamp"]:checked');
     var stamp = stampNode && STAMPS.indexOf(stampNode.value) >= 0 ? stampNode.value : 'sun';
-    if (!name) { status('Use a name of letters, numbers, and spaces.'); return; }
+    if (!name) { status('Use a name of letters, numbers, underscores, and spaces.'); return; }
     if (!note) { status('Write a short note, up to 280 characters.'); return; }
     if (homepage == null) { status('A homepage has to start with https://'); return; }
     var user = window.firebase && firebase.auth && firebase.auth().currentUser;

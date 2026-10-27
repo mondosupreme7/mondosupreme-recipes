@@ -318,6 +318,7 @@
       dlg.insertBefore(btn, dlg.firstChild);
     });
   }
+  window.MONDO_SHELL_ARM = armDialogs;
 
   function buildFind() {
     var dlg = document.createElement('dialog');
@@ -661,7 +662,7 @@
     ownerBtn.type = 'button';
     ownerBtn.className = 'shell-tool';
     ownerBtn.id = 'shellOwner';
-    ownerBtn.textContent = 'Sign in';
+    ownerBtn.textContent = "[👤 Sign In / Join '98]";
     bar.appendChild(findBtn);
     bar.appendChild(ownerBtn);
 
@@ -738,9 +739,9 @@
 
     function paintOwner(user) {
       var on = isOwnerUser(user);
-      ownerBtn.textContent = on ? 'Owner Mode: ON' : 'Sign in';
+      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Owner Mode: ON' : "[👤 Sign In / Join '98]");
       ownerBtn.classList.toggle('is-owner', on);
-      ownerBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      ownerBtn.setAttribute('aria-pressed', window.MONDO_MEMBER && window.MONDO_MEMBER.isMember() ? 'true' : (on ? 'true' : 'false'));
       document.dispatchEvent(new CustomEvent('mondo-owner', {detail: {on: on}}));
     }
     function attachChip() {
@@ -757,6 +758,7 @@
     setTimeout(attachChip, 400);
 
     ownerBtn.addEventListener('click', function () {
+      if (window.MONDO_MEMBER) return;
       setMenu(false);
       var pageBtn = document.getElementById('ownerBtn') || document.getElementById('owner');
       if (pageBtn) { pageBtn.click(); return; }

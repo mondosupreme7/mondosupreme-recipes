@@ -21,7 +21,7 @@
     good: 'Good Used',
     parts: 'For Parts / Retro'
   };
-  var NAME_RE = /^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/;
+  var NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}$/;
   var PHOTO_RE = /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/;
   var ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
   var OFFICIAL = '★ Official Mondo Seller (999) ★';
@@ -365,6 +365,7 @@
       var seller = document.createElement('div');
       seller.className = 'seller-name';
       seller.textContent = item.seller || '';
+      if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(seller, item.author);
       sellerTd.appendChild(seller);
       if (item.official) {
         var star = document.createElement('div');
@@ -400,8 +401,12 @@
     tr.appendChild(td);
     table.appendChild(tr);
   }
+  function ownsItem(item) {
+    return !!(user && user.email && item && item.author === user.uid);
+  }
   function ownerButtons(parent, item) {
-    if (!isOwner) return;
+    var own = ownsItem(item);
+    if (!isOwner && !own) return;
     var bar = document.createElement('div');
     bar.className = 'owner-tools';
     function btn(act, label) {
@@ -415,8 +420,10 @@
     }
     btn('edit', 'Edit');
     btn('sold', item.sold ? 'Mark as available' : 'Mark as SOLD');
-    btn('feature', item.featured ? 'Unfeature' : 'Feature / Pin');
-    btn('delete', 'Delete');
+    if (isOwner) {
+      btn('feature', item.featured ? 'Unfeature' : 'Feature / Pin');
+      btn('delete', 'Delete');
+    }
     parent.appendChild(bar);
   }
   function showDetail(id, force) {
@@ -465,7 +472,10 @@
     table.className = 'meta';
     metaRow(table, 'Condition', CONDITIONS[item.condition] || '');
     metaRow(table, 'Category', CATS[item.category] || '');
-    metaRow(table, 'Seller', item.seller || '');
+    var sellerNode = document.createElement('span');
+    sellerNode.textContent = item.seller || '';
+    if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(sellerNode, item.author);
+    metaRow(table, 'Seller', sellerNode);
     if (item.official) metaRow(table, 'Rating', OFFICIAL);
     metaRow(table, 'Location', item.location || 'Not listed');
     var contact = document.createElement('span');
@@ -507,6 +517,7 @@
       kind.textContent = row.kind === 'offer' ? 'OFFER' : 'QUESTION';
       var who = document.createElement('strong');
       who.textContent = row.name || 'Guest';
+      if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(who, row.author);
       var time = document.createElement('time');
       time.dateTime = row.createdAt ? new Date(Number(row.createdAt)).toISOString() : '';
       time.textContent = when(row.createdAt);
@@ -612,7 +623,7 @@
       return;
     }
     var existing = id ? cache.items[id] : null;
-    if (id && (!existing || !isOwner)) {
+    if (id && (!existing || !(isOwner || ownsItem(existing)))) {
       location.hash = existing ? '#/item/' + id : '#/';
       return;
     }
@@ -705,7 +716,7 @@
     var category = cleanCat($('#postCat').value);
     if (!category) return formError('Pick a category.');
     var seller = cleanName($('#postSeller').value);
-    if (!seller) return formError('Seller name should start with a letter or number. Letters, numbers, and spaces, up to 24 characters.');
+    if (!seller) return formError('Seller name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.');
     var location = cleanLine($('#postLocation').value, 80);
     var description = cleanBody($('#postBody').value, 2000);
     if (!description) return formError('Add a description.');
@@ -841,7 +852,7 @@
     if (!fields) return;
     var editing = $('#itemForm').dataset.id || '';
     var existing = editing ? cache.items[editing] : null;
-    if (editing && (!existing || !isOwner)) { formError('Only the owner can edit a listing.'); return; }
+    if (editing && (!existing || !(isOwner || ownsItem(existing)))) { formError('Only the seller can edit this listing.'); return; }
     posting = true;
     $('#postBtn').disabled = true;
     try {
@@ -913,7 +924,7 @@
     var errEl = $('#offerError');
     if (!item || item.sold) { toast('This listing is sold.'); return; }
     var name = cleanName($('#offerName').value);
-    if (!name) { errEl.textContent = 'Name should start with a letter or number. Letters, numbers, and spaces, up to 24 characters.'; errEl.hidden = false; return; }
+    if (!name) { errEl.textContent = 'Name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.'; errEl.hidden = false; return; }
     var body = cleanBody($('#offerBody').value, 400).replace(/[\r\n]+/g, ' ').trim();
     if (!body) { errEl.textContent = 'Write a question or an offer.'; errEl.hidden = false; return; }
     if (body.length > 400) { errEl.textContent = 'Keep it to 400 characters.'; errEl.hidden = false; return; }
@@ -983,7 +994,15 @@
   }
   async function patchItem(id, changes) {
     var item = cache.items[id];
-    if (!item || !isOwner) return;
+    if (!item || !(isOwner || ownsItem(item))) return;
+    if (!isOwner) {
+      changes = Object.assign({}, changes, {
+        featured: !!item.featured,
+        official: !!item.official,
+        author: item.author,
+        createdAt: item.createdAt
+      });
+    }
     var next = Object.assign({}, item, changes, { updatedAt: Date.now(), id: id });
     if (item.localOnly || item.sample || !readsOk || !user) {
       cache.items[id] = next;
@@ -1003,7 +1022,10 @@
     }
   }
   async function onTool(act, id, extra) {
-    if (!isOwner) return;
+    if (act === 'edit' || act === 'sold') {
+      var owned = cache.items[id];
+      if (!owned || !(isOwner || ownsItem(owned))) return;
+    } else if (!isOwner) return;
     if (act === 'edit') { location.hash = '#/edit/' + id; return; }
     if (act === 'sold' || act === 'feature') {
       var item = cache.items[id];
@@ -1194,7 +1216,7 @@
   }
   function render(force) {
     var ownerBtn = $('#ownerBtn');
-    if (ownerBtn) ownerBtn.textContent = isOwner ? 'Sign out' : 'Owner sign in';
+    if (ownerBtn && !window.MONDO_MEMBER) ownerBtn.textContent = isOwner ? 'Sign out' : 'Owner sign in';
     var where = route();
     var active = document.activeElement;
     var typing = active && active.closest && (active.closest('#itemForm') || active.closest('#offerForm'));

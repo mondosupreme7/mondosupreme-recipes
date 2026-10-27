@@ -984,6 +984,10 @@
       ctx.fillRect(sx + 6, sy - 26, 3, 6);
     }
   }
+  function taggedName(uid, name) {
+    var badge = window.MONDO_MEMBER ? window.MONDO_MEMBER.badgeText(uid) : '';
+    return badge ? (name + ' ' + badge) : name;
+  }
   function drawName(x, y, text, color) {
     ctx.font = '700 12px Tahoma, sans-serif';
     ctx.textAlign = 'center';
@@ -1065,7 +1069,7 @@
     remoteAll.forEach(function (o) {
       if (o.zone !== zoneId) return;
       drawActor(o.x, o.y, o.cls, o.faction, o.cls);
-      drawName(o.x, o.y, o.name, o.faction === 'horde' ? '#ff4d4d' : '#6ea8ff');
+      drawName(o.x, o.y, taggedName(o.uid, o.name), o.faction === 'horde' ? '#ff4d4d' : '#6ea8ff');
       if (o.bubble) {
         ctx.font = '700 12px Tahoma, sans-serif';
         ctx.fillStyle = '#fff';
@@ -1073,7 +1077,7 @@
       }
     });
     drawActor(player.x, player.y, player.cls, player.faction, player.cls);
-    drawName(player.x, player.y, player.name, player.faction === 'horde' ? '#ff4d4d' : '#6ea8ff');
+    drawName(player.x, player.y, taggedName(myUid, player.name), player.faction === 'horde' ? '#ff4d4d' : '#6ea8ff');
     if (player.bubbleUntil > now() && player.bubble) {
       ctx.font = '700 12px Tahoma, sans-serif';
       ctx.fillStyle = '#fff';
@@ -1340,7 +1344,7 @@
       myUid = user.uid;
       var owner = !!(user.email && user.email.toLowerCase() === ownerEmail());
       $('ownerTools').hidden = !owner;
-      $('ownerBtn').textContent = owner ? 'Owner sign out' : 'Owner sign in';
+      if (!window.MONDO_MEMBER) $('ownerBtn').textContent = owner ? 'Owner sign out' : 'Owner sign in';
       listenRealm();
       firebase.database().ref('mmo/saves/' + myUid).once('value').then(function (snap) {
         var remote = snap.val();
@@ -1364,6 +1368,7 @@
         if (!v.name || !v.updatedAt || clock - Number(v.updatedAt) > 15000) return;
         list.push({
           id: 'p' + ch.key,
+          uid: ch.key,
           name: String(v.name).slice(0, 16),
           faction: v.faction === 'horde' ? 'horde' : 'alliance',
           cls: CLASSES[v.cls] ? v.cls : 'warrior',

@@ -4,7 +4,7 @@
   var OWNER = 'cbrooks_911@yahoo.com';
   var RATE_MS = 4000;
   var DAILY = 40;
-  var NAME_RE = /^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/;
+  var NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}$/;
   var oracle = window.MONDO_ORACLE;
   var user = null;
   var isOwner = false;
@@ -179,7 +179,7 @@
     var empty = $('logEmpty');
     if (!body) return;
     var rows = mergedAsks();
-    var sig = rows.map(function (row) { return row.id + ':' + row.answer; }).join('|') + (isOwner ? ':o' : '');
+    var sig = rows.map(function (row) { return row.id + ':' + row.answer + ':' + (row.name || ''); }).join('|') + (isOwner ? ':o' : '');
     if (sig === logSig) {
       if (empty) empty.hidden = rows.length > 0;
       return;
@@ -196,6 +196,13 @@
         return td;
       }
       tr.appendChild(cell('Question', row.question || '(just a shake)'));
+      var who = document.createElement('td');
+      who.dataset.label = 'Who';
+      var whoName = document.createElement('span');
+      whoName.textContent = row.name || 'Seeker';
+      if (window.MONDO_MEMBER && row.author) window.MONDO_MEMBER.adorn(whoName, row.author);
+      who.appendChild(whoName);
+      tr.appendChild(who);
       tr.appendChild(cell('Fortune', row.answer || ''));
       tr.appendChild(cell('Tone', toneWord(row.tone), 'tone-' + (row.tone || 'yes')));
       var tools = document.createElement('td');
@@ -216,7 +223,7 @@
   }
   function paintOwner() {
     var btn = $('ownerBtn');
-    if (btn) btn.textContent = isOwner ? 'Sign out' : 'Owner sign in';
+    if (btn && !window.MONDO_MEMBER) btn.textContent = isOwner ? 'Sign out' : 'Owner sign in';
     var tools = $('ownerTools');
     if (tools) tools.hidden = !isOwner;
     paintCustoms();
@@ -291,6 +298,7 @@
         tone: row.tone,
         mode: row.mode,
         name: String(row.name || 'Seeker'),
+        author: String(row.author || ''),
         createdAt: Number(row.createdAt) || 0,
         local: false
       });
@@ -458,6 +466,7 @@
       tone: result.tone,
       mode: result.mode === 'custom' ? 'custom' : (oracle.load().mode || 'classic'),
       name: 'Seeker',
+      author: user && user.uid ? user.uid : '',
       createdAt: Date.now(),
       local: true
     };
@@ -470,7 +479,7 @@
     var name = cleanName($('askName').value);
     if (!name) {
       bumpPrivate(result.tone);
-      status('Use letters and numbers in the name. This shake stayed private.');
+      status('Use letters, numbers, and underscores in the name. This shake stayed private.');
       paintOdds();
       return;
     }
@@ -531,7 +540,7 @@
     if (busy) return;
     var nameCheck = cleanName($('askName').value);
     if (!nameCheck) {
-      status('Use letters and numbers in the name.');
+      status('Use letters, numbers, and underscores in the name.');
       $('askName').focus();
       return;
     }
