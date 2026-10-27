@@ -1,3 +1,12 @@
+.cruise-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.cruise-tabs .btn{min-height:48px;font-size:16px}
+.cruise-tabs .btn[aria-selected=true]{background:#000080;color:#fff}
+.pack-pane{background:#c0c0c0;border:2px solid #808080;padding:10px;margin:0 0 16px}
+.pack-guide p{font:15px Tahoma,Verdana,sans-serif}
+.pack-group{background:#fff;border:2px solid #000080;padding:8px;margin:0 0 8px}
+.pack-group h3{margin:0 0 6px;color:#000080}
+.pack-group label{display:flex;gap:8px;align-items:center;min-height:44px;font-size:16px}
+.pack-count{font:700 14px "Courier New",monospace}
 .site-header{padding-top:env(safe-area-inset-top)}
 .site-footer{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
 .site-footer a{color:var(--accent)}

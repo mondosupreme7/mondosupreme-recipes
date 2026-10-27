@@ -1,0 +1,21 @@
+.launch-page{overflow-x:hidden}
+.launch-kicker{margin:0;font:700 13px "Courier New",monospace;letter-spacing:.08em;color:#003399;text-transform:uppercase}
+.launch-hero h1{margin:.2rem 0 .4rem;font-size:clamp(1.4rem,6vw,2rem)}
+.lcd{font:700 clamp(1.4rem,7vw,2.4rem) "Courier New",monospace;background:#071406;color:#39ff14;border:4px ridge #808080;padding:10px 12px;text-align:center;letter-spacing:.04em}
+.lcd small{display:block;color:#b7ffb0;font-size:.85rem;letter-spacing:0}
+.pad-map{width:100%;height:auto;background:#0b1d3a;border:3px ridge #c0c0c0;display:block}
+.launch-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:800px){.launch-grid{grid-template-columns:1.1fr .9fr}}
+.win{background:#c0c0c0;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;padding:8px;margin:0 0 12px}
+.win h2{margin:0 0 8px;background:#000080;color:#fff;font:700 14px Tahoma,Verdana,sans-serif;padding:4px 8px}
+.cards{display:flex;flex-direction:column;gap:8px}
+.card{background:#fff;border:2px solid #000080;padding:8px;font:14px Tahoma,Verdana,sans-serif}
+.card b{display:block;color:#000080}
+.card button{min-height:44px;margin-top:6px}
+.guide{font:15px Tahoma,Verdana,sans-serif;line-height:1.4}
+.guide li{margin:.3rem 0}
+.sight-form,.sight-list{display:flex;flex-direction:column;gap:8px}
+.sight-form input,.sight-form select,.sight-form textarea{font-size:16px;min-height:44px;width:100%;box-sizing:border-box}
+.sight-list li{background:#fff;border-bottom:1px dashed #000080;padding:6px 0;list-style:none}
+.note{background:#ffff99;border:2px solid #000;padding:8px;font-weight:700}
+.status-line{font:700 13px "Courier New",monospace}

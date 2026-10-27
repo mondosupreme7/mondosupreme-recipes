@@ -12,8 +12,8 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
-<title>MondoGotchi</title>
-<meta name="description" content="MondoGotchi — a 1998 keychain pet. Hatch it, feed it, and show it in the Pet Park.">
+<title>MondoGotchi '98</title>
+<meta name="description" content="MondoGotchi '98 — a live 60fps virtual pet. Feed it, dress it, and wave at friends in the Pet Park.">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="pet.css">
 <link rel="stylesheet" href="/retro.css">
@@ -46,6 +46,10 @@
   <a href="/8ball/">8-Ball</a>
   <a href="/mmo/">MMO</a>
   <a href="/fps/">FPS</a>
+  <a href="/launches/">Launches</a>
+  <a href="/planner/">Planner</a>
+  <a href="/radio/">Radio</a>
+  <a href="/crossword/">Crossword</a>
   <a href="/escape/" aria-label="The Locked Room">???</a>
  </nav>
  <nav class="actions">
@@ -58,8 +62,19 @@
  <div class="keychain" id="keychain" data-shell="purple">
   <div class="ring" aria-hidden="true"></div>
   <div class="egg" id="egg">
+   <div class="rooms" role="group" aria-label="Habitat">
+    <button type="button" data-room="bedroom" aria-pressed="true">90s Bedroom</button>
+    <button type="button" data-room="beach" aria-pressed="false">Port Canaveral Beach</button>
+    <button type="button" data-room="matrix" aria-pressed="false">Cyber Matrix</button>
+    <button type="button" data-room="garden" aria-pressed="false">Backyard Garden</button>
+   </div>
    <div class="lcd-bezel">
-    <canvas id="lcd" width="96" height="64" aria-label="Pet LCD screen"></canvas>
+    <canvas id="lcd" width="480" height="270" aria-label="MondoGotchi habitat"></canvas>
+   </div>
+   <div class="meters" aria-label="Pet meters">
+    <div class="meter"><span>Hunger</span><span class="track"><span id="mHunger"></span></span><b id="mHungerN">0%</b></div>
+    <div class="meter"><span>Happy</span><span class="track"><span id="mHappy"></span></span><b id="mHappyN">0%</b></div>
+    <div class="meter"><span>Clean</span><span class="track"><span id="mClean"></span></span><b id="mCleanN">0%</b></div>
    </div>
    <div class="hw" role="group" aria-label="Keychain buttons">
     <button type="button" id="btnA" class="rubber">A<span>Select</span></button>
@@ -69,19 +84,36 @@
   </div>
  </div>
  <p id="status" class="status" aria-live="polite">An egg is warming up.</p>
- <div class="quick" aria-label="Care">
-  <button type="button" data-act="meal">Meal</button>
-  <button type="button" data-act="snack">Snack</button>
-  <button type="button" data-act="light">Light</button>
-  <button type="button" data-act="play">Play</button>
-  <button type="button" data-act="meds">Medicine</button>
-  <button type="button" data-act="clean">Clean</button>
-  <button type="button" data-act="stats">Stats</button>
-  <button type="button" data-act="away">Sitter</button>
+ <div class="quick dock" aria-label="One tap care">
+  <button type="button" data-act="meal" class="act-meal">🍕 Feed Meal</button>
+  <button type="button" data-act="snack" class="act-treat">🍦 Give Treat</button>
+  <button type="button" data-act="ball" class="act-ball">🎾 Toss Ball</button>
+  <button type="button" data-act="play" class="act-play">🕹️ Play Mini-Game</button>
+  <button type="button" data-act="clean" class="act-bath">🛁 Bubble Bath</button>
+  <button type="button" data-act="meds" class="act-meds">💊 Medicine</button>
+  <button type="button" data-act="light" class="act-light">💡 Lights / Sleep</button>
+  <button type="button" data-act="dress" class="act-dress">🎩 Dress Up</button>
+  <button type="button" data-act="away" class="act-away">🏖️ Pet Sitter / Vacation Mode</button>
+ </div>
+ <div id="hatRow" class="hats" hidden>
+  <button type="button" data-hat="" aria-pressed="true">No Hat</button>
+  <button type="button" data-hat="captain">Captain's Cruise Hat</button>
+  <button type="button" data-hat="chef">Chef Toque</button>
+  <button type="button" data-hat="shades">90s Cool Shades</button>
+  <button type="button" data-hat="party">Party Hat</button>
+  <button type="button" data-hat="wizard">Wizard Hat</button>
+  <button type="button" data-hat="crown">Crown</button>
+ </div>
+ <div id="gamePick" class="pads" hidden>
+  <button type="button" data-game="catch">Snack Catcher</button>
+  <button type="button" data-game="jump">Cruise Obstacle Jump</button>
+  <button type="button" data-game="mind">Mind Reader High/Low</button>
+  <button type="button" id="gameExit">Close</button>
  </div>
  <div id="gamePads" class="pads" hidden>
-  <button type="button" id="padLeft">Left</button>
-  <button type="button" id="padRight">Right</button>
+  <button type="button" id="padLeft">Lower / Left</button>
+  <button type="button" id="padJump">Jump / That's it</button>
+  <button type="button" id="padRight">Higher / Right</button>
  </div>
  <div class="shells" role="group" aria-label="Shell color">
   <button type="button" data-shell="purple" aria-pressed="true">Atomic Purple</button>

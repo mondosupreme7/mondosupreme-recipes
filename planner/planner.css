@@ -1,0 +1,19 @@
+.plan-kicker{margin:0;font:700 13px "Courier New",monospace;color:#003399;letter-spacing:.08em;text-transform:uppercase}
+.plan-hero h1{margin:.2rem 0;font-size:clamp(1.4rem,6vw,2rem)}
+.week{display:flex;flex-direction:column;gap:8px}
+.day{background:#c0c0c0;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;padding:8px}
+.day h2{margin:0 0 6px;background:#000080;color:#fff;font:700 14px Tahoma,Verdana,sans-serif;padding:3px 8px}
+.slot{display:grid;grid-template-columns:1fr;gap:4px;margin:0 0 8px}
+.slot span{font:700 12px Verdana,sans-serif}
+.slot select,.slot input,.grocery-add input{font-size:16px;min-height:44px;width:100%;box-sizing:border-box}
+.plan-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.plan-actions .btn{min-height:48px}
+.aisle{margin:0 0 10px;background:#fff;border:2px solid #000080;padding:8px}
+.aisle h3{margin:0 0 6px;color:#000080}
+.aisle label{display:flex;gap:8px;align-items:center;min-height:44px;font-size:16px}
+.note{background:#ffff99;border:2px solid #000;padding:8px;font-weight:700}
+@media(min-width:800px){.slot{grid-template-columns:92px 1fr 1fr;align-items:center}}
+@media print{
+  .site-header,.site-footer,.ticker,.win98-taskbar,.plan-actions,.grocery-add,.note{display:none!important}
+  body{background:#fff;padding:0}
+}

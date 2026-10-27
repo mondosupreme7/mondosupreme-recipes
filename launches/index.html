@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mondo '98">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000080">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://ll.thespacedevs.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Cape Canaveral Launch Control '98</title>
+<meta name="description" content="Cape Canaveral Launch Control '98. Upcoming KSC and CCSFS launches, a T-minus clock, and a Cocoa 32927 viewing guide.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="launches.css">
+</head>
+<body class="launch-page">
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Launch Control '98 ~*~ ★ Kennedy Space Center · Cape Canaveral · Cocoa 32927 ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Launch Control '98 ~*~ ★ Kennedy Space Center · Cape Canaveral · Cocoa 32927 ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/launches/" class="brand"><span class="logo">🚀</span><span>Launch <em>Control</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/planner/">Planner</a>
+  <a href="/daily-recipe/">Daily</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/weather/">Weather</a>
+  <a href="/launches/" aria-current="page">Launches</a>
+  <a href="/wordle/">Wordle</a>
+  <a href="/crossword/">Crossword</a>
+  <a href="/search/">AI Search</a>
+  <a href="/stocks/">Stocks</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/radio/">Radio</a>
+  <a href="/forum/">Forum</a>
+  <a href="/market/">Market</a>
+  <a href="/8ball/">8-Ball</a>
+  <a href="/mmo/">MMO</a>
+  <a href="/fps/">FPS</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="note" hidden>Sighting log is saved on this device until the Firebase launches rules are published.</p>
+ <section class="launch-hero">
+  <p class="launch-kicker">Kennedy · Cape Canaveral · Cocoa 32927</p>
+  <h1>Cape Canaveral Launch Control '98</h1>
+  <p>Upcoming rockets from Kennedy Space Center and Cape Canaveral Space Force Station, in Cody's Space Coast backyard.</p>
+  <p id="lcd" class="lcd" aria-live="polite">T- --:--:--</p>
+  <p id="launchStatus" class="status-line">Loading the range…</p>
+ </section>
+ <div class="launch-grid">
+  <section class="win" aria-labelledby="listTitle">
+   <h2 id="listTitle">Upcoming launches</h2>
+   <div id="cards" class="cards"></div>
+  </section>
+  <section class="win" aria-labelledby="mapTitle">
+   <h2 id="mapTitle">Pads from Cocoa</h2>
+   <svg class="pad-map" viewBox="0 0 360 240" role="img" aria-label="Sketch map of Cocoa, Port Canaveral, and the launch pads">
+    <rect width="360" height="240" fill="#0b1d3a"/>
+    <path d="M40 40 H180 L210 80 L200 200 H30 Z" fill="#1d4d32"/>
+    <text x="70" y="120" fill="#d7ffe0" font-size="12" font-family="Tahoma,sans-serif">Cocoa 32927</text>
+    <circle cx="150" cy="150" r="5" fill="#ffd100"/>
+    <path d="M210 90 H300 V210 H230 Z" fill="#12365c"/>
+    <text x="214" y="206" fill="#9fd4ff" font-size="11" font-family="Tahoma,sans-serif">Port Canaveral</text>
+    <circle data-pad="LC-39A" cx="250" cy="78" r="7" fill="#7fdfff"/>
+    <text x="262" y="74" fill="#fff" font-size="11" font-family="Tahoma,sans-serif">LC-39A</text>
+    <circle data-pad="SLC-41" cx="268" cy="118" r="7" fill="#7fdfff"/>
+    <text x="278" y="122" fill="#fff" font-size="11" font-family="Tahoma,sans-serif">SLC-41</text>
+    <circle data-pad="SLC-40" cx="286" cy="168" r="7" fill="#7fdfff"/>
+    <text x="248" y="186" fill="#fff" font-size="11" font-family="Tahoma,sans-serif">SLC-40</text>
+   </svg>
+   <div id="guide" class="guide"></div>
+  </section>
+ </div>
+ <section class="win" aria-labelledby="seeTitle">
+  <h2 id="seeTitle">Launch viewing check-in</h2>
+  <form id="sightForm" class="sight-form">
+   <label>Screen name<input id="seeName" maxlength="16" autocomplete="nickname" placeholder="Guest"></label>
+   <label>Pad
+    <select id="seePad">
+     <option value="39A">LC-39A</option>
+     <option value="40">SLC-40</option>
+     <option value="41">SLC-41</option>
+     <option value="other">Somewhere on the Cape</option>
+    </select>
+   </label>
+   <label>I looked
+    <select id="seeLook">
+     <option value="northeast">Northeast</option>
+     <option value="east">East</option>
+     <option value="southeast">Southeast</option>
+    </select>
+   </label>
+   <label>What I saw<textarea id="seeNote" maxlength="180" rows="3" required placeholder="Bright arc, then the windows rattled."></textarea></label>
+   <button class="btn primary" type="submit">Log this sighting</button>
+  </form>
+  <ul id="sightings" class="sight-list"></ul>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · A backyard viewing guide, not an official range product.</div></footer>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/members.js"></script>
+<script src="/shell.js"></script>
+<script src="/backup.js"></script>
+<script src="launches.js"></script>
+</body>
+</html>

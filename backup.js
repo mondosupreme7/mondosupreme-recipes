@@ -35,7 +35,12 @@
     'mondosupreme.quote_idx.v1',
     'mondosupreme.weather.v1',
     'mondosupreme.wordle.v1',
-    'mondosupreme.search.v1'
+    'mondosupreme.search.v1',
+    'mondosupreme.planner.v1',
+    'mondosupreme.packing.v1',
+    'mondosupreme.launches.v1',
+    'mondosupreme.radio.v1',
+    'mondosupreme.crossword.v1'
   ];
   var CLOUD = [
     ['recipes', 'recipes/items'],

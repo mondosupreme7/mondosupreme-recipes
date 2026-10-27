@@ -1004,6 +1004,10 @@
   if (budgetInput) budgetInput.addEventListener('input', renderDeals);
   loadDeals();
 
+  window.addEventListener('mondo-fleet-show', function () {
+    if (map) setTimeout(function () { map.invalidateSize(); }, 80);
+  });
+
   fetch('fleet.json', {cache: 'no-cache'})
     .then(function (response) {
       if (!response.ok) throw new Error('fleet');

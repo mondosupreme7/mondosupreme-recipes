@@ -48,6 +48,10 @@
   <a href="/8ball/">8-Ball</a>
   <a href="/mmo/">MMO</a>
   <a href="/fps/">FPS</a>
+  <a href="/launches/">Launches</a>
+  <a href="/planner/">Planner</a>
+  <a href="/radio/">Radio</a>
+  <a href="/crossword/">Crossword</a>
   <a href="/escape/" aria-label="The Locked Room">???</a>
  </nav>
 </div></header>
@@ -57,6 +61,11 @@
   <h1>Where the fleet is.</h1>
   <p>Last-known position of every Royal Caribbean International ship in service.</p>
  </div>
+ <div class="cruise-tabs" role="tablist" aria-label="Cruise pages">
+  <button id="tabFleet" class="btn" type="button" aria-selected="true">Fleet &amp; Deals</button>
+  <button id="tabPack" class="btn" type="button" aria-selected="false">Port Canaveral Guide &amp; Packing</button>
+ </div>
+ <div id="fleetPane">
  <section class="countdown" id="countdown" aria-labelledby="countTitle">
   <h2 id="countTitle">My Next Cruise Countdown</h2>
   <p id="countReadout" class="count-lcd" aria-live="polite">000:00:00:00</p>
@@ -142,10 +151,25 @@
  <div id="list" class="ship-list"></div>
  <p id="none" class="empty" hidden>No ships match that search.</p>
  <section id="credits" class="credits"></section>
+ </div>
+ <section id="packPane" class="pack-pane" hidden>
+  <p class="deals-kicker">Terminal 1 · Jetty Park · Packing</p>
+  <h2>Port Canaveral Insider Guide &amp; Packing Checklist</h2>
+  <div class="pack-guide">
+   <h3>Terminal 1, Royal Caribbean</h3>
+   <p>SetSail check-in is smoother when the boarding pass is already on your phone and the arrival time matches the one in the app. The drop-off curb moves quickly, so have passports out before the car stops. The parking garage is a walk with luggage; a porter at the curb is the calmer choice if the group is large. Photos of the ship from the garage roof are a bonus, not the plan.</p>
+   <h3>Jetty Park &amp; the Grills</h3>
+   <p>Jetty Park, just south of the cruise piers, is the classic departure-watching lawn. Grills Seafood Deck &amp; Tiki Bar sits on the channel, so you can eat while the ship slides past the jetty. Arrive early on a sail-away afternoon if you want a table that faces the water. Neither spot is a substitute for being on the ship, and the channel traffic is real, so stay behind the rails.</p>
+  </div>
+  <p id="packCount" class="pack-count">0 packed</p>
+  <div id="packList"></div>
+  <button id="packReset" class="btn ghost" type="button">Clear checks</button>
+ </section>
 </main>
 <footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Ship positions are not for navigation. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">AI Search</a> · <a href="/stocks/">Stocks</a> · <a href="/wiki/">Wiki</a> · <a href="/board/">Board</a> · <a href="/chat/">Chat</a> · <a href="/arcade/">Arcade</a> · <a href="/pet/">Pet</a> · <a href="/forum/">Forum</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a> · <a href="/mmo/">MMO</a> · <a href="/fps/">FPS</a> · <a href="/escape/" aria-label="The Locked Room">???</a></div></footer>
 <script src="vendor/leaflet/leaflet.js"></script>
 <script src="cruises.js"></script>
+<script src="packing.js"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>

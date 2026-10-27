@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mondo '98">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000080">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Mondo Mini Crossword &amp; 90s Trivia</title>
+<meta name="description" content="A daily 5 by 5 mini crossword and a five-question 90s trivia blitz, built for an iPhone.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="crossword.css">
+</head>
+<body>
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Daily 5×5 Mini ~*~ ★ Across, Down, and a 90s trivia blitz ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Daily 5×5 Mini ~*~ ★ Across, Down, and a 90s trivia blitz ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/crossword/" class="brand"><span class="logo">✏️</span><span>Mini <em>Crossword</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/planner/">Planner</a>
+  <a href="/daily-recipe/">Daily</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/weather/">Weather</a>
+  <a href="/launches/">Launches</a>
+  <a href="/wordle/">Wordle</a>
+  <a href="/crossword/" aria-current="page">Crossword</a>
+  <a href="/search/">AI Search</a>
+  <a href="/stocks/">Stocks</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/radio/">Radio</a>
+  <a href="/forum/">Forum</a>
+  <a href="/market/">Market</a>
+  <a href="/8ball/">8-Ball</a>
+  <a href="/mmo/">MMO</a>
+  <a href="/fps/">FPS</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="note" hidden>Scores stay on this device until the crossword rules are published.</p>
+ <section class="xw-hero">
+  <p class="xw-kicker">Pencil · five squares · no newsprint required</p>
+  <h1>Daily 5×5 Mini Crossword</h1>
+  <p id="puzzleName">Today's grid</p>
+  <p class="clock" id="clock" aria-live="polite">00:00</p>
+  <p class="msg" id="msg" role="status"></p>
+ </section>
+ <div id="grid" class="grid" role="group" aria-label="Crossword grid"></div>
+ <div class="xw-actions">
+  <button id="checkBtn" class="btn" type="button">Check</button>
+  <button id="revealBtn" class="btn ghost" type="button">Reveal</button>
+  <a class="btn" href="/wordle/">MondoWord '98</a>
+ </div>
+ <div class="clues">
+  <section><h2>Across</h2><div id="across"></div></section>
+  <section><h2>Down</h2><div id="down"></div></section>
+ </div>
+ <h2>Bonus archive</h2>
+ <div id="archives" class="archives"></div>
+ <section aria-labelledby="triviaTitle">
+  <h2 id="triviaTitle">Daily 90s &amp; general trivia</h2>
+  <p id="triviaMsg" class="msg" role="status"></p>
+  <label>Screen name <input id="playerName" maxlength="16" autocomplete="nickname" placeholder="Guest"></label>
+  <div id="trivia"></div>
+ </section>
+ <section class="board" aria-labelledby="boardTitle">
+  <h2 id="boardTitle">Today's board</h2>
+  <h3>Grid</h3>
+  <ul id="gridBoard"></ul>
+  <h3>Trivia</h3>
+  <ul id="triviaBoard"></ul>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · A homemade mini, not the newspaper one. · <a href="/wordle/">Wordle</a></div></footer>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/members.js"></script>
+<script src="/shell.js"></script>
+<script src="/backup.js"></script>
+<script src="crossword.js"></script>
+</body>
+</html>

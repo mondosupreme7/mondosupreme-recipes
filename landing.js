@@ -172,7 +172,7 @@
     if (year) year.textContent = String(new Date().getFullYear());
     paintCached();
     connectHits();
-    var ring = ['/recipes/', '/daily-recipe/', '/cruises/', '/weather/', '/wordle/', '/search/', '/stocks/', '/wiki/', '/board/', '/chat/', '/arcade/', '/pet/', '/forum/', '/market/', '/8ball/', '/mmo/', '/fps/', '/escape/'];
+    var ring = ['/recipes/', '/planner/', '/daily-recipe/', '/cruises/', '/weather/', '/launches/', '/wordle/', '/crossword/', '/search/', '/stocks/', '/wiki/', '/board/', '/chat/', '/arcade/', '/pet/', '/radio/', '/forum/', '/market/', '/8ball/', '/mmo/', '/fps/', '/escape/'];
     var rand = document.getElementById('ringRand');
     if (rand) rand.href = ring[Math.floor(Math.random() * ring.length)];
   });

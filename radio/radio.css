@@ -1,0 +1,10 @@
+.fm-kicker{margin:0;font:700 13px "Courier New",monospace;color:#003399;letter-spacing:.08em;text-transform:uppercase}
+.fm-hero h1{margin:.2rem 0;font-size:clamp(1.4rem,6vw,2rem)}
+.boombox{background:#1a1a1a;color:#39ff14;border:4px ridge #c0c0c0;padding:10px;margin:0 0 12px}
+.boombox canvas{width:100%;height:88px;display:block;background:#000;touch-action:none}
+.stations,.pads{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stations button,.pads button,.fm-actions button{min-height:48px;font:700 15px Tahoma,Verdana,sans-serif;touch-action:manipulation}
+.pads{grid-template-columns:1fr 1fr;margin-top:8px}
+@media(min-width:700px){.stations{grid-template-columns:1fr 1fr 1fr}.pads{grid-template-columns:repeat(4,1fr)}}
+.now{font:700 14px "Courier New",monospace;min-height:1.4em}
+.note{background:#ffff99;border:2px solid #000;padding:8px;font-weight:700}

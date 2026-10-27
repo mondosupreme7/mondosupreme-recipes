@@ -421,6 +421,19 @@
             ".validate": false
           }
         }
+      },
+      "pings": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "(auth != null && !data.exists() && newData.exists() && $id.matches(/^-[A-Za-z0-9_-]{1,40}$/) && newData.child('from').val() == auth.uid && newData.parent().parent().child('rate').child(auth.uid).val() == now) || (data.exists() && !newData.exists() && (data.child('to').val() == auth.uid || data.child('from').val() == auth.uid || auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['kind','from','to','name','at']) && newData.child('kind').val().matches(/^(wave|treat)$/) && newData.child('from').isString() && newData.child('from').val().matches(/^[A-Za-z0-9]{1,128}$/) && newData.child('to').isString() && newData.child('to').val().matches(/^[A-Za-z0-9]{1,128}$/) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/) && newData.child('at').val() == now)",
+          "kind": { ".validate": "newData.isString() && newData.val().matches(/^(wave|treat)$/)" },
+          "from": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/)" },
+          "to": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/)" },
+          "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/)" },
+          "at": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+          "$other": { ".validate": false }
+        }
       }
     },
     "forum": {
@@ -885,6 +898,41 @@
         }
       }
     },
+    "launches": {
+      ".read": true,
+      "sightings": {
+        "$id": {
+          ".write": "(auth != null && !data.exists() && newData.exists() && $id.matches(/^-[A-Za-z0-9_-]{1,40}$/) && newData.child('author').val() == auth.uid) || (data.exists() && !newData.exists() && (data.child('author').val() == auth.uid || auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['pad','note','look','name','at','author']) && newData.child('pad').val().matches(/^(39A|40|41|other)$/) && newData.child('note').isString() && newData.child('note').val().length >= 2 && newData.child('note').val().length <= 180 && !newData.child('note').val().contains('\\n') && !newData.child('note').val().contains('\\r') && newData.child('look').val().matches(/^(northeast|east|southeast)$/) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('at').isNumber() && newData.child('at').val() > 0 && newData.child('at').val() <= now && newData.child('author').val() == auth.uid)",
+          "pad": { ".validate": "newData.isString() && newData.val().matches(/^(39A|40|41|other)$/)" },
+          "note": { ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 180 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "look": { ".validate": "newData.isString() && newData.val().matches(/^(northeast|east|southeast)$/)" },
+          "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/)" },
+          "at": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+          "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || newData.val() == auth.uid)" },
+          "$other": { ".validate": false }
+        }
+      }
+    },
+    "crossword": {
+      ".read": true,
+      "scores": {
+        "$date": {
+          "$id": {
+            ".write": "auth != null && $date.matches(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) && ($id == auth.uid + 'grid' || $id == auth.uid + 'trivia' || auth.token.email == 'cbrooks_911@yahoo.com')",
+            ".validate": "!newData.exists() || (newData.hasChildren(['name','kind','score','streak','ms','date','at']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('kind').val().matches(/^(grid|trivia)$/) && newData.child('score').isNumber() && newData.child('score').val() >= 0 && newData.child('score').val() <= 100 && newData.child('streak').isNumber() && newData.child('streak').val() >= 0 && newData.child('streak').val() <= 9999 && newData.child('ms').isNumber() && newData.child('ms').val() >= 0 && newData.child('ms').val() <= 172800000 && newData.child('date').val() == $date && newData.child('at').isNumber() && newData.child('at').val() > 0 && newData.child('at').val() <= now)",
+            "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/)" },
+            "kind": { ".validate": "newData.isString() && newData.val().matches(/^(grid|trivia)$/)" },
+            "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
+            "streak": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999" },
+            "ms": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 172800000" },
+            "date": { ".validate": "newData.isString() && newData.val() == $date" },
+            "at": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    },
     "search": {
       ".read": true,
       "asks": {
@@ -949,6 +997,12 @@
           ".validate": "newData.isString() && newData.val().length <= 4000"
         },
         "wordle": {
+          ".validate": "newData.isString() && newData.val().length <= 20000"
+        },
+        "planner": {
+          ".validate": "newData.isString() && newData.val().length <= 40000"
+        },
+        "packing": {
           ".validate": "newData.isString() && newData.val().length <= 20000"
         },
         "$other": {
