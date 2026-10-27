@@ -37,6 +37,7 @@
     { group: 'Home', title: 'Home', href: '/', text: 'landing mondosupreme' },
     { group: 'Kitchen', title: 'Recipes', href: '/recipes/', text: 'kitchen cookbook food' },
     { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
+    { group: 'Harbor', title: 'Stocks', href: '/stocks/', text: 'mondoquote oversold rsi screener etrade stocks rcl' },
     { group: 'Notes', title: 'Wiki', href: '/wiki/', text: 'notes wiki' },
     { group: 'Notes', title: 'Forum', href: '/forum/', text: 'bulletin posts forum' },
     { group: 'Shop', title: 'Market', href: '/market/', text: 'ebay classifieds market mondobay for sale' },
@@ -414,6 +415,7 @@
   var programs = [
     { title: 'Recipes', href: '/recipes/', icon: 'pot' },
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
+    { title: "MondoQuote '98", href: '/stocks/', icon: 'quote' },
     { title: 'Encarta Wiki', href: '/wiki/', icon: 'book' },
     { title: 'MS Paint Board', href: '/board/', icon: 'paint' },
     { title: 'AIM Chat', href: '/chat/', icon: 'aim' },
@@ -450,7 +452,8 @@
     ball: [[4,2,8,8,'#000'],[6,4,4,4,'#fff'],[7,10,2,4,'#000'],[5,10,6,2,'#000']],
     lava: [[6,2,4,2,'#c0c0c0'],[5,4,6,10,'#202060'],[7,6,2,3,'#ff00ff'],[6,11,3,2,'#ff6600']],
     pog: [[3,3,10,10,'#ff6600'],[5,5,6,6,'#ffff00'],[6,7,4,2,'#000']],
-    bsod: [[2,2,12,12,'#0000aa'],[4,5,8,1,'#fff'],[4,7,8,1,'#fff'],[4,9,6,1,'#fff']]
+    bsod: [[2,2,12,12,'#0000aa'],[4,5,8,1,'#fff'],[4,7,8,1,'#fff'],[4,9,6,1,'#fff']],
+    quote: [[2,2,12,12,'#001800'],[3,4,7,1,'#39ff14'],[3,6,9,1,'#39ff14'],[3,8,6,1,'#39ff14'],[3,11,4,1,'#ffcc00']]
   };
   function pixelIcon(name) {
     var cells = ICONS[name] || ICONS.pot;

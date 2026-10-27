@@ -795,6 +795,29 @@
         }
       }
     },
+    "stocks": {
+      "watchlist": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "(auth.uid == $uid && auth.token.email != null) || auth.token.email == 'cbrooks_911@yahoo.com'",
+          "$ticker": {
+            ".validate": "!newData.exists() || ($ticker.matches(/^[A-Z]{1,5}(-[A-Z])?$/) && newData.hasChildren(['note', 'updatedAt']) && newData.child('note').isString() && newData.child('note').val().length <= 140 && !newData.child('note').val().contains('\\n') && !newData.child('note').val().contains('\\r') && newData.child('updatedAt').isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.child('updatedAt').val() > 0 && newData.child('updatedAt').val() <= now) || newData.child('updatedAt').val() == now))",
+            "note": {
+              ".validate": "newData.isString() && newData.val().length <= 140 && !newData.val().contains('\\n') && !newData.val().contains('\\r')"
+            },
+            "target": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 1000000"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    },
     "users": {
       ".read": "auth != null",
       "$uid": {
@@ -838,6 +861,9 @@
         },
         "arcade": {
           ".validate": "newData.isString() && newData.val().length <= 40000"
+        },
+        "stocks": {
+          ".validate": "newData.isString() && newData.val().length <= 20000"
         },
         "$other": {
           ".validate": false
