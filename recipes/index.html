@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'">
 <title>Mondosupreme Recipes</title>
 <meta name="description" content="Mondosupreme Recipes — your personal recipe collection at Mondosupreme.com">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="/retro.css"></head>
 <body>
 <div class="ticker"><div class="ticker-track">
- <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Recipes ~*~ ★ Your kitchen notebook, saved in this browser ★ <span class="hot">HOT!</span></p>
- <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Recipes ~*~ ★ Your kitchen notebook, saved in this browser ★ <span class="hot">HOT!</span></p>
+ <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Recipes ~*~ ★ A shared kitchen notebook ★ <span class="hot">HOT!</span></p>
+ <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Recipes ~*~ ★ A shared kitchen notebook ★ <span class="hot">HOT!</span></p>
 </div></div>
 <header class="site-header"><div class="wrap hdr">
  <a href="#/" class="brand"><span class="logo">🍲</span><span>Mondosupreme <em>Recipes</em></span></a>
@@ -27,10 +27,12 @@
   <button id="btnScan" class="btn ghost" type="button">Scan a recipe</button>
   <button id="btnExport" class="btn ghost" type="button">Export</button>
   <label class="btn ghost">Import<input type="file" id="importFile" accept="application/json,.json" hidden></label>
+  <button id="ownerBtn" class="btn ghost" type="button">Owner sign in</button>
  </nav></div></header>
 <main class="wrap" id="app">
+ <p id="syncBanner" class="sync-banner" role="status" hidden>Server sync waiting on updated Firebase rules — using local storage until published</p>
  <section id="listView">
-  <div class="hero"><h1>Cook something supreme.</h1><p>Your personal kitchen notebook — saved right in your browser.</p></div>
+  <div class="hero"><h1>Cook something supreme.</h1><p id="heroLead">A shared kitchen notebook. Anyone can add a recipe. Only the owner can edit or delete. Favorites stay on this device.</p></div>
   <div class="toolbar">
    <input id="search" type="search" placeholder="Search recipes, ingredients, tags…" aria-label="Search">
    <select id="catFilter" aria-label="Category"><option value="">All categories</option></select>
@@ -84,8 +86,21 @@
  <label>Tags (comma separated)<input name="tags" placeholder="quick, vegetarian"></label>
  <div class="form-actions"><button type="button" id="cancelEdit" class="btn ghost">Cancel</button><button type="submit" class="btn primary">Save Recipe</button></div>
 </form></dialog>
-<footer class="site-footer no-print"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Recipes are stored locally in your browser — use Export to back up.</div></footer>
+<footer class="site-footer no-print"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Recipes are shared. Favorites stay in this browser. Export still makes a backup.</div></footer>
 <div id="toast" role="status"></div>
+<dialog id="ownerDialog">
+ <form id="ownerForm">
+  <h2>Owner sign-in</h2>
+  <p>Sign in to edit or delete recipes. The password is checked by Firebase and is not stored on this site. The same sign-in works on the board and in chat.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="owner-error" hidden></p>
+  <div class="form-actions">
+   <button type="button" id="ownerCancel" class="btn ghost">Cancel</button>
+   <button type="submit" class="btn primary">Sign in</button>
+  </div>
+ </form>
+</dialog>
 <dialog id="scanPicker" class="scan-dialog">
  <h2>Scan a recipe</h2>
  <p>Take a photo or choose an image from your library. Text is read on this device.</p>
@@ -135,5 +150,9 @@
  <div class="scan-track" id="scanBarTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Scan progress"><span id="scanBar"></span></div>
  <div class="scan-actions"><button type="button" class="btn ghost" id="scanCancel">Cancel</button></div>
 </dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
 <script src="app.js"></script>
 </body></html>

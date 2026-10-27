@@ -18,13 +18,300 @@ const SAMPLES=[
  steps:['Sauté onion in oil until soft.','Add garlic, ginger and curry powder; cook 1 minute.','Add chickpeas, coconut milk and tomatoes; simmer 20 minutes.','Stir in spinach until wilted and season.','Serve over rice.'],
  notes:'Sample recipe — feel free to delete it.',tags:['vegan','spicy','one-pot']}
 ];
+const PUSHED='mondosupreme.recipes.pushed.v1';
+const RULES_BANNER='Server sync waiting on updated Firebase rules — using local storage until published';
+const PHOTO_MAX=200000;
 let recipes, favs, state={q:'',cat:'',tag:'',fav:false};
+let serverLive=false, rulesBlocked=false, isOwner=false, myUid='';
+let quota={n:0,day:0}, quotaLoaded=false, quotaStop=false;
+let heldCustoms=[], chain=Promise.resolve(), itemsRef=null, syncStarted=false, migrating=false, lastCreate=0;
+const pendingCreates=new Set(), unsynced=new Set();
 function load(){
   try{recipes=JSON.parse(localStorage.getItem(KEY));}catch{recipes=null}
   if(!Array.isArray(recipes)){recipes=SAMPLES.map(r=>({...r}));save();}
   try{favs=new Set(JSON.parse(localStorage.getItem(FKEY))||[]);}catch{favs=new Set()}
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(recipes));localStorage.setItem(FKEY,JSON.stringify([...favs]));}catch(e){toast('Could not save: storage full?')}}
+function saveCache(){try{localStorage.setItem(KEY,JSON.stringify(recipes));}catch(e){toast('Could not save: storage full?')}}
+function saveFavs(){try{localStorage.setItem(FKEY,JSON.stringify([...favs]));}catch(e){toast('Could not save: storage full?')}}
+function save(){saveCache();saveFavs()}
+function isSample(r){
+  return !!(r&&(r.sample||r.id==='sample-1'||r.id==='sample-2'||r.id==='sample-3'||/^Sample:/.test(r.title||'')));
+}
+function ownerEmail(){return String((typeof window!=='undefined'&&window.MONDO_BOARD_OWNER)||'cbrooks_911@yahoo.com').toLowerCase()}
+function canMutate(){return !serverLive||!!isOwner}
+function showRulesBanner(){
+  rulesBlocked=true; serverLive=false;
+  const el=$('#syncBanner');
+  if(el){el.hidden=false;el.textContent=RULES_BANNER;}
+  refreshViews();
+}
+function hideRulesBanner(){
+  rulesBlocked=false;
+  const el=$('#syncBanner');
+  if(el)el.hidden=true;
+}
+function isDenied(err){
+  const code=String((err&&err.code)||'')+' '+String((err&&err.message)||'');
+  return /PERMISSION_DENIED|permission[-_ ]denied/i.test(code);
+}
+function enqueue(fn){
+  const run=chain.then(fn,fn);
+  chain=run.then(()=>{},()=>{});
+  return run;
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function todayStamp(){return Math.floor(Date.now()/86400000)*86400000}
+function loadPushed(){try{return new Set(JSON.parse(localStorage.getItem(PUSHED))||[])}catch{return new Set()}}
+function rememberPushed(id){
+  const s=loadPushed(); s.add(id);
+  try{localStorage.setItem(PUSHED,JSON.stringify([...s]))}catch{}
+}
+function cloneRecipe(r){return {...r,ingredients:[...(r.ingredients||[])],steps:[...(r.steps||[])],tags:[...(r.tags||[])]}}
+function toServer(recipe, author, stampCreated){
+  let photo='';
+  if(recipe.photo&&recipe.photo.startsWith('https://')&&recipe.photo.length<=2000)photo=recipe.photo;
+  else if(recipe.photo&&recipe.photo.startsWith('data:image/jpeg;base64,')&&recipe.photo.length<=210000)photo=recipe.photo;
+  const body={
+    title:clipStr(recipe.title,LIMITS.title).replace(/[\r\n]+/g,' '),
+    category:clipStr(recipe.category,LIMITS.category).replace(/[\r\n]+/g,' '),
+    ingredients:(recipe.ingredients||[]).join('\n').slice(0,80000),
+    steps:(recipe.steps||[]).join('\n').slice(0,80000),
+    notes:clipStr(recipe.notes,LIMITS.notes),
+    tags:(recipe.tags||[]).map(t=>String(t).trim().toLowerCase()).filter(Boolean).join(',').slice(0,1200),
+    photo,
+    createdAt:stampCreated?firebase.database.ServerValue.TIMESTAMP:recipe.createdAt,
+    updatedAt:firebase.database.ServerValue.TIMESTAMP,
+    author
+  };
+  const prep=clipNum(recipe.prep,0,10000); if(prep!=null)body.prep=prep;
+  const cook=clipNum(recipe.cook,0,10000); if(cook!=null)body.cook=cook;
+  const servings=clipNum(recipe.servings,1,999); if(servings!=null)body.servings=servings;
+  return body;
+}
+function fromServer(id,v){
+  if(!v||typeof v!=='object')return null;
+  const title=clipStr(v.title,LIMITS.title);
+  if(!title||!/^[A-Za-z0-9_-]{1,64}$/.test(id))return null;
+  const recipe={
+    id,title,
+    category:clipStr(v.category,LIMITS.category),
+    notes:clipStr(v.notes,LIMITS.notes),
+    ingredients:clipLines(v.ingredients,LIMITS.lines,LIMITS.line),
+    steps:clipLines(v.steps,LIMITS.lines,LIMITS.line),
+    tags:[...new Set(clipLines(typeof v.tags==='string'?v.tags.split(','):[],LIMITS.tags,LIMITS.tag).map(t=>t.toLowerCase()))],
+    photo:safePhoto(v.photo||''),
+    author:typeof v.author==='string'?v.author:'',
+    createdAt:Number(v.createdAt)||0
+  };
+  const prep=clipNum(v.prep,0,10000); if(prep!=null)recipe.prep=prep;
+  const cook=clipNum(v.cook,0,10000); if(cook!=null)recipe.cook=cook;
+  const servings=clipNum(v.servings,1,999); if(servings!=null)recipe.servings=servings;
+  return recipe;
+}
+function byNewest(a,b){return (b.createdAt||0)-(a.createdAt||0)}
+function refreshViews(){
+  if(typeof document==='undefined'||!$('#listView'))return;
+  const editor=$('#editor');
+  if(editor&&editor.open)return;
+  const m=location.hash.match(/^#\/recipe\/(.+)$/);
+  if(m)renderDetail(decodeURIComponent(m[1])); else renderList();
+}
+function updateOwnerButton(){
+  const b=$('#ownerBtn');
+  if(!b)return;
+  b.textContent=isOwner?'Sign out':'Owner sign in';
+}
+async function ensureQuota(){
+  if(quotaLoaded||!myUid||typeof firebase==='undefined')return;
+  const snap=await firebase.database().ref('recipes/c/'+myUid).once('value');
+  const v=snap.val()||{};
+  quota={n:Number(v.n)||0,day:Number(v.day)||0};
+  quotaLoaded=true;
+}
+async function preparePhoto(recipe){
+  if(!recipe.photo||!recipe.photo.startsWith('data:'))return recipe.photo||'';
+  if(recipe.photo.startsWith('data:image/jpeg;base64,')&&recipe.photo.length<=PHOTO_MAX)return recipe.photo;
+  const smaller=await shrinkToJpeg(recipe.photo);
+  recipe.photo=smaller||'';
+  return recipe.photo;
+}
+async function createNow(id){
+  if(rulesBlocked||!serverLive||!myUid||!pendingCreates.has(id))return;
+  let recipe=recipes.find(r=>r.id===id);
+  if(!recipe||isSample(recipe)){pendingCreates.delete(id);return}
+  if(!/^[A-Za-z0-9_-]{1,64}$/.test(id)){pendingCreates.delete(id);unsynced.add(id);toast('That recipe could not be shared');return}
+  await preparePhoto(recipe);
+  if(!pendingCreates.has(id))return;
+  recipe=recipes.find(r=>r.id===id);
+  if(!recipe){pendingCreates.delete(id);return}
+  const owner=isOwner;
+  const body=toServer(recipe,myUid,true);
+  const updates={};
+  updates['recipes/items/'+id]=body;
+  if(!owner){
+    await ensureQuota();
+    const day=todayStamp();
+    const seq=quota.day===day?(quota.n||0)+1:1;
+    if(seq>40){
+      quotaStop=true; unsynced.add(id); pendingCreates.delete(id);
+      toast('That is enough new recipes for today. Try again tomorrow.');
+      const err=new Error('quota'); err.code='quota'; throw err;
+    }
+    const wait=2100-(Date.now()-lastCreate);
+    if(lastCreate&&wait>0)await sleep(wait);
+    if(!pendingCreates.has(id))return;
+    const latest=recipes.find(r=>r.id===id);
+    if(!latest){pendingCreates.delete(id);return}
+    const fresh=toServer(latest,myUid,true);
+    fresh.seq=seq; fresh.day=day;
+    updates['recipes/items/'+id]=fresh;
+    updates['recipes/rate/'+myUid]=firebase.database.ServerValue.TIMESTAMP;
+    updates['recipes/c/'+myUid]={n:seq,day};
+    await firebase.database().ref().update(updates);
+    lastCreate=Date.now();
+    quota={n:seq,day};
+  }else{
+    await firebase.database().ref().update(updates);
+  }
+  rememberPushed(id);
+}
+async function updateNow(id){
+  if(rulesBlocked||!serverLive||!isOwner)return;
+  if(pendingCreates.has(id))return;
+  const recipe=recipes.find(r=>r.id===id);
+  if(!recipe||!recipe.author||!recipe.createdAt)return;
+  await preparePhoto(recipe);
+  const latest=recipes.find(r=>r.id===id)||recipe;
+  await firebase.database().ref('recipes/items/'+id).set(toServer(latest,latest.author,false));
+}
+async function removeNow(id){
+  if(rulesBlocked||!serverLive||!isOwner)return;
+  await firebase.database().ref('recipes/items/'+id).remove();
+}
+function shareCreate(id){
+  pendingCreates.add(id); unsynced.delete(id);
+  return enqueue(()=>createNow(id)).catch(err=>{
+    pendingCreates.delete(id);
+    if(err&&err.code==='quota'){unsynced.add(id);return}
+    unsynced.add(id);
+    if(isDenied(err))showRulesBanner();
+    else if(serverLive)toast('Could not share that recipe. It is still saved in this browser.');
+  });
+}
+function shareUpdate(id){
+  return enqueue(()=>updateNow(id)).catch(err=>{
+    if(isDenied(err)){
+      if(!isOwner)toast('Only the owner can edit recipes');
+      else showRulesBanner();
+    }else toast('Could not update that recipe on the server.');
+  });
+}
+function shareRemove(id){
+  return enqueue(()=>removeNow(id)).catch(err=>{
+    if(isDenied(err))showRulesBanner();
+    else toast('Could not delete that recipe on the server.');
+  });
+}
+function applySnapshot(val){
+  const remote=[];
+  if(val&&typeof val==='object'){
+    for(const id of Object.keys(val)){
+      const recipe=fromServer(id,val[id]);
+      if(recipe)remote.push(recipe);
+    }
+  }
+  const remoteIds=new Set(remote.map(r=>r.id));
+  for(const id of [...pendingCreates]) if(remoteIds.has(id))pendingCreates.delete(id);
+  for(const id of [...unsynced]) if(remoteIds.has(id))unsynced.delete(id);
+  if(remote.length){
+    const seen=new Set(remoteIds);
+    const top=[];
+    const waiting=[
+      ...recipes.filter(r=>(pendingCreates.has(r.id)||unsynced.has(r.id))&&!isSample(r)),
+      ...heldCustoms.filter(r=>!isSample(r)&&!(r.author&&r.createdAt))
+    ];
+    for(const r of waiting){
+      if(!r||seen.has(r.id)||remoteIds.has(r.id))continue;
+      seen.add(r.id); top.push(r);
+    }
+    recipes=[...top, ...remote.sort(byNewest)];
+    saveCache();
+  }
+  refreshViews();
+  migrateHeld(remoteIds);
+}
+function migrateHeld(remoteIds){
+  if(migrating||rulesBlocked||!serverLive||quotaStop)return;
+  const pushed=loadPushed();
+  const pool=[...heldCustoms, ...recipes.filter(r=>r&&!(r.author&&r.createdAt))];
+  const seen=new Set();
+  const todo=[];
+  for(const r of pool){
+    if(!r||!r.id||seen.has(r.id)||remoteIds.has(r.id)||pushed.has(r.id)||isSample(r)||(r.author&&r.createdAt))continue;
+    if(!/^[A-Za-z0-9_-]{1,64}$/.test(r.id))continue;
+    seen.add(r.id);
+    todo.push(r);
+  }
+  if(!todo.length)return;
+  migrating=true;
+  (async()=>{
+    for(const r of todo){
+      if(rulesBlocked||quotaStop)break;
+      if(!recipes.some(x=>x.id===r.id))recipes.unshift(cloneRecipe(r));
+      try{await shareCreate(r.id)}
+      catch{break}
+    }
+    saveCache();
+    migrating=false;
+    refreshViews();
+  })();
+}
+function listenItems(){
+  if(typeof firebase==='undefined')return;
+  if(itemsRef)itemsRef.off();
+  itemsRef=firebase.database().ref('recipes/items');
+  itemsRef.on('value',snap=>{
+    hideRulesBanner();
+    serverLive=true;
+    applySnapshot(snap.val());
+    updateOwnerButton();
+  },err=>{
+    serverLive=false;
+    if(isDenied(err))showRulesBanner();
+    else refreshViews();
+  });
+}
+function configured(){
+  const c=typeof window!=='undefined'&&window.MONDO_BOARD_CONFIG;
+  return !!(c&&c.apiKey&&c.authDomain&&c.databaseURL&&c.projectId&&c.appId);
+}
+function connectRecipes(){
+  if(syncStarted||typeof firebase==='undefined'||!configured())return;
+  syncStarted=true;
+  try{if(!firebase.apps.length)firebase.initializeApp(window.MONDO_BOARD_CONFIG)}
+  catch{return}
+  firebase.auth().onAuthStateChanged(async user=>{
+    if(!user){
+      isOwner=false; myUid='';
+      updateOwnerButton();
+      try{await firebase.auth().signInAnonymously()}catch{serverLive=false}
+      return;
+    }
+    myUid=user.uid;
+    isOwner=!!(user.email&&user.email.toLowerCase()===ownerEmail());
+    quotaLoaded=false;
+    updateOwnerButton();
+    listenItems();
+    refreshViews();
+  });
+}
+async function signInOwner(email,password){
+  await firebase.auth().signInWithEmailAndPassword(email,password);
+}
+async function signOutOwner(){
+  isOwner=false;
+  try{await firebase.auth().signOut()}catch{}
+}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
 function safePhoto(url){
   if(typeof url!=='string')return '';
@@ -70,9 +357,11 @@ function renderList(){
 function renderDetail(id){
   const r=recipes.find(x=>x.id===id); if(!r){location.hash='#/';return}
   const v=$('#detailView');
+  const own=canMutate();
   v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
    <div class="dbar"><a href="#/" class="btn ghost">← Back</a><button class="btn ghost" id="dFav">${favs.has(r.id)?'♥ Favorited':'♡ Favorite'}</button>
-   <button class="btn ghost" id="dPrint">🖨 Print</button><button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button></div>
+   <button class="btn ghost" id="dPrint">🖨 Print</button>${own?'<button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button>':''}</div>
+   ${serverLive&&!isOwner?'<p class="lock-note">Anyone can add recipes. Only the owner can edit or delete them.</p>':''}
    <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}</div><h1>${esc(r.title)}</h1>
    <div class="stats"><div class="stat"><b>${+r.prep||0} min</b><span>Prep</span></div><div class="stat"><b>${+r.cook||0} min</b><span>Cook</span></div>
    <div class="stat"><b>${total(r)} min</b><span>Total</span></div><div class="stat"><b>${esc(r.servings||'–')}</b><span>Servings</span></div></div>
@@ -83,10 +372,20 @@ function renderDetail(id){
   paintPhoto(v.querySelector('.detail-hero'),r.photo);
   $('#dFav').onclick=()=>{toggleFav(r.id);renderDetail(r.id)};
   $('#dPrint').onclick=()=>window.print();
-  $('#dEdit').onclick=()=>openEditor(r);
-  $('#dDel').onclick=()=>{if(confirm(`Delete "${r.title}"?`)){recipes=recipes.filter(x=>x.id!==r.id);favs.delete(r.id);save();toast('Recipe deleted');location.hash='#/'}};
+  if($('#dEdit'))$('#dEdit').onclick=()=>openEditor(r);
+  if($('#dDel'))$('#dDel').onclick=()=>{
+    if(!canMutate()){toast('Only the owner can delete recipes');return}
+    if(!confirm(`Delete "${r.title}"?`))return;
+    const onServer=!!(r.createdAt&&r.author&&!pendingCreates.has(r.id));
+    recipes=recipes.filter(x=>x.id!==r.id);
+    favs.delete(r.id); pendingCreates.delete(r.id); unsynced.delete(r.id);
+    save();
+    if(onServer)shareRemove(r.id);
+    toast('Recipe deleted');
+    location.hash='#/';
+  };
 }
-function toggleFav(id){favs.has(id)?favs.delete(id):favs.add(id);save()}
+function toggleFav(id){favs.has(id)?favs.delete(id):favs.add(id);saveFavs()}
 function route(){
   const m=location.hash.match(/^#\/recipe\/(.+)$/);
   $('#listView').hidden=!!m; $('#detailView').hidden=!m;
@@ -183,6 +482,7 @@ function focusScanWord(word){
   }
 }
 function openEditor(r,prefill){
+  if(r&&!canMutate()){toast('Only the owner can edit recipes');return}
   const f=$('#recipeForm'); f.reset();
   const scanned=!r&&prefill;
   $('#formTitle').textContent=r?'Edit Recipe':(scanned?'Review scanned recipe':'Add Recipe');
@@ -957,7 +1257,7 @@ function canvasJpeg(canvas){
   for(let attempt=0;attempt<6;attempt++){
     let data='';
     try{data=cur.toDataURL('image/jpeg',quality)}catch(e){data=''}
-    if(data&&data.length<=480000&&safePhoto(data))return data;
+    if(data&&data.length<=PHOTO_MAX&&safePhoto(data))return data;
     if(quality>0.5)quality=Math.round((quality-0.08)*100)/100;
     else{
       edge=Math.round(edge*0.85);
@@ -966,6 +1266,31 @@ function canvasJpeg(canvas){
     if(edge<480)break;
   }
   return '';
+}
+function shrinkToJpeg(url){
+  return new Promise(resolve=>{
+    if(!url){resolve('');return}
+    if(url.startsWith('https://')){resolve(url.length<=2000?url:'');return}
+    if(url.startsWith('data:image/jpeg;base64,')&&url.length<=PHOTO_MAX){resolve(url);return}
+    if(typeof document==='undefined'){resolve('');return}
+    const img=new Image();
+    img.onload=()=>{
+      const sw=img.naturalWidth||img.width||1, sh=img.naturalHeight||img.height||1;
+      const edge=Math.max(sw,sh);
+      const maxEdge=Math.min(1600,edge);
+      const scale=maxEdge/edge;
+      const c=document.createElement('canvas');
+      c.width=Math.max(1,Math.round(sw*scale));
+      c.height=Math.max(1,Math.round(sh*scale));
+      const ctx=c.getContext('2d',{alpha:false});
+      ctx.fillStyle='#fff';
+      ctx.fillRect(0,0,c.width,c.height);
+      ctx.drawImage(img,0,0,c.width,c.height);
+      resolve(canvasJpeg(c)||'');
+    };
+    img.onerror=()=>resolve('');
+    img.src=url;
+  });
 }
 function decodeImage(file){
   if(typeof createImageBitmap==='function'){
@@ -1267,20 +1592,43 @@ async function retryScan(){
   await recognizeSession(session);
 }
 const lines=s=>s.split('\n').map(x=>x.trim()).filter(Boolean);
-function onSave(e){
+async function onSave(e){
   e.preventDefault(); const f=e.target;
   const typedPhoto=f.photo.value.trim();
   let photo='';
-  if(typedPhoto){photo=safePhoto(typedPhoto);if(!photo){toast('Use an https image link');return}}
+  if(typedPhoto){
+    photo=safePhoto(typedPhoto);
+    if(!photo){toast('Use an https image link');return}
+    if(photo.length>2000){toast('That image link is too long');return}
+  }
   else photo=safePhoto(f.photoData.value);
+  if(photo.startsWith('data:')){
+    const had=photo;
+    photo=await shrinkToJpeg(photo);
+    if(had&&!photo)toast('That photo was too large to keep, so the recipe was saved without it.');
+  }
   const data={title:f.title.value.trim(),photo,category:f.category.value.trim(),servings:f.servings.value?+f.servings.value:'',
     prep:+f.prep.value||0,cook:+f.cook.value||0,ingredients:lines(f.ingredients.value),steps:lines(f.steps.value),notes:f.notes.value.trim(),
     tags:[...new Set(f.tags.value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean))]};
   if(!data.title)return;
   let id=f.id.value;
-  if(id){const i=recipes.findIndex(x=>x.id===id);recipes[i]={...recipes[i],...data};toast('Recipe updated')}
-  else{id=uid();recipes.unshift({id,...data});toast('Recipe added')}
-  save(); $('#editor').close();
+  if(id){
+    if(!canMutate()){toast('Only the owner can edit recipes');return}
+    const i=recipes.findIndex(x=>x.id===id);
+    if(i<0){toast('That recipe is no longer here');return}
+    recipes[i]={...recipes[i],...data};
+    save();
+    toast('Recipe updated');
+    if(serverLive&&!rulesBlocked&&!pendingCreates.has(id)&&recipes[i].createdAt&&recipes[i].author)shareUpdate(id);
+  }else{
+    id=uid();
+    recipes.unshift({id,...data,author:'',createdAt:0});
+    save();
+    toast(serverLive&&!rulesBlocked?'Recipe added':'Recipe saved on this device');
+    if(serverLive&&!rulesBlocked)shareCreate(id);
+    else unsynced.add(id);
+  }
+  $('#editor').close();
   if(location.hash===`#/recipe/${id}`)route(); else location.hash=`#/recipe/${id}`;
 }
 function exportJSON(){
@@ -1354,9 +1702,49 @@ function importJSON(file){
     let parsed;
     try{parsed=parseBackup(JSON.parse(rd.result))}catch{parsed=null}
     if(!parsed){alert("That file isn't a valid recipe backup.");return}
-    const clean=parsed.recipes;
+    const clean=parsed.recipes.map(r=>cloneRecipe(r));
     const replace=confirm(`Import ${clean.length} recipe(s).\nOK = replace all current recipes\nCancel = merge with existing`);
-    if(replace)recipes=clean; else{const m=new Map(recipes.map(r=>[r.id,r]));clean.forEach(r=>m.set(r.id,r));recipes=[...m.values()];}
+    if(!serverLive||rulesBlocked){
+      if(replace)recipes=clean; else{const m=new Map(recipes.map(r=>[r.id,r]));clean.forEach(r=>m.set(r.id,r));recipes=[...m.values()];}
+    }else{
+      const existing=new Map(recipes.map(r=>[r.id,r]));
+      if(!isOwner){
+        if(replace)toast('Only the owner can replace or delete recipes. New ones will be added.');
+        clean.forEach(r=>{
+          if(existing.has(r.id))r.id=uid();
+          r.author=''; r.createdAt=0;
+          recipes.unshift(r);
+          shareCreate(r.id);
+        });
+      }else if(replace){
+        const keep=new Set(clean.map(r=>r.id));
+        recipes.forEach(r=>{if(!keep.has(r.id)&&r.createdAt&&r.author)shareRemove(r.id)});
+        recipes=clean.map(r=>{
+          const prev=existing.get(r.id);
+          if(prev&&prev.author&&prev.createdAt)return {...r,author:prev.author,createdAt:prev.createdAt};
+          return {...r,author:'',createdAt:0};
+        });
+        recipes.forEach(r=>{
+          if(r.createdAt&&r.author)shareUpdate(r.id);
+          else shareCreate(r.id);
+        });
+      }else{
+        clean.forEach(r=>{
+          const prev=existing.get(r.id);
+          if(prev&&prev.author&&prev.createdAt){
+            const merged={...prev,...r,author:prev.author,createdAt:prev.createdAt};
+            const i=recipes.findIndex(x=>x.id===r.id);
+            if(i>=0)recipes[i]=merged;
+            shareUpdate(r.id);
+          }else{
+            if(prev)r.id=uid();
+            r.author=''; r.createdAt=0;
+            recipes.unshift(r);
+            shareCreate(r.id);
+          }
+        });
+      }
+    }
     parsed.favorites.forEach(id=>{if(recipes.some(r=>r.id===id))favs.add(id)});
     save();toast(`Imported ${clean.length} recipe(s)`);location.hash='#/';route();
   };
@@ -1365,7 +1753,38 @@ function importJSON(file){
 }
 function init(){
   if(!$('#btnAdd')||!$('#recipeForm'))return;
-  load(); $('#yr').textContent=new Date().getFullYear();
+  load();
+  heldCustoms=recipes.filter(r=>!isSample(r)).map(cloneRecipe);
+  $('#yr').textContent=new Date().getFullYear();
+  const ownerBtn=$('#ownerBtn');
+  if(ownerBtn)ownerBtn.onclick=()=>{
+    if(typeof firebase==='undefined'||!firebase.apps||!firebase.apps.length){toast('Shared sign-in is not available yet');return}
+    const user=firebase.auth().currentUser;
+    if(user&&user.email&&user.email.toLowerCase()===ownerEmail()){signOutOwner();return}
+    $('#ownerError').hidden=true;
+    $('#ownerPass').value='';
+    $('#ownerEmail').value=ownerEmail();
+    $('#ownerDialog').showModal();
+  };
+  const ownerCancel=$('#ownerCancel');
+  if(ownerCancel)ownerCancel.onclick=()=>$('#ownerDialog').close();
+  const ownerForm=$('#ownerForm');
+  if(ownerForm)ownerForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    $('#ownerError').hidden=true;
+    try{
+      await signInOwner($('#ownerEmail').value.trim(),$('#ownerPass').value);
+      $('#ownerPass').value='';
+      $('#ownerDialog').close();
+    }catch(err){
+      $('#ownerPass').value='';
+      const code=String(err&&err.code||'');
+      $('#ownerError').textContent=code.indexOf('invalid-credential')>=0||code.indexOf('wrong-password')>=0||code.indexOf('user-not-found')>=0
+        ?'That email or password is wrong.'
+        :'Could not sign in.';
+      $('#ownerError').hidden=false;
+    }
+  });
   $('#btnAdd').onclick=()=>openEditor(null);
   $('#btnScan').onclick=()=>{$('#scanCamera').value='';$('#scanLibrary').value='';$('#scanPicker').showModal()};
   $('#scanPickerCancel').onclick=()=>$('#scanPicker').close();
@@ -1427,6 +1846,7 @@ function init(){
   });
   $('#grid').addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.key==='Enter')location.hash='#/recipe/'+encodeURIComponent(c.dataset.id)});
   window.addEventListener('hashchange',route); route();
+  connectRecipes();
 }
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',init);
 const recipeOcrApi={parseRecipeText,safePhoto,parseBackup,fixOcrText,fixOcrLine,flattenIllumination,sauvola,sauvolaWindow,suppressRuledLines,solveHomography,splitColumns,readingOrder,mergeOcrLines,linesFromWords,meanConf,scoreText,grayOf,boxBlur,stretch,paintGray,padCanvas,passFlatten,passSauvola,passHybrid,warpQuad,tokensFromLines,chooseLines,RECIPE_DICT};

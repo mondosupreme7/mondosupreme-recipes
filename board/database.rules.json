@@ -156,6 +156,84 @@
           }
         }
       }
+    },
+    "recipes": {
+      "c": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.hasChildren(['n', 'day']) && newData.child('n').isNumber() && newData.child('day').isNumber() && newData.child('n').val() >= 1 && newData.child('n').val() <= 40 && newData.child('n').val() % 1 == 0 && newData.child('day').val() % 86400000 == 0 && newData.child('day').val() <= now && now - newData.child('day').val() < 90000000 && ((!data.exists() && newData.child('n').val() == 1) || (data.exists() && data.child('day').val() == newData.child('day').val() && newData.child('n').val() == data.child('n').val() + 1) || (data.exists() && newData.child('day').val() > data.child('day').val() && newData.child('n').val() == 1))",
+          "n": {
+            ".validate": "newData.isNumber()"
+          },
+          "day": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 2000)"
+        }
+      },
+      "items": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "auth != null && $id.matches(/^[A-Za-z0-9_-]{1,64}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['title', 'category', 'ingredients', 'steps', 'notes', 'tags', 'photo', 'createdAt', 'updatedAt', 'author']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 200 && !newData.child('title').val().contains('\\n') && !newData.child('title').val().contains('\\r') && newData.child('category').isString() && newData.child('category').val().length <= 80 && !newData.child('category').val().contains('\\n') && newData.child('ingredients').isString() && newData.child('ingredients').val().length <= 80000 && newData.child('steps').isString() && newData.child('steps').val().length <= 80000 && newData.child('notes').isString() && newData.child('notes').val().length <= 4000 && newData.child('tags').isString() && newData.child('tags').val().length <= 1200 && !newData.child('tags').val().contains('\\n') && newData.child('photo').isString() && (newData.child('photo').val() == '' || (newData.child('photo').val().length <= 2000 && newData.child('photo').val().matches(/^https:\\/\\/\\S+$/)) || (newData.child('photo').val().length <= 210000 && newData.child('photo').val().matches(/^data:image\\/jpeg;base64,[A-Za-z0-9+\\/=]+$/))) && newData.child('createdAt').isNumber() && newData.child('updatedAt').isNumber() && newData.child('author').isString())",
+          "title": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 200 && !newData.val().contains('\\n') && !newData.val().contains('\\r')"
+          },
+          "category": {
+            ".validate": "newData.isString() && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')"
+          },
+          "ingredients": {
+            ".validate": "newData.isString() && newData.val().length <= 80000"
+          },
+          "steps": {
+            ".validate": "newData.isString() && newData.val().length <= 80000"
+          },
+          "notes": {
+            ".validate": "newData.isString() && newData.val().length <= 4000"
+          },
+          "tags": {
+            ".validate": "newData.isString() && newData.val().length <= 1200 && !newData.val().contains('\\n') && !newData.val().contains('\\r')"
+          },
+          "photo": {
+            ".validate": "newData.isString() && (newData.val() == '' || (newData.val().length <= 2000 && newData.val().matches(/^https:\\/\\/\\S+$/)) || (newData.val().length <= 210000 && newData.val().matches(/^data:image\\/jpeg;base64,[A-Za-z0-9+\\/=]+$/)))"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && ((!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() == now"
+          },
+          "author": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128 && newData.val().matches(/^[A-Za-z0-9]+$/) && ((!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))"
+          },
+          "prep": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000 && newData.val() % 1 == 0"
+          },
+          "cook": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000 && newData.val() % 1 == 0"
+          },
+          "servings": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 999 && newData.val() % 1 == 0"
+          },
+          "seq": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 40 && newData.val() % 1 == 0"
+          },
+          "day": {
+            ".validate": "newData.isNumber() && newData.val() % 86400000 == 0 && newData.val() <= now && now - newData.val() < 90000000"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
     }
   }
 }

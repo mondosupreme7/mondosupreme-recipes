@@ -1,6 +1,6 @@
 # Mondosupreme Recipes
 
-[mondosupreme.com](https://mondosupreme.com) is a small landing page. Recipes live at [/recipes/](https://mondosupreme.com/recipes/) and stay in the browser (local storage). Search, filter, favorite, import, and export them as JSON.
+[mondosupreme.com](https://mondosupreme.com) is a small landing page. Recipes live at [/recipes/](https://mondosupreme.com/recipes/) and are shared through the same Firebase Realtime Database as the board and chat. Anyone can read and add recipes. Only the owner can edit or delete them. Favorites stay in this browser under `mondosupreme.favs.v1`, and `mondosupreme.recipes.v1` is a local cache. Search, filter, import, and export still work. Publish `board/database.rules.json` in the Firebase console before sharing goes live; until then the page keeps using local storage.
 
 [Wiki](https://mondosupreme.com/wiki/) is a personal set of notes and how-tos. Pages stay in this browser under `mondosupreme.wiki.v1`. Export the JSON backup to move them.
 
