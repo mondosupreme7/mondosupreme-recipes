@@ -50,6 +50,14 @@ a.btn{text-decoration:none;color:#000}
 .cols ol li::before{content:counter(s);position:absolute;left:0;top:4px;width:32px;height:32px;border-radius:0;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
 .notes{background:#ffffcc;color:#000;border:2px solid #000;border-left:8px solid var(--accent);padding:12px 14px;border-radius:0;margin-top:20px}
 dialog{border-radius:0;padding:2px;width:min(640px,94vw);max-height:92vh;max-height:92dvh;overflow:auto;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}dialog::backdrop{background:#000080}
+#groceryDialog{margin:0 0 0 auto;height:100dvh;max-height:100dvh;width:min(420px,100vw)}
+#groceryDialog[open]{animation:grocery-in .18s ease-out}
+@keyframes grocery-in{from{transform:translateX(28px)}to{transform:none}}
+.grocery-row{display:flex;gap:8px;align-items:flex-start;min-height:44px;padding:6px 2px;border-bottom:1px solid #808080}
+.grocery-row.is-checked span{text-decoration:line-through;color:#404040}
+.copy-buffer{position:fixed;top:0;left:0;opacity:0}
+.scale-bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.scale-bar .btn{min-height:44px}
 dialog h2{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;margin:-2px -2px 8px;padding:4px 6px;font:700 14px Tahoma,Verdana,sans-serif;text-shadow:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
 dialog h2::after{content:"[ _ ]  [ □ ]  [ X ]";font:700 12px Tahoma,sans-serif;white-space:nowrap}
 dialog .btn.ghost{background:var(--chrome);color:#000}

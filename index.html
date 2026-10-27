@@ -127,6 +127,30 @@
     </a>
    </div>
   </section>
+  <section class="gb-box" id="guestbook" aria-labelledby="gbTitle">
+   <h2 id="gbTitle">Sign My 90s Guestbook</h2>
+   <p class="gb-lead">Pick a pixel stamp, leave your name, and a short note. The book is saved for the next visitor.</p>
+   <p id="gbStatus" class="gb-lead" hidden></p>
+   <form id="gbForm" class="gb-form">
+    <div class="gb-stamps" role="radiogroup" aria-label="Pixel stamp">
+     <label><input type="radio" name="stamp" value="sun" checked> Cool Sun</label>
+     <label><input type="radio" name="stamp" value="alien"> Alien</label>
+     <label><input type="radio" name="stamp" value="ship"> Ship</label>
+     <label><input type="radio" name="stamp" value="chef"> Chef Hat</label>
+     <label><input type="radio" name="stamp" value="flame"> Flame</label>
+     <label><input type="radio" name="stamp" value="cat"> Cyber Cat</label>
+    </div>
+    <label>Name<input id="gbName" name="name" maxlength="24" required autocomplete="nickname"></label>
+    <label>Homepage (optional)<input id="gbHome" name="homepage" type="url" inputmode="url" maxlength="200" placeholder="https://"></label>
+    <label>Location (optional)<input id="gbWhere" name="location" maxlength="40"></label>
+    <label>Note<textarea id="gbNote" name="note" maxlength="280" required rows="3"></textarea></label>
+    <div class="gb-actions">
+     <button class="btn primary" type="submit">Sign the book</button>
+     <button id="gbClear" class="btn ghost" type="button" hidden>Clear guestbook</button>
+    </div>
+   </form>
+   <div id="gbList" class="gb-list" aria-live="polite"></div>
+  </section>
  </div>
 </main>
 <footer class="site-footer"><div class="wrap">
@@ -150,5 +174,7 @@
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/shell.js"></script>
+<script src="/guestbook.js"></script>
+<script src="/backup.js"></script>
 </body>
 </html>

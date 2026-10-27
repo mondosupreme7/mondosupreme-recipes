@@ -23,9 +23,20 @@
   var TRACKS = BASE.slice();
   var index = 0;
   var ctx = null;
+  var master = null;
   var live = [];
   var timer = 0;
+  var clockTimer = 0;
   var playing = false;
+  var paused = false;
+  var volume = 70;
+  var startedAt = 0;
+  var elapsedHold = 0;
+  var loopAt = 0;
+  try {
+    var savedVol = JSON.parse(localStorage.getItem('mondosupreme.winamp.v1') || 'null');
+    if (savedVol && typeof savedVol.volume === 'number') volume = Math.max(0, Math.min(100, savedVol.volume));
+  } catch (e) { /* keep the default */ }
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -118,29 +129,49 @@
     toys.appendChild(construct);
     toys.appendChild(star());
     var mail = el('a', 'guestbook', '');
-    mail.href = 'mailto:cbrooks_911@yahoo.com';
+    mail.href = '/#guestbook';
     mail.appendChild(el('span', 'atspin', '@'));
     mail.appendChild(document.createTextNode(' Sign My Guestbook / Email Webmaster'));
     toys.appendChild(mail);
-    var box = el('div', 'jukebox');
+    var box = el('div', 'winamp is-quiet');
     box.setAttribute('role', 'group');
-    box.setAttribute('aria-label', 'MIDI jukebox');
-    box.appendChild(el('span', 'jb-name', 'Crescendo'));
-    var lcd = el('span', 'jb-lcd', TRACKS[0].name);
-    lcd.id = 'jbTrack';
+    box.setAttribute('aria-label', 'WINAMP 2.10 — MONDO EDITION');
+    var title = el('div', 'wa-titlebar');
+    title.appendChild(el('span', 'wa-title', 'WINAMP 2.10 — MONDO EDITION'));
+    box.appendChild(title);
+    var lcd = el('div', 'wa-lcd');
+    var viz = el('div', 'wa-viz');
+    viz.id = 'jbViz';
+    viz.setAttribute('aria-hidden', 'true');
+    for (var bar = 0; bar < 12; bar++) viz.appendChild(el('i', ''));
+    lcd.appendChild(viz);
+    var marquee = el('div', 'wa-marquee');
+    var track = el('span', 'wa-track', trackLabel());
+    track.id = 'jbTrack';
+    marquee.appendChild(track);
+    lcd.appendChild(marquee);
+    var clock = el('span', 'wa-clock', '00:00');
+    clock.id = 'jbTime';
+    lcd.appendChild(clock);
     box.appendChild(lcd);
-    var play = el('button', '', '▶ Play');
-    play.type = 'button';
-    play.id = 'jbPlay';
-    var stop = el('button', '', '■ Stop');
-    stop.type = 'button';
-    stop.id = 'jbStop';
-    var next = el('button', '', 'Next Track');
-    next.type = 'button';
-    next.id = 'jbNext';
-    box.appendChild(play);
-    box.appendChild(stop);
-    box.appendChild(next);
+    var controls = el('div', 'wa-controls');
+    [['jbPrev', 'Prev'], ['jbPlay', 'Play'], ['jbPause', 'Pause'], ['jbStop', 'Stop'], ['jbNext', 'Next']].forEach(function (pair) {
+      var button = el('button', 'wa-btn', pair[1]);
+      button.type = 'button';
+      button.id = pair[0];
+      controls.appendChild(button);
+    });
+    var volLabel = el('label', 'wa-vol', 'Vol');
+    var vol = document.createElement('input');
+    vol.type = 'range';
+    vol.id = 'jbVol';
+    vol.min = '0';
+    vol.max = '100';
+    vol.value = String(volume);
+    vol.setAttribute('aria-label', 'Volume');
+    volLabel.appendChild(vol);
+    controls.appendChild(volLabel);
+    box.appendChild(controls);
     toys.appendChild(box);
     top.appendChild(toys);
     return top;
@@ -178,19 +209,75 @@
   function freq(midi) {
     return 440 * Math.pow(2, (midi - 69) / 12);
   }
+  function trackSeconds(track) {
+    if (!track || !track.notes || !track.tempo) return 0;
+    return track.notes.length * (60 / track.tempo);
+  }
+  function clockText(seconds) {
+    var s = Math.max(0, Math.round(seconds));
+    var m = Math.floor(s / 60);
+    var r = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r;
+  }
+  function trackLabel() {
+    var track = TRACKS[index];
+    if (!track) return '';
+    var file = /\.mid$/i.test(track.name) ? track.name : track.name + '.mid';
+    return (index + 1) + '. DJ Mondo - ' + file + ' [' + clockText(trackSeconds(track)) + ']';
+  }
+  function volumeGain() {
+    return Math.max(0, Math.min(100, volume)) / 100 * 0.15;
+  }
+  function ensureAudio() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!master) {
+      master = ctx.createGain();
+      master.gain.value = volumeGain();
+      master.connect(ctx.destination);
+    }
+  }
+  function paintFace() {
+    var lcd = document.getElementById('jbTrack');
+    if (lcd) lcd.textContent = trackLabel();
+    var box = document.querySelector('.winamp');
+    if (box) {
+      box.classList.toggle('is-playing', playing);
+      box.classList.toggle('is-paused', paused);
+      box.classList.toggle('is-quiet', !playing);
+    }
+    var time = document.getElementById('jbTime');
+    if (!time) return;
+    var shown = elapsedHold;
+    if (playing && startedAt) shown = (Date.now() - startedAt) / 1000;
+    var len = trackSeconds(TRACKS[index]);
+    if (len && shown > len) shown = shown % len;
+    time.textContent = clockText(shown);
+  }
+  function armClock() {
+    clearInterval(clockTimer);
+    clockTimer = 0;
+    if (!playing) return;
+    clockTimer = setInterval(function () {
+      if (!document.hidden) paintFace();
+    }, 250);
+  }
   function silence() {
     clearTimeout(timer);
+    clearInterval(clockTimer);
     timer = 0;
+    clockTimer = 0;
     live.forEach(function (node) {
       try { node.stop(); } catch (e) { /* already stopped */ }
     });
     live = [];
     playing = false;
-    var lcd = document.getElementById('jbTrack');
-    if (lcd) lcd.textContent = TRACKS[index].name;
+    paused = false;
+    startedAt = 0;
+    elapsedHold = 0;
+    paintFace();
   }
   function schedule(track) {
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    ensureAudio();
     var start = ctx.currentTime + 0.05;
     var beat = 60 / track.tempo;
     var t = start;
@@ -205,28 +292,66 @@
         gain.gain.exponentialRampToValueAtTime(0.07, t + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(master);
         osc.start(t);
         osc.stop(t + dur);
         live.push(osc);
       }
       t += beat;
     });
+    loopAt = t;
     timer = setTimeout(function () {
-      if (playing) schedule(TRACKS[index]);
-    }, (t - ctx.currentTime) * 1000);
+      if (playing) {
+        startedAt = Date.now();
+        elapsedHold = 0;
+        schedule(TRACKS[index]);
+      }
+    }, Math.max(50, (t - ctx.currentTime) * 1000));
   }
   function play() {
+    if (paused && ctx) {
+      paused = false;
+      playing = true;
+      startedAt = Date.now() - elapsedHold * 1000;
+      var remain = Math.max(0.05, loopAt - ctx.currentTime);
+      timer = setTimeout(function () {
+        if (!playing) return;
+        live.forEach(function (node) { try { node.stop(); } catch (e) {} });
+        live = [];
+        startedAt = Date.now();
+        elapsedHold = 0;
+        schedule(TRACKS[index]);
+      }, remain * 1000);
+      if (ctx.state === 'suspended') ctx.resume();
+      paintFace();
+      armClock();
+      return;
+    }
     silence();
     playing = true;
-    var lcd = document.getElementById('jbTrack');
-    if (lcd) lcd.textContent = '▶ ' + TRACKS[index].name;
+    paused = false;
+    startedAt = Date.now();
+    elapsedHold = 0;
     if (ctx && ctx.state === 'suspended') ctx.resume();
     schedule(TRACKS[index]);
+    paintFace();
+    armClock();
+  }
+  function pauseTune() {
+    if (!playing) return;
+    clearTimeout(timer);
+    clearInterval(clockTimer);
+    timer = 0;
+    clockTimer = 0;
+    elapsedHold = startedAt ? (Date.now() - startedAt) / 1000 : elapsedHold;
+    startedAt = 0;
+    playing = false;
+    paused = true;
+    if (ctx && ctx.suspend) ctx.suspend();
+    paintFace();
   }
   function showTrack() {
-    var lcd = document.getElementById('jbTrack');
-    if (lcd && TRACKS[index]) lcd.textContent = (playing ? '▶ ' : '') + TRACKS[index].name;
+    paintFace();
   }
   window.MONDO_JUKEBOX = {
     setTracks: function (extra, preferName) {
@@ -258,13 +383,33 @@
     var label = document.querySelector('.counter-label');
     if (label) label.textContent = 'You are visitor number since Oct 1998';
     document.getElementById('jbPlay').addEventListener('click', play);
-    document.getElementById('jbStop').addEventListener('click', function () { resumeTune = false; silence(); });
+    document.getElementById('jbPause').addEventListener('click', pauseTune);
+    document.getElementById('jbStop').addEventListener('click', function () {
+      resumeTune = false;
+      if (ctx && ctx.state === 'suspended' && ctx.resume) ctx.resume();
+      silence();
+    });
+    document.getElementById('jbPrev').addEventListener('click', function () {
+      index = (index - 1 + TRACKS.length) % TRACKS.length;
+      if (playing || paused) playFresh();
+      else showTrack();
+    });
+    document.getElementById('jbVol').addEventListener('input', function (event) {
+      volume = Number(event.target.value);
+      if (master) master.gain.value = volumeGain();
+      try { localStorage.setItem('mondosupreme.winamp.v1', JSON.stringify({volume: volume})); } catch (e) {}
+    });
     var resumeTune = false;
+    function playFresh() {
+      paused = false;
+      if (ctx && ctx.state === 'suspended' && ctx.resume) ctx.resume();
+      silence();
+      play();
+    }
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) {
         resumeTune = playing;
-        if (playing) silence();
-        if (ctx && ctx.suspend) ctx.suspend();
+        if (playing) pauseTune();
       } else if (resumeTune) {
         resumeTune = false;
         play();
@@ -272,9 +417,10 @@
     });
     document.getElementById('jbNext').addEventListener('click', function () {
       index = (index + 1) % TRACKS.length;
-      if (playing) play();
+      if (playing || paused) playFresh();
       else showTrack();
     });
+    paintFace();
     if (typeof window.MONDO_THEME_MOUNT === 'function') window.MONDO_THEME_MOUNT(top);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

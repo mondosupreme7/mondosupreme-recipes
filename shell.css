@@ -2,7 +2,7 @@
 .site-header .hdr{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .site-header .brand{flex:1 1 auto;min-width:0}
 .site-header .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.shell-bar{display:flex;flex:0 1 auto;gap:6px;align-items:center;min-width:0;position:relative;z-index:6}
+.shell-bar{display:flex;flex:0 1 auto;flex-wrap:wrap;gap:6px;align-items:center;min-width:0;position:relative;z-index:6}
 .shell-tool,.shell-x,.shell-menu a,.shell-hit{
   font:700 15px Tahoma,Verdana,sans-serif;color:#000;background:#d4d0c8;text-decoration:none;
   border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;

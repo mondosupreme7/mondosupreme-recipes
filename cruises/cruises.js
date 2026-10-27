@@ -43,8 +43,14 @@
   var fleet = [];
   var positions = {ships: {}, attribution: {}, updated: ''};
   var markers = Object.create(null);
+  var wakes = Object.create(null);
+  var wakesOn = true;
   var selected = '';
   var map;
+  var countTimer = 0;
+  var countChoice = null;
+  var countDefault = null;
+  try { wakesOn = localStorage.getItem('mondosupreme.wakes.v1') !== '0'; } catch (e) { wakesOn = true; }
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
@@ -277,6 +283,37 @@
       marker.addTo(map);
       markers[ship.mmsi] = marker;
     });
+    drawWakes();
+  }
+
+  function drawWakes() {
+    Object.keys(wakes).forEach(function (key) {
+      map.removeLayer(wakes[key]);
+    });
+    wakes = Object.create(null);
+    if (!wakesOn) return;
+    fleet.forEach(function (ship) {
+      var row = posOf(ship);
+      if (!row || typeof row.lat !== 'number' || typeof row.lon !== 'number') return;
+      var pts = Array.isArray(row.trail) ? row.trail : [];
+      var latlngs = [];
+      pts.forEach(function (point) {
+        if (point && typeof point.lat === 'number' && typeof point.lon === 'number') latlngs.push([point.lat, point.lon]);
+      });
+      var last = latlngs[latlngs.length - 1];
+      if (!last || last[0] !== row.lat || last[1] !== row.lon) latlngs.push([row.lat, row.lon]);
+      if (latlngs.length < 2) return;
+      var line = L.polyline(latlngs, {
+        color: '#003399',
+        weight: 4,
+        opacity: 0.9,
+        dashArray: '1 8',
+        lineCap: 'round',
+        interactive: false
+      });
+      line.addTo(map);
+      wakes[ship.mmsi] = line;
+    });
   }
 
   function matches(ship, row, query) {
@@ -413,6 +450,7 @@
     if (!next || typeof next !== 'object' || typeof next.lat !== 'number' || typeof next.lon !== 'number') return;
     var prior = positions.ships[mmsi];
     if (prior && heardMs(prior) > heardMs(next)) return;
+    if (prior && Array.isArray(prior.trail) && !Array.isArray(next.trail)) next.trail = prior.trail;
     positions.ships[mmsi] = next;
   }
 
@@ -553,6 +591,192 @@
     selectShip(wanted, false);
   }
 
+  function pad(n, width) {
+    var text = String(Math.max(0, n | 0));
+    while (text.length < width) text = '0' + text;
+    return text;
+  }
+
+  function readCount() {
+    try { return JSON.parse(localStorage.getItem('mondosupreme.cruise_countdown.v1')); }
+    catch (e) { return null; }
+  }
+
+  function writeCount(value) {
+    try {
+      if (!value) localStorage.removeItem('mondosupreme.cruise_countdown.v1');
+      else localStorage.setItem('mondosupreme.cruise_countdown.v1', JSON.stringify(value));
+    } catch (e) { /* private mode */ }
+  }
+
+  function validDate(value) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(value || '');
+  }
+
+  function sailAt(date) {
+    var parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date || '');
+    if (!parts) return NaN;
+    return new Date(+parts[1], +parts[2] - 1, +parts[3], 16, 0, 0, 0).getTime();
+  }
+
+  function activeCount() {
+    if (countChoice && countChoice.mmsi && validDate(countChoice.date)) return {row: countChoice, source: 'yours'};
+    if (countDefault && countDefault.mmsi && validDate(countDefault.date)) return {row: countDefault, source: 'default'};
+    return null;
+  }
+
+  function shipName(mmsi) {
+    var ship = fleet.filter(function (item) { return item.mmsi === mmsi; })[0];
+    return ship ? ship.name : '';
+  }
+
+  function paintCount() {
+    var readout = document.getElementById('countReadout');
+    var caption = document.getElementById('countCaption');
+    if (!readout || !caption) return;
+    var active = activeCount();
+    if (!active) {
+      readout.textContent = '000:00:00:00';
+      caption.textContent = 'Pick a ship and a sail date. Departure is 4:00 p.m. local time.';
+      return;
+    }
+    var when = sailAt(active.row.date);
+    var name = active.row.name || shipName(active.row.mmsi) || 'Your ship';
+    var left = when - Date.now();
+    var whose = active.source === 'default' ? 'Site default. ' : '';
+    if (!Number.isFinite(when) || left <= 0) {
+      readout.textContent = '000:00:00:00';
+      caption.textContent = whose + name + ' sailed on ' + active.row.date + '. That sailing has left the pier.';
+      return;
+    }
+    var days = Math.floor(left / 86400000);
+    var hours = Math.floor(left / 3600000) % 24;
+    var minutes = Math.floor(left / 60000) % 60;
+    var seconds = Math.floor(left / 1000) % 60;
+    readout.textContent = pad(days, 3) + ':' + pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+    caption.textContent = whose + name + ' sails ' + active.row.date + ' at 4:00 p.m.';
+  }
+
+  function armCount() {
+    if (countTimer) clearInterval(countTimer);
+    paintCount();
+    countTimer = setInterval(function () {
+      if (!document.hidden) paintCount();
+    }, 1000);
+  }
+
+  function fillCountShips() {
+    var select = document.getElementById('countShip');
+    if (!select) return;
+    var current = select.value;
+    select.replaceChildren();
+    select.appendChild(new Option('Choose a ship', ''));
+    fleet.forEach(function (ship) {
+      select.appendChild(new Option(ship.name, ship.mmsi));
+    });
+    var picked = activeCount();
+    if (current) select.value = current;
+    else if (picked) select.value = picked.row.mmsi;
+  }
+
+  function showCountForm() {
+    var picked = activeCount();
+    var date = document.getElementById('countDate');
+    var select = document.getElementById('countShip');
+    if (picked && select && !select.value) select.value = picked.row.mmsi;
+    if (picked && date && !date.value) date.value = picked.row.date;
+  }
+
+  function countDb() {
+    if (!window.firebase || !firebase.initializeApp || !window.MONDO_BOARD_CONFIG) return null;
+    if (!firebase.apps.length) {
+      try { firebase.initializeApp(window.MONDO_BOARD_CONFIG); }
+      catch (e) { /* shell or another page script already started it */ }
+    }
+    if (!firebase.apps.length || !firebase.database) return null;
+    return firebase.database();
+  }
+
+  function watchCountDefault() {
+    var db = countDb();
+    if (!db || watchCountDefault.armed) return;
+    watchCountDefault.armed = true;
+    db.ref('countdown/next').on('value', function (snap) {
+      var value = snap.val();
+      countDefault = value && validDate(value.date) && /^\d{9}$/.test(value.mmsi || '') ? value : null;
+      fillCountShips();
+      showCountForm();
+      paintCount();
+    }, function () { /* rules may not be published yet */ });
+    if (firebase.auth) {
+      firebase.auth().onAuthStateChanged(function (user) {
+        var owner = user && user.email && String(user.email).toLowerCase() === String(window.MONDO_BOARD_OWNER || 'cbrooks_911@yahoo.com').toLowerCase();
+        var button = document.getElementById('countDefault');
+        if (button) button.hidden = !owner;
+      });
+    }
+  }
+
+  function setCountdown() {
+    var mmsi = document.getElementById('countShip').value;
+    var date = document.getElementById('countDate').value;
+    if (!/^\d{9}$/.test(mmsi) || !validDate(date)) {
+      document.getElementById('countCaption').textContent = 'Choose a ship and a sail date first.';
+      return;
+    }
+    countChoice = {mmsi: mmsi, date: date, name: shipName(mmsi)};
+    writeCount(countChoice);
+    paintCount();
+  }
+
+  function clearCountdown() {
+    var hadLocal = !!countChoice;
+    countChoice = null;
+    writeCount(null);
+    if (!hadLocal && countDefault && countDb()) {
+      var user = firebase.auth && firebase.auth().currentUser;
+      var owner = user && user.email && String(user.email).toLowerCase() === String(window.MONDO_BOARD_OWNER || 'cbrooks_911@yahoo.com').toLowerCase();
+      if (owner) countDb().ref('countdown/next').remove().catch(function () {});
+    }
+    document.getElementById('countDate').value = '';
+    document.getElementById('countShip').value = '';
+    paintCount();
+  }
+
+  function saveCountDefault() {
+    var mmsi = document.getElementById('countShip').value;
+    var date = document.getElementById('countDate').value;
+    var db = countDb();
+    if (!db || !/^\d{9}$/.test(mmsi) || !validDate(date)) return;
+    db.ref('countdown/next').set({mmsi: mmsi, date: date, name: shipName(mmsi)}).then(function () {
+      document.getElementById('countCaption').textContent = 'Saved as the site default.';
+    }).catch(function () {
+      document.getElementById('countCaption').textContent = 'The site default needs the updated Firebase rules.';
+    });
+  }
+
+  var wakeButton = document.getElementById('wakes');
+  if (wakeButton) {
+    wakeButton.setAttribute('aria-pressed', wakesOn ? 'true' : 'false');
+    wakeButton.textContent = wakesOn ? 'Wake trails: on' : 'Wake trails: off';
+    wakeButton.addEventListener('click', function () {
+      wakesOn = !wakesOn;
+      try { localStorage.setItem('mondosupreme.wakes.v1', wakesOn ? '1' : '0'); } catch (e) {}
+      wakeButton.setAttribute('aria-pressed', wakesOn ? 'true' : 'false');
+      wakeButton.textContent = wakesOn ? 'Wake trails: on' : 'Wake trails: off';
+      drawWakes();
+    });
+  }
+  document.getElementById('countSet').addEventListener('click', setCountdown);
+  document.getElementById('countClear').addEventListener('click', clearCountdown);
+  document.getElementById('countDefault').addEventListener('click', saveCountDefault);
+  countChoice = readCount();
+  if (!countChoice || !countChoice.mmsi || !validDate(countChoice.date)) countChoice = null;
+  armCount();
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) paintCount();
+  });
+
   document.getElementById('refresh').addEventListener('click', function () { refreshAll(true); });
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) refreshAll(false);
@@ -566,6 +790,10 @@
     })
     .then(function (data) {
       fleet = Array.isArray(data.ships) ? data.ships : [];
+      fillCountShips();
+      showCountForm();
+      watchCountDefault();
+      paintCount();
       return loadSnapshot();
     })
     .then(function (data) {

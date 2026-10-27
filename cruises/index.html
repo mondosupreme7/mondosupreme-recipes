@@ -43,6 +43,18 @@
   <h1>Where the fleet is.</h1>
   <p>Last-known position of every Royal Caribbean International ship in service.</p>
  </div>
+ <section class="countdown" id="countdown" aria-labelledby="countTitle">
+  <h2 id="countTitle">My Next Cruise Countdown</h2>
+  <p id="countReadout" class="count-lcd" aria-live="polite">000:00:00:00</p>
+  <p id="countCaption">Pick a ship and a sail date.</p>
+  <div class="count-form">
+   <label>Ship<select id="countShip"><option value="">Choose a ship</option></select></label>
+   <label>Sail date<input id="countDate" type="date"></label>
+   <button id="countSet" class="btn" type="button">Set countdown</button>
+   <button id="countClear" class="btn ghost" type="button">Clear</button>
+   <button id="countDefault" class="btn ghost" type="button" hidden>Save as site default</button>
+  </div>
+ </section>
     <div class="freshness-row">
       <p id="freshness" class="cruise-note">Loading ship positions…</p>
       <button id="refresh" class="btn" type="button">Refresh now</button>
@@ -57,6 +69,7 @@
    <option value="speed">Sort by speed</option>
   </select>
   <button id="fit" class="btn ghost" type="button">Whole fleet</button>
+  <button id="wakes" class="btn ghost" type="button" aria-pressed="true">Wake trails</button>
  </div>
  <p id="count" class="result-count"></p>
  <div id="list" class="ship-list"></div>
@@ -73,5 +86,6 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/shell.js"></script>
+<script src="/backup.js"></script>
 </body>
 </html>

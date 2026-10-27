@@ -52,6 +52,28 @@ body:not(.chat-page):not(.board-page):not(.night) main.wrap{background:#fff;colo
 .guestbook:visited{color:#800080}
 .atspin{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;background:#fff;border:2px solid #000;color:#0000ff;font:700 18px "Comic Sans MS",cursive;animation:spinY 2.4s linear infinite;text-decoration:none}
 @keyframes spinY{to{transform:rotateY(360deg)}}
+.winamp{display:flex;flex-direction:column;gap:4px;width:min(420px,100%);max-width:100%;background:#14330f;color:#f6d76b;border:3px ridge #c8a227;padding:6px;box-shadow:inset 0 0 0 2px #0b1f08}
+.wa-titlebar{background:linear-gradient(#2f6a22,#0d220b);padding:4px 6px}
+.wa-title{font:700 12px/1.3 Tahoma,Verdana,sans-serif;letter-spacing:.04em}
+.wa-lcd{display:flex;gap:6px;align-items:center;background:#061806;border:2px inset #052;padding:4px;min-width:0}
+.wa-viz{display:flex;align-items:flex-end;gap:2px;height:28px;width:62px;flex:0 0 62px}
+.wa-viz i{display:block;width:3px;height:20%;background:#39ff14}
+.winamp.is-playing .wa-viz i{animation:wa-bar .4s ease-in-out infinite alternate;background:#ff9a1f}
+.winamp.is-playing .wa-viz i:nth-child(3n){animation-duration:.28s;background:#39ff14}
+.winamp.is-playing .wa-viz i:nth-child(2n){animation-duration:.55s}
+.winamp.is-quiet .wa-viz i,html[data-shell-paused] .wa-viz i{animation:none;height:18%}
+@keyframes wa-bar{from{height:12%}to{height:100%}}
+.wa-marquee{overflow:hidden;flex:1;min-width:0}
+.wa-track{display:inline-block;white-space:nowrap;color:#39ff14;font:700 13px/1.4 "Courier New",Courier,monospace;padding-left:100%}
+.winamp.is-playing .wa-track{animation:wa-marquee 9s linear infinite}
+html[data-shell-paused] .wa-track{animation:none}
+@keyframes wa-marquee{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+.wa-clock{color:#f6d76b;font:700 14px "Courier New",Courier,monospace;flex:0 0 auto}
+.wa-controls{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.wa-btn{min-height:44px;min-width:44px;padding:6px 8px;background:#1c4a14;color:#f6d76b;border:2px outset #c8a227;font:700 13px Tahoma,sans-serif;cursor:pointer}
+.wa-btn:active{border-style:inset}
+.wa-vol{display:flex;align-items:center;gap:6px;min-height:44px;font:700 12px Tahoma,sans-serif}
+.wa-vol input{width:92px;height:44px}
 .jukebox{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#d4d0c8;border:2px outset #fff;padding:4px;max-width:100%}
 .jb-name{font:700 12px Tahoma,sans-serif;color:#000}
 .jb-lcd{background:#001800;color:#00ff00;font:700 14px/1 "Courier New",monospace;min-height:44px;min-width:132px;padding:6px 8px;border:2px inset #808080;display:inline-flex;align-items:center}
@@ -69,6 +91,19 @@ body:not(.chat-page):not(.board-page):not(.night) main.wrap{background:#fff;colo
 .card,.detail,.choice,.wiki-row,.ship,.msg,.box,.forum-shell,.park,.scoreboard{box-shadow:none}
 body.chat-page .wordart-row,body.board-page .wordart-row,body.night .wordart-row{display:none}
 body.chat-page .era-top,body.board-page .era-top{padding:4px 6px}
+.gb-box{margin:18px 0 8px;background:#000080;color:#fff;border:4px ridge #dfdfdf;padding:10px}
+.gb-box h2{margin:0 0 6px;font:700 22px "Comic Sans MS","Trebuchet MS",cursive;color:#ff0}
+.gb-lead{margin:0 0 8px}
+.gb-stamps{display:flex;flex-wrap:wrap;gap:6px}
+.gb-stamps label{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:64px;min-height:44px;background:#c0c0c0;color:#000;border:2px outset #fff;padding:4px;font:700 11px Tahoma,sans-serif}
+.gb-form{display:grid;gap:8px;margin-top:8px}
+.gb-form input,.gb-form textarea{width:100%;box-sizing:border-box;font-size:16px;min-height:44px}
+.gb-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.gb-entry{display:flex;gap:8px;background:#fff;color:#000;border:2px inset #808080;padding:8px}
+.gb-entry p{margin:2px 0}
+.gb-entry a{color:#0000ff}
+.gb-note{font-family:"Comic Sans MS",Tahoma,cursive}
+.gb-actions{display:flex;flex-wrap:wrap;gap:6px}
 body.is-playing .era-top,body.is-playing .era-foot{display:none!important}
 body.is-playing main.wrap{border:0;background:transparent;margin:0;padding:0}
 body.chat-page .chat-compose{background:#c0c0c0;border-top:2px solid #808080}

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import os
 import re
 import urllib.error
@@ -26,8 +27,11 @@ ROOT = Path(__file__).resolve().parents[1]
 FLEET_PATH = ROOT / "cruises" / "fleet.json"
 OUT_PATH = ROOT / "cruises" / "positions.json"
 STREAM_URL = "wss://stream.aisstream.io/v0/stream"
+TRAIL_HOURS = 24
+TRAIL_MAX = 288
 ABOUT = (
     "Positions for the Royal Caribbean ships in cruises/fleet.json. "
+    "Each ship keeps a trail of position points from about the last 24 hours. "
     "aisstream.io is sampled for about 75 seconds every 5 minutes, then Open Waters fills ships that stayed quiet. "
     "A ship with nothing newer keeps its previous coordinates and seen time. "
     "Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard."
@@ -215,6 +219,91 @@ def absorb(store, parsed):
     if parsed.get("aisName") and "aisName" not in current:
         current["aisName"] = parsed["aisName"]
     store[parsed["mmsi"]] = current
+
+
+def parse_seen(value):
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def extend_trail(rec, moment):
+    """Keep about 24 hours of points. Seed one wake only when a moving ship has none."""
+    if not isinstance(rec, dict):
+        return False
+    lat = rec.get("lat")
+    lon = rec.get("lon")
+    if isinstance(lat, bool) or isinstance(lon, bool):
+        return False
+    if not isinstance(lat, (int, float)) or not isinstance(lon, (int, float)):
+        return False
+    seen_dt = parse_seen(rec.get("seen")) or moment
+    cutoff = moment - timedelta(hours=TRAIL_HOURS)
+    before = rec.get("trail")
+    points = []
+    if isinstance(before, list):
+        for item in before:
+            if not isinstance(item, dict):
+                continue
+            plat = item.get("lat")
+            plon = item.get("lon")
+            when = parse_seen(item.get("seen")) if isinstance(item.get("seen"), str) else None
+            if isinstance(plat, bool) or isinstance(plon, bool):
+                continue
+            if not isinstance(plat, (int, float)) or not isinstance(plon, (int, float)) or when is None:
+                continue
+            if when < cutoff:
+                continue
+            points.append({"lat": round(float(plat), 5), "lon": round(float(plon), 5), "seen": stamp(when)})
+    sog = rec.get("sog")
+    moving = isinstance(sog, (int, float)) and not isinstance(sog, bool) and float(sog) >= 0.5
+    if not points and moving:
+        cog = rec.get("cog")
+        if isinstance(cog, bool) or not isinstance(cog, (int, float)):
+            heading = rec.get("heading")
+            cog = heading if isinstance(heading, (int, float)) and not isinstance(heading, bool) else None
+        if isinstance(cog, (int, float)):
+            anchor = seen_dt if seen_dt >= cutoff else moment
+            back = (float(cog) + 180.0) % 360.0
+            rad = math.radians(back)
+            lat_f = float(lat)
+            lon_f = float(lon)
+            coslat = max(0.2, math.cos(math.radians(lat_f)))
+            for index in range(48, 0, -1):
+                hours = index * 0.5
+                when = anchor - timedelta(hours=hours)
+                if when < cutoff:
+                    continue
+                miles = float(sog) * hours
+                nlat = max(-90.0, min(90.0, lat_f + (miles / 60.0) * math.cos(rad)))
+                nlon = lon_f + (miles / 60.0) * math.sin(rad) / coslat
+                while nlon > 180.0:
+                    nlon -= 360.0
+                while nlon < -180.0:
+                    nlon += 360.0
+                points.append({"lat": round(nlat, 5), "lon": round(nlon, 5), "seen": stamp(when)})
+    anchor = seen_dt if seen_dt >= cutoff else moment
+    current = {"lat": round(float(lat), 5), "lon": round(float(lon), 5), "seen": stamp(anchor)}
+    if not points:
+        points = [current]
+    else:
+        last = points[-1]
+        same = last["lat"] == current["lat"] and last["lon"] == current["lon"]
+        moved = abs(last["lat"] - current["lat"]) > 0.01 or abs(last["lon"] - current["lon"]) > 0.01
+        if same:
+            pass
+        elif moved:
+            points.append(current)
+        else:
+            points[-1] = current
+    if len(points) > TRAIL_MAX:
+        points = points[-TRAIL_MAX:]
+    changed = before != points
+    rec["trail"] = points
+    return changed
 
 
 def apply_update(previous, update):
@@ -484,8 +573,14 @@ def build():
         if isinstance(current, dict):
             merged[mmsi] = current
 
+    moment = now_utc()
+    trails_changed = False
+    for rec in merged.values():
+        if extend_trail(rec, moment):
+            trails_changed = True
+
     print(f"Heard {heard} of {len(allowed)} ships on aisstream.io. Open Waters refreshed {filled}. Stored {len(merged)} positions.")
-    if heard == 0 and filled == 0:
+    if heard == 0 and filled == 0 and not trails_changed:
         print("No ships were heard. Leaving cruises/positions.json unchanged.")
         return 0
 
@@ -521,5 +616,28 @@ def build():
     return 0
 
 
+def stamp_trails_only():
+    previous = load_json(OUT_PATH, {})
+    ships = previous.get("ships") if isinstance(previous, dict) else None
+    if not isinstance(ships, dict) or not ships:
+        print("cruises/positions.json has no ships.")
+        return 0
+    moment = now_utc()
+    changed = False
+    for rec in ships.values():
+        if extend_trail(rec, moment):
+            changed = True
+    if not changed and previous.get("about") == ABOUT:
+        print("Trails already current.")
+        return 0
+    previous["about"] = ABOUT
+    previous["ships"] = {mmsi: ships[mmsi] for mmsi in sorted(ships)}
+    OUT_PATH.write_text(json.dumps(previous, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(f"Wrote trails into {OUT_PATH.name}.")
+    return 0
+
+
 if __name__ == "__main__":
+    if os.environ.get("TRAILS_ONLY") == "1":
+        raise SystemExit(stamp_trails_only())
     raise SystemExit(build())

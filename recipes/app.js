@@ -354,10 +354,137 @@ function renderList(){
   $('#grid').querySelectorAll('.thumb').forEach((el,i)=>paintPhoto(el,list[i].photo));
   $('#empty').hidden=list.length>0;
 }
+const GKEY='mondosupreme.grocery.v1';
+const FRACS={'½':1/2,'⅓':1/3,'¼':1/4,'¾':3/4,'⅔':2/3,'⅛':1/8,'⅜':3/8,'⅝':5/8,'⅞':7/8};
+const QTY_RE=/^(\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|[½⅓¼¾⅔⅛⅜⅝⅞]|\d+(?:\.\d+)?)(?:\s*([-–])\s*(\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|[½⅓¼¾⅔⅛⅜⅝⅞]|\d+(?:\.\d+)?))?/;
+const UNIT_PLURAL={cup:'cups',tbsp:'tbsp',tsp:'tsp',g:'g',kg:'kg',oz:'oz',lb:'lbs',ml:'ml',l:'l',pinch:'pinches',clove:'cloves',can:'cans',handful:'handfuls',teaspoon:'teaspoons',tablespoon:'tablespoons'};
+const UNIT_ONE={};
+Object.keys(UNIT_PLURAL).forEach(one=>{UNIT_ONE[one]=one;UNIT_ONE[UNIT_PLURAL[one]]=one;});
+let detailScale=1, detailFor='';
+function parseQtyToken(token){
+  const text=String(token||'').trim();
+  if(FRACS[text]!=null)return FRACS[text];
+  let m=text.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if(m){const d=+m[3];return d?+m[1]+(+m[2]/d):null}
+  m=text.match(/^(\d+)\s*\/\s*(\d+)$/);
+  if(m){const d=+m[2];return d?+m[1]/d:null}
+  const n=Number(text);
+  return Number.isFinite(n)?n:null;
+}
+function formatQty(n){
+  if(!Number.isFinite(n)||n<=0)return '0';
+  const rounded=Math.round(n*1000)/1000;
+  const nearest=Math.round(rounded);
+  if(Math.abs(rounded-nearest)<0.001)return String(nearest);
+  const whole=Math.floor(rounded+1e-9);
+  const frac=rounded-whole;
+  const table=[[1,8,'1/8'],[1,4,'1/4'],[1,3,'1/3'],[3,8,'3/8'],[1,2,'1/2'],[5,8,'5/8'],[2,3,'2/3'],[3,4,'3/4'],[7,8,'7/8']];
+  let best='',err=0.021;
+  table.forEach(row=>{const gap=Math.abs(frac-row[0]/row[1]);if(gap<err){err=gap;best=row[2];}});
+  if(frac>0.98)return String(whole+1);
+  if(!best)return String(Math.round(rounded*100)/100);
+  return whole?whole+' '+best:best;
+}
+function scaleLine(line,factor){
+  const text=String(line??'');
+  if(factor===1)return text;
+  const m=text.match(QTY_RE);
+  if(!m)return text;
+  const a=parseQtyToken(m[1]);
+  if(a==null)return text;
+  const b=m[3]?parseQtyToken(m[3]):null;
+  if(m[3]&&b==null)return text;
+  const shown=b==null?formatQty(a*factor):formatQty(a*factor)+'-'+formatQty(b*factor);
+  return shown+text.slice(m[0].length);
+}
+function groceryParts(line){
+  const text=String(line||'').replace(/\s+/g,' ').trim();
+  const m=text.match(QTY_RE);
+  if(!m||m[3])return {key:text.toLowerCase(),qty:null,text};
+  const qty=parseQtyToken(m[1]);
+  if(qty==null)return {key:text.toLowerCase(),qty:null,text};
+  let rest=text.slice(m[0].length).replace(/^\s+/, '');
+  const unitMatch=rest.match(/^([A-Za-z]+)\b\s*(.*)$/);
+  let unit='',tail=rest;
+  if(unitMatch&&UNIT_ONE[unitMatch[1].toLowerCase()]){
+    unit=UNIT_ONE[unitMatch[1].toLowerCase()];
+    tail=unitMatch[2]||'';
+  }
+  return {key:(unit+'|'+tail).toLowerCase().replace(/\s+/g,' ').trim(),qty,unit,tail,text};
+}
+function groceryText(parts,qty){
+  if(parts.qty==null)return parts.text;
+  const word=parts.unit?(Math.abs(qty-1)<0.001?parts.unit:(UNIT_PLURAL[parts.unit]||parts.unit)):'';
+  return [formatQty(qty),word,parts.tail].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+}
+function loadGrocery(){
+  try{const data=JSON.parse(localStorage.getItem(GKEY));if(data&&Array.isArray(data.items))return data;}catch(e){}
+  return {items:[]};
+}
+function saveGrocery(data){try{localStorage.setItem(GKEY,JSON.stringify(data));}catch(e){toast('Could not save the grocery list')}}
+function groceryCount(){return loadGrocery().items.length}
+function paintGroceryButton(){
+  const btn=$('#btnGrocery');
+  if(btn)btn.textContent='Grocery List ('+groceryCount()+')';
+}
+function addGroceryLines(lines,recipe){
+  const data=loadGrocery();
+  lines.forEach(line=>{
+    const text=String(line||'').trim();
+    if(!text)return;
+    const parts=groceryParts(text);
+    const open=data.items.find(item=>!item.checked&&groceryParts(item.text).key===parts.key);
+    if(open&&parts.qty!=null&&groceryParts(open.text).qty!=null){
+      const prior=groceryParts(open.text);
+      open.text=groceryText(prior,prior.qty+parts.qty);
+    }else if(open&&parts.qty==null){
+      open.text=text;
+    }else{
+      data.items.push({id:uid(),text,checked:false,recipeId:recipe&&recipe.id||'',recipeTitle:recipe&&recipe.title||'',custom:!recipe});
+    }
+  });
+  saveGrocery(data);
+  paintGroceryButton();
+}
+function renderGrocery(){
+  const data=loadGrocery();
+  const box=$('#groceryItems');
+  const empty=$('#groceryEmpty');
+  if(!box)return;
+  box.replaceChildren();
+  data.items.forEach(item=>{
+    const row=document.createElement('label');
+    row.className='grocery-row'+(item.checked?' is-checked':'');
+    const input=document.createElement('input');
+    input.type='checkbox';
+    input.checked=!!item.checked;
+    input.addEventListener('change',()=>{
+      const fresh=loadGrocery();
+      const found=fresh.items.find(row=>row.id===item.id);
+      if(found)found.checked=input.checked;
+      saveGrocery(fresh);
+      renderGrocery();
+    });
+    const span=document.createElement('span');
+    span.textContent=item.text;
+    row.append(input,span);
+    box.append(row);
+  });
+  if(empty)empty.hidden=data.items.length>0;
+  paintGroceryButton();
+}
+function openGrocery(){
+  const dlg=$('#groceryDialog');
+  if(dlg&&typeof dlg.showModal==='function'&&!dlg.open)dlg.showModal();
+  renderGrocery();
+}
 function renderDetail(id){
   const r=recipes.find(x=>x.id===id); if(!r){location.hash='#/';return}
+  if(detailFor!==id){detailScale=1;detailFor=id;}
   const v=$('#detailView');
   const own=canMutate();
+  const lines=(r.ingredients||[]).map(i=>scaleLine(i,detailScale));
+  const factors=[[0.5,'½x'],[1,'1x'],[2,'2x'],[3,'3x']];
   v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
    <div class="dbar"><a href="#/" class="btn ghost">← Back</a><button class="btn ghost" id="dFav">${favs.has(r.id)?'♥ Favorited':'♡ Favorite'}</button>
    <button class="btn ghost" id="dPrint">🖨 Print</button>${own?'<button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button>':''}</div>
@@ -366,10 +493,17 @@ function renderDetail(id){
    <div class="stats"><div class="stat"><b>${+r.prep||0} min</b><span>Prep</span></div><div class="stat"><b>${+r.cook||0} min</b><span>Cook</span></div>
    <div class="stat"><b>${total(r)} min</b><span>Total</span></div><div class="stat"><b>${esc(r.servings||'–')}</b><span>Servings</span></div></div>
    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
-   <div class="cols"><section><h2>Ingredients</h2><ul>${(r.ingredients||[]).map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
+   <div class="cols"><section><h2>Ingredients</h2>
+   <div class="scale-bar" role="group" aria-label="Serving scale">${factors.map(([n,label])=>`<button type="button" class="btn ghost scale-btn" data-scale="${n}" aria-pressed="${detailScale===n?'true':'false'}">${label}</button>`).join('')}
+   <button type="button" class="btn primary" id="addGrocery">Add to Grocery List</button></div>
+   <ul>${lines.map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
    <section><h2>Steps</h2><ol>${(r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section></div>
    ${r.notes?`<div class="notes"><strong>Notes:</strong> ${esc(r.notes)}</div>`:''}</div></article>`;
   paintPhoto(v.querySelector('.detail-hero'),r.photo);
+  v.querySelectorAll('.scale-btn').forEach(btn=>{
+    btn.onclick=()=>{detailScale=Number(btn.dataset.scale)||1;renderDetail(r.id);};
+  });
+  $('#addGrocery').onclick=()=>{addGroceryLines(lines,r);toast('Added to the grocery list');openGrocery();};
   $('#dFav').onclick=()=>{toggleFav(r.id);renderDetail(r.id)};
   $('#dPrint').onclick=()=>window.print();
   if($('#dEdit'))$('#dEdit').onclick=()=>openEditor(r);
@@ -1840,6 +1974,43 @@ function init(){
   $('#catFilter').onchange=e=>{state.cat=e.target.value;renderList()};
   $('#tagFilter').onchange=e=>{state.tag=e.target.value;renderList()};
   $('#favFilter').onclick=e=>{state.fav=!state.fav;e.currentTarget.setAttribute('aria-pressed',state.fav);e.currentTarget.textContent=state.fav?'♥ Favorites':'♡ Favorites';renderList()};
+  paintGroceryButton();
+  $('#btnGrocery').onclick=openGrocery;
+  $('#groceryClose').onclick=()=>$('#groceryDialog').close();
+  $('#groceryAdd').onclick=()=>{
+    const input=$('#groceryCustom');
+    const text=input.value.trim();
+    if(!text)return;
+    addGroceryLines([text],null);
+    input.value='';
+    renderGrocery();
+  };
+  $('#groceryCustom').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#groceryAdd').click();}});
+  $('#groceryClear').onclick=()=>{
+    const data=loadGrocery();
+    data.items=data.items.filter(item=>!item.checked);
+    saveGrocery(data);
+    renderGrocery();
+  };
+  $('#groceryCopy').onclick=async()=>{
+    const lines=loadGrocery().items.map(item=>(item.checked?'[x] ':'[ ] ')+item.text);
+    const text=lines.join('\n')||'Grocery list is empty.';
+    let ok=false;
+    try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(text);ok=true;}}
+    catch(e){ok=false}
+    if(!ok){
+      const area=document.createElement('textarea');
+      area.value=text;
+      area.setAttribute('readonly','');
+      area.className='copy-buffer';
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      try{ok=document.execCommand('copy');}catch(err){ok=false}
+      area.remove();
+    }
+    toast(ok?'Grocery list copied':'Could not copy the grocery list');
+  };
   $('#grid').addEventListener('click',e=>{
     const fb=e.target.closest('[data-fav]'); if(fb){e.stopPropagation();toggleFav(fb.dataset.fav);renderList();return}
     const c=e.target.closest('.card'); if(c)location.hash='#/recipe/'+encodeURIComponent(c.dataset.id);
@@ -1850,6 +2021,9 @@ function init(){
 }
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',init);
 const recipeOcrApi={parseRecipeText,safePhoto,parseBackup,fixOcrText,fixOcrLine,flattenIllumination,sauvola,sauvolaWindow,suppressRuledLines,solveHomography,splitColumns,readingOrder,mergeOcrLines,linesFromWords,meanConf,scoreText,grayOf,boxBlur,stretch,paintGray,padCanvas,passFlatten,passSauvola,passHybrid,warpQuad,tokensFromLines,chooseLines,RECIPE_DICT};
-if(typeof window!=='undefined')window.RecipeOcr=recipeOcrApi;
+if(typeof window!=='undefined'){
+  window.RecipeOcr=recipeOcrApi;
+  window.MONDO_SCALE={scaleLine,formatQty,groceryParts,groceryText};
+}
 if(typeof module!=='undefined'&&module.exports)module.exports=recipeOcrApi;
 })();

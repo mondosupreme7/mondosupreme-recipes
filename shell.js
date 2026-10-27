@@ -480,6 +480,7 @@
       ownerBtn.textContent = on ? 'Owner Mode: ON' : 'Sign in';
       ownerBtn.classList.toggle('is-owner', on);
       ownerBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      document.dispatchEvent(new CustomEvent('mondo-owner', {detail: {on: on}}));
     }
     function attachChip() {
       if (!appsReady() || attachChip.done) return;

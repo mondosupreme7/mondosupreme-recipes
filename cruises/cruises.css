@@ -34,6 +34,13 @@
 .popup-note{margin-top:4px;color:#333;font-size:.85rem}
 .leaflet-tooltip.ship-tip{background:#003399;color:#fff;border:2px solid #ff6600;border-radius:0;box-shadow:2px 2px 0 #000;font:700 13px "Comic Sans MS","Trebuchet MS",cursive;padding:2px 6px}
 .leaflet-tooltip.ship-tip.leaflet-tooltip-top::before{border-top-color:#ff6600}
+.countdown{background:#061806;color:#39ff14;border:3px ridge #39ff14;padding:12px;margin:0 0 14px}
+.countdown h2{margin:0 0 8px;color:#ffcc33;font:700 16px "Comic Sans MS","Trebuchet MS",cursive}
+.count-lcd{font:700 28px/1.2 "Courier New",Courier,monospace;letter-spacing:.08em;background:#020;color:#39ff14;border:2px inset #0a0;padding:10px 8px;text-align:center;text-shadow:0 0 8px #39ff14}
+.count-form{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:8px}
+.count-form label{display:flex;flex-direction:column;gap:4px;font:700 13px Tahoma,sans-serif;color:#d7ff9a}
+.count-form input,.count-form select{background:#fff;color:#000;min-height:44px;font-size:16px;padding:6px}
+.leaflet-overlay-pane svg path.leaflet-interactive{pointer-events:none}
 @media(max-width:720px){
  .hero{padding:28px 0 12px}
  #map{height:52dvh;min-height:260px}

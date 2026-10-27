@@ -48,6 +48,7 @@
    <select id="catFilter" aria-label="Category"><option value="">All categories</option></select>
    <select id="tagFilter" aria-label="Tag"><option value="">All tags</option></select>
    <button id="favFilter" class="btn ghost" aria-pressed="false">♡ Favorites</button>
+   <button id="btnGrocery" class="btn ghost" type="button">Grocery List (0)</button>
   </div>
   <div id="grid" class="grid"></div>
   <p id="empty" class="empty" hidden>No recipes found. Try a different search or add a new recipe!</p>
@@ -160,6 +161,18 @@
  <div class="scan-track" id="scanBarTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Scan progress"><span id="scanBar"></span></div>
  <div class="scan-actions"><button type="button" class="btn ghost" id="scanCancel">Cancel</button></div>
 </dialog>
+<dialog id="groceryDialog" aria-labelledby="groceryTitle">
+ <h2 id="groceryTitle">Grocery List</h2>
+ <div id="groceryItems"></div>
+ <p id="groceryEmpty">Nothing on the list yet. Open a recipe and add its ingredients.</p>
+ <label>Add an item<input id="groceryCustom" maxlength="120" autocomplete="off"></label>
+ <div class="scan-actions">
+  <button type="button" id="groceryAdd" class="btn primary">Add</button>
+  <button type="button" id="groceryCopy" class="btn ghost">Copy</button>
+  <button type="button" id="groceryClear" class="btn ghost">Clear checked</button>
+  <button type="button" id="groceryClose" class="btn ghost">Close</button>
+ </div>
+</dialog>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
@@ -168,4 +181,5 @@
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/shell.js"></script>
+<script src="/backup.js"></script>
 </body></html>

@@ -182,7 +182,7 @@
       "items": {
         ".read": "auth != null",
         "$id": {
-          ".write": "auth != null && $id.matches(/^[A-Za-z0-9_-]{1,64}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9_-]{1,64}$/)) || (auth != null && $id.matches(/^[A-Za-z0-9_-]{1,64}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com')))",
           ".validate": "!newData.exists() || (newData.hasChildren(['title', 'category', 'ingredients', 'steps', 'notes', 'tags', 'photo', 'createdAt', 'updatedAt', 'author']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 200 && !newData.child('title').val().contains('\\n') && !newData.child('title').val().contains('\\r') && newData.child('category').isString() && newData.child('category').val().length <= 80 && !newData.child('category').val().contains('\\n') && newData.child('ingredients').isString() && newData.child('ingredients').val().length <= 80000 && newData.child('steps').isString() && newData.child('steps').val().length <= 80000 && newData.child('notes').isString() && newData.child('notes').val().length <= 4000 && newData.child('tags').isString() && newData.child('tags').val().length <= 1200 && !newData.child('tags').val().contains('\\n') && newData.child('photo').isString() && (newData.child('photo').val() == '' || (newData.child('photo').val().length <= 2000 && newData.child('photo').val().matches(/^https:\\/\\/\\S+$/)) || (newData.child('photo').val().length <= 210000 && newData.child('photo').val().matches(/^data:image\\/jpeg;base64,[A-Za-z0-9+\\/=]+$/))) && newData.child('createdAt').isNumber() && newData.child('updatedAt').isNumber() && newData.child('author').isString())",
           "title": {
             ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 200 && !newData.val().contains('\\n') && !newData.val().contains('\\r')"
@@ -206,13 +206,13 @@
             ".validate": "newData.isString() && (newData.val() == '' || (newData.val().length <= 2000 && newData.val().matches(/^https:\\/\\/\\S+$/)) || (newData.val().length <= 210000 && newData.val().matches(/^data:image\\/jpeg;base64,[A-Za-z0-9+\\/=]+$/)))"
           },
           "createdAt": {
-            ".validate": "newData.isNumber() && ((!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))"
+            ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || (!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))"
           },
           "updatedAt": {
-            ".validate": "newData.isNumber() && newData.val() == now"
+            ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)"
           },
           "author": {
-            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128 && newData.val().matches(/^[A-Za-z0-9]+$/) && ((!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))"
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128 && newData.val().matches(/^[A-Za-z0-9]+$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || (!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))"
           },
           "prep": {
             ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000 && newData.val() % 1 == 0"
@@ -276,7 +276,7 @@
       "items": {
         ".read": "auth != null",
         "$id": {
-          ".write": "auth != null && $id.matches(/^[A-Za-z0-9_-]{1,64}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9_-]{1,64}$/)) || (auth != null && $id.matches(/^[A-Za-z0-9_-]{1,64}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com')))",
           ".validate": "!newData.exists() || (newData.hasChildren(['title', 'body', 'tags', 'createdAt', 'updatedAt', 'author']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 200 && !newData.child('title').val().contains('\\n') && !newData.child('title').val().contains('\\r') && newData.child('body').isString() && newData.child('body').val().length <= 100000 && newData.child('tags').isString() && newData.child('tags').val().length <= 1200 && !newData.child('tags').val().contains('\\n') && newData.child('createdAt').isNumber() && newData.child('updatedAt').isNumber() && newData.child('author').isString())",
           "title": {
             ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 200 && !newData.val().contains('\\n') && !newData.val().contains('\\r')"
@@ -288,13 +288,13 @@
             ".validate": "newData.isString() && newData.val().length <= 1200 && !newData.val().contains('\\n') && !newData.val().contains('\\r')"
           },
           "createdAt": {
-            ".validate": "newData.isNumber() && ((!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))"
+            ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || (!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))"
           },
           "updatedAt": {
-            ".validate": "newData.isNumber() && newData.val() == now"
+            ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)"
           },
           "author": {
-            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128 && newData.val().matches(/^[A-Za-z0-9]+$/) && ((!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))"
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128 && newData.val().matches(/^[A-Za-z0-9]+$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || (!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))"
           },
           "seq": {
             ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 40 && newData.val() % 1 == 0"
@@ -354,7 +354,7 @@
         "$cart": {
           ".read": "auth != null",
           "$id": {
-            ".write": "auth != null && ($cart == 'seas' || $cart == 'kitchen' || $cart == 'breaker') && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && newData.parent().parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('day').val()) || (data.exists() && !newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+            ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && ($cart == 'seas' || $cart == 'kitchen' || $cart == 'breaker') && $id.matches(/^[A-Za-z0-9_-]{1,80}$/)) || (auth != null && ($cart == 'seas' || $cart == 'kitchen' || $cart == 'breaker') && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && newData.parent().parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('day').val()) || (data.exists() && !newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com')))",
             ".validate": "!newData.exists() || (newData.hasChildren(['name', 'score', 't', 'author', 'seq', 'day']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Z0-9][A-Z0-9 ]{0,11}$/) && newData.child('score').isNumber() && newData.child('score').val() >= 0 && newData.child('score').val() <= 9999999 && newData.child('score').val() % 1 == 0 && newData.child('t').isNumber() && newData.child('author').isString())",
             "name": {
               ".validate": "newData.isString() && newData.val().matches(/^[A-Z0-9][A-Z0-9 ]{0,11}$/)"
@@ -363,10 +363,10 @@
               ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999999 && newData.val() % 1 == 0"
             },
             "t": {
-              ".validate": "newData.isNumber() && newData.val() == now"
+              ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)"
             },
             "author": {
-              ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && newData.val() == auth.uid"
+              ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || newData.val() == auth.uid)"
             },
             "seq": {
               ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 20 && newData.val() % 1 == 0"
@@ -391,7 +391,7 @@
       "park": {
         ".read": "auth != null",
         "$id": {
-          ".write": "auth != null && $id.matches(/^[A-Za-z0-9]{1,128}$/) && (($id == auth.uid && newData.exists() && newData.child('author').val() == auth.uid && newData.parent().parent().child('rate').child(auth.uid).val() == now) || (data.exists() && !newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9]{1,128}$/)) || (auth != null && $id.matches(/^[A-Za-z0-9]{1,128}$/) && (($id == auth.uid && newData.exists() && newData.child('author').val() == auth.uid && newData.parent().parent().child('rate').child(auth.uid).val() == now) || (data.exists() && !newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com')))",
           ".validate": "!newData.exists() || (newData.hasChildren(['name', 'owner', 'stage', 'species', 'age', 'shell', 't', 'author']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/) && newData.child('owner').isString() && newData.child('owner').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/) && newData.child('stage').isString() && newData.child('stage').val().matches(/^(egg|baby|kid|teen|adult)$/) && newData.child('species').isString() && newData.child('species').val().matches(/^(egg|blob|kidchi|teenchi|chefchi|captainchi|cyberchi|phantomchi)$/) && newData.child('age').isNumber() && newData.child('shell').isString() && newData.child('shell').val().matches(/^(purple|blue|pink|green|yellow)$/) && newData.child('t').isNumber() && newData.child('author').isString())",
           "name": {
             ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/)"
@@ -412,10 +412,10 @@
             ".validate": "newData.isString() && newData.val().matches(/^(purple|blue|pink|green|yellow)$/)"
           },
           "t": {
-            ".validate": "newData.isNumber() && newData.val() == now"
+            ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)"
           },
           "author": {
-            ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && newData.val() == auth.uid"
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || newData.val() == auth.uid)"
           },
           "$other": {
             ".validate": false
@@ -461,16 +461,16 @@
       "threads": {
         ".read": "auth != null",
         "$id": {
-          ".write": "auth != null && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && (!root.child('forum/bans').child(auth.uid).exists() || auth.token.email == 'cbrooks_911@yahoo.com') && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.child('pinned').val() == false && newData.child('locked').val() == false && newData.child('official').val() == false && newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9_-]{1,80}$/)) || (auth != null && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && (!root.child('forum/bans').child(auth.uid).exists() || auth.token.email == 'cbrooks_911@yahoo.com') && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.child('pinned').val() == false && newData.child('locked').val() == false && newData.child('official').val() == false && newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com')))",
           ".validate": "!newData.exists() || (newData.hasChildren(['title', 'body', 'category', 'name', 'mood', 'author', 'createdAt', 'updatedAt', 'pinned', 'locked', 'official']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 120 && !newData.child('title').val().contains('\\n') && !newData.child('title').val().contains('\\r') && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 5000 && newData.child('category').isString() && newData.child('category').val().matches(/^(general|recipes|cruises|news|gaming)$/) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/) && newData.child('mood').isString() && newData.child('mood').val().matches(/^(smile|cool|chef|ship|game|heart)$/) && newData.child('pinned').isBoolean() && newData.child('locked').isBoolean() && newData.child('official').isBoolean() && newData.child('author').isString() && newData.child('createdAt').isNumber() && newData.child('updatedAt').isNumber())",
           "title": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 120 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
           "body": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 5000" },
           "category": { ".validate": "newData.isString() && newData.val().matches(/^(general|recipes|cruises|news|gaming)$/)" },
           "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/)" },
           "mood": { ".validate": "newData.isString() && newData.val().matches(/^(smile|cool|chef|ship|game|heart)$/)" },
-          "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && ((!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))" },
-          "createdAt": { ".validate": "newData.isNumber() && ((!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))" },
-          "updatedAt": { ".validate": "newData.isNumber() && newData.val() == now" },
+          "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || (!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))" },
+          "createdAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || (!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))" },
+          "updatedAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)" },
           "pinned": { ".validate": "newData.isBoolean()" },
           "locked": { ".validate": "newData.isBoolean()" },
           "official": { ".validate": "newData.isBoolean()" },
@@ -483,13 +483,13 @@
         "$tid": {
           ".read": "auth != null",
           "$id": {
-            ".write": "auth != null && $tid.matches(/^[A-Za-z0-9_-]{1,80}$/) && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && root.child('forum/threads').child($tid).exists() && (root.child('forum/threads').child($tid).child('locked').val() != true || auth.token.email == 'cbrooks_911@yahoo.com') && (!root.child('forum/bans').child(auth.uid).exists() || auth.token.email == 'cbrooks_911@yahoo.com') && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.parent().parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+            ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $tid.matches(/^[A-Za-z0-9_-]{1,80}$/) && $id.matches(/^[A-Za-z0-9_-]{1,80}$/)) || (auth != null && $tid.matches(/^[A-Za-z0-9_-]{1,80}$/) && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && root.child('forum/threads').child($tid).exists() && (root.child('forum/threads').child($tid).child('locked').val() != true || auth.token.email == 'cbrooks_911@yahoo.com') && (!root.child('forum/bans').child(auth.uid).exists() || auth.token.email == 'cbrooks_911@yahoo.com') && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && (auth.token.email == 'cbrooks_911@yahoo.com' || (newData.parent().parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().parent().child('c').child(auth.uid).child('day').val()))) || (data.exists() && auth.token.email == 'cbrooks_911@yahoo.com')))",
             ".validate": "!newData.exists() || (newData.hasChildren(['body', 'name', 'mood', 'author', 'createdAt']) && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 2000 && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/) && newData.child('mood').isString() && newData.child('mood').val().matches(/^(smile|cool|chef|ship|game|heart)$/) && newData.child('author').isString() && newData.child('createdAt').isNumber())",
             "body": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 2000" },
             "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/)" },
             "mood": { ".validate": "newData.isString() && newData.val().matches(/^(smile|cool|chef|ship|game|heart)$/)" },
-            "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && ((!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))" },
-            "createdAt": { ".validate": "newData.isNumber() && ((!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))" },
+            "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || (!data.parent().exists() && newData.val() == auth.uid) || (data.parent().exists() && newData.val() == data.val()))" },
+            "createdAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || (!data.parent().exists() && newData.val() == now) || (data.parent().exists() && newData.val() == data.val()))" },
             "seq": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 40 && newData.val() % 1 == 0" },
             "day": { ".validate": "newData.isNumber() && newData.val() % 86400000 == 0 && newData.val() <= now && now - newData.val() < 90000000" },
             "$other": { ".validate": false }
@@ -558,7 +558,7 @@
       "leaderboard": {
         ".read": "auth != null",
         "$uid": {
-          ".write": "(auth.uid == $uid && newData.exists() && newData.child('updatedAt').val() == now) || (!newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com')",
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $uid.matches(/^[A-Za-z0-9]{1,128}$/)) || (auth.uid == $uid && newData.exists() && newData.child('updatedAt').val() == now) || (!newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com')",
           ".validate": "!newData.exists() || (newData.hasChildren(['name', 'faction', 'cls', 'level', 'gear', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('faction').val().matches(/^(alliance|horde)$/) && newData.child('cls').val().matches(/^(warrior|mage|paladin|rogue)$/) && newData.child('level').isNumber() && newData.child('level').val() >= 1 && newData.child('level').val() <= 12 && newData.child('level').val() % 1 == 0 && newData.child('gear').isNumber() && newData.child('gear').val() >= 0 && newData.child('gear').val() <= 9999 && newData.child('gear').val() % 1 == 0 && newData.child('updatedAt').val() == now)",
           "name": { ".validate": "newData.isString()" },
           "faction": { ".validate": "newData.isString()" },
@@ -650,6 +650,40 @@
           "deaths": { ".validate": "newData.isNumber()" },
           "mode": { ".validate": "newData.isString()" },
           "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      }
+    },
+    "countdown": {
+      "next": {
+        ".read": true,
+        ".write": "auth.token.email == 'cbrooks_911@yahoo.com'",
+        ".validate": "!newData.exists() || (newData.hasChildren(['mmsi', 'date']) && newData.child('mmsi').isString() && newData.child('mmsi').val().matches(/^\\d{9}$/) && newData.child('date').isString() && newData.child('date').val().matches(/^\\d{4}-\\d{2}-\\d{2}$/) && (!newData.child('name').exists() || (newData.child('name').isString() && newData.child('name').val().length <= 80 && !newData.child('name').val().contains('\\n') && !newData.child('name').val().contains('\\r'))))",
+        "mmsi": { ".validate": "newData.isString() && newData.val().matches(/^\\d{9}$/)" },
+        "date": { ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)" },
+        "name": { ".validate": "newData.isString() && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+        "$other": { ".validate": false }
+      }
+    },
+    "guestbook": {
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 8000)"
+        }
+      },
+      "entries": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9_-]{1,64}$/)) || (auth != null && !data.exists() && newData.exists() && $id.matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.child('author').val() == auth.uid && newData.child('createdAt').val() == now && newData.parent().parent().child('rate').child(auth.uid).val() == now)",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'stamp', 'note', 'homepage', 'location', 'createdAt', 'author']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/) && newData.child('stamp').isString() && newData.child('stamp').val().matches(/^(sun|alien|ship|chef|flame|cat)$/) && newData.child('note').isString() && newData.child('note').val().length >= 1 && newData.child('note').val().length <= 280 && !newData.child('note').val().contains('\\n') && !newData.child('note').val().contains('\\r') && newData.child('homepage').isString() && newData.child('homepage').val().length <= 200 && newData.child('homepage').val().matches(/^$|^https:\\/\\/\\S+$/) && newData.child('location').isString() && newData.child('location').val().length <= 40 && !newData.child('location').val().contains('\\n') && !newData.child('location').val().contains('\\r') && newData.child('createdAt').isNumber() && newData.child('author').isString())",
+          "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/)" },
+          "stamp": { ".validate": "newData.isString() && newData.val().matches(/^(sun|alien|ship|chef|flame|cat)$/)" },
+          "note": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 280 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "homepage": { ".validate": "newData.isString() && newData.val().length <= 200 && newData.val().matches(/^$|^https:\\/\\/\\S+$/)" },
+          "location": { ".validate": "newData.isString() && newData.val().length <= 40 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "createdAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)" },
+          "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || newData.val() == auth.uid)" },
           "$other": { ".validate": false }
         }
       }
