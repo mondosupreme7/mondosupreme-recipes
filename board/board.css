@@ -16,7 +16,8 @@ body.board-page main{flex:1;display:flex;flex-direction:column;min-height:0;max-
 .board-tools .swatch[aria-pressed=true],.board-tools .size[aria-pressed=true],.board-tools .tool[aria-pressed=true]{border-top:2px solid #404040;border-left:2px solid #404040;border-right:2px solid #fff;border-bottom:2px solid #fff}
 .board-tools .size i{display:block;border-radius:50%;background:var(--ink)}
 .board-status{color:#000;font-size:.95rem;flex:1 1 120px;min-height:24px;display:inline-flex;align-items:center}
-.board-stage{flex:1;min-height:180px;position:relative;touch-action:none;background:#e7d3c4;overflow:hidden}
+.board-stage{flex:1;min-height:0;position:relative;touch-action:none;background:#e7d3c4;overflow:hidden}
+body.board-page .ticker,body.board-page .rainbow-rule,body.board-page .era-toys > :not(.winamp){display:none}
 .board-stage canvas{display:block;width:100%;height:100%;touch-action:none}
 #ownerDialog form{padding:22px 24px}
 #ownerDialog p{color:var(--muted);margin:0}
