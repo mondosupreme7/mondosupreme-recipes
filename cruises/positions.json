@@ -3,7 +3,8 @@
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
     "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
-    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/)."
+    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
+    "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
   "heard": 2,
   "ships": {
@@ -113,14 +114,14 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 152.0,
+      "cog": 147.8,
       "destination": "US AOU",
       "eta": "10-28 12:30",
-      "heading": 153,
-      "lat": 33.2953,
-      "lon": -118.08831,
+      "heading": 149,
+      "lat": 33.21917,
+      "lon": -118.0324,
       "navStatus": 0,
-      "seen": "2026-10-27T02:17:17Z",
+      "seen": "2026-10-27T02:54:07Z",
       "sog": 8.8,
       "source": "aisstream.io"
     },
@@ -139,42 +140,42 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 240.8,
+      "cog": 242.1,
       "destination": "ES BCN",
       "eta": "10-28 05:00",
-      "heading": 240,
-      "lat": 43.38215,
-      "lon": 8.40357,
+      "heading": 241,
+      "lat": 43.32784,
+      "lon": 8.2673,
       "navStatus": 0,
-      "seen": "2026-10-27T02:17:59Z",
-      "sog": 11.5,
+      "seen": "2026-10-27T02:53:48Z",
+      "sog": 11.3,
       "source": "aishub"
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 38.0,
+      "cog": 28.4,
       "destination": "USMIA>BSCOC",
       "eta": "10-28 08:45",
-      "heading": 36,
-      "lat": 26.35507,
-      "lon": -79.48607,
+      "heading": 29,
+      "lat": 26.4244,
+      "lon": -79.43802,
       "navStatus": 0,
-      "seen": "2026-10-27T02:17:08Z",
+      "seen": "2026-10-27T02:46:38Z",
       "sog": 10.0,
       "source": "aishub"
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 160.5,
+      "cog": 159.0,
       "destination": "SXM PHIL",
       "eta": "10-24 06:00",
-      "heading": 162,
-      "lat": 25.27414,
-      "lon": -79.85044,
+      "heading": 159,
+      "lat": 18.45585,
+      "lon": -65.16705,
       "navStatus": 0,
-      "seen": "2026-10-24T23:14:51Z",
-      "sog": 20.3,
-      "source": "aishub"
+      "seen": "2026-10-27T02:54:13Z",
+      "sog": 17.7,
+      "source": "openwaters.io"
     },
     "311001259": {
       "aisName": "UTOPIA OF THE SEAS",
@@ -204,14 +205,14 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 235.0,
+      "cog": 225.0,
       "destination": "ES AGP",
       "eta": "10-27 10:00",
-      "heading": 236,
-      "lat": 36.89049,
-      "lon": -1.33608,
+      "heading": 223,
+      "lat": 36.7592,
+      "lon": -1.56659,
       "navStatus": 0,
-      "seen": "2026-10-27T02:18:06Z",
+      "seen": "2026-10-27T02:53:12Z",
       "sog": 23.1,
       "source": "aisstream.io"
     },
@@ -400,5 +401,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-27T02:18:24Z"
+  "updated": "2026-10-27T02:54:30Z"
 }
