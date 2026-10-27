@@ -267,7 +267,7 @@
     line(series.l, '#c90', yPrice);
     line(closes, '#39ff14', yPrice);
     ctx.fillStyle = '#9f9';
-    ctx.font = '11px Courier New, monospace';
+    ctx.font = '11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
     ctx.fillText(money(max), 4, pad + 10);
     ctx.fillText(money(min), 4, pad + priceH);
     function yRsi(value) {

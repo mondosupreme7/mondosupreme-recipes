@@ -1,22 +1,22 @@
 /* World of MondoCraft HUD. Bars use width classes so the page CSP never needs inline styles. */
 .mmo-page main.wrap{max-width:1100px}
 .mmo-shell{background:#140e09;color:#f4ead2;border:4px ridge #c9a227;padding:8px}
-.mmo-shell h1,.mmo-shell h2,.mmo-shell h3{font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#ffd100;margin:0 0 8px}
+.mmo-shell h1,.mmo-shell h2,.mmo-shell h3{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#fde047;margin:0 0 8px}
 .create{display:grid;gap:10px}
 .pick-row,.slots,.panel-actions,.owner-tools{display:flex;flex-wrap:wrap;gap:8px}
-.pick{min-height:44px;min-width:44px;padding:8px 10px;background:#2a2118;color:#f4ead2;border:2px solid #6b5424;font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;cursor:pointer}
-.pick.on{border-color:#ffd100;background:#4a3518;color:#fff}
+.pick{min-height:44px;min-width:44px;padding:8px 10px;background:#2a2118;color:#f4ead2;border:2px solid #6b5424;font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;cursor:pointer}
+.pick.on{border-color:#fde047;background:#4a3518;color:#fff}
 .pick small{display:block;font-weight:400;color:#d9c7a2}
 .alliance.on{box-shadow:inset 4px 0 0 #6ea8ff}
 .horde.on{box-shadow:inset 4px 0 0 #ff4d4d}
 .blurb{margin:0;min-height:1.4em}
-.zone-label{margin:0 0 6px;font:700 18px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#ffd100}
+.zone-label{margin:0 0 6px;font:700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#fde047}
 .zone-label span{color:#f4ead2;font-weight:400;font-size:14px}
 .frames{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
 .frame{display:flex;gap:8px;align-items:center;min-width:200px;flex:1 1 220px;background:#0c0c0c;color:#fff;border:2px solid #8d6b34;padding:4px}
 .frame canvas{width:40px;height:40px;flex:0 0 40px;background:#1a120c;border:2px solid #3a2a14}
-.frame .who{font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
-.frame .lv{color:#ffd100;margin-left:6px}
+.frame .who{font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.frame .lv{color:#fde047;margin-left:6px}
 .track{height:12px;background:#111;border:1px solid #000;margin-top:3px}
 .fill{display:block;height:100%;width:0;background:#3aa11a}
 .fill.low{background:#b91c1c}
@@ -27,11 +27,11 @@
 .stage{position:relative}
 #world{width:100%;height:420px;background:#000;display:block;touch-action:none}
 #joy{position:absolute;left:8px;bottom:8px;width:128px;height:128px;touch-action:none;background:transparent}
-#yell{margin:6px 0;background:#4a0800;color:#ffb000;border:3px ridge #ff6600;text-align:center;font:700 20px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:6px}
-.peek{min-height:22px;margin:4px 0;color:#f4ead2;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+#yell{margin:6px 0;background:#4a0800;color:#fde047;border:3px ridge #ff6600;text-align:center;font:700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;padding:6px}
+.peek{min-height:22px;margin:4px 0;color:#f4ead2;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .slots{margin:6px 0}
-.slot{position:relative;overflow:hidden;min-width:64px;min-height:44px;padding:4px 8px;background:#1a1a1a;color:#ffd100;border:2px solid #c9a227;font:700 12px/1.15 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;cursor:pointer}
-.slot .key{display:block;color:#aaa;font-size:10px}
+.slot{position:relative;overflow:hidden;min-width:64px;min-height:44px;padding:4px 8px;background:#1a1a1a;color:#fde047;border:2px solid #c9a227;font:700 12px/1.15 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;cursor:pointer}
+.slot .key{display:block;color:#e2e8f0;font-size:10px}
 .slot.on{border-color:#fff;color:#fff}
 .cd{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.62);pointer-events:none}
 .hint{margin:0;color:#d9c7a2;font-size:14px}
@@ -42,14 +42,14 @@
 .log-combat{color:#f4ead2}
 .log-chat{color:#7ec8ff}
 .log-loot{color:#1eff00}
-.log-quest{color:#ffd100}
+.log-quest{color:#fde047}
 .log-yell{color:#ff7a18}
 .log-travel{color:#d7b4ff}
 .r-uncommon{color:#1eff00}
 .r-rare{color:#0070dd}
 .r-epic{color:#a335ee}
 .legend{font-weight:700}
-#toast{position:fixed;left:8px;right:8px;bottom:calc(var(--task-h) + 8px);background:#ffd100;color:#000;border:2px solid #000;padding:8px;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+#toast{position:fixed;left:8px;right:8px;bottom:calc(var(--task-h) + 8px);background:#ffd100;color:#111827;border:2px solid #000;padding:8px;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 @media(max-width:800px){
  #world{height:300px}
  .desk{display:none}

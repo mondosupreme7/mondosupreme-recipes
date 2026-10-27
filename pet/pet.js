@@ -904,11 +904,11 @@ function drawBits() {
     ctx.globalAlpha = Math.max(0, b.life);
     if (b.kind === 'heart') {
       ctx.fillStyle = '#ff3b6b';
-      ctx.font = '16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif';
+      ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
       ctx.fillText('♥', b.x, b.y);
     } else if (b.kind === 'note') {
       ctx.fillStyle = '#24185a';
-      ctx.font = '16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif';
+      ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
       ctx.fillText('♪', b.x, b.y);
     } else if (b.kind === 'zzz') {
       ctx.fillStyle = '#24185a';

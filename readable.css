@@ -1,0 +1,185 @@
+/* Crisp system type and high-contrast text. Loaded last on every page. */
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
+  --sans: var(--font-sans);
+  --display: var(--font-sans);
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --ink: #111827;
+  --muted: #374151;
+  --link: #0b3d91;
+  --link-hover: #1d4ed8;
+  --on-dark: #f8fafc;
+  --on-dark-muted: #e2e8f0;
+  --on-dark-soft: #cbd5e1;
+  --on-dark-sky: #7dd3fc;
+  --on-dark-gold: #fde047;
+  --on-dark-mint: #86efac;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+table,
+thead,
+tbody,
+th,
+td,
+dialog,
+nav,
+h1, h2, h3, h4, h5, h6,
+svg text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+body :where(*):not(
+  pre, code, kbd, samp,
+  .win98-clock, .mono, .lcd, .count-lcd, .ticker, .ticker *,
+  .quote-table, .quote-table *, .tick, .jb-lcd, .wa-lcd, .wa-lcd *,
+  .wa-track, .wa-clock, .ch-readout, .radar-caption, .hud, .clock, .bsod, .bsod *,
+  .quote-tape, .quote-tape *, .quote-fresh
+) {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+pre, code, kbd, samp,
+.win98-clock, .mono, .lcd, .count-lcd, .ticker, .ticker *,
+.quote-table, .quote-table *, .tick, .jb-lcd, .wa-lcd, .wa-lcd *,
+.wa-track, .wa-clock, .ch-readout, .radar-caption, .hud, .clock, .bsod, .bsod *,
+.quote-tape, .quote-tape *, .quote-fresh {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: #111827;
+}
+body:not(.night) {
+  color: #111827;
+}
+p, li, dd, blockquote, .box-body, .card-body, .detail-inner, .wiki-body, .quote-copy, .toy p {
+  line-height: 1.6;
+}
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+.hero h1, .hero p, .profile-head h1, .word-main h1, .wx-hero h1, .ask-intro h1,
+.empty, .wiki-h, .credits, .credits h2, .result-count, .mood, .wordart, .sparkle,
+.wx-temp, .quote-tape p, .count-lcd, .lcd, .forum-head h1, .tv-hero h1 {
+  text-shadow: none;
+}
+
+body:not(.chat-page):not(.board-page):not(.night) main.wrap,
+.box, .card, .detail, .toy, .quote-owner, .wiki-article, .recipe-sheet {
+  background-color: #fff;
+  color: #111827;
+}
+.hero h1, .profile-head h1, .word-main h1, .wx-hero h1, .ask-intro h1,
+.hero p, .empty, .wiki-h, .credits, .credits h2, .result-count, .mood,
+.quote-copy blockquote, .quote-box .quote-kicker, .deals h2, .deal-ship {
+  color: #111827;
+}
+.brand, .site-header .brand { color: #0b3d91; }
+.brand em, .network { color: #374151; }
+.meta, .lock-note, .quote-disclaimer, .quote-by, .wiki-h span, .cols ul input:checked + span {
+  color: #374151;
+}
+
+main a:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook),
+.site-footer a, .choice, .choice-title, .webring a, .wiki-row, .wiki-row-title,
+.hit-title, .hit-title a, .guestbook {
+  color: #0b3d91;
+  text-decoration: underline;
+}
+main a:hover:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook),
+.choice:hover, .choice:hover .choice-title, .webring a:hover, .hit-title a:hover {
+  color: #1d4ed8;
+}
+main a:visited:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook),
+.choice:visited, .webring a:visited, .guestbook:visited {
+  color: #1e3a8a;
+}
+.choice-text, .about-line, .about-line b { color: #111827; text-decoration: none; }
+
+button, .btn, .site-nav a, .shell-tool, .win98-start, .win98-mute, .file-tab,
+.key, .pixel-btn, .jukebox button, .hlp-tabs button, input, select, textarea {
+  color: #111827;
+}
+.shell-tool.is-owner,
+.box h2, .quote-box h2, dialog h2, .toybox h2, .hlp-caption, .ask-win h2,
+.win h2, .day h2, .marquee, .quote-table th, .deals-table th, .rank,
+.quote-card-bar, .quote-card-bar h2, .wx-live {
+  color: #ffffff;
+}
+.mail-banner { background: #0b1f4b; color: #fde047; }
+.badge { background: #fde047; color: #111827; border-color: #111827; animation: readable-blink 1s steps(2) infinite; }
+.ticker { background: #000; color: #86efac; }
+.ticker .hot { background: #991b1b; color: #ffffff; animation: readable-blink 1s steps(2) infinite; }
+@keyframes readable-blink { 50% { opacity: .65; } }
+.wordart { color: #111827; text-shadow: none; transform: none; letter-spacing: 0.01em; }
+.sparkle { color: #991b1b; text-shadow: none; }
+.ebay-badge.feat { background: #991b1b; color: #ffffff; }
+
+.choice-locked, .choice-locked:visited, .choice-locked:hover,
+.choice-locked .choice-title, .choice-locked .choice-text,
+.choice-locked .rank { background: #000; color: #86efac; }
+.choice-locked .choice-text { color: #e2e8f0; }
+.choice-locked .rank { border-color: #86efac; }
+
+.quote-tape, .quote-tape p, .quote-hero .quote-kicker, .quote-fresh, .quote-table,
+.lcd, .count-lcd, .countdown, .radar-caption, .ch-readout, .jb-lcd,
+.wa-track, .boombox, .wiki-body pre, .num-up {
+  color: #86efac;
+  text-shadow: none;
+}
+.tick { color: #f8fafc; }
+.tick small, .quote-table td::before { color: #cbd5e1; }
+.num-down { color: #fca5a5; }
+.winamp, .wa-title, .wa-btn, .wa-vol, .wa-clock { color: #fde047; }
+.cab-title, .overlay h2, #yell, .wx-temp, .wx-day b, .wx-screen-title, .wx-star-top h2 {
+  color: #fde047;
+  text-shadow: none;
+}
+.wx-kicker { color: #9a3412; }
+html[data-theme]:not([data-theme="classic"]) .wx-kicker { color: var(--th-link); }
+.wx-screen { color: #f8fafc; }
+.wx-cond { color: #f8fafc; }
+.wx-facts { color: #e2e8f0; }
+.wx-screen .wx-sub { color: #fde047; }
+.wx-alert { color: #111827; background: #fde047; }
+.wx-alert.is-warning, .wx-alert.is-clear { color: #ffffff; }
+.wx-alert.is-watch { color: #111827; background: #fde047; }
+.eight-ball span { color: #f8fafc; text-shadow: none; }
+.hud { color: #111827; }
+.blink { color: #86efac; }
+
+body.night, body.night .splash p, body.night .ending p, body.night .room-line, body.night .status {
+  color: #f8fafc;
+}
+.splash h1, .ending h1, #roomTitle { color: #fde047; text-shadow: none; }
+.kicker, .hint-out { color: #fde047; }
+.sconces p, .inv-label, .night-btn.quiet { color: #e2e8f0; }
+.night-btn { color: #f8fafc; }
+.sheet, .sheet h2, .sheet p, .sheet li { color: #111827; }
+.sheet input { color: #f8fafc; background: #111827; }
+.mmo-shell, .mmo-shell .hint, .panel, .peek { color: #f8fafc; }
+body.fps-page, #play, #matchInfo { color: #f8fafc; }
+#playbar { color: #e2e8f0; }
+.won, .won h1, .won h2, .won p, .srv-head { color: #111827; }
+.slot { color: #fde047; }
+.slot .key { color: #e2e8f0; }
+
+@media (max-width: 900px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  select, textarea {
+    font-size: 16px !important;
+  }
+}

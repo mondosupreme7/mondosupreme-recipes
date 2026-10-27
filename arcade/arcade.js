@@ -425,7 +425,7 @@ function drawPops() {
   run.pops.forEach(p => {
     ctx.globalAlpha = Math.max(0, p.life);
     ctx.fillStyle = '#ffe14a';
-    ctx.font = '700 14px Courier New, monospace';
+    ctx.font = '700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
     ctx.fillText(p.text, p.x, p.y);
     ctx.globalAlpha = 1;
   });
@@ -487,7 +487,7 @@ function drawSeas() {
       ctx.fillStyle = '#ffe14a';
       ctx.fillRect(it.x - 28, it.y - 12, 56, 24);
       ctx.fillStyle = '#000';
-      ctx.font = '700 10px Courier New, monospace';
+      ctx.font = '700 10px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
       ctx.textAlign = 'center';
       ctx.fillText('PORT', it.x, it.y + 4);
     } else if (it.kind === 'star') {
@@ -512,7 +512,7 @@ function drawKitchen() {
   ctx.fillStyle = '#3a1020';
   ctx.fillRect(0, 0, W, 58);
   ctx.fillStyle = '#ffe14a';
-  ctx.font = '700 13px Courier New, monospace';
+  ctx.font = '700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
   ctx.textAlign = 'left';
   if (run) {
     const bits = Object.keys(run.order.need).map(k => k + ' ' + run.order.have[k] + '/' + run.order.need[k]);
@@ -585,7 +585,7 @@ function drawBreaker() {
     });
     if (run.balls.some(b => b.stuck) && phase === 'play') {
       ctx.fillStyle = '#39ff14';
-      ctx.font = '700 13px Courier New, monospace';
+      ctx.font = '700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
       ctx.textAlign = 'center';
       ctx.fillText('TAP A TO LAUNCH', W / 2, H - 70);
     }

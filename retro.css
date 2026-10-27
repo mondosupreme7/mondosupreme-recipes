@@ -5,14 +5,14 @@ body:not(.night){
  background-image:linear-gradient(#006666 1px,transparent 1px),linear-gradient(90deg,#006666 1px,transparent 1px);
  background-size:18px 18px;
  background-attachment:fixed;
- color:#000;
+ color:#111827;
 }
 *,*::before,*::after{border-radius:0!important;backdrop-filter:none!important}
 .egg{border-radius:48% 48% 42% 42%/36% 36% 48% 48%!important}
 .ring,.rubber,.ship-marker{border-radius:50%!important}
 .board-tools .size i,.dot-3,.dot-8,.dot-16{border-radius:50%!important}
 
-.ticker{overflow:hidden;background:#000;color:#00ff00;border-bottom:3px ridge #808080;font-family:var(--mono);font-size:15px;line-height:1.3;padding-top:env(safe-area-inset-top)}
+.ticker{overflow:hidden;background:#000;color:#86efac;border-bottom:3px ridge #808080;font-family:var(--mono);font-size:15px;line-height:1.3;padding-top:env(safe-area-inset-top)}
 .ticker-track{display:flex;width:max-content;animation:ticker 32s linear infinite}
 .ticker-track p{margin:0;padding:7px 28px;white-space:nowrap;display:flex;align-items:center;gap:8px}
 .ticker .hot{background:#f00;color:#ff0;font-family:var(--display);font-weight:700;padding:0 4px;animation:blink 1s steps(2) infinite}
@@ -24,16 +24,16 @@ body:not(.night){
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes flicker{50%{transform:scaleY(.82) scaleX(1.12)}}
 
-main a:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook){color:#0000ff;text-decoration:underline}
-main a:visited:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook){color:#800080}
-body:not(.chat-page):not(.board-page):not(.night) main.wrap{background:#fff;color:#000;border:3px ridge #dfdfdf;margin-top:8px;margin-bottom:8px;padding:8px 10px}
-.hero h1,.hero p,.empty,.wiki-h,.credits,.credits h2,.result-count{color:#000080;text-shadow:none}
-.site-footer{color:#000;background:#c0c0c0}
-.site-footer a{color:#0000ff}
+main a:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook){color:#0b3d91;text-decoration:underline}
+main a:visited:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook){color:#1e3a8a}
+body:not(.chat-page):not(.board-page):not(.night) main.wrap{background:#fff;color:#111827;border:3px ridge #dfdfdf;margin-top:8px;margin-bottom:8px;padding:8px 10px}
+.hero h1,.hero p,.empty,.wiki-h,.credits,.credits h2,.result-count{color:#111827;text-shadow:none}
+.site-footer{color:#111827;background:#c0c0c0}
+.site-footer a{color:#0b3d91}
 
-.era-top{margin:0;background:#c0c0c0;color:#000;border-bottom:2px solid #404040;padding:6px 8px 8px;max-width:100%;overflow:hidden}
+.era-top{margin:0;background:#c0c0c0;color:#111827;border-bottom:2px solid #404040;padding:6px 8px 8px;max-width:100%;overflow:hidden}
 .wordart-row{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border:3px ridge #dfdfdf;padding:6px 4px;max-width:100%;overflow:hidden}
-.wordart{margin:0;text-align:center;font:900 clamp(14px,4.4vw,32px)/1.05 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;letter-spacing:.4px;color:#ff00cc;transform:skewX(-8deg);text-shadow:1px 1px 0 #00ffff,2px 2px 0 #0000ff,3px 3px 0 #000080,4px 4px 0 #000}
+.wordart{margin:0;text-align:center;font:900 clamp(14px,4.4vw,32px)/1.05 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;letter-spacing:.4px;color:#111827;transform:skewX(-8deg);text-shadow:1px 1px 0 #00ffff,2px 2px 0 #0000ff,3px 3px 0 #000080,4px 4px 0 #000}
 .torch{width:16px;height:32px;flex:0 0 16px;background:
  linear-gradient(#ff0,#ff0) 4px 0/8px 6px no-repeat,
  linear-gradient(#f80,#f80) 2px 4px/12px 8px no-repeat,
@@ -46,15 +46,15 @@ body:not(.chat-page):not(.board-page):not(.night) main.wrap{background:#fff;colo
 .construct{display:flex;align-items:center;gap:6px;flex:1 1 220px;min-width:0;max-width:100%}
 .hazard{height:22px;flex:1 1 48px;min-width:36px;border:2px solid #000;background:repeating-linear-gradient(-45deg,#000 0 8px,#fc0 8px 16px);background-size:23px 23px;animation:hazard .5s linear infinite}
 @keyframes hazard{to{background-position:23px 0}}
-.con-sign{display:inline-flex;align-items:center;gap:4px;background:#fc0;color:#000;border:2px solid #000;font:700 12px/1.1 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:4px 6px;min-height:44px;white-space:nowrap}
+.con-sign{display:inline-flex;align-items:center;gap:4px;background:#fc0;color:#111827;border:2px solid #000;font:700 12px/1.1 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;padding:4px 6px;min-height:44px;white-space:nowrap}
 .worker{display:inline-block;width:4px;height:4px;background:transparent;box-shadow:4px 0 #000,8px 0 #000,0 4px #fc0,4px 4px #000,8px 4px #000,12px 4px #fc0,4px 8px #c00,8px 8px #c00,4px 12px #00c,8px 12px #00c,0 16px #000,12px 16px #000,4px 16px #864,8px 16px #864}
-.guestbook{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:4px 8px;background:#d4d0c8;color:#0000ff;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;text-decoration:underline}
-.guestbook:visited{color:#800080}
-.atspin{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;background:#fff;border:2px solid #000;color:#0000ff;font:700 18px "Comic Sans MS",cursive;animation:spinY 2.4s linear infinite;text-decoration:none}
+.guestbook{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:4px 8px;background:#d4d0c8;color:#0b3d91;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-decoration:underline}
+.guestbook:visited{color:#1e3a8a}
+.atspin{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;background:#fff;border:2px solid #000;color:#0b3d91;font:700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;animation:spinY 2.4s linear infinite;text-decoration:none}
 @keyframes spinY{to{transform:rotateY(360deg)}}
-.winamp{display:flex;flex-direction:column;gap:4px;width:min(420px,100%);max-width:100%;background:#14330f;color:#f6d76b;border:3px ridge #c8a227;padding:6px;box-shadow:inset 0 0 0 2px #0b1f08}
+.winamp{display:flex;flex-direction:column;gap:4px;width:min(420px,100%);max-width:100%;background:#14330f;color:#fde047;border:3px ridge #c8a227;padding:6px;box-shadow:inset 0 0 0 2px #0b1f08}
 .wa-titlebar{background:linear-gradient(#2f6a22,#0d220b);padding:4px 6px}
-.wa-title{font:700 12px/1.3 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;letter-spacing:.04em}
+.wa-title{font:700 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;letter-spacing:.04em}
 .wa-lcd{display:flex;gap:6px;align-items:center;background:#061806;border:2px inset #052;padding:4px;min-width:0}
 .wa-viz{display:flex;align-items:flex-end;gap:2px;height:28px;width:62px;flex:0 0 62px}
 .wa-viz i{display:block;width:3px;height:20%;background:#39ff14}
@@ -64,55 +64,55 @@ body:not(.chat-page):not(.board-page):not(.night) main.wrap{background:#fff;colo
 .winamp.is-quiet .wa-viz i,html[data-shell-paused] .wa-viz i{animation:none;height:18%}
 @keyframes wa-bar{from{height:12%}to{height:100%}}
 .wa-marquee{overflow:hidden;flex:1;min-width:0}
-.wa-track{display:inline-block;white-space:nowrap;color:#39ff14;font:700 13px/1.4 "Courier New",Courier,monospace;padding-left:100%}
+.wa-track{display:inline-block;white-space:nowrap;color:#86efac;font:700 13px/1.4 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;padding-left:100%}
 .winamp.is-playing .wa-track{animation:wa-marquee 9s linear infinite}
 html[data-shell-paused] .wa-track{animation:none}
 @keyframes wa-marquee{from{transform:translateX(0)}to{transform:translateX(-100%)}}
-.wa-clock{color:#f6d76b;font:700 14px "Courier New",Courier,monospace;flex:0 0 auto}
+.wa-clock{color:#fde047;font:700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;flex:0 0 auto}
 .wa-controls{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-.wa-btn{min-height:44px;min-width:44px;padding:6px 8px;background:#1c4a14;color:#f6d76b;border:2px outset #c8a227;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;cursor:pointer}
+.wa-btn{min-height:44px;min-width:44px;padding:6px 8px;background:#1c4a14;color:#fde047;border:2px outset #c8a227;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;cursor:pointer}
 .wa-btn:active{border-style:inset}
-.wa-vol{display:flex;align-items:center;gap:6px;min-height:44px;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.wa-vol{display:flex;align-items:center;gap:6px;min-height:44px;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .wa-vol input{width:92px;height:44px}
 .jukebox{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#d4d0c8;border:2px outset #fff;padding:4px;max-width:100%}
-.jb-name{font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000}
-.jb-lcd{background:#001800;color:#00ff00;font:700 14px/1 "Courier New",monospace;min-height:44px;min-width:132px;padding:6px 8px;border:2px inset #808080;display:inline-flex;align-items:center}
-.jukebox button{min-height:44px;min-width:44px;padding:6px 10px;background:#d4d0c8;color:#000;font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;cursor:pointer}
+.jb-name{font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
+.jb-lcd{background:#001800;color:#86efac;font:700 14px/1 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;min-height:44px;min-width:132px;padding:6px 8px;border:2px inset #808080;display:inline-flex;align-items:center}
+.jukebox button{min-height:44px;min-width:44px;padding:6px 10px;background:#d4d0c8;color:#111827;font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;cursor:pointer}
 .jukebox button:active{border-top:2px solid #404040;border-left:2px solid #404040;border-right:2px solid #fff;border-bottom:2px solid #fff}
 .starburst{width:54px;height:54px;flex:0 0 54px}
-.geo-badge{display:inline-block;background:#000080;color:#fff;border:3px ridge #1084d0;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:6px 8px;margin:6px 6px 0 0}
-.since-line{margin:6px 0;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000}
+.geo-badge{display:inline-block;background:#000080;color:#fff;border:3px ridge #1084d0;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;padding:6px 8px;margin:6px 6px 0 0}
+.since-line{margin:6px 0;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
 .microbanners{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
 .microbanners svg{width:88px;height:31px;flex:0 0 auto;border:1px solid #000;display:block}
-.webring-table{border:3px ridge #dfdfdf;border-collapse:separate;border-spacing:2px;background:#c0c0c0;color:#000;margin:8px 0}
-.webring-table th{background:#000080;color:#fff;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:4px 8px;text-align:left}
+.webring-table{border:3px ridge #dfdfdf;border-collapse:separate;border-spacing:2px;background:#c0c0c0;color:#111827;margin:8px 0}
+.webring-table th{background:#000080;color:#fff;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;padding:4px 8px;text-align:left}
 .webring-table td{background:#fff;padding:4px}
-.webring-table a{color:#0000ff;min-height:44px;display:inline-flex;align-items:center;padding:6px 8px}
+.webring-table a{color:#0b3d91;min-height:44px;display:inline-flex;align-items:center;padding:6px 8px}
 .card,.detail,.choice,.wiki-row,.ship,.msg,.box,.forum-shell,.park,.scoreboard{box-shadow:none}
 body.chat-page .wordart-row,body.board-page .wordart-row,body.night .wordart-row{display:none}
 body.chat-page .era-top,body.board-page .era-top{padding:4px 6px}
 .gb-box{margin:18px 0 8px;background:#000080;color:#fff;border:4px ridge #dfdfdf;padding:10px}
-.gb-box h2{margin:0 0 6px;font:700 22px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#ff0}
+.gb-box h2{margin:0 0 6px;font:700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#ff0}
 .gb-lead{margin:0 0 8px}
 .gb-stamps{display:flex;flex-wrap:wrap;gap:6px}
-.gb-stamps label{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:64px;min-height:44px;background:#c0c0c0;color:#000;border:2px outset #fff;padding:4px;font:700 11px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.gb-stamps label{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:64px;min-height:44px;background:#c0c0c0;color:#111827;border:2px outset #fff;padding:4px;font:700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .gb-form{display:grid;gap:8px;margin-top:8px}
 .gb-form input,.gb-form textarea{width:100%;box-sizing:border-box;font-size:16px;min-height:44px}
 .gb-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.gb-entry{display:flex;gap:8px;background:#fff;color:#000;border:2px inset #808080;padding:8px}
+.gb-entry{display:flex;gap:8px;background:#fff;color:#111827;border:2px inset #808080;padding:8px}
 .gb-entry p{margin:2px 0}
-.gb-entry a{color:#0000ff}
-.gb-note{font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.gb-entry a{color:#0b3d91}
+.gb-note{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .gb-actions{display:flex;flex-wrap:wrap;gap:6px}
 body.is-playing .era-top,body.is-playing .era-foot{display:none!important}
 body.is-playing main.wrap{border:0;background:transparent;margin:0;padding:0}
 body.chat-page .chat-compose{background:#c0c0c0;border-top:2px solid #808080}
-body.chat-page .chat-status,body.chat-page .chat-rules,body.chat-page .chat-empty,body.chat-page .chat-bans{color:#000}
-body.night{background:#008080;color:#000}
-body.night .night-main{background:#000;color:#00ff00;border:3px ridge #dfdfdf}
+body.chat-page .chat-status,body.chat-page .chat-rules,body.chat-page .chat-empty,body.chat-page .chat-bans{color:#111827}
+body.night{background:#008080;color:#111827}
+body.night .night-main{background:#000;color:#86efac;border:3px ridge #dfdfdf}
 body.night .site-header{background:#c0c0c0;border-bottom:2px solid #404040;box-shadow:none}
 body.night::after{display:none}
-.cruise-note,.wiki-note{background:#ffffcc;color:#000;border:3px ridge #dfdfdf;border-radius:0}
+.cruise-note,.wiki-note{background:#ffffcc;color:#111827;border:3px ridge #dfdfdf;border-radius:0}
 @media(max-width:430px){
  .wordart{transform:none}
  .con-sign{white-space:normal}
@@ -124,5 +124,5 @@ body.night::after{display:none}
 }
 @media print{
  .ticker,.era-top,.era-foot,.globe,.flame{display:none!important}
- body{background:#fff!important;color:#000!important}
+ body{background:#fff!important;color:#111827!important}
 }

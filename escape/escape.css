@@ -1,15 +1,15 @@
-body.night{background:#07040a;color:#e6d2b0;min-height:100dvh;font-family:"Courier New",Courier,monospace}
+body.night{background:#07040a;color:#e6d2b0;min-height:100dvh;font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace}
 body.night .site-header{background:#14080c}
 .night-main{max-width:760px;margin:0 auto;padding:12px 16px 28px}
-.night-main::before{content:"ASH_HOUSE.EXE   —   The Locked Room";display:block;margin:0 0 10px;padding:6px 10px;background:#2a1018;color:#f0d0a0;font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
+.night-main::before{content:"ASH_HOUSE.EXE   —   The Locked Room";display:block;margin:0 0 10px;padding:6px 10px;background:#2a1018;color:#f0d0a0;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
 .splash,.ending,#play{border:3px ridge #808080;background:#000;box-shadow:none;padding:16px}
 .splash,.ending{min-height:62dvh;display:flex;flex-direction:column;justify-content:flex-end;gap:12px}
 .kicker{letter-spacing:.22em;text-transform:uppercase;color:#c45c2a;font-size:.78rem;margin:0}
-.splash h1,.ending h1,#roomTitle{font-family:"Courier New",Courier,monospace;font-weight:700;letter-spacing:.08em;margin:0;color:#ffff00;text-shadow:none}
+.splash h1,.ending h1,#roomTitle{font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;font-weight:700;letter-spacing:.08em;margin:0;color:#fde047;text-shadow:none}
 .splash h1{font-size:clamp(4rem,14vw,6rem);line-height:.9}
 .splash p,.ending p,.room-line{color:#d8c4a4;font-size:1.05rem}
 .splash-actions,.hud,.sconce-row,.objects,.inventory,.keys{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.night-btn{min-height:44px;min-width:44px;padding:8px 14px;border-radius:0;background:#241418;color:#f0d8c0;font:700 .95rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;touch-action:manipulation;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
+.night-btn{min-height:44px;min-width:44px;padding:8px 14px;border-radius:0;background:#241418;color:#f0d8c0;font:700 .95rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;touch-action:manipulation;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
 .night-btn.quiet{background:transparent;color:#d9cbb8}
 .night-btn[aria-pressed=true]{box-shadow:0 0 0 3px #e6b15a;color:#e6b15a}
 .night-btn:focus-visible{outline:2px solid #e6b15a;outline-offset:2px}
@@ -33,22 +33,22 @@ body.night .site-header{background:#14080c}
 .inv-bar{position:sticky;bottom:0;z-index:6;display:flex;gap:10px;align-items:center;background:#120d10;border-top:1px solid #3a2e32;padding:8px 0 calc(8px + env(safe-area-inset-bottom));margin-top:8px}
 .inventory{flex:1}
 .status{min-height:1.4em;color:#d9cbb8}
-.sheet{position:fixed;left:0;right:0;bottom:var(--task-h);z-index:40;background:#c0c0c0;color:#000;border-top:3px ridge #fff;padding:16px;max-height:calc(100dvh - var(--task-h) - 12px);overflow:auto;-webkit-overflow-scrolling:touch;box-shadow:none}
-.sheet h2{font-family:"Courier New",Courier,monospace;margin:0 0 8px;color:#f0d0a0}
+.sheet{position:fixed;left:0;right:0;bottom:var(--task-h);z-index:40;background:#c0c0c0;color:#111827;border-top:3px ridge #fff;padding:16px;max-height:calc(100dvh - var(--task-h) - 12px);overflow:auto;-webkit-overflow-scrolling:touch;box-shadow:none}
+.sheet h2{font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;margin:0 0 8px;color:#f0d0a0}
 .sheet p{margin:0 0 12px}
 .sheet ul{margin:0 0 12px;padding-left:18px}
-.sheet input{font:16px "Courier New",Courier,monospace;min-height:44px;width:min(100%,420px);padding:8px 12px;border-radius:0;border:2px inset #808080;background:#120d10;color:#efe6dc}
+.sheet input{font:16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;min-height:44px;width:min(100%,420px);padding:8px 12px;border-radius:0;border:2px inset #808080;background:#120d10;color:#efe6dc}
 .soot{display:flex;gap:10px;margin:8px 0 12px}
 .mark{width:56px;height:56px;fill:none;stroke:#e6b15a;stroke-width:2}
-.pad-digits{font:700 1.6rem "Courier New",Courier,monospace;letter-spacing:.28em;min-height:2rem;color:#e6b15a}
+.pad-digits{font:700 1.6rem "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.28em;min-height:2rem;color:#e6b15a}
 .keys .key{width:64px;justify-content:center}
 .deny{animation:deny .28s}
 @keyframes deny{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.ending-time{font:700 1.8rem "Courier New",Courier,monospace;color:#e6b15a}
+.ending-time{font:700 1.8rem "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;color:#e6b15a}
 @media(prefers-reduced-motion:reduce){
  .art .rain,.deny{animation:none}
 }
 @media print{
  .site-header,.hud,.inv-bar,.sheet{display:none!important}
- body.night{background:#fff;color:#000}
+ body.night{background:#fff;color:#111827}
 }

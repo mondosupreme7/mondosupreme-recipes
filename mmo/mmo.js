@@ -989,7 +989,7 @@
     return badge ? (name + ' ' + badge) : name;
   }
   function drawName(x, y, text, color) {
-    ctx.font = '700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif';
+    ctx.font = '700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#000';
     ctx.fillText(text, Math.round(x - cam.x) + 1, Math.round(y - cam.y) - 33);
@@ -1051,7 +1051,7 @@
       if (ent.giver) {
         var mark = markerFor(ent.giver);
         if (mark) {
-          ctx.font = '700 18px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif';
+          ctx.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
           ctx.fillStyle = '#ffd100';
           ctx.textAlign = 'center';
           ctx.fillText(mark, ent.x - cam.x, ent.y - cam.y - 48);
@@ -1071,7 +1071,7 @@
       drawActor(o.x, o.y, o.cls, o.faction, o.cls);
       drawName(o.x, o.y, taggedName(o.uid, o.name), o.faction === 'horde' ? '#ff4d4d' : '#6ea8ff');
       if (o.bubble) {
-        ctx.font = '700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif';
+        ctx.font = '700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
         ctx.fillStyle = '#fff';
         ctx.fillText(o.bubble, o.x - cam.x, o.y - cam.y - 50);
       }
@@ -1079,7 +1079,7 @@
     drawActor(player.x, player.y, player.cls, player.faction, player.cls);
     drawName(player.x, player.y, taggedName(myUid, player.name), player.faction === 'horde' ? '#ff4d4d' : '#6ea8ff');
     if (player.bubbleUntil > now() && player.bubble) {
-      ctx.font = '700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif';
+      ctx.font = '700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'center';
       ctx.fillText(player.bubble, player.x - cam.x, player.y - cam.y - 50);
@@ -1088,7 +1088,7 @@
     floats.forEach(function (f) {
       var age = (t - f.born) / 900;
       if (age >= 1) return;
-      ctx.font = '700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif';
+      ctx.font = '700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillStyle = f.color;
       ctx.fillText(f.text, f.x - cam.x, f.y - cam.y - 20 - age * 26);

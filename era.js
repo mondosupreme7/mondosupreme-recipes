@@ -73,7 +73,7 @@
       t.setAttribute('x', '4');
       t.setAttribute('y', i ? '24' : '13');
       t.setAttribute('fill', ink);
-      t.setAttribute('font-family', '"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif');
+      t.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif');
       t.setAttribute('font-size', '8');
       t.setAttribute('font-weight', '700');
       t.textContent = line;
@@ -96,7 +96,7 @@
     t.setAttribute('y', '38');
     t.setAttribute('text-anchor', 'middle');
     t.setAttribute('fill', '#f00');
-    t.setAttribute('font-family', '"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif');
+    t.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif');
     t.setAttribute('font-size', '11');
     t.textContent = 'NEW!';
     svg.appendChild(p);

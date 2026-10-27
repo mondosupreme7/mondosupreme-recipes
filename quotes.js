@@ -66,7 +66,7 @@
     { text: 'The cursor blinks because the sentence is not finished.', author: 'Mondosupreme' },
     { text: 'Even a floppy disk was a place to keep what mattered.', author: 'Mondosupreme' },
     { text: 'Come back tomorrow. The webring saved you a seat.', author: 'Mondosupreme' },
-    { text: 'Make it sincere. The font can be Comic Sans.', author: 'Mondosupreme' },
+    { text: 'Make it sincere. Say it in plain words.', author: 'Mondosupreme' },
     { text: 'The welcome mat is the sparkle gif. The rest is up to you.', author: 'Mondosupreme' },
     { text: 'Small pages, kept updated, outlast the loud ones.', author: 'Mondosupreme' },
     { text: 'If you are reading this, the connection held. So can you.', author: 'Mondosupreme' },

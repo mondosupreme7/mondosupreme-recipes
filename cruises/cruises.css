@@ -2,22 +2,22 @@
 .cruise-tabs .btn{min-height:48px;font-size:16px}
 .cruise-tabs .btn[aria-selected=true]{background:#000080;color:#fff}
 .pack-pane{background:#c0c0c0;border:2px solid #808080;padding:10px;margin:0 0 16px}
-.pack-guide p{font:15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.pack-guide p{font:15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .pack-group{background:#fff;border:2px solid #000080;padding:8px;margin:0 0 8px}
-.pack-group h3{margin:0 0 6px;color:#000080}
+.pack-group h3{margin:0 0 6px;color:#111827}
 .pack-group label{display:flex;gap:8px;align-items:center;min-height:44px;font-size:16px}
-.pack-count{font:700 14px "Courier New",monospace}
+.pack-count{font:700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace}
 .site-header{padding-top:env(safe-area-inset-top)}
 .site-footer{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
 .site-footer a{color:var(--accent)}
 .freshness-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
 .freshness-row .cruise-note{margin:0;flex:1 1 220px}
 .freshness-row .btn{flex:0 0 auto;min-height:44px}
-.cruise-note{background:#ffffcc;color:#000;border:3px ridge #dfdfdf;padding:10px 12px;margin:0 0 14px}
-.radar-kicker{margin:0;font:700 13px "Courier New",monospace;letter-spacing:.08em;color:#003399;text-transform:uppercase}
+.cruise-note{background:#ffffcc;color:#111827;border:3px ridge #dfdfdf;padding:10px 12px;margin:0 0 14px}
+.radar-kicker{margin:0;font:700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.08em;color:#003399;text-transform:uppercase}
 .radar-frame{margin:0 0 16px;padding:10px;background:#111;border:4px ridge #6a6a6a;border-radius:16px}
 .radar-bezel{position:relative;overflow:hidden;border-radius:8px}
-.radar-caption{color:#39ff14;font:700 13px "Courier New",monospace;letter-spacing:.12em;text-align:center;margin:0 0 6px}
+.radar-caption{color:#86efac;font:700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.12em;text-align:center;margin:0 0 6px}
 #map{height:min(62dvh,560px);min-height:300px;border:3px solid #0a0;overflow:hidden;box-shadow:inset 0 0 24px rgba(0,255,80,.25);margin:0;background:#04140a;position:relative;z-index:0;border-radius:8px}
 .radar-sweep{pointer-events:none;position:absolute;left:0;right:0;bottom:0;top:24px;border-radius:8px;z-index:400;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 22px,rgba(0,255,80,.12) 22px 23px)}
 .radar-sweep::after{content:"";position:absolute;left:12%;right:12%;top:8%;bottom:8%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 80%,rgba(0,255,80,.45) 100%);animation:radar-sweep 4.5s linear infinite}
@@ -27,58 +27,58 @@
 .toolbar .btn{min-height:44px}
 .result-count{margin:-8px 0 12px;color:var(--muted);font-size:.9rem}
 .ship-list{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
-.ship{display:block;width:100%;text-align:left;background:#fff;border:3px ridge #dfdfdf;padding:14px 16px;box-shadow:none;cursor:pointer;font:inherit;color:#000;min-height:44px}
+.ship{display:block;width:100%;text-align:left;background:#fff;border:3px ridge #dfdfdf;padding:14px 16px;box-shadow:none;cursor:pointer;font:inherit;color:#111827;min-height:44px}
 .ship.is-selected{border-style:inset}
-.ship-name{font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;font-weight:700;font-size:1.2rem;display:block}
+.ship-name{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;font-weight:700;font-size:1.2rem;display:block}
 .ship .cat{display:block;margin-top:2px}
 .ship-line,.ship .meta{display:block;margin-top:3px}
 .ship .is-stale{color:#8a4b12}
 .ship-marker{background:#c8553d;border:2px solid #000;box-sizing:border-box;box-shadow:none;overflow:visible}
 .ship-marker.is-active{background:#000080;box-shadow:none}
-.ship-flag{position:absolute;left:26px;top:-6px;padding:1px 6px;background:#ffffcc;color:#000;border:2px solid #000;box-shadow:2px 2px 0 #003399;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;white-space:nowrap;pointer-events:none}
+.ship-flag{position:absolute;left:26px;top:-6px;padding:1px 6px;background:#ffffcc;color:#111827;border:2px solid #000;box-shadow:2px 2px 0 #003399;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;white-space:nowrap;pointer-events:none}
 .credits{color:var(--muted);font-size:.88rem;margin:0 0 28px}
 .credits h2{font-size:1.15rem;color:var(--ink);margin:0 0 6px}
 .credits ul{padding-left:1.1rem}
 .credits a{color:var(--accent)}
-.leaflet-popup.ship-callout .leaflet-popup-content-wrapper{background:#ffffcc;color:#000;border-radius:0;border:2px solid #003399;box-shadow:4px 4px 0 #000}
+.leaflet-popup.ship-callout .leaflet-popup-content-wrapper{background:#ffffcc;color:#111827;border-radius:0;border:2px solid #003399;box-shadow:4px 4px 0 #000}
 .leaflet-popup.ship-callout .leaflet-popup-tip{background:#003399}
-.leaflet-popup.ship-callout .leaflet-popup-content{margin:10px 12px 12px;font:14px/1.35 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000}
-.leaflet-popup.ship-callout a.leaflet-popup-close-button{color:#003399;font:700 18px/18px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:4px 4px 0 0}
-.popup-title{font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;display:block;margin:0 16px 4px 0;color:#003399;font-size:1.15rem}
+.leaflet-popup.ship-callout .leaflet-popup-content{margin:10px 12px 12px;font:14px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
+.leaflet-popup.ship-callout a.leaflet-popup-close-button{color:#003399;font:700 18px/18px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;padding:4px 4px 0 0}
+.popup-title{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;display:block;margin:0 16px 4px 0;color:#003399;font-size:1.15rem}
 .popup-row{margin:2px 0}
 .popup-row b{color:#003399}
-.popup-note{margin-top:4px;color:#333;font-size:.85rem}
-.leaflet-tooltip.ship-tip{background:#003399;color:#fff;border:2px solid #ff6600;border-radius:0;box-shadow:2px 2px 0 #000;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:2px 6px}
+.popup-note{margin-top:4px;color:#374151;font-size:.85rem}
+.leaflet-tooltip.ship-tip{background:#003399;color:#fff;border:2px solid #ff6600;border-radius:0;box-shadow:2px 2px 0 #000;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;padding:2px 6px}
 .leaflet-tooltip.ship-tip.leaflet-tooltip-top::before{border-top-color:#ff6600}
-.countdown{background:#061806;color:#39ff14;border:3px ridge #39ff14;padding:12px;margin:0 0 14px}
-.countdown h2{margin:0 0 8px;color:#ffcc33;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
-.count-lcd{font:700 28px/1.2 "Courier New",Courier,monospace;letter-spacing:.08em;background:#020;color:#39ff14;border:2px inset #0a0;padding:10px 8px;text-align:center;text-shadow:0 0 8px #39ff14}
+.countdown{background:#061806;color:#86efac;border:3px ridge #39ff14;padding:12px;margin:0 0 14px}
+.countdown h2{margin:0 0 8px;color:#ffcc33;font:700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.count-lcd{font:700 28px/1.2 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.08em;background:#020;color:#86efac;border:2px inset #0a0;padding:10px 8px;text-align:center;text-shadow:0 0 8px #39ff14}
 .count-form{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:8px}
-.count-form label{display:flex;flex-direction:column;gap:4px;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#d7ff9a}
-.count-form input,.count-form select{background:#fff;color:#000;min-height:44px;font-size:16px;padding:6px}
+.count-form label{display:flex;flex-direction:column;gap:4px;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#d7ff9a}
+.count-form input,.count-form select{background:#fff;color:#111827;min-height:44px;font-size:16px;padding:6px}
 .leaflet-overlay-pane svg path.leaflet-interactive{pointer-events:none}
-.deals{background:#ffffcc;color:#000;border:4px ridge #000080;padding:12px;margin:0 0 16px}
-.deals-kicker{margin:0;font:700 12px "Courier New",monospace;letter-spacing:.08em;color:#000080;text-transform:uppercase}
-.deals h2{margin:4px 0 6px;color:#000080;font:700 22px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.deals{background:#ffffcc;color:#111827;border:4px ridge #000080;padding:12px;margin:0 0 16px}
+.deals-kicker{margin:0;font:700 12px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.08em;color:#111827;text-transform:uppercase}
+.deals h2{margin:4px 0 6px;color:#111827;font:700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .deals-lead,.deals-fresh,.deals-note,.deals-count{margin:0 0 8px}
 .deals-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:0 0 8px}
-.deals-filters label{display:flex;flex-direction:column;gap:4px;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
-.deals-filters select,.deals-filters input{background:#fff;color:#000;min-height:44px;font-size:16px;padding:6px;border:2px inset #808080}
+.deals-filters label{display:flex;flex-direction:column;gap:4px;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
+.deals-filters select,.deals-filters input{background:#fff;color:#111827;min-height:44px;font-size:16px;padding:6px;border:2px inset #808080}
 .deals-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:2px solid #000080;background:#fff}
-.deals-table{width:100%;min-width:720px;border-collapse:collapse;font:14px/1.35 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.deals-table{width:100%;min-width:720px;border-collapse:collapse;font:14px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .deals-table caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.deals-table th{background:#000080;color:#fff;text-align:left;padding:8px;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.deals-table th{background:#000080;color:#fff;text-align:left;padding:8px;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .deals-table td{border-top:1px solid #99b;padding:8px;vertical-align:top}
 .deals-table tr.is-value{background:#e8ffe8}
-.deal-ship{font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
+.deal-ship{font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
 .deal-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.deal-badge{display:inline-block;padding:1px 6px;border:2px solid #000;font:700 11px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;box-shadow:2px 2px 0 #000}
-.deal-badge.is-value{background:#39ff14;color:#000}
+.deal-badge{display:inline-block;padding:1px 6px;border:2px solid #000;font:700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;box-shadow:2px 2px 0 #000}
+.deal-badge.is-value{background:#39ff14;color:#111827}
 .deal-badge.is-hot{background:#ff3300;color:#fff}
-.deal-price{font:700 16px "Courier New",monospace;color:#000080}
+.deal-price{font:700 16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;color:#111827}
 .deal-actions{display:flex;flex-direction:column;gap:6px;min-width:168px}
 .deal-actions .btn,.deal-actions a.btn{min-height:44px;text-align:center;text-decoration:none}
-.deals-note a{color:#000080}
+.deals-note a{color:#111827}
 @media(max-width:768px){
  .deals h2{font-size:18px}
  .deals-filters label{flex:1 1 140px}
@@ -88,7 +88,7 @@
  .deals-table,.deals-table tbody,.deals-table tr,.deals-table td{display:block;width:auto}
  .deals-table tr{margin:8px;border:2px solid #000080;background:#fff}
  .deals-table td{border-top:0;padding:6px 8px}
- .deals-table td::before{content:attr(data-label);display:block;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
+ .deals-table td::before{content:attr(data-label);display:block;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
  .deal-actions{min-width:0}
 }
 @media(max-width:720px){

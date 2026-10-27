@@ -11,18 +11,18 @@
 .lcd-bezel{background:#404040;padding:8px;border:3px ridge #c0c0c0}
 #lcd{width:100%;height:auto;display:block;background:#8ea86b;image-rendering:pixelated;touch-action:none;cursor:pointer}
 .meters{display:flex;flex-direction:column;gap:4px;margin:8px 4px 0}
-.meter{display:grid;grid-template-columns:62px 1fr 46px;gap:6px;align-items:center;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#111}
+.meter{display:grid;grid-template-columns:62px 1fr 46px;gap:6px;align-items:center;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111}
 .track{display:block;height:14px;background:#1c2410;border:2px inset #808080;overflow:hidden}
 .track span{display:block;height:100%;width:0;background:#2f8f3a}
 .hw{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;padding:0 8px}
-.rubber{width:64px;height:64px;border-radius:50%;background:#d7d7d7;color:#111;font:700 .95rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border-top:3px solid #fff;border-left:3px solid #fff;border-right:3px solid #555;border-bottom:3px solid #555;cursor:pointer;touch-action:manipulation}
+.rubber{width:64px;height:64px;border-radius:50%;background:#d7d7d7;color:#111;font:700 .95rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;border-top:3px solid #fff;border-left:3px solid #fff;border-right:3px solid #555;border-bottom:3px solid #555;cursor:pointer;touch-action:manipulation}
 .rubber span{display:block;font-size:.62rem;font-weight:700}
 .rubber.mid{width:74px;height:74px;background:#c8c8c8}
-.status{text-align:center;font:700 .95rem "Courier New",monospace;color:#000080;margin:8px 0}
+.status{text-align:center;font:700 .95rem "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;color:#111827;margin:8px 0}
 .quick,.shells,.pads,.rooms,.hats{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:680px;margin:8px auto}
 .dock{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:680px}
 .dock button{white-space:normal;line-height:1.2;overflow-wrap:anywhere}
-.quick button,.shells button,.pads button,.rooms button,.hats button{min-height:48px;padding:8px 10px;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000;background:#c0c0c0;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;touch-action:manipulation}
+.quick button,.shells button,.pads button,.rooms button,.hats button{min-height:48px;padding:8px 10px;font:700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;background:#c0c0c0;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;touch-action:manipulation}
 .act-meal{background:#ffb020}
 .act-treat{background:#ff8ad4}
 .act-ball{background:#7dff6a}
@@ -41,10 +41,10 @@
 .park h2{margin:0 0 6px;font-size:1.25rem}
 .park-note{margin:0 0 8px;color:#d7d0ff}
 .park ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.park li{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px dashed #39ff14;padding-bottom:6px;font-family:"Courier New",monospace}
+.park li{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px dashed #39ff14;padding-bottom:6px;font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace}
 .park-actions{display:flex;flex-wrap:wrap;gap:6px}
 .park button{min-height:44px}
-.sync-banner{margin:14px auto 0;max-width:680px;background:#ffff99;color:#000;border:3px solid #000;padding:10px 12px;font:700 .95rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.sync-banner{margin:14px auto 0;max-width:680px;background:#ffff99;color:#111827;border:3px solid #000;padding:10px 12px;font:700 .95rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .owner-error{color:#990000;font-weight:700}
 @keyframes wobble{50%{transform:rotate(-2deg)}}
 @media (min-width:700px){.dock{grid-template-columns:1fr 1fr 1fr}}

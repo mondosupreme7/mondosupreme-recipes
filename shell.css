@@ -4,7 +4,7 @@
 .site-header .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .shell-bar{display:flex;flex:0 1 auto;flex-wrap:wrap;gap:6px;align-items:center;min-width:0;position:relative;z-index:6}
 .shell-tool,.shell-x,.shell-menu a,.shell-hit{
-  font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000;background:#d4d0c8;text-decoration:none;
+  font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;background:#d4d0c8;text-decoration:none;
   border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;
   min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;cursor:pointer
 }
@@ -12,7 +12,7 @@
 .shell-tool.is-owner{background:#000080;color:#fff;border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
 .shell-tool[aria-expanded="true"]{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
 .shell-menu[hidden]{display:none}
-.shell-label{margin:4px 6px 2px;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
+.shell-label{margin:4px 6px 2px;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
 html,body{overflow-x:hidden;max-width:100%}
 :root{--task-h:calc(52px + env(safe-area-inset-bottom))}
 body{padding-bottom:var(--task-h)}
@@ -22,7 +22,7 @@ body{padding-bottom:var(--task-h)}
   padding:2px 4px env(safe-area-inset-bottom);background:#c0c0c0;border-top:2px solid #fff
 }
 .win98-start,.win98-mute{
-  font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000;background:#c0c0c0;cursor:pointer;
+  font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;background:#c0c0c0;cursor:pointer;
   border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;
   min-height:36px;padding:2px 10px;white-space:nowrap
 }
@@ -33,8 +33,8 @@ body{padding-bottom:var(--task-h)}
 .win98-tray{display:flex;align-items:center;gap:4px;flex:0 0 auto;margin-left:auto;padding:2px 4px;border:1px inset #808080;background:#c0c0c0;max-width:58%}
 .win98-tray .theme-switch{display:flex;align-items:center;gap:4px;margin:0;min-width:0}
 .win98-tray .theme-switch span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.win98-tray select{max-width:34vw;min-height:32px;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;background:#fff;color:#000}
-.win98-clock{font:700 13px "Courier New", Courier, monospace;min-width:72px;padding:2px 6px;border:1px inset #fff;background:#c0c0c0;color:#000;white-space:nowrap}
+.win98-tray select{max-width:34vw;min-height:32px;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;background:#fff;color:#111827}
+.win98-clock{font:700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;min-width:72px;padding:2px 6px;border:1px inset #fff;background:#c0c0c0;color:#111827;white-space:nowrap}
 .win98-menu{
   position:fixed;left:2px;bottom:var(--task-h);top:auto;z-index:90;
   width:min(560px,calc(100vw - 8px));max-height:calc(100dvh - var(--task-h) - 8px);
@@ -46,12 +46,12 @@ body{padding-bottom:var(--task-h)}
   flex:0 0 28px;display:flex;align-items:center;justify-content:center;
   writing-mode:vertical-rl;transform:rotate(180deg);
   background:linear-gradient(#000080,#1084d0);color:#fff;
-  font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;letter-spacing:1px;padding:8px 0
+  font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;letter-spacing:1px;padding:8px 0
 }
 .win98-cols{display:flex;flex:1 1 auto;min-width:0;min-height:0;max-height:calc(100dvh - var(--task-h) - 56px);overflow:auto;-webkit-overflow-scrolling:touch}
 .win98-col{flex:1 1 50%;min-width:0;border-left:1px solid #808080}
 .win98-item{
-  font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000;background:transparent;text-decoration:none;
+  font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;background:transparent;text-decoration:none;
   border:0;width:100%;min-height:40px;display:flex;align-items:center;justify-content:flex-start;gap:8px;
   padding:4px 8px;cursor:pointer;text-align:left
 }
@@ -64,7 +64,7 @@ html[data-scan="1"]::before{
   background:repeating-linear-gradient(to bottom,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)
 }
 #starTrail{position:fixed;inset:0;pointer-events:none;z-index:75}
-.star-bit{position:fixed;pointer-events:none;z-index:75;color:#ff0;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;text-shadow:0 0 2px #f60;animation:star-fade .55s linear forwards}
+.star-bit{position:fixed;pointer-events:none;z-index:75;color:#ff0;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-shadow:0 0 2px #f60;animation:star-fade .55s linear forwards}
 @keyframes star-fade{to{opacity:0;transform:translateY(-8px) scale(.4)}}
 html[data-shell-paused="1"] .star-bit,html[data-shell-paused="1"] .radar-sweep::after{animation-play-state:paused!important}
 body.chat-page,body.board-page,body.fps-live{padding:0!important;height:calc(100dvh - var(--task-h));min-height:0}
@@ -104,22 +104,22 @@ body.is-playing .crt{height:calc(100dvh - var(--task-h) - 168px)}
 .site-header .site-nav a{flex:0 0 auto;white-space:nowrap}
 .nav-apps{display:none}
 dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);box-sizing:border-box}
-.shell-find{width:min(520px,calc(100vw - 16px));background:#c0c0c0;color:#000;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040;padding:10px}
-.shell-find h2{margin:0 36px 8px 0;font:700 18px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
+.shell-find{width:min(520px,calc(100vw - 16px));background:#c0c0c0;color:#111827;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040;padding:10px}
+.shell-find h2{margin:0 36px 8px 0;font:700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
 .shell-find p{margin:0 0 8px}
 .shell-find .shell-x{float:right}
-.shell-find label{display:block;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.shell-find label{display:block;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .shell-find input,.shell-find textarea,.shell-find select{width:100%;box-sizing:border-box;margin:4px 0 8px}
 .shell-results{max-height:min(50dvh,420px);overflow:auto;clear:both}
 .shell-hit{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin:0 0 4px;background:#fff;text-align:left}
 .shell-hit b{font-size:16px}
-.shell-kind{font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
+.shell-kind{font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
 .shell-empty{margin:0;padding:8px;background:#fff}
 html[data-shell-paused="1"] *{animation-play-state:paused!important}
 .member-dialog{overflow:auto}
 .member-dialog h2{margin-bottom:4px}
 .member-tabs{display:flex;gap:6px;margin:0 0 6px;clear:both}
-.member-tabs button{flex:1;min-height:44px;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.member-tabs button{flex:1;min-height:44px;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .member-tabs button[aria-pressed="true"]{background:#000080;color:#fff}
 .member-row{display:flex;flex-wrap:wrap;gap:8px}
 .member-row .shell-tool{min-height:44px}
@@ -128,7 +128,7 @@ html[data-shell-paused="1"] *{animation-play-state:paused!important}
 .member-dialog input{font-size:16px;margin:2px 0 4px}
 .member-dialog p{margin:0 0 4px}
 .avatar-picker{display:grid;grid-template-columns:repeat(4,minmax(44px,1fr));gap:4px;margin:0 0 6px}
-.avatar-choice{min-height:44px;background:#fff;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;padding:2px;font:10px/1.1 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.avatar-choice{min-height:44px;background:#fff;color:#111827;border:2px solid;border-color:#fff #404040 #404040 #fff;padding:2px;font:10px/1.1 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .avatar-choice[aria-pressed="true"]{outline:2px solid #000080;background:#ffffcc}
 .avatar-choice .mava{display:block;margin:0 auto;width:24px;height:24px}
 @media (min-width:700px){
@@ -136,12 +136,12 @@ html[data-shell-paused="1"] *{animation-play-state:paused!important}
 }
 .member-chip{display:inline-flex;align-items:center;margin:0 6px 0 0;vertical-align:middle}
 .mava{image-rendering:pixelated;vertical-align:middle}
-.mbadge{font:700 11px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080;white-space:nowrap}
+.mbadge{font:700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;white-space:nowrap}
 .mbadge.is-web{color:#8b0000}
 @media (max-width:768px){
   .nav-apps{
     display:flex;flex:1 1 100%;align-items:center;justify-content:center;min-height:44px;
-    margin:0;padding:8px 10px;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#fff;background:#000080;cursor:pointer;
+    margin:0;padding:8px 10px;font:700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#fff;background:#000080;cursor:pointer;
     border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040
   }
   .site-header .site-nav a.nav-more{display:none}
