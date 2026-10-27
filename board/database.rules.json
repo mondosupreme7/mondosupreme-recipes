@@ -885,6 +885,19 @@
         }
       }
     },
+    "search": {
+      ".read": true,
+      "asks": {
+        "$id": {
+          ".write": "(auth != null && !data.exists() && newData.exists() && $id.matches(/^-[A-Za-z0-9_-]{1,40}$/)) || auth.token.email == 'cbrooks_911@yahoo.com'",
+          ".validate": "!newData.exists() || (newData.hasChildren(['q','at']) && newData.child('q').isString() && newData.child('q').val().length >= 2 && newData.child('q').val().length <= 140 && !newData.child('q').val().contains('\\n') && !newData.child('q').val().contains('\\r') && newData.child('mode').isString() && newData.child('mode').val().matches(/^(all|cook|cruise|retro|tech|site)$/) && newData.child('at').isNumber() && newData.child('at').val() > 0 && newData.child('at').val() <= now)",
+          "q": { ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 140 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "mode": { ".validate": "newData.isString() && newData.val().matches(/^(all|cook|cruise|retro|tech|site)$/)" },
+          "at": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+          "$other": { ".validate": false }
+        }
+      }
+    },
     "users": {
       ".read": "auth != null",
       "$uid": {

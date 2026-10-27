@@ -35,6 +35,7 @@
 
   var sections = [
     { group: 'Home', title: 'Home', href: '/', text: 'landing mondosupreme' },
+    { group: 'Home', title: 'AI Search', href: '/search/', text: 'ask mondo jeeves search engine cyber butler altavista yahoo' },
     { group: 'Kitchen', title: 'Recipes', href: '/recipes/', text: 'kitchen cookbook food' },
     { group: 'Kitchen', title: 'MondoTV', href: '/daily-recipe/', text: 'daily recipe youtube mondotv realplayer chef' },
     { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
@@ -416,6 +417,7 @@
   var AUDIO_KEY = 'mondosupreme.audio.v1';
   var FX_KEY = 'mondosupreme.fx.v1';
   var programs = [
+    { title: "Ask Mondo '98", href: '/search/', icon: 'search' },
     { title: 'Recipes', href: '/recipes/', icon: 'pot' },
     { title: "MondoTV '98", href: '/daily-recipe/', icon: 'tv' },
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
@@ -462,7 +464,8 @@
     quote: [[2,2,12,12,'#001800'],[3,4,7,1,'#39ff14'],[3,6,9,1,'#39ff14'],[3,8,6,1,'#39ff14'],[3,11,4,1,'#ffcc00']],
     word: [[1,1,6,6,'#538d4e'],[9,1,6,6,'#c9b458'],[1,9,6,6,'#3a3a3a'],[9,9,6,6,'#538d4e']],
     tv: [[1,3,14,8,'#202020'],[2,4,12,6,'#001800'],[3,5,10,1,'#39ff14'],[4,7,6,1,'#39ff14'],[6,11,4,2,'#808080'],[3,13,10,1,'#404040']],
-    radar: [[2,2,12,8,'#000080'],[3,3,10,1,'#ff7a00'],[3,5,7,1,'#fff'],[3,7,5,1,'#7fdfff'],[6,10,4,2,'#c0c0c0'],[4,12,8,2,'#808080'],[12,1,2,2,'#ffcc00']]
+    radar: [[2,2,12,8,'#000080'],[3,3,10,1,'#ff7a00'],[3,5,7,1,'#fff'],[3,7,5,1,'#7fdfff'],[6,10,4,2,'#c0c0c0'],[4,12,8,2,'#808080'],[12,1,2,2,'#ffcc00']],
+    search: [[4,1,8,3,'#1a1a1a'],[2,4,12,2,'#1a1a1a'],[3,7,8,8,'#000080'],[5,9,4,4,'#7fdfff'],[10,12,3,2,'#ffd100'],[12,14,2,2,'#c0c0c0']]
   };
   function pixelIcon(name) {
     var cells = ICONS[name] || ICONS.pot;

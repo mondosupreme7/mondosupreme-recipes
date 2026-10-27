@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Ask Mondo '98 — AI Cyber-Butler &amp; Web Search Engine</title>
+<meta name="description" content="Ask Mondo '98, a 1998 cyber-butler that answers from a keyless AI line, Wikipedia, DuckDuckGo, and every corner of Mondosupreme.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="search.css">
+</head>
+<body class="search-page">
+<div class="ticker"><div class="ticker-track">
+ <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Ask Mondo '98 ~*~ ★ AI Cyber-Butler ★ Wikipedia · DuckDuckGo · Mondosupreme ★ Public questions scroll the wire ★</p>
+ <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Ask Mondo '98 ~*~ ★ AI Cyber-Butler ★ Wikipedia · DuckDuckGo · Mondosupreme ★ Public questions scroll the wire ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/search/" class="brand"><span class="logo">🔍</span><span>Ask Mondo <em>'98</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/daily-recipe/">Daily</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/weather/">Weather</a>
+  <a href="/wordle/">Wordle</a>
+  <a href="/search/" aria-current="page">AI Search</a>
+  <a href="/stocks/">Stocks</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/forum/">Forum</a>
+  <a href="/market/">Market</a>
+  <a href="/8ball/">8-Ball</a>
+  <a href="/mmo/">MMO</a>
+  <a href="/fps/">FPS</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+</div></header>
+<main class="wrap ask-main">
+ <div class="ask-hero">
+  <figure class="butler-card">
+   <svg class="butler" viewBox="0 0 64 80" width="96" height="120" role="img" aria-label="Mondo Jeeves '98">
+    <rect x="22" y="2" width="20" height="8" fill="#1a1a1a"/>
+    <rect x="16" y="10" width="32" height="4" fill="#1a1a1a"/>
+    <rect x="20" y="14" width="24" height="18" fill="#f1c27d"/>
+    <rect x="24" y="20" width="4" height="4" fill="#1a1a1a"/>
+    <rect x="36" y="20" width="4" height="4" fill="#1a1a1a"/>
+    <rect x="28" y="26" width="8" height="2" fill="#a85a4a"/>
+    <rect x="22" y="32" width="6" height="6" fill="#cc0000"/>
+    <rect x="36" y="32" width="6" height="6" fill="#cc0000"/>
+    <rect x="28" y="34" width="8" height="4" fill="#ffd100"/>
+    <rect x="16" y="40" width="32" height="24" fill="#000080"/>
+    <rect x="30" y="40" width="4" height="24" fill="#ffffff"/>
+    <rect x="46" y="48" width="14" height="14" fill="#7fdfff" stroke="#000" stroke-width="2"/>
+    <rect x="50" y="52" width="6" height="6" fill="#ffffff"/>
+    <rect x="56" y="60" width="4" height="10" fill="#808080"/>
+    <rect x="18" y="64" width="10" height="12" fill="#000080"/>
+    <rect x="36" y="64" width="10" height="12" fill="#000080"/>
+    <rect x="18" y="74" width="12" height="4" fill="#1a1a1a"/>
+    <rect x="34" y="74" width="12" height="4" fill="#1a1a1a"/>
+   </svg>
+   <figcaption>Mondo Jeeves '98</figcaption>
+  </figure>
+  <div class="ask-intro">
+   <p class="ask-kicker">Ask Jeeves × AltaVista × Yahoo! '98</p>
+   <h1>Ask Mondo '98 — AI Cyber-Butler &amp; Web Search Engine</h1>
+   <p class="ask-lead">Ask in plain language. Mondo Jeeves writes an answer brief, checks Wikipedia and DuckDuckGo, and looks through recipes, ships, the wiki, the forum, MondoBay, and the rest of this site.</p>
+  </div>
+ </div>
+ <form class="ask-form" id="askForm" role="search">
+  <label class="ask-label" for="q">Ask Mondo</label>
+  <div class="ask-bar">
+   <input id="q" name="q" type="search" enterkeyhint="search" maxlength="140" autocomplete="off" placeholder="Ask anything… pancakes, Port Canaveral, 2 cups to ml" aria-describedby="askStatus">
+   <button class="btn primary ask-go" type="submit">Search</button>
+   <button class="btn ask-voice" id="voiceBtn" type="button">Dictate</button>
+   <button class="btn ask-radical" id="radicalBtn" type="button">I'm Feeling Radical!</button>
+  </div>
+ </form>
+ <div class="ask-modes" id="modeBar" role="group" aria-label="Topic mode">
+  <button class="btn mode-btn" type="button" data-mode="all" aria-pressed="true">All Web &amp; AI</button>
+  <button class="btn mode-btn" type="button" data-mode="cook" aria-pressed="false">Cooking &amp; Recipes</button>
+  <button class="btn mode-btn" type="button" data-mode="cruise" aria-pressed="false">Cruises &amp; Travel</button>
+  <button class="btn mode-btn" type="button" data-mode="retro" aria-pressed="false">90s Retro</button>
+  <button class="btn mode-btn" type="button" data-mode="tech" aria-pressed="false">Tech &amp; Finance</button>
+  <button class="btn mode-btn" type="button" data-mode="site" aria-pressed="false">Search Inside MondoSupreme</button>
+ </div>
+ <div class="ask-priv" role="group" aria-label="Public or private search">
+  <button class="btn priv-btn" id="privPublic" type="button" aria-pressed="true">Public</button>
+  <button class="btn priv-btn" id="privPrivate" type="button" aria-pressed="false">Private</button>
+  <p id="privNote">Public questions join What Visitors Are Asking. Private questions stay on this computer.</p>
+ </div>
+ <p class="ask-status" id="askStatus" role="status" aria-live="polite">Mondo Jeeves is at the door. Ask a question.</p>
+ <section class="ask-win" id="toolWin" hidden>
+  <h2>Instant tool bar</h2>
+  <div id="toolBody"></div>
+ </section>
+ <section class="ask-win" id="briefWin" aria-labelledby="briefTitle">
+  <h2 id="briefTitle">Ask Mondo Cyber-Butler</h2>
+  <div id="briefBody">
+   <p>The brief lands here. If the outside AI line is slow, Wikipedia, DuckDuckGo, and this site still fill the page.</p>
+  </div>
+  <div class="ask-chips" id="chipBar" hidden></div>
+ </section>
+ <section class="ask-win" id="deepWin" hidden>
+  <h2>Deep Search Externally</h2>
+  <div class="deep-row" id="deepRow"></div>
+ </section>
+ <section class="ask-win" id="siteWin">
+  <h2>On Mondosupreme</h2>
+  <div id="siteBody"><p class="ask-empty">Recipes, wiki pages, Royal Caribbean ships, Port Canaveral deals, forum posts, MondoBay listings, and site apps show up beside the web results.</p></div>
+ </section>
+ <section class="ask-win" id="webWin">
+  <h2>Web results</h2>
+  <div id="webBody"><p class="ask-empty">Wikipedia and DuckDuckGo instant answers land here.</p></div>
+ </section>
+ <section class="ask-win" id="wireWin" aria-labelledby="wireTitle">
+  <h2 id="wireTitle">What Visitors Are Asking</h2>
+  <ul class="wire-list" id="wireList"><li class="ask-empty">The wire is quiet. A public question can show up here.</li></ul>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · A homemade butler, not those other search pages. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">AI Search</a> · <a href="/stocks/">Stocks</a></div></footer>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/members.js"></script>
+<script src="/shell.js"></script>
+<script src="/backup.js"></script>
+<script src="search.js"></script>
+</body>
+</html>
