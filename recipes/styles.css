@@ -1,4 +1,4 @@
-:root{--bg:#008080;--card:#fff;--ink:#000;--muted:#333;--accent:#000080;--accent2:#0000ff;--line:#808080;--navy:#000080;--magenta:#800080;--lime:#008000;--chrome:#d4d0c8;--r:0px;--sh:none;--sans:Tahoma,Verdana,"MS Sans Serif",Geneva,sans-serif;--display:"Comic Sans MS","Comic Sans",Tahoma,cursive;--mono:"Courier New",Courier,monospace}
+:root{--bg:#008080;--card:#fff;--ink:#000;--muted:#333;--accent:#000080;--accent2:#0000ff;--line:#808080;--navy:#000080;--magenta:#800080;--lime:#008000;--chrome:#d4d0c8;--r:0px;--sh:none;--font-sans:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;--font-body:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;--font-display:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;--font-ui:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;--sans:var(--font-sans);--display:var(--font-display);--mono:"Courier New",Courier,monospace}
 *{box-sizing:border-box}
 body{margin:0;font-family:var(--sans);font-size:16px;background:#008080;color:#000;line-height:1.45}
 .wrap{max-width:980px;margin:0 auto;padding:0 8px}
@@ -27,17 +27,17 @@ a.btn{text-decoration:none;color:#000}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 20px}
 .toolbar input,.toolbar select{padding:10px 12px;border:2px inset #808080;border-radius:0;font:16px var(--sans);background:#fff;color:#000;min-height:44px}
 .toolbar input{flex:1 1 220px}
-.mc-brand{margin:0;font:700 13px Tahoma,Verdana,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6b3e22}
+.mc-brand{margin:0;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6b3e22}
 .filebox{background:#6b3e22;border:4px ridge #c9a27a;padding:0 10px 16px;margin:0 0 24px;box-shadow:inset 0 8px 0 #4a2914}
 .file-tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 4px 0;-webkit-overflow-scrolling:touch}
-.file-tab{min-height:44px;padding:6px 12px;background:#f4e2b0;color:#000;font:700 14px Tahoma,Verdana,sans-serif;border:2px solid #000;border-bottom:0;cursor:pointer;white-space:nowrap}
+.file-tab{min-height:44px;padding:6px 12px;background:#f4e2b0;color:#000;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border:2px solid #000;border-bottom:0;cursor:pointer;white-space:nowrap}
 .file-tab[aria-pressed="true"]{background:#fffef6;position:relative;top:2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin:0;background:#efe2c4;padding:12px;border:2px inset #4a2914}
 .card{background:#fffef6;color:#000;border-radius:2px;border:1px solid #c8b48a;box-shadow:3px 4px 0 rgba(0,0,0,.25);overflow:hidden;cursor:pointer;position:relative;display:flex;flex-direction:column;min-height:210px}
 .card:hover{outline:2px solid #000080}
 .thumb{height:92px;background:#fff8e8 center/cover;display:flex;align-items:center;justify-content:center}
 .clip{width:72px;height:54px}
-.card-body{padding:8px 12px 14px}.card h3{margin:4px 0 6px;font-size:1.15rem;font-family:"Comic Sans MS",Tahoma,cursive}
+.card-body{padding:8px 12px 14px}.card h3{margin:4px 0 6px;font-size:1.15rem;font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
 .meta{color:var(--muted);font-size:.9rem;display:flex;gap:12px;flex-wrap:wrap}
 .card .cat{display:inline-flex;align-items:center;gap:4px;background:#ffcc66;color:#000;border:2px solid #000;padding:2px 8px;margin-top:-16px;position:relative;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
 .card .cat .clip{width:28px;height:22px}
@@ -65,8 +65,8 @@ dialog{border-radius:0;padding:2px;width:min(640px,94vw);max-height:92vh;max-hei
 .copy-buffer{position:fixed;top:0;left:0;opacity:0}
 .scale-bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
 .scale-bar .btn{min-height:44px}
-dialog h2{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;margin:-2px -2px 8px;padding:4px 6px;font:700 14px Tahoma,Verdana,sans-serif;text-shadow:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
-dialog h2::after{content:"[ _ ]  [ □ ]  [ X ]";font:700 12px Tahoma,sans-serif;white-space:nowrap}
+dialog h2{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;margin:-2px -2px 8px;padding:4px 6px;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;text-shadow:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+dialog h2::after{content:"[ _ ]  [ □ ]  [ X ]";font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;white-space:nowrap}
 dialog .btn.ghost{background:var(--chrome);color:#000}
 .scan-dialog{padding:12px}
 .scan-dialog h2{margin:0 0 6px}.scan-dialog p{color:#222;margin:0 0 14px}
@@ -77,7 +77,7 @@ dialog .btn.ghost{background:var(--chrome);color:#000}
 .scan-review{display:flex;flex-direction:column;gap:10px}
 .scan-compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:start}
 .scan-compare img{width:100%;max-height:280px;object-fit:contain;background:#fff;border:2px solid #003399}
-.scan-words{background:#fff;color:#000;border:2px inset #808080;padding:8px;max-height:280px;overflow:auto;overflow-wrap:anywhere;font:14px/1.5 Verdana,"Trebuchet MS",sans-serif}
+.scan-words{background:#fff;color:#000;border:2px inset #808080;padding:8px;max-height:280px;overflow:auto;overflow-wrap:anywhere;font:14px/1.5 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
 .scan-words button{font:inherit;color:inherit;border:0;background:transparent;padding:0;cursor:pointer}
 .scan-words .is-low{background:#ffe14a;border-bottom:2px solid #c60;padding:0 2px;min-height:28px}
 .scan-note,.scan-hint{background:#ffffcc;border:2px solid #000;border-left:8px solid var(--accent);padding:10px 12px;border-radius:0;font-weight:500;font-size:.95rem;margin:0;color:#000}

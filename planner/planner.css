@@ -2,9 +2,9 @@
 .plan-hero h1{margin:.2rem 0;font-size:clamp(1.4rem,6vw,2rem)}
 .week{display:flex;flex-direction:column;gap:8px}
 .day{background:#c0c0c0;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;padding:8px}
-.day h2{margin:0 0 6px;background:#000080;color:#fff;font:700 14px Tahoma,Verdana,sans-serif;padding:3px 8px}
+.day h2{margin:0 0 6px;background:#000080;color:#fff;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:3px 8px}
 .slot{display:grid;grid-template-columns:1fr;gap:4px;margin:0 0 8px}
-.slot span{font:700 12px Verdana,sans-serif}
+.slot span{font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
 .slot select,.slot input,.grocery-add input{font-size:16px;min-height:44px;width:100%;box-sizing:border-box}
 .plan-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .plan-actions .btn{min-height:48px}

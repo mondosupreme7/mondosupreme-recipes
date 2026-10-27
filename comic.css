@@ -1,0 +1,51 @@
+/* Comic Sans sitewide. Comic Neue is self-hosted so iPhone Safari has a real face
+   when "Comic Sans MS" and Chalkboard SE are missing. SIL OFL: /assets/fonts/OFL.txt */
+@font-face {
+  font-family: "Comic Neue";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/comic-neue-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Comic Neue";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/assets/fonts/comic-neue-700.woff2") format("woff2");
+}
+
+:root {
+  --font-sans: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;
+  --font-body: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;
+  --font-display: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;
+  --font-ui: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;
+  --sans: var(--font-sans);
+  --display: var(--font-sans);
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+table,
+thead,
+tbody,
+th,
+td,
+dialog,
+nav,
+h1, h2, h3, h4, h5, h6,
+svg text {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif !important;
+}
+
+body :where(*):not(pre):not(code):not(kbd):not(samp):not(.win98-clock):not(.mono) {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif !important;
+}
+
+pre, code, kbd, samp, .win98-clock, .mono {
+  font-family: "Courier New", Courier, ui-monospace, monospace !important;
+}

@@ -1,19 +1,19 @@
 .hlp-chrome{margin-top:10px;background:#c0c0c0;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040}
-.hlp-caption{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 14px Tahoma,Verdana,sans-serif;padding:4px 8px}
+.hlp-caption{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:4px 8px}
 .hlp-tabs{display:flex;flex-wrap:wrap;gap:3px;padding:6px 6px 0}
-.hlp-tabs button{min-height:44px;padding:6px 12px;background:#d4d0c8;color:#000;font:700 14px Tahoma,Verdana,sans-serif;border:2px solid #fff;border-right-color:#404040;border-bottom:0;cursor:pointer}
+.hlp-tabs button{min-height:44px;padding:6px 12px;background:#d4d0c8;color:#000;font:700 14px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border:2px solid #fff;border-right-color:#404040;border-bottom:0;cursor:pointer}
 .hlp-tabs button[aria-selected="true"]{background:#fff}
 #homeView{background:#fff;border:2px solid #808080;border-top:0;padding:8px;margin-bottom:16px}
 .wiki-note{background:#fff7e8;border-left:4px solid var(--accent2);padding:12px 16px;border-radius:0;margin:8px 0 0;font-weight:500}
 .wiki-h{font-size:1.35rem;margin:8px 0 12px}
-.wiki-h span{color:#ddd;font-family:Verdana,"Trebuchet MS",sans-serif;font-size:.95rem;font-weight:700}
+.wiki-h span{color:#ddd;font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;font-size:.95rem;font-weight:700}
 .wiki-list{display:flex;flex-direction:column;gap:10px;margin:0 0 28px}
 .wiki-row{display:flex;flex-direction:column;gap:2px;background:#fff;color:#0000ff;text-decoration:underline;border:3px ridge #dfdfdf;padding:14px 16px;box-shadow:none;min-height:64px}
 .wiki-row:hover{border-color:#f0f}
 .wiki-row:visited{color:#000}
-.wiki-row-title{font-family:"Comic Sans MS","Trebuchet MS",cursive;font-weight:700;font-size:1.25rem}
+.wiki-row-title{font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;font-weight:700;font-size:1.25rem}
 #tagBar{margin:-8px 0 18px}
-#tagBar .tag{border:2px solid #000;cursor:pointer;font:700 .85rem Verdana,sans-serif;min-height:44px}
+#tagBar .tag{border:2px solid #000;cursor:pointer;font:700 .85rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;min-height:44px}
 #tagBar .tag[aria-pressed=true]{background:var(--accent);color:#fff}
 .wiki-article,.wiki-form{max-width:760px}
 .wiki-form{padding:12px;margin:8px 0 28px;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
@@ -38,15 +38,15 @@
 .wiki-body li.task{list-style:none;margin-left:-1.2em;min-height:44px}
 .wiki-body li.task input{margin-right:8px;accent-color:var(--accent);pointer-events:none;width:1.4rem;height:1.4rem}
 .wiki-body.can-check li.task input{pointer-events:auto}
-.sync-banner{margin:14px 0 0;background:#ffff99;color:#000;border:3px solid #000;padding:10px 12px;font:700 .95rem "Comic Sans MS","Trebuchet MS",cursive}
+.sync-banner{margin:14px 0 0;background:#ffff99;color:#000;border:3px solid #000;padding:10px 12px;font:700 .95rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
 .owner-error{color:#990000;font-weight:700}
 .lock-note{color:#333;font-size:.95rem}
 .fmt-bar,.tmpl-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
-.fmt-bar button,.tmpl-bar button{min-height:44px;padding:8px 10px;font:700 .8rem Verdana,sans-serif;background:#c0c0c0;color:#000;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
+.fmt-bar button,.tmpl-bar button{min-height:44px;padding:8px 10px;font:700 .8rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;background:#c0c0c0;color:#000;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
 .fmt-bar button:active,.tmpl-bar button:active{border-top:2px solid #404040;border-left:2px solid #404040;border-right:2px solid #fff;border-bottom:2px solid #fff}
-.tmpl-bar span{font:700 .85rem Verdana,sans-serif}
+.tmpl-bar span{font:700 .85rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
 .wiki-toc{background:#ffffcc;color:#000;border:3px solid #000;margin:12px 0;padding:8px 12px}
-.wiki-toc summary{min-height:44px;display:flex;align-items:center;font:700 1rem "Comic Sans MS","Trebuchet MS",cursive;cursor:pointer}
+.wiki-toc summary{min-height:44px;display:flex;align-items:center;font:700 1rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;cursor:pointer}
 .wiki-toc ol{margin:.2em 0 .4em;padding-left:1.2em}
 .wiki-toc a{color:#003399}
 .wiki-toc .toc-2{margin-left:.6em}

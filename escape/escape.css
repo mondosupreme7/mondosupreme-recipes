@@ -1,7 +1,7 @@
 body.night{background:#07040a;color:#e6d2b0;min-height:100dvh;font-family:"Courier New",Courier,monospace}
 body.night .site-header{background:#14080c}
 .night-main{max-width:760px;margin:0 auto;padding:12px 16px 28px}
-.night-main::before{content:"ASH_HOUSE.EXE   —   The Locked Room";display:block;margin:0 0 10px;padding:6px 10px;background:#2a1018;color:#f0d0a0;font-family:"Trebuchet MS",Verdana,sans-serif;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
+.night-main::before{content:"ASH_HOUSE.EXE   —   The Locked Room";display:block;margin:0 0 10px;padding:6px 10px;background:#2a1018;color:#f0d0a0;font-family:"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
 .splash,.ending,#play{border:3px ridge #808080;background:#000;box-shadow:none;padding:16px}
 .splash,.ending{min-height:62dvh;display:flex;flex-direction:column;justify-content:flex-end;gap:12px}
 .kicker{letter-spacing:.22em;text-transform:uppercase;color:#c45c2a;font-size:.78rem;margin:0}
@@ -9,7 +9,7 @@ body.night .site-header{background:#14080c}
 .splash h1{font-size:clamp(4rem,14vw,6rem);line-height:.9}
 .splash p,.ending p,.room-line{color:#d8c4a4;font-size:1.05rem}
 .splash-actions,.hud,.sconce-row,.objects,.inventory,.keys{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.night-btn{min-height:44px;min-width:44px;padding:8px 14px;border-radius:0;background:#241418;color:#f0d8c0;font:700 .95rem "Trebuchet MS",Verdana,sans-serif;touch-action:manipulation;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
+.night-btn{min-height:44px;min-width:44px;padding:8px 14px;border-radius:0;background:#241418;color:#f0d8c0;font:700 .95rem "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;touch-action:manipulation;border-top:2px solid #c4a574;border-left:2px solid #c4a574;border-right:2px solid #3a2018;border-bottom:2px solid #3a2018}
 .night-btn.quiet{background:transparent;color:#d9cbb8}
 .night-btn[aria-pressed=true]{box-shadow:0 0 0 3px #e6b15a;color:#e6b15a}
 .night-btn:focus-visible{outline:2px solid #e6b15a;outline-offset:2px}

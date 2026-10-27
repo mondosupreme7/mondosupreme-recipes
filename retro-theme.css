@@ -67,8 +67,8 @@ html[data-theme]:not([data-theme="classic"]) select{background:#fff;color:#000}
 html[data-theme]:not([data-theme="classic"]) body.night{background:var(--th-bg);color:var(--th-body)}
 html[data-theme]:not([data-theme="classic"]) body.night .night-main{border-color:var(--th-edge)}
 
-.theme-switch{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:#d4d0c8;color:#000;font:700 12px Tahoma,Verdana,sans-serif;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;padding:2px 6px}
-.theme-switch select{font:700 16px Tahoma,Verdana,sans-serif;min-height:44px;max-width:min(100vw - 48px,280px);background:#fff;color:#000;border:2px inset #808080;padding:4px 6px}
+.theme-switch{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:#d4d0c8;color:#000;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;padding:2px 6px}
+.theme-switch select{font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;min-height:44px;max-width:min(100vw - 48px,280px);background:#fff;color:#000;border:2px inset #808080;padding:4px 6px}
 
 .era-top{position:relative}
 .theme-sky{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}

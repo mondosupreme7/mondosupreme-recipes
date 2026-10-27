@@ -5,21 +5,21 @@
 .mood{color:#000080}
 .network{color:#800080}
 .quote-box{margin:0 0 14px;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
-.quote-box h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px Tahoma,Verdana,sans-serif}
+.quote-box h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
 .quote-body{display:flex;gap:12px;align-items:flex-start;margin:4px;padding:10px 12px 12px;background:#ffffcc;border:2px inset #808080}
 .quote-bulb{flex:0 0 auto;width:54px;height:54px;font-size:40px;line-height:54px;text-align:center;background:#fff;border:2px outset #fff}
 .quote-copy{flex:1;min-width:0}
-.quote-kicker{margin:0;font:700 12px Tahoma,Verdana,sans-serif;color:#000080;letter-spacing:.02em}
-.quote-copy blockquote{margin:.4em 0;font:700 1.2rem/1.35 "Comic Sans MS",Tahoma,cursive;color:#000080}
+.quote-kicker{margin:0;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080;letter-spacing:.02em}
+.quote-copy blockquote{margin:.4em 0;font:700 1.2rem/1.35 "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
 .quote-by{margin:0 0 8px;font-style:italic}
-.quote-flag{display:inline-block;margin-left:6px;padding:0 4px;background:#ff0;color:#000;border:1px solid #000;font:700 11px Tahoma,Verdana,sans-serif;font-style:normal}
+.quote-flag{display:inline-block;margin-left:6px;padding:0 4px;background:#ff0;color:#000;border:1px solid #000;font:700 11px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;font-style:normal}
 .quote-next{min-height:44px}
 .quote-owner{margin:4px;padding:8px;background:#fff;border:2px inset #808080}
 .quote-owner[hidden]{display:none}
-.quote-owner h3{margin:0 0 4px;font:700 15px Tahoma,Verdana,sans-serif;color:#000080}
+.quote-owner h3{margin:0 0 4px;font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
 .quote-owner p{margin:.35em 0}
-.quote-owner label{display:block;margin:6px 0;font:700 12px Tahoma,Verdana,sans-serif}
-.quote-owner input[type="text"],.quote-owner textarea{display:block;width:100%;box-sizing:border-box;margin-top:3px;font:16px Tahoma,Verdana,sans-serif}
+.quote-owner label{display:block;margin:6px 0;font:700 12px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
+.quote-owner input[type="text"],.quote-owner textarea{display:block;width:100%;box-sizing:border-box;margin-top:3px;font:16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif}
 .quote-pin-check{font-weight:400}
 .quote-owner-actions{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
 .quote-custom{list-style:none;margin:8px 0 0;padding:0}
@@ -33,7 +33,7 @@
 }
 .profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:10px;align-items:start;margin-bottom:16px}
 .box{background:#fff;color:#000;border:3px ridge #dfdfdf;box-shadow:none}
-.box h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px Tahoma,Verdana,sans-serif;text-shadow:none}
+.box h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;text-shadow:none}
 .box.navy h2{background:linear-gradient(90deg,#000080,#1084d0)}
 .box .box-body{padding:10px 12px}
 .about-line{margin:.35em 0}
@@ -48,7 +48,7 @@
 .choice:hover{background:#ffffcc;color:#f00}
 .choice:visited{color:#800080}
 .rank{position:absolute;top:6px;left:6px;background:#000080;color:#fff;font-family:var(--mono);font-weight:700;padding:2px 6px}
-.badge{position:absolute;top:4px;right:4px;background:#ff0;color:#f00;font:700 13px Impact,"Arial Black",sans-serif;padding:8px 6px;border:2px solid #f00;transform:rotate(8deg);animation:blink 1s steps(2) infinite}
+.badge{position:absolute;top:4px;right:4px;background:#ff0;color:#f00;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:8px 6px;border:2px solid #f00;transform:rotate(8deg);animation:blink 1s steps(2) infinite}
 .choice-mark{font-size:1.6rem;line-height:1}
 .choice-title{font-family:var(--display);font-size:clamp(1.25rem,3vw,1.6rem);font-weight:700;color:#0000ff;text-decoration:underline}
 .choice-text{color:#000;font-size:.95rem;text-decoration:none}
@@ -65,14 +65,14 @@
 .webring a:visited{color:#800080}
 .toybox,.gb-box{grid-column:1 / -1}
 .toybox{background:#c0c0c0;color:#000;border:3px ridge #fff;padding:8px;margin:8px 0}
-.toybox h2{margin:0 0 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px Tahoma,Verdana,sans-serif;padding:4px 8px}
+.toybox h2{margin:0 0 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:4px 8px}
 .toy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
 .toy{background:#fff;border:2px inset #808080;padding:8px;min-width:0}
-.toy h3{margin:0 0 6px;font:700 16px Tahoma,Verdana,sans-serif;color:#000080}
+.toy h3{margin:0 0 6px;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000080}
 .toy p{margin:6px 0}
 .toy .btn{width:100%;margin:4px 0}
-.mail-banner{background:#000080;color:#ff0;border:3px ridge #fff;text-align:center;font:700 18px "Comic Sans MS",Tahoma,cursive;padding:10px}
-.eight-ball{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#444,#000 60%);color:#fff;border:4px solid #222;font:700 28px Tahoma,sans-serif;cursor:pointer;display:block;margin:0 auto}
+.mail-banner{background:#000080;color:#ff0;border:3px ridge #fff;text-align:center;font:700 18px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;padding:10px}
+.eight-ball{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#444,#000 60%);color:#fff;border:4px solid #222;font:700 28px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;cursor:pointer;display:block;margin:0 auto}
 .eight-ball.is-shaking{animation:eight-shake .35s linear}
 @keyframes eight-shake{25%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}75%{transform:rotate(-4deg)}}
 .eight-ball span{display:flex;width:64px;height:64px;margin:0 auto;border-radius:50%;background:#102a6b;align-items:center;justify-content:center;font-size:14px;padding:6px;text-align:center;color:#d7e6ff}
@@ -82,7 +82,7 @@
 .lava-blob.b2{left:48%;width:40px;height:70px;background:#ff6600;animation-duration:7s;animation-delay:-2s}
 .lava-blob.b3{left:22%;width:36px;height:36px;background:#ffe14a;animation-duration:6.2s;animation-delay:-3s}
 @keyframes lava-rise{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-90px) scale(1.15)}}
-.pog{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffe14a,#ff6600 55%,#c4553d);border:4px solid #000;font:700 16px Impact,Tahoma,sans-serif;color:#000;cursor:pointer;display:block;margin:0 auto}
+.pog{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffe14a,#ff6600 55%,#c4553d);border:4px solid #000;font:700 16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;color:#000;cursor:pointer;display:block;margin:0 auto}
 .bsod{position:fixed;inset:0;z-index:200;background:#0000aa;color:#fff;font:700 16px "Courier New",monospace;padding:24px;overflow:auto}
 .bsod[hidden]{display:none}
 .bsod pre{white-space:pre-wrap;margin:8vh auto;max-width:46ch}

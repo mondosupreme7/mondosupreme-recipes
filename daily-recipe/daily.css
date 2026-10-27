@@ -1,5 +1,5 @@
 .tv-wrap{max-width:980px}
-.tv-kicker{margin:0;font:700 13px Tahoma,Verdana,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#003300}
+.tv-kicker{margin:0;font:700 13px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#003300}
 .tv-hero h1{color:#e8ffe8;text-shadow:2px 2px 0 #003300}
 .tv-hero p{color:#d8f5d8}
 .tv-page{background:#1a120c}
@@ -27,13 +27,13 @@
 .archive{background:#efe2c4;border:3px ridge #6b3e22;padding:10px 12px;margin:0 0 16px}
 .archive h2{margin:0 0 8px}
 .archive-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto}
-.archive-list button{width:100%;text-align:left;background:#fffef6;border:2px solid #000;min-height:44px;padding:6px 8px;font:700 15px Tahoma,Verdana,sans-serif;cursor:pointer}
+.archive-list button{width:100%;text-align:left;background:#fffef6;border:2px solid #000;min-height:44px;padding:6px 8px;font:700 15px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;cursor:pointer}
 .archive-list button[aria-current="true"]{background:#000080;color:#fff}
 .archive-list time{display:inline-block;min-width:7.2em;color:#000080}
 .archive-list button[aria-current="true"] time{color:#ffe14a}
 .tv-owner{background:#ffff99;border:3px solid #000;padding:12px;margin:0 0 16px}
 .tv-owner label{display:block;margin:8px 0;font-weight:700}
-.tv-owner input{width:100%;min-height:44px;font:16px Tahoma,sans-serif;border:2px inset #808080;padding:6px 8px}
+.tv-owner input{width:100%;min-height:44px;font:16px "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", "Chalkboard", cursive, sans-serif;border:2px inset #808080;padding:6px 8px}
 .tv-fresh,.tv-disclaimer{color:#f4e7c5}
 .tv-disclaimer{font-size:.95rem}
 .tv-page .site-footer{color:#f4e7c5}
