@@ -144,9 +144,11 @@
       screen.addEventListener('click', function () { screen.hidden = true; });
     }
     screen.hidden = false;
-    function onKey() {
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    function onKey(event) {
       screen.hidden = true;
       document.removeEventListener('keydown', onKey);
+      if (event && event.preventDefault) event.preventDefault();
     }
     document.addEventListener('keydown', onKey);
   }
