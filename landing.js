@@ -11,6 +11,8 @@
   if (forward()) return;
   window.addEventListener('hashchange', forward);
   var HITS = 'mondosupreme.hits.v1';
+  var SHARED = 'mondosupreme.hits.shared';
+  var SESSION = 'mondosupreme.hits.visit';
   var BASE = 8421;
   var ON = '#ff3333';
   var OFF = '#4a0000';
@@ -48,18 +50,127 @@
     if (!box) return;
     var text = String(n);
     if (text.length < 6) text = ('000000' + text).slice(-6);
-    box.setAttribute('aria-label', text + ' visits counted in this browser');
+    box.setAttribute('aria-label', String(n) + ' site-wide visits');
+    box.setAttribute('title', 'Live site-wide visitor count');
     box.replaceChildren();
     for (var i = 0; i < text.length; i++) box.appendChild(digit(text.charAt(i)));
+  }
+  function readNum(key) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (raw == null || raw === '') return null;
+      var n = parseInt(raw, 10);
+      return n >= 0 && n <= 100000000 ? n : null;
+    } catch (e) { return null; }
+  }
+  function writeNum(key, n) {
+    try { localStorage.setItem(key, String(n)); } catch (e) {}
+  }
+  function visited() {
+    try { return sessionStorage.getItem(SESSION) === '1'; } catch (e) { return false; }
+  }
+  function markVisited() {
+    try { sessionStorage.setItem(SESSION, '1'); } catch (e) {}
+  }
+  function localTotal() {
+    var seen = readNum(HITS);
+    return BASE + (seen == null ? 0 : seen);
+  }
+  function paintCached() {
+    var shared = readNum(SHARED);
+    paintCounter(shared == null ? localTotal() : shared);
+  }
+  function denied(err) {
+    var code = String((err && err.code) || '') + ' ' + String((err && err.message) || '');
+    return /PERMISSION_DENIED|permission[-_ ]denied/i.test(code);
+  }
+  var fellBack = false;
+  var listening = false;
+  function useLocalFallback() {
+    if (fellBack) return;
+    fellBack = true;
+    var shared = readNum(SHARED);
+    if (shared == null && !visited()) {
+      var seen = readNum(HITS);
+      seen = (seen == null ? 0 : seen) + 1;
+      writeNum(HITS, seen);
+      markVisited();
+    }
+    paintCached();
+  }
+  function configured() {
+    var c = window.MONDO_BOARD_CONFIG;
+    return !!(c && c.apiKey && c.authDomain && c.databaseURL && c.projectId && c.appId);
+  }
+  function watchHits() {
+    if (listening) return;
+    listening = true;
+    var bumped = false;
+    var ref = firebase.database().ref('hits/total');
+    ref.on('value', function (snap) {
+      var n = snap.val();
+      if (typeof n !== 'number' || n < 0) n = 0;
+      writeNum(SHARED, Math.floor(n));
+      paintCounter(Math.floor(n));
+      if (!bumped && !visited()) {
+        bumped = true;
+        countVisit();
+      }
+    }, function (err) {
+      if (denied(err)) useLocalFallback();
+      else paintCached();
+    });
+  }
+  function countVisit() {
+    var user = firebase.auth().currentUser;
+    if (!user) return;
+    var uid = user.uid;
+    var tries = 0;
+    function once() {
+      firebase.database().ref('hits/total').once('value').then(function (snap) {
+        var cur = snap.val();
+        var next = (typeof cur === 'number' && cur >= 0 ? Math.floor(cur) : 0) + 1;
+        var updates = {};
+        updates['hits/total'] = next;
+        updates['hits/rate/' + uid] = firebase.database.ServerValue.TIMESTAMP;
+        return firebase.database().ref().update(updates);
+      }).then(function () {
+        markVisited();
+      }).catch(function (err) {
+        if (denied(err) || tries >= 4) {
+          markVisited();
+          return;
+        }
+        tries += 1;
+        setTimeout(once, 250 * tries);
+      });
+    }
+    once();
+  }
+  function connectHits() {
+    if (typeof firebase === 'undefined' || !configured()) {
+      useLocalFallback();
+      return;
+    }
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(window.MONDO_BOARD_CONFIG);
+    } catch (e) {
+      useLocalFallback();
+      return;
+    }
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        firebase.auth().signInAnonymously().catch(function () { useLocalFallback(); });
+        return;
+      }
+      watchHits();
+    });
   }
   document.addEventListener('DOMContentLoaded', function () {
     var year = document.getElementById('yr');
     if (year) year.textContent = String(new Date().getFullYear());
-    var seen = 0;
-    try { seen = parseInt(localStorage.getItem(HITS) || '0', 10) || 0; } catch (e) { seen = 0; }
-    seen += 1;
-    try { localStorage.setItem(HITS, String(seen)); } catch (e) {}
-    paintCounter(BASE + seen);
+    paintCached();
+    connectHits();
     var ring = ['/recipes/', '/cruises/', '/wiki/', '/board/', '/chat/', '/escape/'];
     var rand = document.getElementById('ringRand');
     if (rand) rand.href = ring[Math.floor(Math.random() * ring.length)];

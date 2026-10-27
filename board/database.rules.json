@@ -234,6 +234,22 @@
           }
         }
       }
+    },
+    "hits": {
+      "total": {
+        ".read": "auth != null",
+        ".write": "auth != null && newData.isNumber() && newData.val() >= 0 && newData.val() % 1 == 0 && newData.val() <= 100000000 && (auth.token.email == 'cbrooks_911@yahoo.com' || (((!data.exists() && newData.val() == 1) || (data.exists() && newData.val() == data.val() + 1)) && newData.parent().child('rate').child(auth.uid).val() == now))",
+        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() % 1 == 0 && newData.val() <= 100000000"
+      },
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 1800000)"
+        }
+      },
+      "$other": {
+        ".validate": false
+      }
     }
   }
 }
