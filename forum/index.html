@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Forum — Mondosupreme</title>
+<meta name="description" content="Mondosupreme Bulletin Board — a 90s message board for recipes, cruises, games, and site news.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="forum.css">
+<link rel="stylesheet" href="/retro.css">
+</head>
+<body>
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Bulletin Board ~*~ ★ Topics · Replies · Stickies ★ General · Recipes · Cruises · News · Gaming ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Bulletin Board ~*~ ★ Topics · Replies · Stickies ★ General · Recipes · Cruises · News · Gaming ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/forum/" class="brand"><span class="logo">📋</span><span>Mondo<em>Board</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/forum/" aria-current="page">Forum</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+ <nav class="actions">
+  <button id="ownerBtn" class="btn ghost" type="button">Owner sign in</button>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="sync-banner" role="status" hidden>Forum sync waiting on updated Firebase rules — posts stay on this device until published</p>
+ <p id="banBanner" class="sync-banner" role="status" hidden>This browser is banned from posting.</p>
+ <section class="forum-shell">
+  <header class="forum-head">
+   <h1>Mondosupreme Bulletin Board</h1>
+   <p>A 90s message board. Pick a category, start a topic, and reply underneath.</p>
+  </header>
+  <div id="listView">
+   <div class="forum-bar">
+    <label>Search<input id="search" type="search" placeholder="Search topics and replies" autocomplete="off"></label>
+    <label>Category
+     <select id="catFilter">
+      <option value="all">All boards</option>
+      <option value="general">General</option>
+      <option value="recipes">Recipes &amp; Food</option>
+      <option value="cruises">Cruises &amp; Travel</option>
+      <option value="news">Site News / Blog</option>
+      <option value="gaming">Gaming</option>
+     </select>
+    </label>
+    <button id="newBtn" class="btn primary" type="button">New Topic</button>
+   </div>
+   <div class="table-wrap">
+    <table class="board">
+     <thead>
+      <tr>
+       <th>Topic</th>
+       <th>Author</th>
+       <th>Replies</th>
+       <th>Views</th>
+       <th>Last post</th>
+      </tr>
+     </thead>
+     <tbody id="rows"></tbody>
+    </table>
+   </div>
+   <p id="empty" class="empty-board" hidden>No threads yet. Start one.</p>
+   <section id="ownerBans" hidden>
+    <h2>Banned writers</h2>
+    <ul id="banList"></ul>
+   </section>
+  </div>
+  <div id="threadView" hidden></div>
+  <div id="composeView" hidden>
+   <form id="topicForm">
+    <h2 id="composeTitle">New topic</h2>
+    <div class="form-grid">
+     <label>Display name<input id="postName" maxlength="24" autocomplete="nickname" placeholder="Guest"></label>
+     <label>Mood
+      <select id="postMood">
+       <option value="smile">:) smile</option>
+       <option value="cool">B) cool</option>
+       <option value="chef">chef</option>
+       <option value="ship">ship</option>
+       <option value="game">game</option>
+       <option value="heart">&lt;3 heart</option>
+      </select>
+     </label>
+     <label>Category
+      <select id="postCat">
+       <option value="general">General</option>
+       <option value="recipes">Recipes &amp; Food</option>
+       <option value="cruises">Cruises &amp; Travel</option>
+       <option value="news">Site News / Blog</option>
+       <option value="gaming">Gaming</option>
+      </select>
+     </label>
+    </div>
+    <label>Title<input id="postTitle" maxlength="120" required></label>
+    <label>Post<textarea id="postBody" maxlength="5000" rows="8" required></textarea></label>
+    <p class="hint">Blank line for a new paragraph. **bold**, *italic*, `code`, and https:// links only.</p>
+    <label id="officialRow" hidden><input id="postOfficial" type="checkbox"> Official Blog Post (Owner badge)</label>
+    <p id="formError" class="owner-error" hidden></p>
+    <div class="form-actions">
+     <a class="btn ghost" href="#/">Cancel</a>
+     <button id="postBtn" class="btn primary" type="submit">Post topic</button>
+    </div>
+   </form>
+  </div>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Be decent. The owner can remove a post.</div></footer>
+<div id="toast" role="status"></div>
+<dialog id="ownerDialog">
+ <form id="ownerForm">
+  <h2>Owner sign-in</h2>
+  <p>Sign in to edit, delete, pin, lock, mark an official post, or ban a writer. The same sign-in works on the pet, arcade, recipes, the wiki, the board, and chat.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="owner-error" hidden></p>
+  <div class="form-actions">
+   <button type="button" id="ownerCancel" class="btn ghost">Cancel</button>
+   <button type="submit" class="btn primary">Sign in</button>
+  </div>
+ </form>
+</dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="forum.js"></script>
+</body>
+</html>
