@@ -283,16 +283,16 @@
     saving = true;
     try {
       var payload = profilePayload(fields);
-      await firebase.database().ref('users/' + current.uid).update(payload);
       profile = {
         handle: payload.handle,
         avatar: payload.avatar,
         status: payload.status,
         member: true,
-        webmaster: payload.webmaster
+        webmaster: !!payload.webmaster
       };
       directory[current.uid] = profile;
       announce();
+      await firebase.database().ref('users/' + current.uid).update(payload);
     } finally {
       saving = false;
     }
@@ -332,7 +332,9 @@
       }
       directory[next.uid] = profile;
     } catch (e) {
-      profile = { handle: isOwnerUser(next) ? 'Cody' : 'Member', avatar: 'smiley', member: true, webmaster: isOwnerUser(next) };
+      if (!profile || !profile.handle) {
+        profile = { handle: isOwnerUser(next) ? 'Cody' : 'Member', avatar: 'smiley', member: true, webmaster: isOwnerUser(next) };
+      }
     }
     announce();
     pushSync();
@@ -352,7 +354,7 @@
     }, 700);
   }
   function authError(err) {
-    var code = String(err && err.code || '');
+    var code = String(err && err.code || '').toLowerCase();
     if (code.indexOf('email-already-in-use') >= 0) return 'That email already has an account. Use Sign In.';
     if (code.indexOf('weak-password') >= 0) return 'Use a password of at least 6 characters.';
     if (code.indexOf('invalid-email') >= 0) return 'That email does not look right.';
