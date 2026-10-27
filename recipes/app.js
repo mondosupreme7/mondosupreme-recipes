@@ -115,30 +115,71 @@ function showScanReview(text, meta){
   const confEl=$('#scanConfidence');
   const hint=$('#scanHint');
   const retry=$('#scanRetry');
+  const compare=$('#scanCompare');
+  const photo=$('#scanCompareImg');
   if(!text){
     $('#ocrRaw').textContent='';
     box.hidden=true;
     if(confEl)confEl.hidden=true;
     if(hint)hint.hidden=true;
     if(retry)retry.hidden=true;
+    if(compare)compare.hidden=true;
+    renderScanWords([]);
     return;
   }
   $('#ocrRaw').textContent=text;
   $('#ocrDetails').open=false;
   box.hidden=false;
   if(retry)retry.hidden=!scanBitmap;
+  renderScanWords(meta&&meta.tokens||[]);
+  if(compare&&photo&&meta&&meta.photo){photo.src=meta.photo; compare.hidden=false;}
+  else if(compare)compare.hidden=true;
   const conf=meta&&Number(meta.confidence);
   if(confEl&&Number.isFinite(conf)){
     const n=Math.max(0,Math.min(100,Math.round(conf)));
     confEl.hidden=false;
     confEl.textContent='Read confidence: '+n+'%';
     if(hint){
-      hint.hidden=n>=80;
-      hint.textContent=n>=80?'':'This read is uncertain. Brighter, even light and a tighter crop help. Printed text and neat handwriting work best — cursive is often missed. Turn on Enhance for handwriting if the letters are faint, then try again.';
+      hint.hidden=n>=85;
+      hint.textContent=n>=85?'':'This read is uncertain. Yellow words are the ones to check. Brighter light and a tighter crop help. Turn on handwriting enhancement for faint pencil, or corner handles if the card is tilted.';
     }
   }else{
     if(confEl)confEl.hidden=true;
     if(hint)hint.hidden=true;
+  }
+}
+function renderScanWords(tokens){
+  const box=$('#scanWords');
+  if(!box)return;
+  box.replaceChildren();
+  (tokens||[]).forEach(tok=>{
+    if(tok.break){box.append(document.createElement('br'));return;}
+    const conf=Number(tok.confidence);
+    const low=Number.isFinite(conf)&&conf<72;
+    const el=document.createElement(low?'button':'span');
+    if(low){
+      el.type='button';
+      el.className='is-low';
+      el.title='About '+Math.round(conf)+'% sure. Tap to find this word in the form.';
+    }
+    el.textContent=tok.text;
+    box.append(el);
+    box.append(document.createTextNode(' '));
+  });
+}
+function focusScanWord(word){
+  const f=$('#recipeForm');
+  const needle=String(word||'').trim();
+  if(!f||needle.length<2)return;
+  const fields=[f.title,f.ingredients,f.steps,f.notes];
+  for(let i=0;i<fields.length;i++){
+    const el=fields[i];
+    if(!el)continue;
+    const at=el.value.toLowerCase().indexOf(needle.toLowerCase());
+    if(at<0)continue;
+    el.focus();
+    if(el.setSelectionRange)el.setSelectionRange(at,at+needle.length);
+    return;
   }
 }
 function openEditor(r,prefill){
@@ -157,7 +198,7 @@ function openEditor(r,prefill){
     if(prefill.steps)f.steps.value=prefill.steps.join('\n');
     if(prefill.notes)f.notes.value=prefill.notes;
     if(prefill.photo)photo=prefill.photo;
-    if(prefill.ocrText)showScanReview(prefill.ocrText,{confidence:prefill.confidence});
+    if(prefill.ocrText)showScanReview(prefill.ocrText,{confidence:prefill.confidence,tokens:prefill.tokens,photo:prefill.photo});
   }
   setPhotoField(photo);
   $('#editor').showModal();
@@ -213,34 +254,50 @@ function isIngredientLine(line){
   return /^(?:\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?(?:\s*-\s*\d+(?:[.,]\d+)?)?|[½¼¾⅓⅔⅛])(?:\s*[a-zA-Zµ]|\s|$)/.test(line);
 }
 function cleanIngredient(line){return line.replace(/^[-*•·▪◦‣–—]\s+/,'').trim()}
-const RECIPE_DICT=new Set('spaghetti garlic clove cloves olive tomato tomatoes basil crushed simmer minute minutes until dente pasta sauce serve ingredient ingredients direction directions instruction instructions method preparation note notes tip tips tablespoon tablespoons teaspoon teaspoons onion butter flour sugar pepper chicken cheese vanilla baking powder water milk fresh sliced grated canned boil warm cook toss salt'.split(' '));
+const RECIPE_DICT=new Set(('spaghetti garlic clove cloves olive tomato tomatoes basil crushed simmer minute minutes until dente pasta sauce serve ingredient ingredients direction directions instruction instructions method preparation note notes tip tips tablespoon tablespoons teaspoon teaspoons onion butter flour sugar pepper chicken cheese vanilla baking powder water milk fresh sliced grated canned boil warm cook toss salt '+
+'preheat oven degree degrees bake soda cocoa chocolate egg eggs cream broth stock rice noodle noodles bread yeast honey syrup vinegar mustard canola sesame whisk stir combine minced diced chopped melted softened pinch dash dashes cup cups ounce ounces pound pounds parsley oregano thyme rosemary cinnamon nutmeg ginger paprika cumin chili chilli potato potatoes carrot celery beef pork shrimp lemon lime juice zest parmesan mozzarella cheddar yogurt maple ketchup mayonnaise vegetable cornstarch gelatin molasses buttermilk scallion scallions shallot shallots mushroom mushrooms spinach avocado beans bean chickpeas lentils extract brown powdered dough batter frosting icing kosher peppercorn bay saute sauteed simmering boiling').split(/\s+/).filter(Boolean));
+function applyCase(sample, lower){
+  if(sample&&sample[0]===sample[0].toUpperCase()&&sample[0]!==sample[0].toLowerCase())return lower.charAt(0).toUpperCase()+lower.slice(1);
+  return lower;
+}
+function foldOcrLetters(lower){return lower.replace(/0/g,'o').replace(/1/g,'l').replace(/5/g,'s').replace(/8/g,'b')}
 function correctToken(token){
-  const m=token.match(/^([^A-Za-z]*)([A-Za-z]+)([^A-Za-z]*)$/);
+  const m=token.match(/^([^A-Za-z0-9]*)([A-Za-z0-9]+)([^A-Za-z0-9]*)$/);
   if(!m)return token;
-  const lower=m[2].toLowerCase();
-  if(lower.length<4||RECIPE_DICT.has(lower))return token;
+  const core=m[2];
+  const lower=core.toLowerCase();
+  if(RECIPE_DICT.has(lower))return token;
+  const folded=foldOcrLetters(lower);
+  const letters=folded.replace(/[^a-z]/g,'');
+  if(letters!==lower&&letters.length>=3&&RECIPE_DICT.has(letters)&&(lower.match(/[a-z]/g)||[]).length>=3)return m[1]+applyCase(core,letters)+m[3];
+  if(letters.length<4||RECIPE_DICT.has(letters))return token;
   let hit='';
   for(const dict of RECIPE_DICT){
-    if(dict.length<4||Math.abs(dict.length-lower.length)>1)continue;
-    if(editDistance(lower,dict)!==1)continue;
+    if(dict.length<4||Math.abs(dict.length-letters.length)>1)continue;
+    if(editDistance(letters,dict)!==1)continue;
     if(!hit)hit=dict;
-    else if(dict.length===lower.length&&hit.length!==lower.length)hit=dict;
+    else if(dict.length===letters.length&&hit.length!==letters.length)hit=dict;
     else if(dict.length===hit.length)return token;
   }
-  return hit?m[1]+hit+m[3]:token;
+  return hit?m[1]+applyCase(core,hit)+m[3]:token;
 }
 function fixOcrLine(line){
+  line=line.replace(/(^|\s)_+(?=\s|\d|[A-Za-z])/g,'$1');
   line=line.replace(/\bfen(?=\s+minutes?\b)/gi,'ten');
   line=line.replace(/\b(\d{3,})9(?=\s+[A-Za-z]{4,})/g,'$1 g');
+  line=line.replace(/\b(\d)\s*[lI|]\s*([2348])\b/g,'$1/$2');
   line=line.replace(/\b[lI|]\/([2348])\b/g,'1/$1');
   line=line.replace(/\b(\d)\s*\/\s*(\d)\b/g,'$1/$2');
+  line=line.replace(/\b[Oo]\s*\.\s*5\b/g,'0.5');
   line=line.replace(/\b[0-9OoIl|.]*[Oo][0-9OoIl|.]*\b/g,tok=>{
     if(!/\d/.test(tok))return tok;
     return tok.replace(/[Oo]/g,'0').replace(/[Il|]/g,'1');
   });
-  line=line.replace(/(^|\s)([lI|])(?=\s+(?:cups?|tbsps?|tablespoons?|tsps?|teaspoons?|oz|ounces?|lbs?|pounds?|kg|mg|ml|pinch(?:es)?|cloves?|cans?)\b)/gi,'$11');
-  line=line.replace(/\btbps\b/gi,'tbsp').replace(/\btps\b/gi,'tsp').replace(/\b0z\b/gi,'oz');
-  return line.split(' ').map(correctToken).join(' ');
+  line=line.replace(/(^|\s)([lI|])(?=\s+(?:cups?|tbsps?|tablespoons?|tsps?|teaspoons?|oz|ounces?|lbs?|pounds?|kg|mg|ml|pinch(?:es)?|cloves?)\b)/gi,'$11');
+  line=line.replace(/\b(\d+)\s*(?:deg(?:rees)?|[°º])\s*F\b/gi,'$1°F');
+  line=line.replace(/\btbls\b/gi,'tbsp').replace(/\btbs\b/gi,'tbsp').replace(/\btbps\b/gi,'tbsp');
+  line=line.replace(/\btspn\b/gi,'tsp').replace(/\btps\b/gi,'tsp').replace(/\b0z\b/gi,'oz').replace(/\b1b\b/g,'lb');
+  return line.split(' ').map(correctToken).join(' ').replace(/[ \t]+/g,' ').trim();
 }
 function usefulLine(line){
   const compact=line.replace(/\s/g,'');
@@ -550,23 +607,332 @@ function padCanvas(src,pad){
   ctx.drawImage(src,pad,pad);
   return c;
 }
-function binarize(canvas,handwriting){
-  const w=canvas.width,h=canvas.height;
-  let g=boxBlur(grayOf(canvas),w,h,1);
-  g=stretch(g);
-  if(handwriting){
-    const blur=boxBlur(g,w,h,1);
-    const sharp=new Uint8Array(g.length);
-    for(let i=0;i<g.length;i++){
-      let v=g[i]+0.9*(g[i]-blur[i]);
-      sharp[i]=v<0?0:v>255?255:v|0;
+function unsharp(g,w,h,amount){
+  const blur=boxBlur(g,w,h,1);
+  const out=new Uint8Array(g.length);
+  for(let i=0;i<g.length;i++){
+    let v=g[i]+amount*(g[i]-blur[i]);
+    out[i]=v<0?0:v>255?255:v|0;
+  }
+  return out;
+}
+function flattenIllumination(g,w,h){
+  const radius=Math.max(15,Math.round(Math.min(w,h)/10));
+  const bg=boxBlur(g,w,h,radius);
+  const out=new Uint8Array(g.length);
+  for(let i=0;i<g.length;i++){
+    const v=g[i]/Math.max(1,bg[i])*255;
+    out[i]=v<0?0:v>255?255:v|0;
+  }
+  return unsharp(out,w,h,0.35);
+}
+function sauvolaWindow(g,w,h,k,win){
+  if(win%2===0)win++;
+  win=Math.max(15,win|0);
+  const r=win>>1;
+  const ii=new Float64Array(w*h);
+  const ii2=new Float64Array(w*h);
+  for(let y=0,i=0;y<h;y++){
+    let row=0,row2=0;
+    for(let x=0;x<w;x++,i++){
+      const v=g[i];
+      row+=v; row2+=v*v;
+      ii[i]=row+(y?ii[i-w]:0);
+      ii2[i]=row2+(y?ii2[i-w]:0);
     }
-    g=sauvola(sharp,w,h,0.2);
-  }else g=sauvola(g,w,h,0.34);
+  }
+  const out=new Uint8Array(g.length);
+  const R=128;
+  function areaSum(intg,x0,y0,x1,y1){
+    const A=(y0>0&&x0>0)?intg[(y0-1)*w+(x0-1)]:0;
+    const B=y0>0?intg[(y0-1)*w+x1]:0;
+    const C=x0>0?intg[y1*w+(x0-1)]:0;
+    return intg[y1*w+x1]-B-C+A;
+  }
+  for(let y=0;y<h;y++){
+    const y0=Math.max(0,y-r),y1=Math.min(h-1,y+r);
+    for(let x=0;x<w;x++){
+      const x0=Math.max(0,x-r),x1=Math.min(w-1,x+r);
+      const area=(x1-x0+1)*(y1-y0+1);
+      const s=areaSum(ii,x0,y0,x1,y1);
+      const s2=areaSum(ii2,x0,y0,x1,y1);
+      const mean=s/area;
+      const variance=Math.max(0,s2/area-mean*mean);
+      const T=mean*(1+k*((Math.sqrt(variance)/R)-1));
+      out[y*w+x]=g[y*w+x]<T?0:255;
+    }
+  }
+  return out;
+}
+function suppressRuledLines(bin,w,h){
+  const out=bin.slice();
+  const rowInk=new Uint32Array(h);
+  for(let y=0;y<h;y++){
+    let c=0;
+    for(let x=0;x<w;x++)if(bin[y*w+x]<128)c++;
+    rowInk[y]=c;
+  }
+  for(let y=2;y<h-2;y++){
+    if(rowInk[y]<w*0.42)continue;
+    const neighbors=(rowInk[y-2]+rowInk[y+2])/2;
+    if(rowInk[y]<neighbors*2.1&&rowInk[y]<w*0.7)continue;
+    for(let x=0;x<w;x++){
+      if(bin[y*w+x]>=128)continue;
+      const above=bin[(y-2)*w+x]<128;
+      const below=bin[(y+2)*w+x]<128;
+      if(!above&&!below)out[y*w+x]=255;
+    }
+  }
+  const minRun=Math.max(40,Math.round(w*0.045));
+  for(let y=1;y<h-1;y++){
+    let x=0;
+    while(x<w){
+      if(out[y*w+x]>=128){x++;continue;}
+      let x2=x;
+      while(x2<w&&out[y*w+x2]<128)x2++;
+      if(x2-x>=minRun){
+        for(let i=x;i<x2;i++){
+          if(out[(y-1)*w+i]>=128&&out[(y+1)*w+i]>=128)out[y*w+i]=255;
+        }
+      }
+      x=Math.max(x2,x+1);
+    }
+  }
+  return out;
+}
+function passFlatten(canvas){
+  const w=canvas.width,h=canvas.height;
+  const g=flattenIllumination(grayOf(canvas),w,h);
   return padCanvas(paintGray(g,w,h),24);
+}
+function passSauvola(canvas,handwriting){
+  const w=canvas.width,h=canvas.height;
+  let g=stretch(boxBlur(grayOf(canvas),w,h,1));
+  g=sauvolaWindow(g,w,h,handwriting?0.16:0.26,(()=>{let win=Math.round(Math.min(w,h)/(handwriting?26:32)); if(win%2===0)win++; return Math.max(25,Math.min(handwriting?51:61,win));})());
+  g=suppressRuledLines(g,w,h);
+  return padCanvas(paintGray(g,w,h),24);
+}
+function passHybrid(canvas,handwriting){
+  const w=canvas.width,h=canvas.height;
+  let g=flattenIllumination(grayOf(canvas),w,h);
+  let win=Math.round(Math.min(w,h)/30); if(win%2===0)win++;
+  win=Math.max(25,Math.min(55,win));
+  g=sauvolaWindow(g,w,h,handwriting?0.15:0.22,win);
+  g=suppressRuledLines(g,w,h);
+  return padCanvas(paintGray(g,w,h),24);
+}
+function solveHomography(src, dst){
+  const a=[];
+  for(let i=0;i<4;i++){
+    const x=dst[i].x,y=dst[i].y,u=src[i].x,v=src[i].y;
+    a.push([x,y,1,0,0,0,-u*x,-u*y,u]);
+    a.push([0,0,0,x,y,1,-v*x,-v*y,v]);
+  }
+  const n=8;
+  for(let c=0;c<n;c++){
+    let piv=c;
+    for(let r=c+1;r<n;r++)if(Math.abs(a[r][c])>Math.abs(a[piv][c]))piv=r;
+    if(Math.abs(a[piv][c])<1e-8)return null;
+    const tmp=a[c]; a[c]=a[piv]; a[piv]=tmp;
+    const div=a[c][c];
+    for(let j=c;j<=n;j++)a[c][j]/=div;
+    for(let r=0;r<n;r++){
+      if(r===c)continue;
+      const f=a[r][c];
+      for(let j=c;j<=n;j++)a[r][j]-=f*a[c][j];
+    }
+  }
+  return a.map(row=>row[n]);
+}
+function warpQuad(canvas, corners){
+  const dist=(p,q)=>Math.hypot(p.x-q.x,p.y-q.y);
+  const dw=Math.max(1,Math.round(Math.max(dist(corners[0],corners[1]),dist(corners[3],corners[2]))));
+  const dh=Math.max(1,Math.round(Math.max(dist(corners[0],corners[3]),dist(corners[1],corners[2]))));
+  const dest=[{x:0,y:0},{x:dw-1,y:0},{x:dw-1,y:dh-1},{x:0,y:dh-1}];
+  const h=solveHomography(corners, dest);
+  if(!h)return canvas;
+  const srcCtx=canvas.getContext('2d',{willReadFrequently:true});
+  const src=srcCtx.getImageData(0,0,canvas.width,canvas.height);
+  const sw=canvas.width,sh=canvas.height,sd=src.data;
+  const out=document.createElement('canvas');
+  out.width=dw; out.height=dh;
+  const ctx=out.getContext('2d');
+  const img=ctx.createImageData(dw,dh);
+  const d=img.data;
+  for(let y=0;y<dh;y++){
+    for(let x=0;x<dw;x++){
+      const den=h[6]*x+h[7]*y+1;
+      if(!den)continue;
+      const sx=(h[0]*x+h[1]*y+h[2])/den;
+      const sy=(h[3]*x+h[4]*y+h[5])/den;
+      const x0=Math.floor(sx), y0=Math.floor(sy);
+      const x1=x0+1, y1=y0+1;
+      const fx=sx-x0, fy=sy-y0;
+      const p=(y*dw+x)*4;
+      if(x0<0||y0<0||x1>=sw||y1>=sh){d[p]=d[p+1]=d[p+2]=255; d[p+3]=255; continue;}
+      for(let c=0;c<3;c++){
+        const i00=sd[(y0*sw+x0)*4+c], i10=sd[(y0*sw+x1)*4+c];
+        const i01=sd[(y1*sw+x0)*4+c], i11=sd[(y1*sw+x1)*4+c];
+        const v=(i00*(1-fx)+i10*fx)*(1-fy)+(i01*(1-fx)+i11*fx)*fy;
+        d[p+c]=v|0;
+      }
+      d[p+3]=255;
+    }
+  }
+  ctx.putImageData(img,0,0);
+  return out;
+}
+function splitColumns(words, width){
+  const items=words.filter(w=>w&&w.text&&String(w.text).trim()&&w.x1>w.x0);
+  if(items.length<8||!width)return null;
+  const sorted=items.slice().sort((a,b)=>((a.x0+a.x1)/2)-((b.x0+b.x1)/2));
+  let bestGap=0,bestI=-1;
+  for(let i=2;i<sorted.length-2;i++){
+    const gap=((sorted[i].x0+sorted[i].x1)/2)-((sorted[i-1].x0+sorted[i-1].x1)/2);
+    if(gap>bestGap){bestGap=gap;bestI=i;}
+  }
+  if(bestI<0||bestGap<width*0.07)return null;
+  const left=sorted.slice(0,bestI), right=sorted.slice(bestI);
+  const leftMax=Math.max.apply(null,left.map(w=>w.x1));
+  const rightMin=Math.min.apply(null,right.map(w=>w.x0));
+  if(rightMin-leftMax<width*0.05)return null;
+  const mean=arr=>arr.reduce((s,w)=>s+(w.x0+w.x1)/2,0)/arr.length;
+  if(mean(right)-mean(left)<width*0.22)return null;
+  return {left,right,split:(leftMax+rightMin)/2};
+}
+function linesFromWords(words){
+  const items=(words||[]).filter(w=>w&&String(w.text||'').trim()).map(w=>({
+    text:String(w.text).trim(),
+    confidence:Number(w.confidence)||0,
+    x0:w.x0||0,x1:w.x1||0,y0:w.y0||0,y1:w.y1||0,
+    cx:((w.x0||0)+(w.x1||0))/2,
+    cy:((w.y0||0)+(w.y1||0))/2
+  }));
+  items.sort((a,b)=>a.cy-b.cy||a.cx-b.cx);
+  const lines=[];
+  items.forEach(w=>{
+    const last=lines[lines.length-1];
+    const h=Math.max(8,w.y1-w.y0||12);
+    if(last&&Math.abs(w.cy-last.cy)<h*0.7){last.words.push(w); last.cy=(last.cy*last.n+w.cy)/(last.n+1); last.n++;}
+    else lines.push({cy:w.cy,n:1,words:[w]});
+  });
+  return lines.map(line=>{
+    line.words.sort((a,b)=>a.cx-b.cx);
+    const confidence=line.words.reduce((s,w)=>s+w.confidence,0)/line.words.length;
+    return {text:line.words.map(w=>w.text).join(' '),confidence,y:line.cy,words:line.words};
+  }).filter(l=>l.text);
+}
+function readingOrder(words, width){
+  const split=splitColumns(words, width);
+  if(!split)return linesFromWords(words);
+  return linesFromWords(split.left).concat(linesFromWords(split.right));
+}
+function mergeOcrLines(passLines){
+  const tagged=[];
+  (passLines||[]).forEach((lines,pi)=>(lines||[]).forEach(line=>{
+    if(line&&String(line.text||'').trim())tagged.push({text:String(line.text).trim(),confidence:Number(line.confidence)||0,y:Number(line.y)||0,words:line.words||[],pi});
+  }));
+  tagged.sort((a,b)=>a.y-b.y||a.pi-b.pi);
+  const used=new Set();
+  const out=[];
+  for(let i=0;i<tagged.length;i++){
+    if(used.has(i))continue;
+    let best=tagged[i];
+    used.add(i);
+    for(let j=i+1;j<tagged.length;j++){
+      if(used.has(j))continue;
+      if(tagged[j].y-tagged[i].y>12)break;
+      if(tagged[j].pi===tagged[i].pi)continue;
+      used.add(j);
+      if(tagged[j].confidence>best.confidence)best=tagged[j];
+    }
+    out.push(best);
+  }
+  out.sort((a,b)=>a.y-b.y);
+  return out;
+}
+function meanConf(lines){
+  if(!lines||!lines.length)return 0;
+  return lines.reduce((s,l)=>s+(Number(l.confidence)||0),0)/lines.length;
+}
+function scoreText(text, confidence){
+  const fixed=fixOcrText(text);
+  const words=fixed.split(/\s+/).filter(Boolean);
+  let known=0;
+  words.forEach(w=>{const bare=w.toLowerCase().replace(/[^a-z]/g,''); if(bare&&RECIPE_DICT.has(bare))known++;});
+  return (Number(confidence)||0)+(words.length?known/words.length*40:0);
+}
+function tokensFromLines(lines){
+  const tokens=[];
+  (lines||[]).forEach((line,idx)=>{
+    const fixed=fixOcrLine(line.text);
+    const parts=fixed.split(' ').filter(Boolean);
+    const src=line.words&&line.words.length?line.words:[{text:line.text,confidence:line.confidence}];
+    parts.forEach((text,i)=>{
+      const srcWord=src[Math.min(i,src.length-1)];
+      tokens.push({text,confidence:srcWord?Number(srcWord.confidence)||0:Number(line.confidence)||0});
+    });
+    if(idx<lines.length-1)tokens.push({break:true});
+  });
+  return tokens;
+}
+function wordsOf(result){
+  const words=result&&result.data&&result.data.words||[];
+  return words.map(w=>({
+    text:String(w.text||'').replace(/\s+/g,' ').trim(),
+    confidence:Number(w.confidence)||0,
+    x0:w.bbox?w.bbox.x0:0,
+    x1:w.bbox?w.bbox.x1:0,
+    y0:w.bbox?w.bbox.y0:0,
+    y1:w.bbox?w.bbox.y1:0
+  })).filter(w=>w.text);
+}
+function linesOf(result, words){
+  const raw=result&&result.data&&result.data.lines||[];
+  if(!raw.length)return linesFromWords(words||[]);
+  return raw.map(line=>{
+    const y0=line.bbox?line.bbox.y0:0, y1=line.bbox?line.bbox.y1:0;
+    const mine=(words||[]).filter(w=>w.y1>=y0-2&&w.y0<=y1+2);
+    return {text:String(line.text||'').trim(), confidence:Number(line.confidence)||0, y:(y0+y1)/2, words:mine};
+  }).filter(l=>l.text);
+}
+function chooseLines(passes){
+  const merged=mergeOcrLines(passes.map(p=>p.lines));
+  const best=passes.slice().sort((a,b)=>b.confidence-a.confidence)[0]||{words:[],width:0};
+  const split=splitColumns(best.words, best.width);
+  if(split){
+    const ordered=linesFromWords(split.left).concat(linesFromWords(split.right));
+    if(ordered.length)return ordered;
+  }
+  if(merged.length)return merged;
+  return linesFromWords(best.words||[]);
 }
 function orientedSize(bitmap,rotation){
   return rotation%2?{w:bitmap.height,h:bitmap.width}:{w:bitmap.width,h:bitmap.height};
+}
+function renderOrientedFull(bitmap,rotation,maxEdge){
+  return renderOrientedCrop(bitmap,rotation,{x:0,y:0,w:1,h:1},maxEdge);
+}
+function renderScanCanvas(bitmap, session, maxEdge){
+  if(session.perspective&&session.corners&&session.corners.length===4){
+    const oriented=renderOrientedFull(bitmap, session.rotation, maxEdge);
+    const pts=session.corners.map(p=>({x:p.x*oriented.width,y:p.y*oriented.height}));
+    return warpQuad(oriented, pts);
+  }
+  return renderOrientedCrop(bitmap, session.rotation, session.norm, maxEdge);
+}
+function cropColumns(canvas, splitX){
+  const leftW=Math.max(1,Math.round(splitX));
+  const rightW=Math.max(1,canvas.width-leftW);
+  function slice(sx,sw){
+    const c=document.createElement('canvas');
+    c.width=sw; c.height=canvas.height;
+    const ctx=c.getContext('2d',{alpha:false});
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,sw,canvas.height);
+    ctx.drawImage(canvas,sx,0,sw,canvas.height,0,0,sw,canvas.height);
+    return c;
+  }
+  return [slice(0,leftW), slice(leftW,rightW)];
 }
 function renderOrientedCrop(bitmap,rotation,norm,maxEdge){
   const o=orientedSize(bitmap,rotation);
@@ -622,12 +988,38 @@ function isImageFile(file){
 }
 function applyCropBox(){
   if(!cropSession)return;
-  const n=cropSession.norm;
   const box=$('#cropBox');
-  box.style.left=(n.x*100)+'%';
-  box.style.top=(n.y*100)+'%';
-  box.style.width=(n.w*100)+'%';
-  box.style.height=(n.h*100)+'%';
+  const quad=$('#cropQuad');
+  const handles=$('#quadHandles');
+  const perspective=!!cropSession.perspective;
+  if(box)box.hidden=perspective;
+  if(quad)quad.hidden=!perspective;
+  if(handles)handles.hidden=!perspective;
+  const n=cropSession.norm;
+  if(box&&!perspective){
+    box.style.left=(n.x*100)+'%';
+    box.style.top=(n.y*100)+'%';
+    box.style.width=(n.w*100)+'%';
+    box.style.height=(n.h*100)+'%';
+  }
+  if(!perspective)return;
+  const pts=cropSession.corners||[];
+  const poly=$('#cropPoly');
+  const shade=$('#cropShade');
+  const pointStr=pts.map(p=>(p.x*100)+','+(p.y*100)).join(' ');
+  if(poly)poly.setAttribute('points', pointStr);
+  if(shade)shade.setAttribute('d','M0,0 H100 V100 H0 Z M '+pts.map(p=>(p.x*100)+' '+(p.y*100)).join(' L ')+' Z');
+  if(handles){
+    handles.querySelectorAll('[data-c]').forEach(el=>{
+      const p=pts[Number(el.dataset.c)];
+      if(!p)return;
+      el.style.left=(p.x*100)+'%';
+      el.style.top=(p.y*100)+'%';
+    });
+  }
+}
+function cornersFromNorm(n){
+  return [{x:n.x,y:n.y},{x:n.x+n.w,y:n.y},{x:n.x+n.w,y:n.y+n.h},{x:n.x,y:n.y+n.h}];
 }
 function drawCropPreview(){
   if(!scanBitmap||!cropSession)return;
@@ -661,7 +1053,9 @@ function finishCrop(value){
   if(resolve)resolve(value);
 }
 function openCropper(){
-  cropSession={rotation:0,norm:{x:0.03,y:0.03,w:0.94,h:0.94},resolve:null};
+  const perspective=$('#perspectiveToggle')&&$('#perspectiveToggle').checked;
+  const norm={x:0.06,y:0.06,w:0.88,h:0.88};
+  cropSession={rotation:0,norm,perspective,corners:cornersFromNorm(norm),resolve:null};
   const dlg=$('#scanCrop');
   if(!dlg.open)dlg.showModal();
   return new Promise(resolve=>{
@@ -702,6 +1096,24 @@ function onCropMove(e){
   applyCropBox();
 }
 function onCropUp(){cropDrag=null}
+function onQuadDown(e){
+  const handle=e.target.closest('[data-c]');
+  if(!handle||!cropSession||!cropSession.perspective)return;
+  cropDrag={kind:'quad',index:Number(handle.dataset.c),px:e.clientX,py:e.clientY,start:cropSession.corners.map(p=>({x:p.x,y:p.y})),frame:$('#cropFrame').getBoundingClientRect()};
+  handle.setPointerCapture(e.pointerId);
+  e.preventDefault();
+  e.stopPropagation();
+}
+function onQuadMove(e){
+  if(!cropDrag||cropDrag.kind!=='quad'||!cropSession)return;
+  const dx=(e.clientX-cropDrag.px)/cropDrag.frame.width;
+  const dy=(e.clientY-cropDrag.py)/cropDrag.frame.height;
+  const pts=cropDrag.start.map(p=>({x:p.x,y:p.y}));
+  const i=cropDrag.index;
+  pts[i]={x:Math.max(0,Math.min(1,pts[i].x+dx)),y:Math.max(0,Math.min(1,pts[i].y+dy))};
+  cropSession.corners=pts;
+  applyCropBox();
+}
 function draftFromForm(){
   const f=$('#recipeForm');
   return {
@@ -714,15 +1126,29 @@ function draftFromForm(){
     confidence:($('#scanConfidence').textContent.match(/\d+/)||[])[0]
   };
 }
+async function recognizePass(worker, canvas, psm){
+  try{
+    await worker.setParameters({
+      tessedit_pageseg_mode:String(psm),
+      preserve_interword_spaces:'1',
+      user_defined_dpi:'300'
+    });
+  }catch(e){}
+  const result=await worker.recognize(canvas);
+  const words=wordsOf(result);
+  const lines=linesOf(result, words);
+  const confidence=result&&result.data?Number(result.data.confidence)||0:0;
+  return {words,lines,confidence,width:canvas.width,text:(result&&result.data&&result.data.text)||''};
+}
 async function recognizeSession(session){
   const token=++scanToken;
   progressHandler=m=>{if(token===scanToken)onTessProgress(m)};
   openProgress('Preparing photo…',4);
   try{
-    const target=session.handwriting?2500:2200;
+    const target=session.handwriting?2200:2000;
     await new Promise(r=>setTimeout(r,20));
     if(token!==scanToken)return;
-    let color=renderOrientedCrop(session.bitmap,session.rotation,session.norm,target);
+    let color=renderScanCanvas(session.bitmap,session,target);
     setScanProgress('Straightening the photo…',8);
     await new Promise(r=>setTimeout(r,20));
     const turn=cardinal(color);
@@ -730,33 +1156,61 @@ async function recognizeSession(session){
     const angle=deskewAngle(color);
     if(angle)color=rotateCanvas(color,angle);
     if(token!==scanToken)return;
-    setScanProgress('Cleaning up lighting…',14);
+    setScanProgress('Cleaning up lighting…',12);
     await new Promise(r=>setTimeout(r,20));
-    const ocrCanvas=binarize(color,session.handwriting);
+    const flat=passFlatten(color);
+    const binary=passSauvola(color,session.handwriting);
     const photo=canvasJpeg(fitCanvas(color,1000));
     if(!photo)throw new Error('Could not prepare that photo.');
-    setScanProgress('Starting text recognition…',18);
+    setScanProgress('Starting text recognition…',16);
     const worker=await getWorker();
     if(token!==scanToken)return;
-    try{
-      await worker.setParameters({
-        tessedit_pageseg_mode:session.handwriting?'4':'6',
-        preserve_interword_spaces:'1',
-        user_defined_dpi:'300'
-      });
-    }catch(e){}
-    let result=await worker.recognize(ocrCanvas);
+    const psmA=session.handwriting?'4':'6';
+    const psmB=session.handwriting?'6':'4';
+    setScanProgress('Reading pass 1 of 2…',30);
+    const passA=await recognizePass(worker, flat, psmA);
     if(token!==scanToken)return;
-    let confidence=result&&result.data?Number(result.data.confidence)||0:0;
-    if(confidence<75){
-      setScanProgress('Checking the other way up…',90);
-      const flipped=await worker.recognize(rotateCanvas(ocrCanvas,180));
-      if(token!==scanToken)return;
-      const confidence2=flipped&&flipped.data?Number(flipped.data.confidence)||0:0;
-      if(confidence2>confidence+3){result=flipped;confidence=confidence2;}
+    setScanProgress('Reading pass 2 of 2…',58);
+    const passB=await recognizePass(worker, binary, psmB);
+    if(token!==scanToken)return;
+    const passes=[passA,passB];
+    let columnLines=null;
+    const bestConf=Math.max(passA.confidence, passB.confidence);
+    if(bestConf<85){
+      const best=passA.confidence>=passB.confidence?passA:passB;
+      const bestCanvas=passA.confidence>=passB.confidence?flat:binary;
+      const split=splitColumns(best.words, best.width);
+      if(split){
+        setScanProgress('Reading the two columns…',78);
+        const halves=cropColumns(bestCanvas, split.split);
+        const left=await recognizePass(worker, halves[0], '6');
+        if(token!==scanToken)return;
+        const right=await recognizePass(worker, halves[1], '6');
+        if(token!==scanToken)return;
+        columnLines=left.lines.concat(right.lines);
+      }else{
+        setScanProgress('Reading a third pass…',78);
+        const hybrid=passHybrid(color, session.handwriting);
+        const passC=await recognizePass(worker, hybrid, '3');
+        if(token!==scanToken)return;
+        passes.push(passC);
+      }
     }
-    const text=(result&&result.data&&result.data.text)||'';
-    const fixed=fixOcrText(text);
+    let lines=chooseLines(passes);
+    if(columnLines&&columnLines.length){
+      const current=lines.map(l=>l.text).join('\n');
+      const alt=columnLines.map(l=>l.text).join('\n');
+      if(scoreText(alt, meanConf(columnLines))>scoreText(current, meanConf(lines))+1)lines=columnLines;
+    }
+    let confidence=meanConf(lines);
+    if(confidence<60){
+      setScanProgress('Checking the other way up…',90);
+      const flipped=await recognizePass(worker, rotateCanvas(flat,180), psmA);
+      if(token!==scanToken)return;
+      if(flipped.confidence>confidence+3){lines=flipped.lines.length?flipped.lines:linesFromWords(flipped.words); confidence=Math.max(flipped.confidence, meanConf(lines));}
+    }
+    const tokens=tokensFromLines(lines);
+    const fixed=fixOcrText(lines.map(l=>l.text).join('\n'));
     const parsed=parseRecipeText(fixed);
     closeProgress();
     const prefill={
@@ -766,7 +1220,8 @@ async function recognizeSession(session){
       notes:parsed.notes,
       photo,
       ocrText:fixed.trim()||'(No text recognized)',
-      confidence
+      confidence,
+      tokens
     };
     scanDraft=prefill;
     openEditor(null,prefill);
@@ -909,6 +1364,7 @@ function importJSON(file){
   rd.readAsText(file);
 }
 function init(){
+  if(!$('#btnAdd')||!$('#recipeForm'))return;
   load(); $('#yr').textContent=new Date().getFullYear();
   $('#btnAdd').onclick=()=>openEditor(null);
   $('#btnScan').onclick=()=>{$('#scanCamera').value='';$('#scanLibrary').value='';$('#scanPicker').showModal()};
@@ -918,12 +1374,26 @@ function init(){
   $('#cropRotate').onclick=()=>{
     if(!cropSession)return;
     cropSession.rotation=(cropSession.rotation+1)%4;
-    cropSession.norm={x:0.03,y:0.03,w:0.94,h:0.94};
+    cropSession.norm={x:0.06,y:0.06,w:0.88,h:0.88};
+    cropSession.corners=cornersFromNorm(cropSession.norm);
+    drawCropPreview();
+  };
+  $('#perspectiveToggle').onchange=()=>{
+    if(!cropSession)return;
+    cropSession.perspective=$('#perspectiveToggle').checked;
+    if(cropSession.perspective)cropSession.corners=cornersFromNorm(cropSession.norm);
     drawCropPreview();
   };
   $('#cropRead').onclick=()=>{
     if(!cropSession||!scanBitmap)return;
-    finishCrop({bitmap:scanBitmap,rotation:cropSession.rotation,norm:{...cropSession.norm},handwriting:$('#handwritingToggle').checked});
+    finishCrop({
+      bitmap:scanBitmap,
+      rotation:cropSession.rotation,
+      norm:{...cropSession.norm},
+      perspective:!!cropSession.perspective,
+      corners:(cropSession.corners||[]).map(p=>({x:p.x,y:p.y})),
+      handwriting:$('#handwritingToggle').checked
+    });
   };
   $('#cropCancel').onclick=()=>finishCrop(null);
   $('#scanCrop').addEventListener('cancel',e=>{e.preventDefault();finishCrop(null)});
@@ -931,6 +1401,14 @@ function init(){
   $('#cropBox').addEventListener('pointermove',onCropMove);
   $('#cropBox').addEventListener('pointerup',onCropUp);
   $('#cropBox').addEventListener('pointercancel',onCropUp);
+  $('#quadHandles').addEventListener('pointerdown',onQuadDown);
+  $('#quadHandles').addEventListener('pointermove',onQuadMove);
+  $('#quadHandles').addEventListener('pointerup',onCropUp);
+  $('#quadHandles').addEventListener('pointercancel',onCropUp);
+  $('#scanWords').addEventListener('click',e=>{
+    const btn=e.target.closest('button');
+    if(btn&&btn.parentElement&&btn.parentElement.id==='scanWords')focusScanWord(btn.textContent);
+  });
   $('#scanRetry').onclick=()=>{retryScan()};
   $('#scanCancel').onclick=()=>stopScan('Scan cancelled');
   $('#scanProgress').addEventListener('cancel',e=>{e.preventDefault();stopScan('Scan cancelled')});
@@ -951,5 +1429,7 @@ function init(){
   window.addEventListener('hashchange',route); route();
 }
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',init);
-if(typeof module!=='undefined'&&module.exports)module.exports={parseRecipeText,safePhoto,parseBackup,fixOcrText};
+const recipeOcrApi={parseRecipeText,safePhoto,parseBackup,fixOcrText,fixOcrLine,flattenIllumination,sauvola,sauvolaWindow,suppressRuledLines,solveHomography,splitColumns,readingOrder,mergeOcrLines,linesFromWords,meanConf,scoreText,grayOf,boxBlur,stretch,paintGray,padCanvas,passFlatten,passSauvola,passHybrid,warpQuad,tokensFromLines,chooseLines,RECIPE_DICT};
+if(typeof window!=='undefined')window.RecipeOcr=recipeOcrApi;
+if(typeof module!=='undefined'&&module.exports)module.exports=recipeOcrApi;
 })();

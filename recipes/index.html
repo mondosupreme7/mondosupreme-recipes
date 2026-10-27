@@ -45,7 +45,11 @@
 <dialog id="editor"><form id="recipeForm" method="dialog">
  <h2 id="formTitle">Add Recipe</h2>
  <div id="scanReview" class="scan-review" hidden>
-  <p class="scan-note">Handwriting recognition is imperfect, and cursive is often missed. Check every field before saving.</p>
+  <p class="scan-note">Handwriting recognition is imperfect, and cursive is often missed. Check every field before saving. Yellow words are the least certain.</p>
+  <div id="scanCompare" class="scan-compare" hidden>
+   <img id="scanCompareImg" alt="Cropped recipe card">
+   <div id="scanWords" class="scan-words" aria-label="Recognized words"></div>
+  </div>
   <p id="scanConfidence" class="scan-confidence" hidden></p>
   <p id="scanHint" class="scan-hint" hidden></p>
   <button type="button" id="scanRetry" class="btn ghost" hidden>Try again</button>
@@ -97,17 +101,28 @@
 </dialog>
 <dialog id="scanCrop" class="scan-dialog">
  <h2>Frame the recipe</h2>
- <p>Drag the box onto the card. Rotate if the photo is sideways.</p>
+ <p>Drag the box onto the card. For a tilted iPhone shot, turn on corner handles and pull each corner onto the card.</p>
  <div id="cropStage" class="crop-stage">
   <div id="cropFrame" class="crop-frame">
    <canvas id="cropCanvas"></canvas>
+   <svg id="cropQuad" class="crop-quad" viewBox="0 0 100 100" preserveAspectRatio="none" hidden aria-hidden="true">
+    <path id="cropShade" fill-rule="evenodd"></path>
+    <polygon id="cropPoly"></polygon>
+   </svg>
+   <div id="quadHandles" hidden>
+    <button type="button" class="quad-handle" data-c="0" aria-label="Top left corner"></button>
+    <button type="button" class="quad-handle" data-c="1" aria-label="Top right corner"></button>
+    <button type="button" class="quad-handle" data-c="2" aria-label="Bottom right corner"></button>
+    <button type="button" class="quad-handle" data-c="3" aria-label="Bottom left corner"></button>
+   </div>
    <div id="cropBox" class="crop-box" role="group" aria-label="Crop area">
     <span data-h="nw"></span><span data-h="ne"></span><span data-h="sw"></span><span data-h="se"></span>
    </div>
   </div>
  </div>
+ <label class="scan-check"><input type="checkbox" id="perspectiveToggle"> Straighten tilted corners</label>
  <label class="scan-check"><input type="checkbox" id="handwritingToggle"> Enhance for handwriting</label>
- <p class="scan-hint">Neat print reads best. Cursive is often missed, so check the words after.</p>
+ <p class="scan-hint">Neat print reads best. Cursive is often missed, so check the yellow words after.</p>
  <div class="scan-actions">
   <button type="button" class="btn ghost" id="cropRotate">Rotate</button>
   <button type="button" class="btn primary" id="cropRead">Read recipe</button>
