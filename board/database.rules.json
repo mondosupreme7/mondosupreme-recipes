@@ -913,6 +913,9 @@
         "stocks": {
           ".validate": "newData.isString() && newData.val().length <= 20000"
         },
+        "weather": {
+          ".validate": "newData.isString() && newData.val().length <= 4000"
+        },
         "$other": {
           ".validate": false
         }

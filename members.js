@@ -24,7 +24,8 @@
     ['mmo', 'mondosupreme.mmo.v1', 80000],
     ['fps', 'mondosupreme.fps.v1', 40000],
     ['arcade', 'mondosupreme.arcade.v1', 40000],
-    ['stocks', 'mondosupreme.stocks.v1', 20000]
+    ['stocks', 'mondosupreme.stocks.v1', 20000],
+    ['weather', 'mondosupreme.weather.v1', 4000]
   ];
   var user = null;
   var profile = null;

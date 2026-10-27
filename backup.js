@@ -32,7 +32,8 @@
     'mondosupreme.market.v1',
     'mondosupreme.8ball.v1',
     'mondosupreme.stocks.v1',
-    'mondosupreme.quote_idx.v1'
+    'mondosupreme.quote_idx.v1',
+    'mondosupreme.weather.v1'
   ];
   var CLOUD = [
     ['recipes', 'recipes/items'],

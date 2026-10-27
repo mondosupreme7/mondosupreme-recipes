@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org https://tilecache.rainviewer.com https://mesonet.agron.iastate.edu; connect-src 'self' https://api.rainviewer.com https://tilecache.rainviewer.com https://api.open-meteo.com https://marine-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>MondoWeather '98 — Doppler 4000 Radar</title>
+<meta name="description" content="MondoWeather '98, a WeatherStar 4000 style Doppler radar and local forecast. Cocoa and Port Canaveral by default, plus any ZIP or city.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/cruises/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="weather.css">
+</head>
+<body>
+<div class="ticker"><div class="ticker-track">
+ <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ MondoWeather '98 ~*~ ★ Doppler 4000 Radar ★ Local on the 8s ★ Cocoa · Port Canaveral 32927 ★</p>
+ <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ MondoWeather '98 ~*~ ★ Doppler 4000 Radar ★ Local on the 8s ★ Cocoa · Port Canaveral 32927 ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/weather/" class="brand"><span class="logo">🌦️</span><span>MondoWeather <em>'98</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/daily-recipe/">Daily</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/weather/" aria-current="page">Weather</a>
+  <a href="/stocks/">Stocks</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/forum/">Forum</a>
+  <a href="/market/">Market</a>
+  <a href="/8ball/">8-Ball</a>
+  <a href="/mmo/">MMO</a>
+  <a href="/fps/">FPS</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+</div></header>
+<main class="wrap">
+ <div class="wx-hero">
+  <p class="wx-kicker">The Weather Channel · WeatherStar 4000 · Local on the 8s</p>
+  <h1>MondoWeather '98 — Doppler 4000 Radar</h1>
+  <p id="wxPlace">Cocoa / Cape Canaveral, FL · 32927</p>
+ </div>
+ <form id="wxSearch" class="wx-search">
+  <label>ZIP code or city
+   <input id="wxQuery" name="q" type="search" maxlength="80" placeholder="32927 or Cocoa" autocomplete="off" enterkeyhint="search">
+  </label>
+  <button class="btn wx-btn" type="submit">Search</button>
+ </form>
+ <div class="wx-presets" id="wxPresets" role="group" aria-label="Radar presets"></div>
+ <section class="wx-crt" aria-labelledby="wxRadarTitle">
+  <h2 id="wxRadarTitle" class="wx-screen-title"><span class="wx-live">LIVE</span> DOPPLER 4000 · <span id="wxStamp">Loading the loop…</span></h2>
+  <div class="wx-map-wrap">
+   <div id="map" role="region" aria-label="Live precipitation radar"></div>
+   <div class="wx-scan" aria-hidden="true"></div>
+  </div>
+  <div class="wx-controls">
+   <button class="btn wx-btn" id="wxPlay" type="button">[▶ Play Loop]</button>
+   <button class="btn wx-btn" id="wxPause" type="button">[⏸ Pause]</button>
+   <button class="btn wx-btn" id="wxPrev" type="button">[◀ Step]</button>
+   <button class="btn wx-btn" id="wxNext" type="button">[Step ▶]</button>
+   <label class="wx-slider">Opacity <input id="wxOpacity" type="range" min="20" max="100" value="70" aria-valuemin="20" aria-valuemax="100"></label>
+   <label class="wx-check"><input id="wxRain" type="checkbox" checked> RainViewer loop</label>
+   <label class="wx-check"><input id="wxNexrad" type="checkbox" checked> NEXRAD</label>
+   <label class="wx-check"><input id="wxShips" type="checkbox"> Cruise ships</label>
+  </div>
+  <p id="wxRadarNote" class="wx-note">Past 2 hours, plus any nowcast RainViewer is publishing. NEXRAD is the Iowa Environmental Mesonet base reflectivity mosaic.</p>
+ </section>
+ <section class="wx-star" aria-labelledby="wxStarTitle">
+  <div class="wx-star-top">
+   <h2 id="wxStarTitle">LOCAL ON THE 8s</h2>
+   <button class="btn wx-btn" id="wxMusic" type="button" aria-pressed="false">[🎷 Local on the 8s Music]</button>
+  </div>
+  <div class="wx-screen">
+   <div class="wx-now">
+    <p class="wx-temp" id="wxTemp">--°</p>
+    <div>
+     <p class="wx-cond" id="wxCond" aria-live="polite">Tuning the forecast for 32927…</p>
+     <ul class="wx-facts" id="wxFacts"></ul>
+    </div>
+   </div>
+   <div id="wxAlerts" class="wx-alerts" aria-live="polite"></div>
+   <h3 class="wx-sub">Hourly rain chance</h3>
+   <div class="wx-hourly" id="wxHourly"></div>
+   <h3 class="wx-sub">7-day forecast</h3>
+   <div class="wx-days" id="wxDays"></div>
+   <h3 class="wx-sub">Marine</h3>
+   <div class="wx-marine" id="wxMarine">Reading the seas off Port Canaveral…</div>
+  </div>
+ </section>
+ <p class="wx-fine">Radar tiles: RainViewer and Iowa Environmental Mesonet NEXRAD. Conditions: Open-Meteo and the National Weather Service. Ship dots are last-reported positions, not for navigation. During a warning, follow weather.gov.</p>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Not a substitute for official warnings. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/stocks/">Stocks</a> · <a href="/wiki/">Wiki</a> · <a href="/board/">Board</a> · <a href="/chat/">Chat</a> · <a href="/arcade/">Arcade</a> · <a href="/pet/">Pet</a> · <a href="/forum/">Forum</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a> · <a href="/mmo/">MMO</a> · <a href="/fps/">FPS</a> · <a href="/escape/" aria-label="The Locked Room">???</a></div></footer>
+<script src="/cruises/vendor/leaflet/leaflet.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/members.js"></script>
+<script src="/shell.js"></script>
+<script src="/backup.js"></script>
+<script src="weather.js"></script>
+</body>
+</html>
