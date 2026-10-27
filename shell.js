@@ -40,6 +40,7 @@
     { group: 'Notes', title: 'Wiki', href: '/wiki/', text: 'notes wiki' },
     { group: 'Notes', title: 'Forum', href: '/forum/', text: 'bulletin posts forum' },
     { group: 'Shop', title: 'Market', href: '/market/', text: 'ebay classifieds market mondobay for sale' },
+    { group: 'Play', title: '8-Ball', href: '/8ball/', text: 'magic 8-ball mystic oracle fortune sphere' },
     { group: 'Play', title: 'Board', href: '/board/', text: 'drawing whiteboard' },
     { group: 'Play', title: 'Chat', href: '/chat/', text: 'chat room talk' },
     { group: 'Play', title: 'Arcade', href: '/arcade/', text: 'games arcade' },
@@ -331,7 +332,7 @@
     input.id = 'shellFindInput';
     input.type = 'search';
     input.autocomplete = 'off';
-    input.placeholder = 'Try pasta, Oasis, or fortress';
+    input.placeholder = 'Try pasta, Oasis, fortress, or 8-ball';
     input.setAttribute('aria-label', 'Search the site');
     label.appendChild(input);
     var results = document.createElement('div');
@@ -419,13 +420,14 @@
     { title: 'MondoGotchi Pet', href: '/pet/', icon: 'egg' },
     { title: 'Bulletin Forum', href: '/forum/', icon: 'note' },
     { title: "MondoBay '98", href: '/market/', icon: 'gavel' },
+    { title: "Mystic 8-Ball '98", href: '/8ball/', icon: 'ball' },
     { title: 'World of MondoCraft', href: '/mmo/', icon: 'sword' },
     { title: "Half-Strike '99", href: '/fps/', icon: 'gun' },
     { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door' }
   ];
   var toyLinks = [
     { title: '56k Dial-Up', href: '/#dialup', icon: 'modem' },
-    { title: 'Magic 8-Ball', href: '/#eight', icon: 'ball' },
+    { title: 'Magic 8-Ball', href: '/8ball/', icon: 'ball' },
     { title: 'Lava Lamp', href: '/#lava', icon: 'lava' },
     { title: 'Pog Collection', href: '/#pogs', icon: 'pog' },
     { title: 'Windows 98 BSOD', href: '/#bsod', icon: 'bsod' }

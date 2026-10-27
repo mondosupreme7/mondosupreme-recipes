@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Mystic 8-Ball '98 — Mondosupreme</title>
+<meta name="description" content="Mystic 8-Ball '98 — Ask the Cyber Sphere. Classic fortunes, a 90s cyber oracle, and cruise and kitchen fate.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="ball.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css">
+</head>
+<body class="ball-page">
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Mystic 8-Ball '98 — Ask the Cyber Sphere ~*~ ★ Classic 20 · 90s Cyber Oracle · Cruise &amp; Kitchen Fate ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Mystic 8-Ball '98 — Ask the Cyber Sphere ~*~ ★ Classic 20 · 90s Cyber Oracle · Cruise &amp; Kitchen Fate ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/8ball/" class="brand"><span class="logo" aria-hidden="true">🎱</span><span>Mystic<em>8</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/forum/">Forum</a>
+  <a href="/market/">Market</a>
+  <a href="/8ball/" aria-current="page">8-Ball</a>
+  <a href="/mmo/">MMO</a>
+  <a href="/fps/">FPS</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+ <nav class="actions">
+  <button id="ownerBtn" class="btn ghost" type="button">Owner sign in</button>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="sync-banner" role="status" hidden>Oracle sync waiting on updated Firebase rules — questions stay on this device until published</p>
+ <section class="mystic-shell">
+  <header class="mystic-head">
+   <svg viewBox="0 0 32 32" width="36" height="36" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#111"/><circle cx="16" cy="15" r="7" fill="#fff"/><text x="16" y="18" text-anchor="middle" font-size="10" font-family="Tahoma,sans-serif" font-weight="700" fill="#000">8</text></svg>
+   <div>
+    <h1 class="mystic-word"><span class="c1">M</span><span class="c2">y</span><span class="c3">s</span><span class="c4">t</span><span class="c5">i</span><span class="c6">c</span> <span class="c7">8</span><span class="c8">-</span>Ball <span class="yr">'98</span></h1>
+    <p>Ask the Cyber Sphere. <span class="ask-badge">SHAKE ME!</span></p>
+   </div>
+  </header>
+  <div class="sphere-wrap">
+   <button type="button" id="sphere" class="sphere" aria-label="Shake the 8-Ball">
+    <span class="face-8" aria-hidden="true">8</span>
+    <span class="window" aria-hidden="true">
+     <span class="bub b1"></span><span class="bub b2"></span><span class="bub b3"></span><span class="bub b4"></span>
+     <svg class="tri" viewBox="0 0 100 86">
+      <polygon points="50,4 96,82 4,82" fill="#071433" stroke="#6ea2ff" stroke-width="2"/>
+      <text id="triText" text-anchor="middle" fill="#d7e7ff" font-size="10" font-family="Tahoma, Verdana, sans-serif" font-weight="700"></text>
+     </svg>
+    </span>
+   </button>
+   <p id="answerCaption" class="answer-line" aria-live="polite">The ink is still. Ask a question, then shake.</p>
+  </div>
+  <div class="mode-tabs" id="modeTabs" role="group" aria-label="Response mode">
+   <button type="button" data-mode="classic" aria-pressed="true">Classic 20</button>
+   <button type="button" data-mode="cyber" aria-pressed="false">90s Cyber Oracle</button>
+   <button type="button" data-mode="fate" aria-pressed="false">Cruise &amp; Kitchen Fate</button>
+  </div>
+  <form id="askForm" class="ask-grid">
+   <label>Ask a yes/no question (optional)<input id="question" name="question" maxlength="140" autocomplete="off" placeholder="Should I sail, or should I bake?"></label>
+   <label>Your name (optional)<input id="askName" name="name" maxlength="24" autocomplete="nickname" placeholder="Seeker"></label>
+   <label class="check"><input id="priv" type="checkbox"> Ask privately / don't post to log</label>
+   <div class="shake-row">
+    <button class="btn primary" id="shakeBtn" type="submit">🎱 Shake the 8-Ball</button>
+    <button class="btn ghost" id="motionBtn" type="button" aria-pressed="false">Shake iPhone to Ask</button>
+   </div>
+  </form>
+  <p id="ballStatus" class="hint" role="status"></p>
+  <p id="odds" class="odds">Today's odds — <b class="yes">Yes 0</b> · <b class="maybe">Maybe 0</b> · <b class="no">No 0</b></p>
+  <h2>Oracle Log</h2>
+  <p class="hint">Recent public questions. Custom responses join whichever mode is selected. Public posts wait 4 seconds and cap at 40 a day.</p>
+  <div class="table-wrap">
+   <table class="log">
+    <thead><tr><th>Question</th><th>Fortune</th><th>Tone</th><th></th></tr></thead>
+    <tbody id="logBody"></tbody>
+   </table>
+  </div>
+  <p id="logEmpty">The sphere is quiet. Ask something.</p>
+  <p class="owner-only" id="ownerTools" hidden><button type="button" class="btn ghost" id="clearLog">Clear oracle log</button></p>
+  <h2>Custom responses</h2>
+  <form id="customForm" class="custom-box">
+   <label>Add a response<input id="customText" maxlength="80" autocomplete="off" placeholder="THE STARS SAY PANCAKES"></label>
+   <label>Tone
+    <select id="customTone">
+     <option value="yes">Yes</option>
+     <option value="maybe">Maybe</option>
+     <option value="no">No</option>
+    </select>
+   </label>
+   <button class="btn" type="submit">Add to the pool</button>
+  </form>
+  <ul id="customList" class="custom-list"></ul>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Fortunes are for fun. · <a href="/">Home</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a></div></footer>
+<dialog id="ownerDialog">
+ <form id="ownerForm" method="dialog">
+  <h2>Owner sign in</h2>
+  <p>Use the owner email. The password is checked by Firebase and is not stored here.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="owner-error" hidden></p>
+  <div class="shake-row">
+   <button class="btn primary" type="submit">Sign in</button>
+   <button class="btn ghost" id="ownerCancel" type="button">Cancel</button>
+  </div>
+ </form>
+</dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/shell.js"></script>
+<script src="/8ball/oracle.js"></script>
+<script src="ball.js"></script>
+<script src="/backup.js"></script>
+</body>
+</html>

@@ -48,7 +48,8 @@
 .eight-ball{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#444,#000 60%);color:#fff;border:4px solid #222;font:700 28px Tahoma,sans-serif;cursor:pointer;display:block;margin:0 auto}
 .eight-ball.is-shaking{animation:eight-shake .35s linear}
 @keyframes eight-shake{25%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}75%{transform:rotate(-4deg)}}
-.eight-ball span{display:flex;width:64px;height:64px;margin:0 auto;border-radius:50%;background:#102a6b;align-items:center;justify-content:center;font-size:14px;padding:6px;text-align:center}
+.eight-ball span{display:flex;width:64px;height:64px;margin:0 auto;border-radius:50%;background:#102a6b;align-items:center;justify-content:center;font-size:14px;padding:6px;text-align:center;color:#d7e6ff}
+.eight-ball.is-open span{font-size:18px;text-shadow:0 0 6px #7eb6ff}
 .lava{position:relative;height:160px;border-radius:40px;background:linear-gradient(#1a0530,#3a1060);border:6px solid #c0c0c0;overflow:hidden}
 .lava-blob{position:absolute;width:54px;height:54px;border-radius:50%;background:#ff2bd6;filter:blur(0);left:30%;bottom:10px;animation:lava-rise 5.5s ease-in-out infinite}
 .lava-blob.b2{left:48%;width:40px;height:70px;background:#ff6600;animation-duration:7s;animation-delay:-2s}

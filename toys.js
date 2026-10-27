@@ -109,19 +109,24 @@
       stopModem();
     }, wait);
   }
-  function shake() {
-    var answers = FORTUNES;
-    var text = answers[Math.floor(Math.random() * answers.length)];
+  function showEight(result, animate) {
     var read = document.getElementById('eightRead');
     var line = document.getElementById('eightAnswer');
     var ball = document.getElementById('eightBtn');
-    if (ball) {
+    if (ball && animate) {
       ball.classList.remove('is-shaking');
       void ball.offsetWidth;
       ball.classList.add('is-shaking');
     }
-    if (read) read.textContent = '8';
-    if (line) line.textContent = text;
+    if (ball) ball.classList.toggle('is-open', !!(result && result.text));
+    if (read) read.textContent = result && result.text ? '▲' : '8';
+    if (line) line.textContent = result && result.text ? result.text : 'Shake or tap for a 90s fortune.';
+  }
+  function shake() {
+    var result;
+    if (window.MONDO_ORACLE) result = window.MONDO_ORACLE.quick();
+    else result = { text: FORTUNES[Math.floor(Math.random() * FORTUNES.length)] };
+    showEight(result, true);
   }
   function addPog() {
     var data = readPogs();
@@ -173,6 +178,7 @@
     if (!document.getElementById('toys')) return;
     paintPogs();
     paintFx();
+    if (window.MONDO_ORACLE) showEight(window.MONDO_ORACLE.load().last, false);
     var dial = document.getElementById('dialBtn');
     if (dial) dial.addEventListener('click', connectModem);
     var eight = document.getElementById('eightBtn');

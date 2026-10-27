@@ -746,6 +746,54 @@
           }
         }
       }
+    },
+    "eightball": {
+      "c": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.hasChildren(['n', 'day']) && newData.child('n').isNumber() && newData.child('day').isNumber() && newData.child('n').val() >= 1 && newData.child('n').val() <= 40 && newData.child('n').val() % 1 == 0 && newData.child('day').val() % 86400000 == 0 && newData.child('day').val() <= now && now - newData.child('day').val() < 90000000 && ((!data.exists() && newData.child('n').val() == 1) || (data.exists() && data.child('day').val() == newData.child('day').val() && newData.child('n').val() == data.child('n').val() + 1) || (data.exists() && newData.child('day').val() > data.child('day').val() && newData.child('n').val() == 1))",
+          "n": { ".validate": "newData.isNumber()" },
+          "day": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 4000)"
+        }
+      },
+      "asks": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9_-]{1,80}$/)) || (auth != null && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && !data.exists() && newData.exists() && newData.child('author').val() == auth.uid && newData.child('createdAt').val() == now && newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val())",
+          ".validate": "!newData.exists() || (newData.hasChildren(['question', 'answer', 'tone', 'mode', 'name', 'author', 'createdAt']) && newData.child('question').isString() && newData.child('question').val().length <= 140 && !newData.child('question').val().contains('\\n') && !newData.child('question').val().contains('\\r') && newData.child('answer').isString() && newData.child('answer').val().length >= 1 && newData.child('answer').val().length <= 80 && !newData.child('answer').val().contains('\\n') && !newData.child('answer').val().contains('\\r') && newData.child('tone').isString() && newData.child('tone').val().matches(/^(yes|maybe|no)$/) && newData.child('mode').isString() && newData.child('mode').val().matches(/^(classic|cyber|fate|custom)$/) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/) && newData.child('author').isString() && newData.child('createdAt').isNumber())",
+          "question": { ".validate": "newData.isString() && newData.val().length <= 140 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "answer": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "tone": { ".validate": "newData.isString() && newData.val().matches(/^(yes|maybe|no)$/)" },
+          "mode": { ".validate": "newData.isString() && newData.val().matches(/^(classic|cyber|fate|custom)$/)" },
+          "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,23}$/)" },
+          "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || newData.val() == auth.uid)" },
+          "createdAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)" },
+          "seq": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 40 && newData.val() % 1 == 0" },
+          "day": { ".validate": "newData.isNumber() && newData.val() % 86400000 == 0 && newData.val() <= now && now - newData.val() < 90000000" },
+          "$other": { ".validate": false }
+        }
+      },
+      "customs": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "(auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^[A-Za-z0-9_-]{1,80}$/)) || (auth != null && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && !data.exists() && newData.exists() && newData.child('author').val() == auth.uid && newData.child('createdAt').val() == now && newData.parent().parent().child('rate').child(auth.uid).val() == now && newData.child('seq').val() == newData.parent().parent().child('c').child(auth.uid).child('n').val() && newData.child('day').val() == newData.parent().parent().child('c').child(auth.uid).child('day').val())",
+          ".validate": "!newData.exists() || (newData.hasChildren(['text', 'tone', 'author', 'createdAt']) && newData.child('text').isString() && newData.child('text').val().length >= 1 && newData.child('text').val().length <= 80 && !newData.child('text').val().contains('\\n') && !newData.child('text').val().contains('\\r') && newData.child('tone').isString() && newData.child('tone').val().matches(/^(yes|maybe|no)$/) && newData.child('author').isString() && newData.child('createdAt').isNumber())",
+          "text": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "tone": { ".validate": "newData.isString() && newData.val().matches(/^(yes|maybe|no)$/)" },
+          "author": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && (auth.token.email == 'cbrooks_911@yahoo.com' || newData.val() == auth.uid)" },
+          "createdAt": { ".validate": "newData.isNumber() && ((auth.token.email == 'cbrooks_911@yahoo.com' && newData.val() > 0 && newData.val() <= now) || newData.val() == now)" },
+          "seq": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 40 && newData.val() % 1 == 0" },
+          "day": { ".validate": "newData.isNumber() && newData.val() % 86400000 == 0 && newData.val() <= now && now - newData.val() < 90000000" },
+          "$other": { ".validate": false }
+        }
+      }
     }
   }
 }

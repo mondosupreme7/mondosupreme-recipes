@@ -29,7 +29,8 @@
     'mondosupreme.aim.v1',
     'mondosupreme.wiki.history.v1',
     'mondosupreme.pogs.v1',
-    'mondosupreme.market.v1'
+    'mondosupreme.market.v1',
+    'mondosupreme.8ball.v1'
   ];
   var CLOUD = [
     ['recipes', 'recipes/items'],
@@ -103,6 +104,8 @@
     jobs.push(once('forum/replies').then(function (value) { payload.cloud.forumReplies = value; }));
     jobs.push(once('market/items').then(function (value) { payload.cloud.marketItems = value; }));
     jobs.push(once('market/offers').then(function (value) { payload.cloud.marketOffers = value; }));
+    jobs.push(once('eightball/asks').then(function (value) { payload.cloud.eightballAsks = value; }));
+    jobs.push(once('eightball/customs').then(function (value) { payload.cloud.eightballCustoms = value; }));
     Promise.all(jobs).then(function () { download(payload); }, function () { download(payload); });
   }
   function problems(data) {
@@ -167,6 +170,12 @@
     }
     if (cloud.marketItems && typeof cloud.marketItems === 'object') {
       putMap('market/items', cloud.marketItems, /^[A-Za-z0-9_-]{1,80}$/);
+    }
+    if (cloud.eightballAsks && typeof cloud.eightballAsks === 'object') {
+      putMap('eightball/asks', cloud.eightballAsks, /^[A-Za-z0-9_-]{1,80}$/);
+    }
+    if (cloud.eightballCustoms && typeof cloud.eightballCustoms === 'object') {
+      putMap('eightball/customs', cloud.eightballCustoms, /^[A-Za-z0-9_-]{1,80}$/);
     }
     if (cloud.marketOffers && typeof cloud.marketOffers === 'object') {
       Object.keys(cloud.marketOffers).forEach(function (lid) {
