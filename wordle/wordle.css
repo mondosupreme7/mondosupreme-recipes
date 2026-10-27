@@ -1,0 +1,55 @@
+.wordle-page{overflow-x:hidden}
+.word-main{max-width:480px}
+.word-kicker{margin:8px 0 0;color:#000080;font:700 13px Tahoma,Verdana,sans-serif;letter-spacing:.03em}
+.word-main h1{margin:.15em 0 .4em;color:#000080;font-size:clamp(1.25rem,4vw,1.7rem)}
+.word-modes,.word-actions{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.word-btn{min-height:44px}
+.word-modes .btn[aria-pressed="true"]{outline:2px solid #000080;background:#ffffcc}
+.word-msg{min-height:2.6em;margin:.3em 0;font:700 15px Tahoma,Verdana,sans-serif}
+.word-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:min(320px,100%);margin:0 auto}
+.tile{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:#c0c0c0;color:#000;border-top:3px solid #fff;border-left:3px solid #fff;border-right:3px solid #404040;border-bottom:3px solid #404040;font:700 clamp(18px,6vw,28px) Tahoma,Verdana,sans-serif;text-transform:uppercase}
+.tile.is-filled{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
+.tile[data-state="correct"]{background:#538d4e;color:#fff;border:3px solid #214d1e}
+.tile[data-state="present"]{background:#c9b458;color:#111;border:3px dashed #6a5610}
+.tile[data-state="absent"]{background:#3a3a3a;color:#fff;border:3px solid #1c1c1c}
+.tile[data-state="correct"]::after,.tile[data-state="present"]::after,.tile[data-state="absent"]::after{position:absolute;top:0;right:2px;font:700 11px Tahoma,sans-serif;line-height:1}
+.tile[data-state="correct"]::after{content:"✓"}
+.tile[data-state="present"]::after{content:"•"}
+.tile[data-state="absent"]::after{content:"×"}
+.tile.flip{animation:word-flip .45s ease}
+@keyframes word-flip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+.row-shake{animation:word-shake .35s linear}
+@keyframes word-shake{25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-3px)}}
+.word-legend{display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:center;margin:8px 0;font:700 12px Tahoma,Verdana,sans-serif}
+.leg.correct{color:#214d1e}
+.leg.present{color:#6a5610}
+.leg.absent{color:#3a3a3a}
+.word-keys{width:100%;max-width:100%;margin:8px 0}
+.kb-row{display:flex;gap:3px;width:100%;margin:0 0 4px}
+.key{flex:1 1 0;min-width:0;min-height:44px;padding:0 1px;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;font:700 13px Tahoma,Verdana,sans-serif;text-transform:uppercase}
+.key.wide{flex:1.45 1 0;font-size:11px}
+.key[data-state="correct"]{background:#538d4e;color:#fff}
+.key[data-state="present"]{background:#c9b458;color:#111}
+.key[data-state="absent"]{background:#3a3a3a;color:#fff}
+.word-box{margin:10px 0;padding:8px;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
+.word-box h2{margin:0 0 6px;font:700 16px Tahoma,Verdana,sans-serif;color:#000080}
+.word-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;text-align:center}
+.word-stats b{display:block;font:700 1.3rem "Courier New",monospace}
+.word-stats span{font:700 11px Tahoma,Verdana,sans-serif}
+.word-dist{margin-top:8px}
+.dist-row{display:flex;align-items:center;gap:4px;margin:2px 0;font:700 12px Tahoma,Verdana,sans-serif}
+.dist-row i{flex:0 0 1ch;font-style:normal}
+.dist-bar{height:16px;min-width:1.4em;background:#000080;color:#fff;padding:0 4px;line-height:16px}
+.word-name{display:block;margin:6px 0;font:700 12px Tahoma,Verdana,sans-serif}
+.word-name input{display:block;width:100%;max-width:220px;box-sizing:border-box;min-height:44px;margin-top:3px;font:16px Tahoma,Verdana,sans-serif}
+.word-board{display:flex;flex-direction:column;gap:4px}
+.solver{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:4px;background:#fff;border:2px inset #808080}
+.solver b{font:700 14px Tahoma,Verdana,sans-serif}
+.word-fine{margin:.2em 0;font-size:.9rem}
+@media(max-width:375px){
+ .word-main h1{font-size:1.15rem}
+ .key{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ .tile.flip,.row-shake{animation:none}
+}

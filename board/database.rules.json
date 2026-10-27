@@ -866,6 +866,25 @@
         }
       }
     },
+    "wordle": {
+      ".read": true,
+      "scores": {
+        "$date": {
+          "$uid": {
+            ".write": "auth != null && $date.matches(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) && $uid.matches(/^[A-Za-z0-9_-]{1,128}$/) && (auth.uid == $uid || auth.token.email == 'cbrooks_911@yahoo.com')",
+            ".validate": "!newData.exists() || (newData.hasChildren(['name','avatar','guesses','won','ms','date','at']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('avatar').isString() && newData.child('avatar').val().matches(/^(alien|cat|captain|chef|wizard|skater|smiley|flame|guest)$/) && newData.child('guesses').isNumber() && newData.child('guesses').val() >= 1 && newData.child('guesses').val() <= 6 && newData.child('won').isBoolean() && ((newData.child('won').val() == true) || newData.child('guesses').val() == 6) && newData.child('ms').isNumber() && newData.child('ms').val() >= 0 && newData.child('ms').val() <= 172800000 && newData.child('date').val() == $date && newData.child('at').isNumber() && newData.child('at').val() > 0 && newData.child('at').val() <= now)",
+            "name": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/)" },
+            "avatar": { ".validate": "newData.isString() && newData.val().matches(/^(alien|cat|captain|chef|wizard|skater|smiley|flame|guest)$/)" },
+            "guesses": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 6" },
+            "won": { ".validate": "newData.isBoolean()" },
+            "ms": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 172800000" },
+            "date": { ".validate": "newData.isString() && newData.val() == $date" },
+            "at": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    },
     "users": {
       ".read": "auth != null",
       "$uid": {
@@ -915,6 +934,9 @@
         },
         "weather": {
           ".validate": "newData.isString() && newData.val().length <= 4000"
+        },
+        "wordle": {
+          ".validate": "newData.isString() && newData.val().length <= 20000"
         },
         "$other": {
           ".validate": false

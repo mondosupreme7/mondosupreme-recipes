@@ -43,6 +43,7 @@
     { group: 'Notes', title: 'Wiki', href: '/wiki/', text: 'notes wiki' },
     { group: 'Notes', title: 'Forum', href: '/forum/', text: 'bulletin posts forum' },
     { group: 'Shop', title: 'Market', href: '/market/', text: 'ebay classifieds market mondobay for sale' },
+    { group: 'Play', title: 'Wordle', href: '/wordle/', text: 'mondoword daily wordle puzzle five letter cyber' },
     { group: 'Play', title: '8-Ball', href: '/8ball/', text: 'magic 8-ball mystic oracle fortune sphere' },
     { group: 'Play', title: 'Board', href: '/board/', text: 'drawing whiteboard' },
     { group: 'Play', title: 'Chat', href: '/chat/', text: 'chat room talk' },
@@ -420,6 +421,7 @@
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
     { title: "MondoWeather '98", href: '/weather/', icon: 'radar' },
     { title: "MondoQuote '98", href: '/stocks/', icon: 'quote' },
+    { title: "MondoWord '98", href: '/wordle/', icon: 'word' },
     { title: 'Encarta Wiki', href: '/wiki/', icon: 'book' },
     { title: 'MS Paint Board', href: '/board/', icon: 'paint' },
     { title: 'AIM Chat', href: '/chat/', icon: 'aim' },
@@ -458,6 +460,7 @@
     pog: [[3,3,10,10,'#ff6600'],[5,5,6,6,'#ffff00'],[6,7,4,2,'#000']],
     bsod: [[2,2,12,12,'#0000aa'],[4,5,8,1,'#fff'],[4,7,8,1,'#fff'],[4,9,6,1,'#fff']],
     quote: [[2,2,12,12,'#001800'],[3,4,7,1,'#39ff14'],[3,6,9,1,'#39ff14'],[3,8,6,1,'#39ff14'],[3,11,4,1,'#ffcc00']],
+    word: [[1,1,6,6,'#538d4e'],[9,1,6,6,'#c9b458'],[1,9,6,6,'#3a3a3a'],[9,9,6,6,'#538d4e']],
     tv: [[1,3,14,8,'#202020'],[2,4,12,6,'#001800'],[3,5,10,1,'#39ff14'],[4,7,6,1,'#39ff14'],[6,11,4,2,'#808080'],[3,13,10,1,'#404040']],
     radar: [[2,2,12,8,'#000080'],[3,3,10,1,'#ff7a00'],[3,5,7,1,'#fff'],[3,7,5,1,'#7fdfff'],[6,10,4,2,'#c0c0c0'],[4,12,8,2,'#808080'],[12,1,2,2,'#ffcc00']]
   };
