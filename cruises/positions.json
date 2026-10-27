@@ -3,9 +3,10 @@
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
     "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
+    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
-  "heard": 0,
+  "heard": 1,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -113,16 +114,16 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 160.5,
+      "cog": 159.6,
       "destination": "US AOU",
       "eta": "10-28 12:30",
-      "heading": 161,
-      "lat": 33.47567,
-      "lon": -118.17249,
+      "heading": 160,
+      "lat": 33.36737,
+      "lon": -118.12538,
       "navStatus": 0,
-      "seen": "2026-10-27T00:59:27Z",
-      "sog": 9.1,
-      "source": "aisstream"
+      "seen": "2026-10-27T01:45:17Z",
+      "sog": 8.9,
+      "source": "aishub"
     },
     "311000660": {
       "aisName": "SYMPHONY OF THE SEAS",
@@ -139,28 +140,28 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 241.1,
+      "cog": 240.8,
       "destination": "ES BCN",
       "eta": "10-28 05:00",
-      "heading": 239,
-      "lat": 43.50451,
-      "lon": 8.70583,
+      "heading": 241,
+      "lat": 43.43769,
+      "lon": 8.54065,
       "navStatus": 0,
-      "seen": "2026-10-27T00:58:20Z",
-      "sog": 11.4,
+      "seen": "2026-10-27T01:41:48Z",
+      "sog": 11.3,
       "source": "aishub"
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 45.1,
+      "cog": 38.4,
       "destination": "USMIA>BSCOC",
       "eta": "10-28 08:45",
-      "heading": 45,
-      "lat": 26.18688,
-      "lon": -79.64021,
+      "heading": 39,
+      "lat": 26.28553,
+      "lon": -79.55089,
       "navStatus": 0,
-      "seen": "2026-10-27T00:59:17Z",
-      "sog": 9.8,
+      "seen": "2026-10-27T01:45:08Z",
+      "sog": 10.1,
       "source": "aishub"
     },
     "311001178": {
@@ -204,16 +205,16 @@
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 234.6,
+      "cog": 235.2,
       "destination": "ES AGP",
       "eta": "10-27 10:00",
-      "heading": 234,
-      "lat": 37.18072,
-      "lon": -0.82037,
+      "heading": 235,
+      "lat": 37.01512,
+      "lon": -1.11507,
       "navStatus": 0,
-      "seen": "2026-10-27T00:59:08Z",
-      "sog": 23.4,
-      "source": "aishub"
+      "seen": "2026-10-27T01:44:23Z",
+      "sog": 21.7,
+      "source": "aisstream.io"
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
@@ -386,19 +387,19 @@
     },
     "311805000": {
       "aisName": "M/V RHAPSODY OTS",
-      "cog": 138.1,
+      "cog": 113.9,
       "destination": "AG SJO",
       "eta": "10-27 11:00",
-      "heading": 135,
-      "lat": 17.82114,
-      "lon": -63.0097,
+      "heading": 115,
+      "lat": 17.77208,
+      "lon": -62.94521,
       "navStatus": 0,
-      "seen": "2026-10-27T00:57:54Z",
-      "sog": 8.7,
+      "seen": "2026-10-27T01:33:58Z",
+      "sog": 7.1,
       "source": "aishub"
     }
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-27T00:59:31Z"
+  "updated": "2026-10-27T01:45:34Z"
 }
