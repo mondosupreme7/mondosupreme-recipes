@@ -380,6 +380,48 @@
           }
         }
       }
+    },
+    "pet": {
+      "rate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 8000)"
+        }
+      },
+      "park": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "auth != null && $id.matches(/^[A-Za-z0-9]{1,128}$/) && (($id == auth.uid && newData.exists() && newData.child('author').val() == auth.uid && newData.parent().parent().child('rate').child(auth.uid).val() == now) || (data.exists() && !newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'owner', 'stage', 'species', 'age', 'shell', 't', 'author']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/) && newData.child('owner').isString() && newData.child('owner').val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/) && newData.child('stage').isString() && newData.child('stage').val().matches(/^(egg|baby|kid|teen|adult)$/) && newData.child('species').isString() && newData.child('species').val().matches(/^(egg|blob|kidchi|teenchi|chefchi|captainchi|cyberchi|phantomchi)$/) && newData.child('age').isNumber() && newData.child('shell').isString() && newData.child('shell').val().matches(/^(purple|blue|pink|green|yellow)$/) && newData.child('t').isNumber() && newData.child('author').isString())",
+          "name": {
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/)"
+          },
+          "owner": {
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9][A-Za-z0-9 ]{0,11}$/)"
+          },
+          "stage": {
+            ".validate": "newData.isString() && newData.val().matches(/^(egg|baby|kid|teen|adult)$/)"
+          },
+          "species": {
+            ".validate": "newData.isString() && newData.val().matches(/^(egg|blob|kidchi|teenchi|chefchi|captainchi|cyberchi|phantomchi)$/)"
+          },
+          "age": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999 && newData.val() % 1 == 0"
+          },
+          "shell": {
+            ".validate": "newData.isString() && newData.val().matches(/^(purple|blue|pink|green|yellow)$/)"
+          },
+          "t": {
+            ".validate": "newData.isNumber() && newData.val() == now"
+          },
+          "author": {
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9]{1,128}$/) && newData.val() == auth.uid"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
     }
   }
 }

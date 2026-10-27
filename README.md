@@ -10,6 +10,8 @@
 
 [Arcade](https://mondosupreme.com/arcade/) is a three-cartridge cabinet: High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker 1999. Personal bests stay in `mondosupreme.arcade.v1`. Shared top-10 scores use the same Firebase project once `board/database.rules.json` is published. Only the owner can clear a board.
 
+[Pet](https://mondosupreme.com/pet/) is MondoGotchi, a keychain virtual pet. The egg, care, and evolutions stay in `mondosupreme.pet.v1`, including time away (capped so a long break does not silently end the pet). The Pet Park shares a snapshot on the same Firebase project once `board/database.rules.json` is published. Only the owner can remove a pet from the park.
+
 [The Locked Room](https://mondosupreme.com/escape/) is a small mystery in the browser. Progress stays on this device under `mondosupreme.escape.v1`.
 
 The static site at the repo root is published to GitHub Pages on every push to `main`. A hash or query on `/` is forwarded to `/recipes/` so older recipe links keep working.

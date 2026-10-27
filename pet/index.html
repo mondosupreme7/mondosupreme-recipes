@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>MondoGotchi</title>
+<meta name="description" content="MondoGotchi — a 1998 keychain pet. Hatch it, feed it, and show it in the Pet Park.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="pet.css">
+<link rel="stylesheet" href="/retro.css">
+</head>
+<body>
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ CyberPet '98 ~*~ ★ MondoGotchi ★ Feed it · Play · Don't forget the poop ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ CyberPet '98 ~*~ ★ MondoGotchi ★ Feed it · Play · Don't forget the poop ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/pet/" class="brand"><span class="logo">🥚</span><span>Mondo<em>Gotchi</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/" aria-current="page">Pet</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+ <nav class="actions">
+  <button id="soundBtn" class="btn ghost" type="button" aria-pressed="false">Sound</button>
+  <button id="ownerBtn" class="btn ghost" type="button">Owner sign in</button>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="sync-banner" role="status" hidden>Pet Park waiting on updated Firebase rules — your pet is still saved on this device</p>
+ <div class="keychain" id="keychain" data-shell="purple">
+  <div class="ring" aria-hidden="true"></div>
+  <div class="egg" id="egg">
+   <div class="lcd-bezel">
+    <canvas id="lcd" width="96" height="64" aria-label="Pet LCD screen"></canvas>
+   </div>
+   <div class="hw" role="group" aria-label="Keychain buttons">
+    <button type="button" id="btnA" class="rubber">A<span>Select</span></button>
+    <button type="button" id="btnB" class="rubber mid">B<span>Confirm</span></button>
+    <button type="button" id="btnC" class="rubber">C<span>Cancel</span></button>
+   </div>
+  </div>
+ </div>
+ <p id="status" class="status" aria-live="polite">An egg is warming up.</p>
+ <div class="quick" aria-label="Care">
+  <button type="button" data-act="meal">Meal</button>
+  <button type="button" data-act="snack">Snack</button>
+  <button type="button" data-act="light">Light</button>
+  <button type="button" data-act="play">Play</button>
+  <button type="button" data-act="meds">Medicine</button>
+  <button type="button" data-act="clean">Clean</button>
+  <button type="button" data-act="stats">Stats</button>
+  <button type="button" data-act="away">Sitter</button>
+ </div>
+ <div id="gamePads" class="pads" hidden>
+  <button type="button" id="padLeft">Left</button>
+  <button type="button" id="padRight">Right</button>
+ </div>
+ <div class="shells" role="group" aria-label="Shell color">
+  <button type="button" data-shell="purple" aria-pressed="true">Atomic Purple</button>
+  <button type="button" data-shell="blue" aria-pressed="false">Bondi Blue</button>
+  <button type="button" data-shell="pink" aria-pressed="false">Neon Pink</button>
+  <button type="button" data-shell="green" aria-pressed="false">Slime Green</button>
+  <button type="button" data-shell="yellow" aria-pressed="false">Classic Yellow</button>
+ </div>
+ <form id="nameForm" class="names">
+  <label>Pet name<input id="petName" maxlength="12" autocomplete="off" spellcheck="false"></label>
+  <label>Your nickname<input id="ownerName" maxlength="12" autocomplete="off" spellcheck="false"></label>
+  <button type="submit" class="btn primary" id="btnPark">Show in Pet Park</button>
+ </form>
+ <section class="park" aria-labelledby="parkTitle">
+  <h2 id="parkTitle">MondoGotchi Pet Park</h2>
+  <p class="park-note">One snapshot per player. The owner can remove a pet that does not belong.</p>
+  <ul id="parkList"></ul>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · CyberPet '98 · Be kind to your keychain.</div></footer>
+<div id="toast" role="status"></div>
+<dialog id="ownerDialog">
+ <form id="ownerForm">
+  <h2>Owner sign-in</h2>
+  <p>Sign in to remove a pet from the park. The same sign-in works on the arcade, recipes, the wiki, the board, and chat.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="owner-error" hidden></p>
+  <div class="form-actions">
+   <button type="button" id="ownerCancel" class="btn ghost">Cancel</button>
+   <button type="submit" class="btn primary">Sign in</button>
+  </div>
+ </form>
+</dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="pet.js"></script>
+</body>
+</html>
