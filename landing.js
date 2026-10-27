@@ -171,7 +171,7 @@
     if (year) year.textContent = String(new Date().getFullYear());
     paintCached();
     connectHits();
-    var ring = ['/recipes/', '/cruises/', '/wiki/', '/board/', '/chat/', '/escape/'];
+    var ring = ['/recipes/', '/cruises/', '/wiki/', '/board/', '/chat/', '/arcade/', '/escape/'];
     var rand = document.getElementById('ringRand');
     if (rand) rand.href = ring[Math.floor(Math.random() * ring.length)];
   });

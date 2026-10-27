@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Mondosupreme Arcade</title>
+<meta name="description" content="Mondosupreme Arcade — High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker 1999.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="arcade.css">
+<link rel="stylesheet" href="/retro.css">
+</head>
+<body>
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Arcade ~*~ ★ Insert coin ★ High Seas Cruiser · Supreme Kitchen Rush · Cyber Brick Breaker 1999 ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Arcade ~*~ ★ Insert coin ★ High Seas Cruiser · Supreme Kitchen Rush · Cyber Brick Breaker 1999 ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/arcade/" class="brand"><span class="logo">🕹️</span><span>Mondosupreme <em>Arcade</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/" aria-current="page">Arcade</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+ <nav class="actions">
+  <button id="soundBtn" class="btn ghost" type="button" aria-pressed="false">Sound</button>
+  <button id="ownerBtn" class="btn ghost" type="button">Owner sign in</button>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="sync-banner" role="status" hidden>Shared high scores waiting on updated Firebase rules — your best is saved on this device</p>
+ <div class="cabinet">
+  <div class="marquee"><span>MONDO ARCADE 1999</span></div>
+  <div class="carts" role="group" aria-label="Cartridges">
+   <button type="button" class="cart" data-cart="seas" aria-pressed="true">High Seas Cruiser</button>
+   <button type="button" class="cart" data-cart="kitchen" aria-pressed="false">Supreme Kitchen Rush</button>
+   <button type="button" class="cart" data-cart="breaker" aria-pressed="false">Cyber Brick Breaker 1999</button>
+  </div>
+  <p id="hud" class="hud" aria-live="polite">Score 0</p>
+  <div class="crt">
+   <canvas id="screen" width="360" height="520" aria-label="Arcade screen"></canvas>
+   <div class="scan" aria-hidden="true"></div>
+   <div id="attract" class="overlay">
+    <p class="cab-title" id="cabTitle">High Seas Cruiser</p>
+    <p class="blink">INSERT COIN</p>
+    <button type="button" id="btnStart" class="coin">Start</button>
+    <p id="how" class="how">Dodge islands, rogue waves, and whirlpools. Collect stars, passengers, and port bonuses. Speed climbs every level.</p>
+   </div>
+   <form id="over" class="overlay" hidden>
+    <h2>GAME OVER</h2>
+    <p id="overScore"></p>
+    <label>Initials or name<input id="initials" maxlength="12" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="AAA"></label>
+    <div class="over-actions">
+     <button type="submit" class="coin" id="btnPost">Post score</button>
+     <button type="button" class="btn ghost" id="btnAgain">Play again</button>
+    </div>
+   </form>
+  </div>
+  <div class="controls" id="controls">
+   <div class="dpad" aria-label="Direction pad">
+    <button type="button" data-hold="up" aria-label="Up">▲</button>
+    <button type="button" data-hold="left" aria-label="Left">◀</button>
+    <button type="button" data-hold="down" aria-label="Down">▼</button>
+    <button type="button" data-hold="right" aria-label="Right">▶</button>
+   </div>
+   <button type="button" id="btnFire" class="fire" aria-label="Action">A</button>
+   <button type="button" id="btnQuit" class="quit">End</button>
+  </div>
+  <p class="hint">Drag on the screen, use the pad, or the arrow keys. A or Space launches, shoots, and confirms.</p>
+ </div>
+ <section class="scoreboard" aria-labelledby="boardTitle">
+  <h2 id="boardTitle">Top 10 · High Seas Cruiser</h2>
+  <p id="bestLine" class="best-line">Your best: 0</p>
+  <ol id="board"></ol>
+  <button type="button" id="btnClear" class="btn danger" hidden>Clear scores</button>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Three cartridges, one cabinet.</div></footer>
+<div id="toast" role="status"></div>
+<dialog id="ownerDialog">
+ <form id="ownerForm">
+  <h2>Owner sign-in</h2>
+  <p>Sign in to clear a cartridge's high scores. The same sign-in works on recipes, the wiki, the board, and chat.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="owner-error" hidden></p>
+  <div class="form-actions">
+   <button type="button" id="ownerCancel" class="btn ghost">Cancel</button>
+   <button type="submit" class="btn primary">Sign in</button>
+  </div>
+ </form>
+</dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="arcade.js"></script>
+</body>
+</html>

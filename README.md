@@ -8,6 +8,8 @@
 
 [Chat](https://mondosupreme.com/chat/) is one public room on that same Firebase project. Display names stay in this browser under `mondosupreme.chat.name`. Messages are plain text. The rules cap length and rate, keep about the last 200 messages from the past week, and allow only the owner account to remove a message, clear the room, or block someone.
 
+[Arcade](https://mondosupreme.com/arcade/) is a three-cartridge cabinet: High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker 1999. Personal bests stay in `mondosupreme.arcade.v1`. Shared top-10 scores use the same Firebase project once `board/database.rules.json` is published. Only the owner can clear a board.
+
 [The Locked Room](https://mondosupreme.com/escape/) is a small mystery in the browser. Progress stays on this device under `mondosupreme.escape.v1`.
 
 The static site at the repo root is published to GitHub Pages on every push to `main`. A hash or query on `/` is forwarded to `/recipes/` so older recipe links keep working.
