@@ -220,7 +220,7 @@
         cook: 0,
         ingredients: current.ingredients.slice(0, 80),
         steps: (current.steps.length ? current.steps : ['Watch the full method on YouTube: ' + current.youtube]).slice(0, 40),
-        notes: clip('MondoTV \'98 · ' + (current.channel || 'YouTube') + (current.published ? ' · ' + current.published : '') + '\n' + current.youtube + (current.blurb ? '\n' + current.blurb : ''), 4000),
+        notes: ('MondoTV \'98 · ' + (current.channel || 'YouTube') + (current.published ? ' · ' + current.published : '') + '\n' + current.youtube + (current.blurb ? '\n' + current.blurb : '')).replace(/[\u0000-\u0009\u000b\u000c\u000e-\u001f\u007f]/g, '').trim().slice(0, 4000),
         tags: tags,
         author: '',
         createdAt: 0
