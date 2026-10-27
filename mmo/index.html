@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>World of MondoCraft — Mondosupreme</title>
+<meta name="description" content="World of MondoCraft — a pixel realm on Mondosupreme. Pick a faction and class, quest from Goldhaven to the Molten Core, and meet other heroes.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="mmo.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+</head>
+<body class="mmo-page">
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ World of MondoCraft ~*~ ★ Grand Alliance · Crimson Horde ★ Goldhaven · Crossroads · Molten Core ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ World of MondoCraft ~*~ ★ Grand Alliance · Crimson Horde ★ Goldhaven · Crossroads · Molten Core ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/mmo/" class="brand"><span class="logo">⚔️</span><span>Mondo<em>Craft</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/forum/">Forum</a>
+  <a href="/mmo/" aria-current="page">MMO</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+ <nav class="actions">
+  <button id="ownerBtn" class="btn ghost" type="button">Owner sign in</button>
+ </nav>
+</div></header>
+<main class="wrap">
+ <p id="syncBanner" class="sync-banner" role="status" hidden>Realm sync waiting on updated Firebase rules — playing solo with adventurer bots until published</p>
+ <div class="mmo-shell">
+  <section id="create">
+   <h1>World of MondoCraft</h1>
+   <p>A pixel realm in the Vanilla style. Your hero is saved in this browser and, once the realm rules are published, shared with the server.</p>
+   <label>Character name
+    <input id="heroName" maxlength="16" autocomplete="nickname" placeholder="Name" aria-label="Character name">
+   </label>
+   <p class="hint">Faction</p>
+   <div class="pick-row">
+    <button type="button" class="pick alliance" data-faction="alliance">Grand Alliance<small>Blue tabards, Goldhaven roads</small></button>
+    <button type="button" class="pick horde" data-faction="horde">Crimson Horde<small>Red tabards, the Crossroads</small></button>
+   </div>
+   <p class="hint">Class</p>
+   <div class="pick-row">
+    <button type="button" class="pick" data-class="warrior">Warrior<small>Rage · Charge, Heroic Strike</small></button>
+    <button type="button" class="pick" data-class="mage">Mage<small>Mana · Frostbolt, Fireball</small></button>
+    <button type="button" class="pick" data-class="paladin">Paladin<small>Mana · Holy Light, Divine Shield</small></button>
+    <button type="button" class="pick" data-class="rogue">Rogue<small>Energy · Sinister Strike, Vanish</small></button>
+   </div>
+   <p id="classBlurb" class="blurb"></p>
+   <p id="createError" class="owner-error" hidden></p>
+   <button id="enterWorld" class="btn primary" type="button">Enter World</button>
+  </section>
+  <section id="play" hidden>
+   <p id="zoneLabel" class="zone-label">Elwynn / Goldhaven Shire <span id="zoneSub">Lv 1–4</span></p>
+   <div class="frames">
+    <div id="playerFrame" class="frame">
+     <canvas id="playerPortrait" width="40" height="40" aria-hidden="true"></canvas>
+     <div>
+      <div><strong id="playerName">Hero</strong><span id="playerLevel" class="lv">1</span></div>
+      <div class="track" aria-label="Health"><i id="playerHp" class="fill p100"></i></div>
+      <div class="track" aria-label="Resource"><i id="playerRes" class="fill rage p0"></i></div>
+      <div class="track" aria-label="Experience"><i id="xpFill" class="fill xp p0"></i></div>
+     </div>
+    </div>
+    <div id="targetFrame" class="frame">
+     <canvas id="targetPortrait" width="40" height="40" aria-hidden="true"></canvas>
+     <div>
+      <div><strong id="targetName">No target</strong><span id="targetLevel" class="lv"></span></div>
+      <div class="track" aria-label="Target health"><i id="targetHp" class="fill p0"></i></div>
+      <div id="targetMeta">Select a creature, hero, or quest giver.</div>
+     </div>
+    </div>
+   </div>
+   <div class="stage">
+    <canvas id="world" width="640" height="420" aria-label="Game world"></canvas>
+    <canvas id="joy" width="128" height="128" aria-label="Virtual joystick"></canvas>
+   </div>
+   <p id="yell" hidden>BY FIRE BE PURGED!</p>
+   <p id="peek" class="peek" aria-live="polite"></p>
+   <div class="slots" role="toolbar" aria-label="Action bar">
+    <button type="button" class="slot" id="ab0"><span class="key">1</span><span class="nm">Ability</span><i class="cd p0"></i></button>
+    <button type="button" class="slot" id="ab1"><span class="key">2</span><span class="nm">Ability</span><i class="cd p0"></i></button>
+    <button type="button" class="slot" id="ab2"><span class="key">3</span><span class="nm">Ability</span><i class="cd p0"></i></button>
+    <button type="button" class="slot" id="ab3"><span class="key">4</span><span class="nm">Ability</span><i class="cd p0"></i></button>
+    <button type="button" class="slot" id="autoBtn" aria-pressed="false"><span class="key">Space</span><span class="nm">Auto</span></button>
+    <button type="button" class="slot" id="potionBtn"><span class="key">5</span><span class="nm">Potion 5</span><i class="cd p0"></i></button>
+   </div>
+   <div class="panel-actions">
+    <button type="button" class="btn" id="talkBtn" hidden>Talk</button>
+    <button type="button" class="btn" id="questBtn">Quest Log</button>
+    <button type="button" class="btn" id="charBtn">Character</button>
+    <button type="button" class="btn" id="chatBtn">Chat Log</button>
+    <button type="button" class="btn" id="hallBtn">Hall of Fame</button>
+    <button type="button" class="btn" id="reroll">New Hero</button>
+   </div>
+   <p class="hint"><span class="desk">WASD or click to move. Click a creature to target. Keys 1–4 cast, 5 is a potion, F talks.</span><span class="touch">Drag the stick or tap the ground. Tap a creature to target.</span></p>
+   <div id="questDialog" class="quest-dialog" hidden>
+    <h3 id="questTitle"></h3>
+    <p id="questText"></p>
+    <p id="questObj"></p>
+    <p id="questReward"></p>
+    <div class="panel-actions">
+     <button type="button" class="btn primary" id="questAccept">Accept</button>
+     <button type="button" class="btn primary" id="questComplete">Complete Quest</button>
+     <button type="button" class="btn" id="questClose">Close</button>
+    </div>
+   </div>
+   <section id="panelQuest" class="panel" hidden>
+    <h2>Quest Log</h2>
+    <div id="questList"></div>
+   </section>
+   <section id="panelChar" class="panel" hidden>
+    <h2>Character &amp; Loot</h2>
+    <p class="legend"><span class="r-uncommon">Uncommon</span> · <span class="r-rare">Rare</span> · <span class="r-epic">Epic</span></p>
+    <div id="charBody"></div>
+   </section>
+   <section id="panelChat" class="panel" hidden>
+    <h2>Combat / Realm Chat</h2>
+    <form id="sayForm">
+     <label>Say <input id="sayInput" maxlength="80" autocomplete="off" aria-label="Say"></label>
+     <button type="submit" class="btn">Say</button>
+    </form>
+    <div id="log"></div>
+   </section>
+   <section id="panelHall" class="panel" hidden>
+    <h2>Realm High-Level / Gear Score</h2>
+    <div id="ownerTools" class="owner-tools" hidden>
+     <button type="button" class="btn" id="resetRaid">Reset raid boss</button>
+     <button type="button" class="btn" id="clearHall">Clear hall of fame</button>
+     <button type="button" class="btn" id="clearPlayers">Clear realm players</button>
+    </div>
+    <div id="hallList"></div>
+   </section>
+  </section>
+ </div>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · World of MondoCraft is a fan realm. Be decent.</div></footer>
+<div id="toast" role="status" hidden></div>
+<dialog id="ownerDialog">
+ <form id="ownerForm">
+  <h2>Owner sign-in</h2>
+  <p>Sign in to reset the raid, the hall of fame, or realm presence. The same sign-in works across Mondosupreme.</p>
+  <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
+  <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
+  <p id="ownerError" class="owner-error" hidden></p>
+  <div class="form-actions">
+   <button type="button" id="ownerCancel" class="btn ghost">Cancel</button>
+   <button type="submit" class="btn primary">Sign in</button>
+  </div>
+ </form>
+</dialog>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="mmo.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+</body>
+</html>

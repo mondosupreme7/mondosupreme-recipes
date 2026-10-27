@@ -496,6 +496,104 @@
           }
         }
       }
+    },
+    "mmo": {
+      "srate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 3000)"
+        }
+      },
+      "crate": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "auth.uid == $uid && newData.isNumber() && newData.val() == now && (!data.exists() || now - data.val() >= 1500)"
+        }
+      },
+      "players": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "(auth.uid == $uid && (!newData.exists() || newData.child('updatedAt').val() == now)) || (!newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'faction', 'cls', 'level', 'zone', 'x', 'y', 'hp', 'maxHp', 'bubble', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('faction').isString() && newData.child('faction').val().matches(/^(alliance|horde)$/) && newData.child('cls').isString() && newData.child('cls').val().matches(/^(warrior|mage|paladin|rogue)$/) && newData.child('level').isNumber() && newData.child('level').val() >= 1 && newData.child('level').val() <= 12 && newData.child('level').val() % 1 == 0 && newData.child('zone').isString() && newData.child('zone').val().matches(/^(goldhaven|crossroads|molten)$/) && newData.child('x').isNumber() && newData.child('x').val() >= 0 && newData.child('x').val() <= 4000 && newData.child('x').val() % 1 == 0 && newData.child('y').isNumber() && newData.child('y').val() >= 0 && newData.child('y').val() <= 4000 && newData.child('y').val() % 1 == 0 && newData.child('hp').isNumber() && newData.child('hp').val() >= 0 && newData.child('hp').val() <= 5000 && newData.child('maxHp').isNumber() && newData.child('maxHp').val() >= 1 && newData.child('maxHp').val() <= 5000 && newData.child('bubble').isString() && newData.child('bubble').val().length <= 80 && !newData.child('bubble').val().contains('\\n') && newData.child('updatedAt').val() == now)",
+          "name": { ".validate": "newData.isString()" },
+          "faction": { ".validate": "newData.isString()" },
+          "cls": { ".validate": "newData.isString()" },
+          "level": { ".validate": "newData.isNumber()" },
+          "zone": { ".validate": "newData.isString()" },
+          "x": { ".validate": "newData.isNumber()" },
+          "y": { ".validate": "newData.isNumber()" },
+          "hp": { ".validate": "newData.isNumber()" },
+          "maxHp": { ".validate": "newData.isNumber()" },
+          "bubble": { ".validate": "newData.isString()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "saves": {
+        "$uid": {
+          ".read": "auth.uid == $uid",
+          ".write": "(auth.uid == $uid && newData.exists() && newData.child('updatedAt').val() == now && newData.parent().parent().child('srate').child(auth.uid).val() == now) || (!newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'faction', 'cls', 'level', 'xp', 'gold', 'zone', 'x', 'y', 'hp', 'res', 'potions', 'weapon', 'chest', 'qs', 'bag', 'gear', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('faction').val().matches(/^(alliance|horde)$/) && newData.child('cls').val().matches(/^(warrior|mage|paladin|rogue)$/) && newData.child('level').isNumber() && newData.child('level').val() >= 1 && newData.child('level').val() <= 12 && newData.child('level').val() % 1 == 0 && newData.child('xp').isNumber() && newData.child('xp').val() >= 0 && newData.child('xp').val() <= 100000 && newData.child('xp').val() % 1 == 0 && newData.child('gold').isNumber() && newData.child('gold').val() >= 0 && newData.child('gold').val() <= 1000000 && newData.child('gold').val() % 1 == 0 && newData.child('zone').val().matches(/^(goldhaven|crossroads|molten)$/) && newData.child('x').isNumber() && newData.child('x').val() >= 0 && newData.child('x').val() <= 4000 && newData.child('x').val() % 1 == 0 && newData.child('y').isNumber() && newData.child('y').val() >= 0 && newData.child('y').val() <= 4000 && newData.child('y').val() % 1 == 0 && newData.child('hp').isNumber() && newData.child('hp').val() >= 0 && newData.child('hp').val() <= 5000 && newData.child('res').isNumber() && newData.child('res').val() >= 0 && newData.child('res').val() <= 100 && newData.child('potions').isNumber() && newData.child('potions').val() >= 0 && newData.child('potions').val() <= 99 && newData.child('potions').val() % 1 == 0 && (newData.child('weapon').val() == '' || newData.child('weapon').val().matches(/^(poker|shiv|cleaver|thunder)$/)) && (newData.child('chest').val() == '' || newData.child('chest').val().matches(/^(cloak)$/)) && newData.child('qs').isString() && newData.child('qs').val().matches(/^[a-z0-9:;]{1,240}$/) && newData.child('bag').isString() && (newData.child('bag').val() == '' || newData.child('bag').val().matches(/^(poker|cloak|shiv|cleaver|thunder)(,(poker|cloak|shiv|cleaver|thunder))*$/)) && newData.child('gear').isNumber() && newData.child('gear').val() >= 0 && newData.child('gear').val() <= 9999 && newData.child('gear').val() % 1 == 0 && newData.child('updatedAt').val() == now)",
+          "name": { ".validate": "newData.isString()" },
+          "faction": { ".validate": "newData.isString()" },
+          "cls": { ".validate": "newData.isString()" },
+          "level": { ".validate": "newData.isNumber()" },
+          "xp": { ".validate": "newData.isNumber()" },
+          "gold": { ".validate": "newData.isNumber()" },
+          "zone": { ".validate": "newData.isString()" },
+          "x": { ".validate": "newData.isNumber()" },
+          "y": { ".validate": "newData.isNumber()" },
+          "hp": { ".validate": "newData.isNumber()" },
+          "res": { ".validate": "newData.isNumber()" },
+          "potions": { ".validate": "newData.isNumber()" },
+          "weapon": { ".validate": "newData.isString()" },
+          "chest": { ".validate": "newData.isString()" },
+          "qs": { ".validate": "newData.isString()" },
+          "bag": { ".validate": "newData.isString()" },
+          "gear": { ".validate": "newData.isNumber()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "leaderboard": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "(auth.uid == $uid && newData.exists() && newData.child('updatedAt').val() == now) || (!newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'faction', 'cls', 'level', 'gear', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('faction').val().matches(/^(alliance|horde)$/) && newData.child('cls').val().matches(/^(warrior|mage|paladin|rogue)$/) && newData.child('level').isNumber() && newData.child('level').val() >= 1 && newData.child('level').val() <= 12 && newData.child('level').val() % 1 == 0 && newData.child('gear').isNumber() && newData.child('gear').val() >= 0 && newData.child('gear').val() <= 9999 && newData.child('gear').val() % 1 == 0 && newData.child('updatedAt').val() == now)",
+          "name": { ".validate": "newData.isString()" },
+          "faction": { ".validate": "newData.isString()" },
+          "cls": { ".validate": "newData.isString()" },
+          "level": { ".validate": "newData.isNumber()" },
+          "gear": { ".validate": "newData.isNumber()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "chat": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "auth != null && $id.matches(/^[A-Za-z0-9_-]{1,80}$/) && ((!data.exists() && newData.exists() && newData.child('author').val() == auth.uid && newData.parent().parent().child('crate').child(auth.uid).val() == now) || (data.exists() && !newData.exists() && auth.token.email == 'cbrooks_911@yahoo.com'))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'faction', 'zone', 'text', 'author', 't']) && newData.child('name').isString() && newData.child('name').val().matches(/^[A-Za-z][A-Za-z0-9 ]{0,15}$/) && newData.child('faction').val().matches(/^(alliance|horde)$/) && newData.child('zone').val().matches(/^(goldhaven|crossroads|molten)$/) && newData.child('text').isString() && newData.child('text').val().length >= 1 && newData.child('text').val().length <= 80 && !newData.child('text').val().contains('\\n') && !newData.child('text').val().contains('\\r') && newData.child('author').isString() && newData.child('author').val().matches(/^[A-Za-z0-9]{1,128}$/) && newData.child('author').val() == auth.uid && newData.child('t').val() == now)",
+          "name": { ".validate": "newData.isString()" },
+          "faction": { ".validate": "newData.isString()" },
+          "zone": { ".validate": "newData.isString()" },
+          "text": { ".validate": "newData.isString()" },
+          "author": { ".validate": "newData.isString()" },
+          "t": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "raid": {
+        "boss": {
+          ".read": "auth != null",
+          ".write": "auth != null && (auth.token.email == 'cbrooks_911@yahoo.com' || (!data.exists() && newData.child('maxHp').val() == 900 && newData.child('hp').isNumber() && newData.child('hp').val() >= 650 && newData.child('hp').val() <= 900 && newData.child('updatedAt').val() == now) || (data.exists() && newData.child('maxHp').val() == 900 && newData.child('hp').isNumber() && newData.child('hp').val() >= 0 && newData.child('hp').val() <= data.child('hp').val() && data.child('hp').val() - newData.child('hp').val() <= 250 && newData.child('updatedAt').val() == now) || (data.exists() && data.child('hp').val() == 0 && newData.child('hp').val() == 900 && newData.child('maxHp').val() == 900 && newData.child('updatedAt').val() == now))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['hp', 'maxHp', 'updatedAt']) && newData.child('hp').isNumber() && newData.child('hp').val() >= 0 && newData.child('hp').val() <= 900 && newData.child('maxHp').val() == 900 && newData.child('updatedAt').isNumber())",
+          "hp": { ".validate": "newData.isNumber()" },
+          "maxHp": { ".validate": "newData.isNumber()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      }
     }
   }
 }

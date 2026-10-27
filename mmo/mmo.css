@@ -1,0 +1,263 @@
+/* World of MondoCraft HUD. Bars use width classes so the page CSP never needs inline styles. */
+.mmo-page main.wrap{max-width:1100px}
+.mmo-shell{background:#140e09;color:#f4ead2;border:4px ridge #c9a227;padding:8px}
+.mmo-shell h1,.mmo-shell h2,.mmo-shell h3{font-family:Tahoma,Verdana,sans-serif;color:#ffd100;margin:0 0 8px}
+.create{display:grid;gap:10px}
+.pick-row,.slots,.panel-actions,.owner-tools{display:flex;flex-wrap:wrap;gap:8px}
+.pick{min-height:44px;min-width:44px;padding:8px 10px;background:#2a2118;color:#f4ead2;border:2px solid #6b5424;font:700 15px Tahoma,Verdana,sans-serif;cursor:pointer}
+.pick.on{border-color:#ffd100;background:#4a3518;color:#fff}
+.pick small{display:block;font-weight:400;color:#d9c7a2}
+.alliance.on{box-shadow:inset 4px 0 0 #6ea8ff}
+.horde.on{box-shadow:inset 4px 0 0 #ff4d4d}
+.blurb{margin:0;min-height:1.4em}
+.zone-label{margin:0 0 6px;font:700 18px Tahoma,Verdana,sans-serif;color:#ffd100}
+.zone-label span{color:#f4ead2;font-weight:400;font-size:14px}
+.frames{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.frame{display:flex;gap:8px;align-items:center;min-width:200px;flex:1 1 220px;background:#0c0c0c;color:#fff;border:2px solid #8d6b34;padding:4px}
+.frame canvas{width:40px;height:40px;flex:0 0 40px;background:#1a120c;border:2px solid #3a2a14}
+.frame .who{font:700 14px Tahoma,sans-serif}
+.frame .lv{color:#ffd100;margin-left:6px}
+.track{height:12px;background:#111;border:1px solid #000;margin-top:3px}
+.fill{display:block;height:100%;width:0;background:#3aa11a}
+.fill.low{background:#b91c1c}
+.fill.rage{background:#c41e3a}
+.fill.mana{background:#2458c9}
+.fill.energy{background:#e1c14a}
+.fill.xp{background:#f5c518}
+.stage{position:relative}
+#world{width:100%;height:420px;background:#000;display:block;touch-action:none}
+#joy{position:absolute;left:8px;bottom:8px;width:128px;height:128px;touch-action:none;background:transparent}
+#yell{margin:6px 0;background:#4a0800;color:#ffb000;border:3px ridge #ff6600;text-align:center;font:700 20px Impact,"Arial Black",sans-serif;padding:6px}
+.peek{min-height:22px;margin:4px 0;color:#f4ead2;font:700 14px Tahoma,sans-serif}
+.slots{margin:6px 0}
+.slot{position:relative;overflow:hidden;min-width:64px;min-height:44px;padding:4px 8px;background:#1a1a1a;color:#ffd100;border:2px solid #c9a227;font:700 12px/1.15 Tahoma,sans-serif;cursor:pointer}
+.slot .key{display:block;color:#aaa;font-size:10px}
+.slot.on{border-color:#fff;color:#fff}
+.cd{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.62);pointer-events:none}
+.hint{margin:0;color:#d9c7a2;font-size:14px}
+.touch{display:none}
+.panel{margin-top:8px;background:#1c140e;border:3px ridge #8d6b34;padding:8px;max-height:240px;overflow:auto}
+.panel p{margin:4px 0}
+.quest-dialog{margin-top:8px;background:#24180f;border:3px ridge #ffd100;padding:8px}
+.log-combat{color:#f4ead2}
+.log-chat{color:#7ec8ff}
+.log-loot{color:#1eff00}
+.log-quest{color:#ffd100}
+.log-yell{color:#ff7a18}
+.log-travel{color:#d7b4ff}
+.r-uncommon{color:#1eff00}
+.r-rare{color:#0070dd}
+.r-epic{color:#a335ee}
+.legend{font-weight:700}
+#toast{position:fixed;left:8px;right:8px;bottom:8px;background:#ffd100;color:#000;border:2px solid #000;padding:8px;font:700 14px Tahoma,sans-serif}
+@media(max-width:800px){
+ #world{height:300px}
+ .desk{display:none}
+ .touch{display:inline}
+ .slot{flex:1 1 30%}
+}
+@media(min-width:800px){#joy{display:none}}
+@media(prefers-reduced-motion:reduce){#yell{letter-spacing:0}}
+
+.fill.p0{width:0%}
+.cd.p0{height:0%}
+.fill.p1{width:1%}
+.cd.p1{height:1%}
+.fill.p2{width:2%}
+.cd.p2{height:2%}
+.fill.p3{width:3%}
+.cd.p3{height:3%}
+.fill.p4{width:4%}
+.cd.p4{height:4%}
+.fill.p5{width:5%}
+.cd.p5{height:5%}
+.fill.p6{width:6%}
+.cd.p6{height:6%}
+.fill.p7{width:7%}
+.cd.p7{height:7%}
+.fill.p8{width:8%}
+.cd.p8{height:8%}
+.fill.p9{width:9%}
+.cd.p9{height:9%}
+.fill.p10{width:10%}
+.cd.p10{height:10%}
+.fill.p11{width:11%}
+.cd.p11{height:11%}
+.fill.p12{width:12%}
+.cd.p12{height:12%}
+.fill.p13{width:13%}
+.cd.p13{height:13%}
+.fill.p14{width:14%}
+.cd.p14{height:14%}
+.fill.p15{width:15%}
+.cd.p15{height:15%}
+.fill.p16{width:16%}
+.cd.p16{height:16%}
+.fill.p17{width:17%}
+.cd.p17{height:17%}
+.fill.p18{width:18%}
+.cd.p18{height:18%}
+.fill.p19{width:19%}
+.cd.p19{height:19%}
+.fill.p20{width:20%}
+.cd.p20{height:20%}
+.fill.p21{width:21%}
+.cd.p21{height:21%}
+.fill.p22{width:22%}
+.cd.p22{height:22%}
+.fill.p23{width:23%}
+.cd.p23{height:23%}
+.fill.p24{width:24%}
+.cd.p24{height:24%}
+.fill.p25{width:25%}
+.cd.p25{height:25%}
+.fill.p26{width:26%}
+.cd.p26{height:26%}
+.fill.p27{width:27%}
+.cd.p27{height:27%}
+.fill.p28{width:28%}
+.cd.p28{height:28%}
+.fill.p29{width:29%}
+.cd.p29{height:29%}
+.fill.p30{width:30%}
+.cd.p30{height:30%}
+.fill.p31{width:31%}
+.cd.p31{height:31%}
+.fill.p32{width:32%}
+.cd.p32{height:32%}
+.fill.p33{width:33%}
+.cd.p33{height:33%}
+.fill.p34{width:34%}
+.cd.p34{height:34%}
+.fill.p35{width:35%}
+.cd.p35{height:35%}
+.fill.p36{width:36%}
+.cd.p36{height:36%}
+.fill.p37{width:37%}
+.cd.p37{height:37%}
+.fill.p38{width:38%}
+.cd.p38{height:38%}
+.fill.p39{width:39%}
+.cd.p39{height:39%}
+.fill.p40{width:40%}
+.cd.p40{height:40%}
+.fill.p41{width:41%}
+.cd.p41{height:41%}
+.fill.p42{width:42%}
+.cd.p42{height:42%}
+.fill.p43{width:43%}
+.cd.p43{height:43%}
+.fill.p44{width:44%}
+.cd.p44{height:44%}
+.fill.p45{width:45%}
+.cd.p45{height:45%}
+.fill.p46{width:46%}
+.cd.p46{height:46%}
+.fill.p47{width:47%}
+.cd.p47{height:47%}
+.fill.p48{width:48%}
+.cd.p48{height:48%}
+.fill.p49{width:49%}
+.cd.p49{height:49%}
+.fill.p50{width:50%}
+.cd.p50{height:50%}
+.fill.p51{width:51%}
+.cd.p51{height:51%}
+.fill.p52{width:52%}
+.cd.p52{height:52%}
+.fill.p53{width:53%}
+.cd.p53{height:53%}
+.fill.p54{width:54%}
+.cd.p54{height:54%}
+.fill.p55{width:55%}
+.cd.p55{height:55%}
+.fill.p56{width:56%}
+.cd.p56{height:56%}
+.fill.p57{width:57%}
+.cd.p57{height:57%}
+.fill.p58{width:58%}
+.cd.p58{height:58%}
+.fill.p59{width:59%}
+.cd.p59{height:59%}
+.fill.p60{width:60%}
+.cd.p60{height:60%}
+.fill.p61{width:61%}
+.cd.p61{height:61%}
+.fill.p62{width:62%}
+.cd.p62{height:62%}
+.fill.p63{width:63%}
+.cd.p63{height:63%}
+.fill.p64{width:64%}
+.cd.p64{height:64%}
+.fill.p65{width:65%}
+.cd.p65{height:65%}
+.fill.p66{width:66%}
+.cd.p66{height:66%}
+.fill.p67{width:67%}
+.cd.p67{height:67%}
+.fill.p68{width:68%}
+.cd.p68{height:68%}
+.fill.p69{width:69%}
+.cd.p69{height:69%}
+.fill.p70{width:70%}
+.cd.p70{height:70%}
+.fill.p71{width:71%}
+.cd.p71{height:71%}
+.fill.p72{width:72%}
+.cd.p72{height:72%}
+.fill.p73{width:73%}
+.cd.p73{height:73%}
+.fill.p74{width:74%}
+.cd.p74{height:74%}
+.fill.p75{width:75%}
+.cd.p75{height:75%}
+.fill.p76{width:76%}
+.cd.p76{height:76%}
+.fill.p77{width:77%}
+.cd.p77{height:77%}
+.fill.p78{width:78%}
+.cd.p78{height:78%}
+.fill.p79{width:79%}
+.cd.p79{height:79%}
+.fill.p80{width:80%}
+.cd.p80{height:80%}
+.fill.p81{width:81%}
+.cd.p81{height:81%}
+.fill.p82{width:82%}
+.cd.p82{height:82%}
+.fill.p83{width:83%}
+.cd.p83{height:83%}
+.fill.p84{width:84%}
+.cd.p84{height:84%}
+.fill.p85{width:85%}
+.cd.p85{height:85%}
+.fill.p86{width:86%}
+.cd.p86{height:86%}
+.fill.p87{width:87%}
+.cd.p87{height:87%}
+.fill.p88{width:88%}
+.cd.p88{height:88%}
+.fill.p89{width:89%}
+.cd.p89{height:89%}
+.fill.p90{width:90%}
+.cd.p90{height:90%}
+.fill.p91{width:91%}
+.cd.p91{height:91%}
+.fill.p92{width:92%}
+.cd.p92{height:92%}
+.fill.p93{width:93%}
+.cd.p93{height:93%}
+.fill.p94{width:94%}
+.cd.p94{height:94%}
+.fill.p95{width:95%}
+.cd.p95{height:95%}
+.fill.p96{width:96%}
+.cd.p96{height:96%}
+.fill.p97{width:97%}
+.cd.p97{height:97%}
+.fill.p98{width:98%}
+.cd.p98{height:98%}
+.fill.p99{width:99%}
+.cd.p99{height:99%}
+.fill.p100{width:100%}
+.cd.p100{height:100%}
