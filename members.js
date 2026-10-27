@@ -308,8 +308,8 @@
   }
   async function loadOwn(next) {
     await waitSaving();
-    profile = null;
     if (!isMemberUser(next) || !user || user.uid !== next.uid) {
+      profile = null;
       announce();
       return;
     }
@@ -318,6 +318,10 @@
       await waitSaving();
       if (!user || user.uid !== next.uid) return;
       var data = snap.val();
+      if (profile && profile.handle && (!data || !data.handle)) {
+        announce();
+        return;
+      }
       if (!data || !data.handle) {
         var handle = isOwnerUser(next) ? 'Cody' : suggestHandle(next.email);
         await firebase.database().ref('users/' + next.uid).update(profilePayload({
@@ -360,7 +364,7 @@
     if (code.indexOf('invalid-email') >= 0) return 'That email does not look right.';
     if (code.indexOf('wrong-password') >= 0 || code.indexOf('invalid-credential') >= 0 || code.indexOf('user-not-found') >= 0) return 'That email or password is wrong.';
     if (code.indexOf('too-many-requests') >= 0) return 'Too many tries. Wait a minute and try again.';
-    if (code.indexOf('permission-denied') >= 0) return 'The account is in. Publish the latest database rules so the screen name can be saved.';
+    if (code.indexOf('permission-denied') >= 0 || code.indexOf('permission_denied') >= 0) return 'The account is in. Publish the latest database rules so the screen name can be saved.';
     return 'That did not work. Check the email and password and try again.';
   }
   function field(label, input) {
