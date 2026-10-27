@@ -6,7 +6,7 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
-<title>Mondosupreme Wiki</title>
+<title>MONDO.HLP — Mondosupreme Wiki</title>
 <meta name="description" content="Mondosupreme Wiki — shared notes and how-tos. Anyone can add a page. The owner can edit or delete.">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="wiki.css">
@@ -44,6 +44,15 @@
 </div></header>
 <main class="wrap" id="app">
  <p id="syncBanner" class="sync-banner" role="status" hidden>Server sync waiting on updated Firebase rules — using local storage until published</p>
+ <div class="hlp-chrome">
+  <div class="hlp-caption">MONDO.HLP — Encarta '98</div>
+  <div class="hlp-tabs" role="tablist" aria-label="Windows Help">
+   <button type="button" id="tabContents" role="tab" data-mode="contents" aria-selected="true">Contents</button>
+   <button type="button" id="tabIndex" role="tab" data-mode="index" aria-selected="false">Index</button>
+   <button type="button" id="tabFind" role="tab" data-mode="find" aria-selected="false">Find</button>
+   <button type="button" id="tabHistory" role="tab" data-mode="history" aria-selected="false">History</button>
+  </div>
+ </div>
  <section id="homeView">
   <div class="hero">
    <h1>Notes and how-tos.</h1>
@@ -57,6 +66,7 @@
   <div id="recent" class="wiki-list"></div>
   <h2 class="wiki-h" id="allHead" hidden>All pages <span id="allCount"></span></h2>
   <div id="all" class="wiki-list"></div>
+  <div id="historyView" class="wiki-list" hidden></div>
   <p id="empty" class="empty" hidden>No pages yet. Tap New page to start one.</p>
  </section>
  <section id="pageView" hidden></section>

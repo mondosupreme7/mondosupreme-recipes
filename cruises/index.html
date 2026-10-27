@@ -40,6 +40,7 @@
 </div></header>
 <main class="wrap">
  <div class="hero">
+  <p class="radar-kicker">Where in the World · Radar Navigator '98</p>
   <h1>Where the fleet is.</h1>
   <p>Last-known position of every Royal Caribbean International ship in service.</p>
  </div>
@@ -59,7 +60,13 @@
       <p id="freshness" class="cruise-note">Loading ship positions…</p>
       <button id="refresh" class="btn" type="button">Refresh now</button>
     </div>
- <div id="map" role="region" aria-label="Map of Royal Caribbean ships"></div>
+ <div class="radar-frame">
+  <div class="radar-bezel">
+   <div class="radar-caption">RADAR NAVIGATOR '98</div>
+   <div id="map" role="region" aria-label="Map of Royal Caribbean ships"></div>
+   <div class="radar-sweep" aria-hidden="true"></div>
+  </div>
+ </div>
  <div class="toolbar">
   <input id="q" type="search" placeholder="Search ships, classes, places…" aria-label="Search ships" autocomplete="off">
   <select id="sort" aria-label="Sort ships">

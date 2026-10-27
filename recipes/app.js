@@ -339,16 +339,29 @@ function fillFilters(){
   fill($('#catFilter'),cats,'All categories',state.cat); fill($('#tagFilter'),tags,'All tags',state.tag);
   $('#catList').innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join('');
 }
+function clipArt(category){
+  const c=String(category||'').toLowerCase();
+  if(/break|pancake|egg|waffle/.test(c))return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><ellipse cx="32" cy="34" rx="22" ry="8" fill="#e7b15a" stroke="#000"/><ellipse cx="32" cy="26" rx="18" ry="7" fill="#f6d27a" stroke="#000"/><ellipse cx="32" cy="19" rx="14" ry="6" fill="#ffe7a8" stroke="#000"/><rect x="29" y="6" width="6" height="10" fill="#c4553d" stroke="#000"/></svg>';
+  if(/dessert|cake|sweet|cookie/.test(c))return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><path d="M10 28h44v12H10z" fill="#f4c7d8" stroke="#000"/><path d="M8 22h48l-6 8H14z" fill="#fff" stroke="#000"/><circle cx="20" cy="18" r="3" fill="#e23"/><circle cx="32" cy="14" r="3" fill="#39c"/><circle cx="44" cy="18" r="3" fill="#fc0"/></svg>';
+  if(/drink|bev|smoothie/.test(c))return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><path d="M18 8h28l-4 26H22z" fill="#7fdfff" stroke="#000"/><rect x="29" y="34" width="6" height="8" fill="#ccc" stroke="#000"/><path d="M22 42h20" stroke="#000" stroke-width="2"/><rect x="30" y="2" width="3" height="8" fill="#c4553d"/></svg>';
+  return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><path d="M16 18h28l4 16H14z" fill="#c0c0c0" stroke="#000"/><path d="M20 18c0-8 24-8 24 0" fill="none" stroke="#000" stroke-width="2"/><circle cx="24" cy="28" r="3" fill="#c4553d"/><circle cx="34" cy="26" r="3" fill="#2f6f4e"/><circle cx="40" cy="31" r="3" fill="#f28f3b"/></svg>';
+}
 function renderList(){
   fillFilters();
+  const cats=[...new Set(recipes.map(r=>r.category).filter(Boolean))].sort();
+  const tabs=$('#fileTabs');
+  if(tabs){
+    tabs.innerHTML='<button type="button" class="file-tab" data-cat="" aria-pressed="'+(!state.cat)+'">All</button>'+
+      cats.map(c=>'<button type="button" class="file-tab" data-cat="'+esc(c)+'" aria-pressed="'+(state.cat===c)+'">'+esc(c)+'</button>').join('');
+  }
   const q=state.q.toLowerCase();
   const list=recipes.filter(r=>(!state.cat||r.category===state.cat)&&(!state.tag||(r.tags||[]).includes(state.tag))&&(!state.fav||favs.has(r.id))&&
     (!q||[r.title,r.category,r.notes,...(r.tags||[]),...(r.ingredients||[])].join(' ').toLowerCase().includes(q)));
   $('#grid').innerHTML=list.map(r=>`<article class="card" data-id="${esc(r.id)}" tabindex="0">
     ${r.sample?'<span class="sample">SAMPLE</span>':''}
     <button class="fav" data-fav="${esc(r.id)}" aria-label="Toggle favorite">${favs.has(r.id)?'♥':'♡'}</button>
-    <div class="thumb">🍽️</div>
-    <div class="card-body"><div class="cat">${esc(r.category||'Uncategorized')}</div><h3>${esc(r.title)}</h3>
+    <div class="thumb">${clipArt(r.category)}</div>
+    <div class="card-body"><div class="cat"><span class="clip-slot">${clipArt(r.category)}</span><span>${esc(r.category||'Uncategorized')}</span></div><h3>${esc(r.title)}</h3>
     <div class="meta">${total(r)?`<span>⏱ ${total(r)} min</span>`:''}${r.servings?`<span>🍽 ${esc(r.servings)} servings</span>`:''}</div>
     <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div></div></article>`).join('');
   $('#grid').querySelectorAll('.thumb').forEach((el,i)=>paintPhoto(el,list[i].photo));
@@ -2011,6 +2024,13 @@ function init(){
     }
     toast(ok?'Grocery list copied':'Could not copy the grocery list');
   };
+  const fileTabs=$('#fileTabs');
+  if(fileTabs)fileTabs.addEventListener('click',e=>{
+    const tab=e.target.closest('[data-cat]');
+    if(!tab)return;
+    state.cat=tab.dataset.cat||'';
+    renderList();
+  });
   $('#grid').addEventListener('click',e=>{
     const fb=e.target.closest('[data-fav]'); if(fb){e.stopPropagation();toggleFav(fb.dataset.fav);renderList();return}
     const c=e.target.closest('.card'); if(c)location.hash='#/recipe/'+encodeURIComponent(c.dataset.id);

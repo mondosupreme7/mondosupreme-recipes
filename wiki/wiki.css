@@ -1,4 +1,10 @@
-.wiki-note{background:#fff7e8;border-left:4px solid var(--accent2);padding:12px 16px;border-radius:8px;margin:16px 0 0;font-weight:500}
+.hlp-chrome{margin-top:10px;background:#c0c0c0;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040}
+.hlp-caption{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 14px Tahoma,Verdana,sans-serif;padding:4px 8px}
+.hlp-tabs{display:flex;flex-wrap:wrap;gap:3px;padding:6px 6px 0}
+.hlp-tabs button{min-height:44px;padding:6px 12px;background:#d4d0c8;color:#000;font:700 14px Tahoma,Verdana,sans-serif;border:2px solid #fff;border-right-color:#404040;border-bottom:0;cursor:pointer}
+.hlp-tabs button[aria-selected="true"]{background:#fff}
+#homeView{background:#fff;border:2px solid #808080;border-top:0;padding:8px;margin-bottom:16px}
+.wiki-note{background:#fff7e8;border-left:4px solid var(--accent2);padding:12px 16px;border-radius:0;margin:8px 0 0;font-weight:500}
 .wiki-h{font-size:1.35rem;margin:8px 0 12px}
 .wiki-h span{color:#ddd;font-family:Verdana,"Trebuchet MS",sans-serif;font-size:.95rem;font-weight:700}
 .wiki-list{display:flex;flex-direction:column;gap:10px;margin:0 0 28px}

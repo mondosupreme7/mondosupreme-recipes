@@ -11,18 +11,87 @@
 .shell-tool{white-space:nowrap}
 .shell-tool.is-owner{background:#000080;color:#fff;border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
 .shell-tool[aria-expanded="true"]{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
-.shell-pop{position:relative}
-.shell-menu{
-  position:fixed;left:8px;top:8px;z-index:90;width:min(300px,calc(100vw - 16px));
-  max-height:calc(100dvh - 16px);overflow:auto;-webkit-overflow-scrolling:touch;background:#c0c0c0;padding:4px;
-  border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;
-  box-shadow:4px 4px 0 #000
-}
 .shell-menu[hidden]{display:none}
-.shell-menu .shell-x{float:right;margin:0 0 4px 4px;min-width:88px}
-.shell-label{clear:both;margin:8px 4px 2px;font:700 12px Tahoma,Verdana,sans-serif;color:#000080}
-.shell-menu a{display:flex;width:100%;margin:0 0 3px;justify-content:flex-start;background:#fff}
-.shell-menu a[aria-current="page"]{background:#000080;color:#fff}
+.shell-label{margin:4px 6px 2px;font:700 12px Tahoma,Verdana,sans-serif;color:#000080}
+html{overflow-x:hidden}
+:root{--task-h:calc(46px + env(safe-area-inset-bottom))}
+body{padding-bottom:var(--task-h)}
+.win98-taskbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:80;box-sizing:border-box;
+  display:flex;align-items:center;gap:4px;height:var(--task-h);min-height:46px;
+  padding:2px 4px env(safe-area-inset-bottom);background:#c0c0c0;border-top:2px solid #fff
+}
+.win98-start,.win98-mute{
+  font:700 15px Tahoma,Verdana,sans-serif;color:#000;background:#c0c0c0;cursor:pointer;
+  border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;
+  min-height:36px;padding:2px 10px;white-space:nowrap
+}
+.win98-start{font-weight:800}
+.win98-start[aria-expanded="true"],.win98-mute[aria-pressed="true"]{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
+.win98-taskbar .shell-bar{flex:1 1 auto;flex-wrap:nowrap;overflow-x:auto;min-width:0;gap:4px;-webkit-overflow-scrolling:touch}
+.win98-taskbar .shell-tool{min-height:36px;padding:2px 8px;font-size:14px}
+.win98-tray{display:flex;align-items:center;gap:4px;flex:0 0 auto;margin-left:auto;padding:2px 4px;border:1px inset #808080;background:#c0c0c0;max-width:58%}
+.win98-tray .theme-switch{display:flex;align-items:center;gap:4px;margin:0;min-width:0}
+.win98-tray .theme-switch span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.win98-tray select{max-width:34vw;min-height:32px;font:700 12px Tahoma,Verdana,sans-serif;background:#fff;color:#000}
+.win98-clock{font:700 13px Tahoma,"Courier New",monospace;min-width:72px;padding:2px 6px;border:1px inset #fff;background:#c0c0c0;color:#000;white-space:nowrap}
+.win98-menu{
+  position:fixed;left:2px;bottom:var(--task-h);top:auto;z-index:90;
+  width:min(560px,calc(100vw - 8px));max-height:calc(100dvh - var(--task-h) - 8px);
+  display:flex;flex-wrap:wrap;align-items:stretch;gap:0;overflow:hidden;background:#c0c0c0;padding:2px;
+  border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;
+  box-shadow:3px 3px 0 #000
+}
+.win98-side{
+  flex:0 0 28px;display:flex;align-items:center;justify-content:center;
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  background:linear-gradient(#000080,#1084d0);color:#fff;
+  font:700 15px Tahoma,Verdana,sans-serif;letter-spacing:1px;padding:8px 0
+}
+.win98-cols{display:flex;flex:1 1 auto;min-width:0;min-height:0;max-height:calc(100dvh - var(--task-h) - 56px);overflow:auto;-webkit-overflow-scrolling:touch}
+.win98-col{flex:1 1 50%;min-width:0;border-left:1px solid #808080}
+.win98-item{
+  font:700 14px Tahoma,Verdana,sans-serif;color:#000;background:transparent;text-decoration:none;
+  border:0;width:100%;min-height:40px;display:flex;align-items:center;justify-content:flex-start;gap:8px;
+  padding:4px 8px;cursor:pointer;text-align:left
+}
+.win98-item svg{flex:none;image-rendering:pixelated}
+.win98-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.win98-item:hover,.win98-item:focus-visible,.win98-item[aria-current="page"]{background:#000080;color:#fff}
+.win98-menu .shell-x{flex:1 0 100%;min-height:36px;margin-top:2px}
+html[data-scan="1"]::before{
+  content:"";pointer-events:none;position:fixed;inset:0;z-index:70;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)
+}
+#starTrail{position:fixed;inset:0;pointer-events:none;z-index:75}
+.star-bit{position:fixed;pointer-events:none;z-index:75;color:#ff0;font:700 14px Tahoma,sans-serif;text-shadow:0 0 2px #f60;animation:star-fade .55s linear forwards}
+@keyframes star-fade{to{opacity:0;transform:translateY(-8px) scale(.4)}}
+html[data-shell-paused="1"] .star-bit,html[data-shell-paused="1"] .radar-sweep::after{animation-play-state:paused!important}
+body.chat-page,body.board-page,body.fps-live{padding:0!important;height:calc(100dvh - var(--task-h));min-height:0}
+body.fps-page.fps-live main.wrap{height:calc(100dvh - var(--task-h))!important}
+body.is-playing{padding:0!important}
+body.is-playing .cabinet{min-height:calc(100dvh - var(--task-h))}
+body.is-playing .crt{height:calc(100dvh - var(--task-h) - 168px)}
+@media (max-width:900px){
+  :root{--task-h:calc(48px + env(safe-area-inset-top))}
+  body{padding-top:var(--task-h);padding-bottom:0}
+  .site-header{top:var(--task-h)}
+  .ticker{padding-top:0}
+  .win98-taskbar{top:0;bottom:auto;border-top:0;border-bottom:2px solid #404040;padding:env(safe-area-inset-top) 4px 2px}
+  .win98-menu{top:var(--task-h);bottom:auto;width:min(100vw - 4px,560px);max-height:calc(100dvh - var(--task-h) - 8px)}
+  .win98-start,.win98-mute,.win98-taskbar .shell-tool,.win98-item{min-height:44px}
+  .win98-tray select{font-size:16px!important;min-height:44px}
+  body.chat-page,body.board-page,body.fps-live,body.is-playing{padding-top:0!important;margin-top:var(--task-h)}
+}
+@media (max-width:640px){
+  .win98-cols{flex-direction:column}
+  .win98-side{flex-basis:22px}
+}
+@media print{
+  .win98-taskbar,.win98-menu,#starTrail{display:none!important}
+  html[data-scan="1"]::before{content:none}
+  body,body.chat-page,body.board-page{padding:0!important;margin:0!important;height:auto}
+}
 .site-header .site-nav{
   flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;max-width:100%;
   -webkit-overflow-scrolling:touch;scrollbar-width:thin;gap:4px;padding-bottom:2px

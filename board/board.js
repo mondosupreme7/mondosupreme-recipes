@@ -216,6 +216,9 @@ function bindPointer() {
     startStroke(e);
   });
   canvas.addEventListener('pointermove', e => {
+    const spot = toWorld(e.clientX, e.clientY);
+    const coords = $('#coords');
+    if (coords) coords.textContent = spot[0] + ', ' + spot[1];
     if (!pointers.has(e.pointerId)) return;
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.size >= 2 && pinch && pinch.dist) {

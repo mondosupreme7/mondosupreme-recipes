@@ -127,6 +127,41 @@
     </a>
    </div>
   </section>
+  <section class="toybox" id="toys" aria-labelledby="toyTitle">
+   <h2 id="toyTitle">90s Toy Box</h2>
+   <div class="toy-grid">
+    <article class="toy" id="toyDial">
+     <h3>MondoNet 56k v.90</h3>
+     <p id="dialStatus">The modem is idle.</p>
+     <button type="button" id="dialBtn" class="btn primary">Connect via MondoNet 56k v.90</button>
+     <p id="mailBanner" class="mail-banner" hidden>Welcome! You've Got Mail!</p>
+    </article>
+    <article class="toy" id="toyEight">
+     <h3>Magic 8-Ball</h3>
+     <button type="button" id="eightBtn" class="eight-ball" aria-label="Shake the Magic 8-Ball"><span id="eightRead">8</span></button>
+     <p id="eightAnswer">Shake or tap for a 90s fortune.</p>
+    </article>
+    <article class="toy" id="toyLava">
+     <h3>Virtual Lava Lamp</h3>
+     <div class="lava" aria-hidden="true"><span class="lava-blob b1"></span><span class="lava-blob b2"></span><span class="lava-blob b3"></span></div>
+    </article>
+    <article class="toy" id="toyPogs">
+     <h3>Pog Collection</h3>
+     <button type="button" id="pogBtn" class="pog" aria-label="Add a pog">POG <b id="pogCount">0</b></button>
+     <p>Tap to add a milk-cap to the stack.</p>
+    </article>
+    <article class="toy" id="toyBsod">
+     <h3>Windows 98</h3>
+     <button type="button" id="bsodBtn" class="btn">Blue Screen of Death</button>
+     <p>A harmless prank. Tap anywhere to come back.</p>
+    </article>
+    <article class="toy" id="toyFx">
+     <h3>Optional FX</h3>
+     <button type="button" id="toyScan" class="btn" aria-pressed="false">CRT Scanlines</button>
+     <button type="button" id="toyStars" class="btn" aria-pressed="false">90s Star Cursor Trail</button>
+    </article>
+   </div>
+  </section>
   <section class="gb-box" id="guestbook" aria-labelledby="gbTitle">
    <h2 id="gbTitle">Sign My 90s Guestbook</h2>
    <p class="gb-lead">Pick a pixel stamp, leave your name, and a short note. The book is saved for the next visitor.</p>
@@ -174,6 +209,7 @@
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/shell.js"></script>
+<script src="/toys.js"></script>
 <script src="/guestbook.js"></script>
 <script src="/backup.js"></script>
 </body>

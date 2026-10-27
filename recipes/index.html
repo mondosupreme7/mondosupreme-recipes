@@ -42,7 +42,7 @@
 <main class="wrap" id="app">
  <p id="syncBanner" class="sync-banner" role="status" hidden>Server sync waiting on updated Firebase rules — using local storage until published</p>
  <section id="listView">
-  <div class="hero"><h1>Cook something supreme.</h1><p id="heroLead">A shared kitchen notebook. Anyone can add a recipe. Only the owner can edit or delete. Favorites stay on this device.</p></div>
+  <div class="hero"><p class="mc-brand">MasterCook '98 · Recipe Card Box</p><h1>Cook something supreme.</h1><p id="heroLead">A shared kitchen notebook. Anyone can add a recipe. Only the owner can edit or delete. Favorites stay on this device.</p></div>
   <div class="toolbar">
    <input id="search" type="search" placeholder="Search recipes, ingredients, tags…" aria-label="Search">
    <select id="catFilter" aria-label="Category"><option value="">All categories</option></select>
@@ -50,7 +50,10 @@
    <button id="favFilter" class="btn ghost" aria-pressed="false">♡ Favorites</button>
    <button id="btnGrocery" class="btn ghost" type="button">Grocery List (0)</button>
   </div>
-  <div id="grid" class="grid"></div>
+  <div class="filebox">
+   <div id="fileTabs" class="file-tabs" role="tablist" aria-label="Recipe card tabs"></div>
+   <div id="grid" class="grid"></div>
+  </div>
   <p id="empty" class="empty" hidden>No recipes found. Try a different search or add a new recipe!</p>
  </section>
  <section id="detailView" hidden></section>

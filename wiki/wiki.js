@@ -526,6 +526,8 @@ function parseWikiBackup(data) {
 let pages = [];
 let query = '';
 let tag = '';
+let hlpMode = 'contents';
+const HIST_KEY = 'mondosupreme.wiki.history.v1';
 let editingId = null;
 let editHash = '';
 let snap = '';
@@ -874,6 +876,67 @@ function row(p) {
     (when ? '<span class="meta">Edited ' + esc(when) + '</span>' : '') +
     (tags ? '<span class="tags">' + tags + '</span>' : '') + '</a>';
 }
+function pushHistory(page) {
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); } catch { list = []; }
+  if (!Array.isArray(list)) list = [];
+  list = list.filter(item => item && item.id !== page.id);
+  list.unshift({ id: page.id, title: page.title, t: Date.now() });
+  try { localStorage.setItem(HIST_KEY, JSON.stringify(list.slice(0, 30))); } catch { /* private mode */ }
+}
+function paintHistory() {
+  const box = $('#historyView');
+  if (!box) return;
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); } catch { list = []; }
+  box.replaceChildren();
+  if (!Array.isArray(list) || !list.length) {
+    const empty = document.createElement('p');
+    empty.className = 'empty';
+    empty.textContent = 'No pages opened on this computer yet.';
+    box.appendChild(empty);
+    return;
+  }
+  list.forEach(item => {
+    if (!item || !item.id) return;
+    const link = document.createElement('a');
+    link.className = 'wiki-row';
+    link.href = '#/page/' + encodeURIComponent(item.id);
+    const title = document.createElement('span');
+    title.className = 'wiki-row-title';
+    title.textContent = item.title || 'Untitled';
+    link.appendChild(title);
+    box.appendChild(link);
+  });
+}
+function applyHlp() {
+  document.querySelectorAll('.hlp-tabs [data-mode]').forEach(button => {
+    button.setAttribute('aria-selected', button.dataset.mode === hlpMode ? 'true' : 'false');
+  });
+  const history = $('#historyView');
+  const indexOnly = hlpMode === 'index';
+  const showingHistory = hlpMode === 'history';
+  if (history) history.hidden = !showingHistory;
+  if ($('#recent')) $('#recent').hidden = showingHistory || indexOnly;
+  if ($('#recentHead') && (showingHistory || indexOnly)) $('#recentHead').hidden = true;
+  if ($('#all')) $('#all').hidden = showingHistory;
+  if ($('#allHead') && showingHistory) $('#allHead').hidden = true;
+  if ($('#tagBar') && showingHistory) $('#tagBar').hidden = true;
+  if ($('#empty') && showingHistory) $('#empty').hidden = true;
+  if (showingHistory) paintHistory();
+}
+function setHlp(mode) {
+  hlpMode = mode || 'contents';
+  if ($('#homeView') && $('#homeView').hidden && location.hash !== '#/' && location.hash !== '' && location.hash !== '#') {
+    location.hash = '#/';
+  }
+  applyHlp();
+  if (hlpMode === 'find') {
+    const search = $('#search');
+    if (search) search.focus();
+  }
+  if (hlpMode !== 'history') renderHome();
+}
 function renderHome() {
   if ($('#homeView').hidden) return;
   const filtered = pages.filter(matches);
@@ -889,8 +952,9 @@ function renderHome() {
   $('#allCount').textContent = all.length ? String(all.length) : '';
   $('#all').innerHTML = all.map(row).join('');
   const empty = $('#empty');
-  empty.hidden = all.length !== 0;
+  empty.hidden = all.length !== 0 || hlpMode === 'history';
   empty.textContent = pages.length ? 'No pages match that search.' : 'No pages yet. Tap New page to start one.';
+  applyHlp();
 }
 function showHome() {
   editingId = null;
@@ -918,7 +982,8 @@ function showPage(id, keepScroll) {
     if (!keepScroll) window.scrollTo(0, 0);
     return;
   }
-  document.title = p.title + ' · Mondosupreme Wiki';
+  document.title = p.title + ' · MONDO.HLP';
+  pushHistory(p);
   const tags = (p.tags || []).map(t => '<span class="tag">#' + esc(t) + '</span>').join('');
   const when = editedLabel(p.updated);
   const own = canMutate();
@@ -1364,7 +1429,10 @@ function init() {
     if (e.target.files[0]) importJSON(e.target.files[0]);
     e.target.value = '';
   });
-  $('#search').addEventListener('input', e => { query = e.target.value; renderHome(); });
+  $('#search').addEventListener('input', e => { query = e.target.value; if (hlpMode === 'history') hlpMode = 'find'; renderHome(); });
+  document.querySelectorAll('.hlp-tabs [data-mode]').forEach(button => {
+    button.addEventListener('click', () => setHlp(button.dataset.mode));
+  });
   $('#tagBar').addEventListener('click', e => {
     const button = e.target.closest('[data-tag]');
     if (!button) return;

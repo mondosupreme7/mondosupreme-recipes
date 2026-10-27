@@ -378,70 +378,295 @@
     return dlg;
   }
 
+  var AUDIO_KEY = 'mondosupreme.audio.v1';
+  var FX_KEY = 'mondosupreme.fx.v1';
+  var programs = [
+    { title: 'Recipes', href: '/recipes/', icon: 'pot' },
+    { title: 'Cruises', href: '/cruises/', icon: 'ship' },
+    { title: 'Encarta Wiki', href: '/wiki/', icon: 'book' },
+    { title: 'MS Paint Board', href: '/board/', icon: 'paint' },
+    { title: 'AIM Chat', href: '/chat/', icon: 'aim' },
+    { title: '90s Arcade', href: '/arcade/', icon: 'joy' },
+    { title: 'MondoGotchi Pet', href: '/pet/', icon: 'egg' },
+    { title: 'Bulletin Forum', href: '/forum/', icon: 'note' },
+    { title: 'World of MondoCraft', href: '/mmo/', icon: 'sword' },
+    { title: "Half-Strike '99", href: '/fps/', icon: 'gun' },
+    { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door' }
+  ];
+  var toyLinks = [
+    { title: '56k Dial-Up', href: '/#dialup', icon: 'modem' },
+    { title: 'Magic 8-Ball', href: '/#eight', icon: 'ball' },
+    { title: 'Lava Lamp', href: '/#lava', icon: 'lava' },
+    { title: 'Pog Collection', href: '/#pogs', icon: 'pog' },
+    { title: 'Windows 98 BSOD', href: '/#bsod', icon: 'bsod' }
+  ];
+  var ICONS = {
+    pot: [[2,10,12,4,'#c0c0c0'],[4,6,8,4,'#808080'],[6,4,4,2,'#404040'],[1,10,2,2,'#000'],[13,10,2,2,'#000'],[5,12,6,2,'#000']],
+    ship: [[2,8,12,3,'#fff'],[6,5,4,3,'#c0c0c0'],[4,11,10,2,'#000080'],[8,3,2,2,'#ff0000'],[1,11,2,2,'#003399'],[13,11,2,2,'#003399']],
+    book: [[3,2,10,12,'#000080'],[5,2,8,12,'#fff'],[6,5,6,1,'#000'],[6,8,6,1,'#000'],[6,11,4,1,'#000']],
+    paint: [[2,10,8,4,'#c0c0c0'],[8,4,2,8,'#804000'],[10,2,4,4,'#ff0000'],[3,12,6,1,'#000'],[4,8,2,2,'#0000ff']],
+    aim: [[2,2,12,12,'#ffff00'],[4,6,2,2,'#000'],[10,6,2,2,'#000'],[5,10,6,2,'#000']],
+    joy: [[4,2,8,4,'#000'],[6,6,4,2,'#c0c0c0'],[2,8,12,4,'#000080'],[4,9,2,2,'#ff0000'],[10,9,2,2,'#00ff00']],
+    egg: [[5,2,6,4,'#fff'],[4,6,8,6,'#ffe14a'],[6,8,4,2,'#000'],[3,12,10,2,'#808080']],
+    note: [[3,2,10,12,'#fff'],[5,5,6,1,'#000080'],[5,8,6,1,'#000080'],[5,11,4,1,'#000080'],[11,2,2,3,'#ffcc00']],
+    sword: [[8,1,2,8,'#c0c0c0'],[6,8,6,2,'#ffd100'],[8,10,2,4,'#804000'],[4,3,3,2,'#ff0000']],
+    gun: [[2,6,8,3,'#404040'],[8,4,4,3,'#808080'],[10,7,4,2,'#000'],[3,9,3,3,'#654321']],
+    door: [[4,2,8,12,'#6b3a1f'],[10,8,2,2,'#ffd100'],[5,3,6,4,'#87ceeb'],[6,12,4,2,'#000']],
+    modem: [[2,6,12,6,'#c0c0c0'],[4,8,2,2,'#00ff00'],[7,8,2,2,'#ffff00'],[10,4,2,2,'#000'],[11,2,2,2,'#000']],
+    ball: [[4,2,8,8,'#000'],[6,4,4,4,'#fff'],[7,10,2,4,'#000'],[5,10,6,2,'#000']],
+    lava: [[6,2,4,2,'#c0c0c0'],[5,4,6,10,'#202060'],[7,6,2,3,'#ff00ff'],[6,11,3,2,'#ff6600']],
+    pog: [[3,3,10,10,'#ff6600'],[5,5,6,6,'#ffff00'],[6,7,4,2,'#000']],
+    bsod: [[2,2,12,12,'#0000aa'],[4,5,8,1,'#fff'],[4,7,8,1,'#fff'],[4,9,6,1,'#fff']]
+  };
+  function pixelIcon(name) {
+    var cells = ICONS[name] || ICONS.pot;
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 16 16');
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('aria-hidden', 'true');
+    cells.forEach(function (cell) {
+      var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', String(cell[0]));
+      rect.setAttribute('y', String(cell[1]));
+      rect.setAttribute('width', String(cell[2]));
+      rect.setAttribute('height', String(cell[3]));
+      rect.setAttribute('fill', cell[4]);
+      svg.appendChild(rect);
+    });
+    return svg;
+  }
+  function audioMuted() {
+    var saved = readJson(AUDIO_KEY);
+    return !!(saved && saved.muted);
+  }
+  function setMuted(muted) {
+    try { localStorage.setItem(AUDIO_KEY, JSON.stringify({ muted: !!muted })); } catch (e) { /* private mode */ }
+    document.documentElement.setAttribute('data-muted', muted ? '1' : '0');
+    document.dispatchEvent(new CustomEvent('mondo-audio', { detail: { muted: !!muted } }));
+  }
+  function readFx() {
+    var saved = readJson(FX_KEY) || {};
+    return { scan: saved.scan ? 1 : 0, stars: saved.stars ? 1 : 0 };
+  }
+  function applyFx(fx) {
+    document.documentElement.setAttribute('data-scan', fx.scan ? '1' : '0');
+    document.documentElement.setAttribute('data-stars', fx.stars ? '1' : '0');
+  }
+  function writeFx(fx) {
+    try { localStorage.setItem(FX_KEY, JSON.stringify({ scan: fx.scan ? 1 : 0, stars: fx.stars ? 1 : 0 })); } catch (e) { /* private mode */ }
+    applyFx(fx);
+    document.dispatchEvent(new CustomEvent('mondo-fx', { detail: fx }));
+  }
+  window.MONDO_AUDIO = { muted: function () { return document.documentElement.getAttribute('data-muted') === '1'; }, setMuted: setMuted };
+  window.MONDO_FX = {
+    get: readFx,
+    set: function (patch) {
+      var fx = readFx();
+      if (patch && patch.scan != null) fx.scan = patch.scan ? 1 : 0;
+      if (patch && patch.stars != null) fx.stars = patch.stars ? 1 : 0;
+      writeFx(fx);
+    }
+  };
+  function menuLink(item) {
+    var link = document.createElement('a');
+    link.className = 'win98-item';
+    link.href = item.href;
+    link.setAttribute('role', 'menuitem');
+    link.appendChild(pixelIcon(item.icon));
+    var label = document.createElement('span');
+    label.textContent = item.title;
+    link.appendChild(label);
+    var path = location.pathname;
+    var here = item.href === '/' ? path === '/' : path.indexOf(item.href) === 0;
+    if (here) link.setAttribute('aria-current', 'page');
+    return link;
+  }
+  function armStars() {
+    if (document.getElementById('starTrail')) return;
+    var box = document.createElement('div');
+    box.id = 'starTrail';
+    box.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(box);
+    var last = 0;
+    var nodes = [];
+    document.addEventListener('pointermove', function (event) {
+      if (document.documentElement.getAttribute('data-stars') !== '1') return;
+      if (document.documentElement.getAttribute('data-shell-paused') === '1') return;
+      var now = Date.now();
+      if (now - last < 40) return;
+      last = now;
+      var star = document.createElement('span');
+      star.className = 'star-bit';
+      star.textContent = '★';
+      star.style.left = Math.round(event.clientX - 6) + 'px';
+      star.style.top = Math.round(event.clientY - 8) + 'px';
+      box.appendChild(star);
+      nodes.push(star);
+      while (nodes.length > 12) {
+        var old = nodes.shift();
+        if (old.parentNode) old.parentNode.removeChild(old);
+      }
+      setTimeout(function () {
+        if (star.parentNode) star.parentNode.removeChild(star);
+        var index = nodes.indexOf(star);
+        if (index >= 0) nodes.splice(index, 1);
+      }, 560);
+    }, { passive: true });
+  }
+  function paintClock(node) {
+    if (!node || document.hidden) return;
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    var suffix = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    node.textContent = hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + suffix;
+    node.dateTime = now.toISOString();
+  }
+
   function boot() {
+    applyFx(readFx());
+    document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
+    armStars();
     var nav = document.querySelector('.site-header .site-nav');
     if (!nav || document.querySelector('.shell-bar')) return;
     window.__mondoPageAuth = appsReady();
     loadRemoteCache();
 
-    var bar = document.createElement('div');
-    bar.className = 'shell-bar';
-    var pop = document.createElement('div');
-    pop.className = 'shell-pop';
+    var taskbar = document.createElement('div');
+    taskbar.className = 'win98-taskbar';
+    taskbar.id = 'win98Taskbar';
     var start = document.createElement('button');
     start.type = 'button';
-    start.className = 'shell-tool';
+    start.className = 'win98-start';
     start.id = 'shellStart';
-    start.textContent = '⊞ Start 98';
+    start.textContent = '⊞ Start';
     start.setAttribute('aria-haspopup', 'true');
     start.setAttribute('aria-expanded', 'false');
     var menu = document.createElement('div');
-    menu.className = 'shell-menu';
+    menu.className = 'shell-menu win98-menu';
     menu.id = 'shellMenu';
     menu.hidden = true;
     menu.setAttribute('role', 'menu');
+    var side = document.createElement('div');
+    side.className = 'win98-side';
+    side.textContent = 'Mondosupreme 98';
+    var cols = document.createElement('div');
+    cols.className = 'win98-cols';
+    var left = document.createElement('div');
+    left.className = 'win98-col';
+    var right = document.createElement('div');
+    right.className = 'win98-col';
+    var leftLabel = document.createElement('div');
+    leftLabel.className = 'shell-label';
+    leftLabel.textContent = 'Programs';
+    var rightLabel = document.createElement('div');
+    rightLabel.className = 'shell-label';
+    rightLabel.textContent = '90s Toys';
+    left.appendChild(leftLabel);
+    programs.forEach(function (item) { left.appendChild(menuLink(item)); });
+    var home = menuLink({ title: 'Home', href: '/', icon: 'note' });
+    left.appendChild(home);
+    right.appendChild(rightLabel);
+    toyLinks.forEach(function (item) { right.appendChild(menuLink(item)); });
+    var scanBtn = document.createElement('button');
+    scanBtn.type = 'button';
+    scanBtn.className = 'win98-item';
+    scanBtn.id = 'fxScan';
+    scanBtn.appendChild(pixelIcon('bsod'));
+    var scanText = document.createElement('span');
+    scanBtn.appendChild(scanText);
+    var starBtn = document.createElement('button');
+    starBtn.type = 'button';
+    starBtn.className = 'win98-item';
+    starBtn.id = 'fxStars';
+    starBtn.appendChild(pixelIcon('pog'));
+    var starText = document.createElement('span');
+    starBtn.appendChild(starText);
+    function paintFxButtons() {
+      var fx = readFx();
+      scanText.textContent = fx.scan ? 'CRT Scanlines: On' : 'CRT Scanlines: Off';
+      starText.textContent = fx.stars ? 'Star Trail: On' : 'Star Trail: Off';
+      scanBtn.setAttribute('aria-pressed', fx.scan ? 'true' : 'false');
+      starBtn.setAttribute('aria-pressed', fx.stars ? 'true' : 'false');
+    }
+    paintFxButtons();
+    scanBtn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      var fx = readFx();
+      writeFx({ scan: fx.scan ? 0 : 1, stars: fx.stars });
+      paintFxButtons();
+    });
+    starBtn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      var fx = readFx();
+      writeFx({ scan: fx.scan, stars: fx.stars ? 0 : 1 });
+      paintFxButtons();
+    });
+    document.addEventListener('mondo-fx', paintFxButtons);
+    right.appendChild(scanBtn);
+    right.appendChild(starBtn);
     var closeMenu = document.createElement('button');
     closeMenu.type = 'button';
     closeMenu.className = 'shell-x';
     closeMenu.textContent = 'X Close';
+    cols.appendChild(left);
+    cols.appendChild(right);
+    menu.appendChild(side);
+    menu.appendChild(cols);
     menu.appendChild(closeMenu);
-    var lastGroup = '';
-    sections.forEach(function (item) {
-      if (item.group !== lastGroup) {
-        lastGroup = item.group;
-        var label = document.createElement('div');
-        label.className = 'shell-label';
-        label.textContent = item.group;
-        menu.appendChild(label);
-      }
-      var link = document.createElement('a');
-      link.href = item.href;
-      link.textContent = item.title;
-      link.setAttribute('role', 'menuitem');
-      if (nav.querySelector('a[aria-current="page"]') && nav.querySelector('a[href="' + item.href + '"][aria-current="page"]')) {
-        link.setAttribute('aria-current', 'page');
-      }
-      menu.appendChild(link);
-    });
-    pop.appendChild(start);
-    pop.appendChild(menu);
 
+    var bar = document.createElement('div');
+    bar.className = 'shell-bar';
     var findBtn = document.createElement('button');
     findBtn.type = 'button';
     findBtn.className = 'shell-tool';
     findBtn.id = 'shellFindBtn';
-    findBtn.textContent = '🔍 Find';
-
+    findBtn.textContent = 'Find';
     var ownerBtn = document.createElement('button');
     ownerBtn.type = 'button';
     ownerBtn.className = 'shell-tool';
     ownerBtn.id = 'shellOwner';
     ownerBtn.textContent = 'Sign in';
-
-    bar.appendChild(pop);
     bar.appendChild(findBtn);
     bar.appendChild(ownerBtn);
-    nav.parentNode.insertBefore(bar, nav);
+
+    var tray = document.createElement('div');
+    tray.className = 'win98-tray';
+    var muteBtn = document.createElement('button');
+    muteBtn.type = 'button';
+    muteBtn.className = 'win98-mute';
+    muteBtn.id = 'shellMute';
+    function paintMute() {
+      var muted = audioMuted();
+      muteBtn.textContent = muted ? 'MIDI Off' : 'Sound';
+      muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+      muteBtn.setAttribute('aria-label', muted ? 'Sound is muted' : 'Mute sound and MIDI');
+    }
+    paintMute();
+    muteBtn.addEventListener('click', function () {
+      setMuted(!audioMuted());
+      paintMute();
+    });
+    var clock = document.createElement('time');
+    clock.className = 'win98-clock';
+    clock.id = 'shellClock';
+    paintClock(clock);
+    tray.appendChild(muteBtn);
+    tray.appendChild(clock);
+    taskbar.appendChild(start);
+    taskbar.appendChild(bar);
+    taskbar.appendChild(tray);
+    document.body.appendChild(taskbar);
+    document.body.appendChild(menu);
+    function parkTheme() {
+      var theme = document.querySelector('.theme-switch');
+      if (theme && theme.parentNode !== tray) tray.insertBefore(theme, muteBtn);
+    }
+    parkTheme();
+    setTimeout(parkTheme, 0);
+    setInterval(function () { paintClock(clock); }, 1000);
 
     function setMenu(open) {
       menu.hidden = !open;
@@ -452,6 +677,9 @@
       setMenu(menu.hidden);
     });
     closeMenu.addEventListener('click', function () { setMenu(false); });
+    menu.addEventListener('click', function (event) {
+      if (event.target.closest('a')) setMenu(false);
+    });
     document.addEventListener('click', function (event) {
       if (!menu.hidden && !menu.contains(event.target)) setMenu(false);
     });

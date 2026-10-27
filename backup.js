@@ -23,7 +23,12 @@
     'mondosupreme.wakes.v1',
     'mondosupreme.hits.v1',
     'mondosupreme.chat.name',
-    'mondosupreme.escape.v1'
+    'mondosupreme.escape.v1',
+    'mondosupreme.audio.v1',
+    'mondosupreme.fx.v1',
+    'mondosupreme.aim.v1',
+    'mondosupreme.wiki.history.v1',
+    'mondosupreme.pogs.v1'
   ];
   var CLOUD = [
     ['recipes', 'recipes/items'],

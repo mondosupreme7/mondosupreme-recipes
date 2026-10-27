@@ -1,6 +1,25 @@
 body.chat-page{min-height:100dvh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 body.chat-page .site-header{flex:none;padding-top:env(safe-area-inset-top)}
-body.chat-page main{flex:1;display:flex;flex-direction:column;min-height:0;width:100%;max-width:760px;margin:0 auto;padding:0 16px}
+body.chat-page main{flex:1;display:flex;flex-direction:column;min-height:0;width:100%;max-width:980px;margin:0 auto;padding:8px}
+.aim-frame{flex:1;display:flex;flex-direction:column;min-height:0;background:#d4d0c8;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
+.aim-titlebar{flex:none;display:flex;justify-content:space-between;gap:8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 14px Tahoma,Verdana,sans-serif;padding:4px 8px}
+.aim-split{flex:1;display:flex;min-height:0}
+.aim-buddies{flex:0 0 220px;display:flex;flex-direction:column;gap:6px;background:#fff;border-right:2px solid #808080;padding:8px;overflow:auto}
+.aim-buddies h2{margin:0;font:700 14px Tahoma,Verdana,sans-serif;color:#000080}
+#buddyNames{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+#buddyNames li{min-height:32px;display:flex;align-items:center;gap:6px;font:700 14px Tahoma,sans-serif}
+#buddyNames li::before{content:"☺";color:#000}
+.aim-away{display:flex;flex-direction:column;gap:4px;font:700 13px Tahoma,sans-serif}
+.aim-away textarea{font-size:16px;min-height:64px;border:2px inset #808080;resize:vertical}
+.aim-icons{display:flex;flex-wrap:wrap;gap:4px}
+.aim-icons button{min-width:44px;min-height:44px;font-size:20px;background:#c0c0c0;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;cursor:pointer}
+.aim-icons button[aria-pressed="true"]{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff;background:#000080;color:#fff}
+#aimUhoh{min-height:44px}
+.aim-room{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;padding:0 8px}
+@media (max-width:900px){
+ .aim-split{flex-direction:column}
+ .aim-buddies{flex:0 0 auto;max-height:34%;border-right:0;border-bottom:2px solid #808080}
+}
 .chat-bar{flex:none;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:8px}
 .chat-bar .tool{min-height:44px;border-radius:0;background:#c0c0c0;color:#000;font:700 .9rem "Trebuchet MS",Verdana,sans-serif;padding:0 14px;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
 .chat-status{color:var(--muted);font-size:.92rem;margin:0;flex:1 1 160px}

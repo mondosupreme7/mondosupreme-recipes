@@ -308,7 +308,11 @@
       }
     }, Math.max(50, (t - ctx.currentTime) * 1000));
   }
+  function audioBlocked() {
+    return !!(window.MONDO_AUDIO && window.MONDO_AUDIO.muted && window.MONDO_AUDIO.muted());
+  }
   function play() {
+    if (audioBlocked()) return;
     if (paused && ctx) {
       paused = false;
       playing = true;
@@ -410,9 +414,15 @@
       if (document.hidden) {
         resumeTune = playing;
         if (playing) pauseTune();
-      } else if (resumeTune) {
+      } else if (resumeTune && !audioBlocked()) {
         resumeTune = false;
         play();
+      } else resumeTune = false;
+    });
+    document.addEventListener('mondo-audio', function (event) {
+      if (event.detail && event.detail.muted) {
+        resumeTune = false;
+        silence();
       }
     });
     document.getElementById('jbNext').addEventListener('click', function () {

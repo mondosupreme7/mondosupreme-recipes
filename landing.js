@@ -2,7 +2,7 @@
   function forward() {
     var search = window.location.search || '';
     var hash = window.location.hash || '';
-    if (hash === '#guestbook') return false;
+    if (hash === '#guestbook' || hash === '#dialup' || hash === '#eight' || hash === '#lava' || hash === '#pogs' || hash === '#bsod' || hash === '#toys') return false;
     if (search.length > 1 || hash.length > 1) {
       window.location.replace('/recipes/' + search + hash);
       return true;

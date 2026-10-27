@@ -285,18 +285,123 @@ function listenMessages() {
   const add = snap => {
     const msg = fromSnap(snap);
     if (!msg) return;
+    const fresh = seenMessages && msg.author !== myUid;
     messages.set(snap.key, msg);
     scheduleRender(false);
+    if (fresh) aimBeep('chime');
   };
   messageQuery.on('child_added', add, () => setStatus('Could not load the room.'));
+  setTimeout(() => { seenMessages = true; }, 900);
   messageQuery.on('child_removed', snap => { messages.delete(snap.key); scheduleRender(false); });
+}
+const AIM_KEY = 'mondosupreme.aim.v1';
+let aimCtx = null;
+let seenMessages = false;
+let seenPresence = false;
+let lastPeople = 0;
+let aimArmed = false;
+function aimMuted() {
+  return document.documentElement.getAttribute('data-muted') === '1' || document.hidden || document.documentElement.getAttribute('data-shell-paused') === '1';
+}
+function aimBeep(kind) {
+  if (!aimArmed || aimMuted()) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!aimCtx) aimCtx = new AC();
+    if (aimCtx.state === 'suspended') aimCtx.resume();
+    const t = aimCtx.currentTime;
+    const osc = aimCtx.createOscillator();
+    const gain = aimCtx.createGain();
+    osc.connect(gain);
+    gain.connect(aimCtx.destination);
+    gain.gain.setValueAtTime(0.0001, t);
+    if (kind === 'door') {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(520, t);
+      osc.frequency.exponentialRampToValueAtTime(880, t + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.05, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      osc.start(t); osc.stop(t + 0.2);
+    } else if (kind === 'chime') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(988, t);
+      gain.gain.exponentialRampToValueAtTime(0.06, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+      osc.start(t); osc.stop(t + 0.24);
+    } else {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(196, t);
+      osc.frequency.exponentialRampToValueAtTime(98, t + 0.28);
+      gain.gain.exponentialRampToValueAtTime(0.05, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.36);
+      osc.start(t); osc.stop(t + 0.38);
+    }
+  } catch { /* audio is optional */ }
+}
+function readAim() {
+  try { return JSON.parse(localStorage.getItem(AIM_KEY) || '{}') || {}; }
+  catch { return {}; }
+}
+function awayText() {
+  return String(readAim().away || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+}
+function paintBuddies() {
+  const list = $('#buddyNames');
+  if (!list) return;
+  list.replaceChildren();
+  const me = document.createElement('li');
+  const name = loadName() || 'You';
+  const away = awayText();
+  me.textContent = name + (away ? ' — ' + away : ' — Available');
+  list.appendChild(me);
+  const others = Math.max(0, people - (live ? 1 : 0));
+  for (let i = 0; i < Math.min(others, 12); i++) {
+    const li = document.createElement('li');
+    li.textContent = 'Buddy ' + (i + 1);
+    list.appendChild(li);
+  }
+}
+function armAim() {
+  const saved = readAim();
+  const away = $('#awayMsg');
+  if (away) away.value = saved.away || '';
+  const icon = saved.icon || 'smiley';
+  document.querySelectorAll('.aim-icons button').forEach(btn => {
+    btn.setAttribute('aria-pressed', btn.dataset.icon === icon ? 'true' : 'false');
+  });
+  if (away) away.addEventListener('input', () => {
+    const next = readAim();
+    next.away = away.value.slice(0, 80);
+    try { localStorage.setItem(AIM_KEY, JSON.stringify(next)); } catch { /* private mode */ }
+    paintBuddies();
+  });
+  document.querySelectorAll('.aim-icons button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = readAim();
+      next.icon = btn.dataset.icon;
+      try { localStorage.setItem(AIM_KEY, JSON.stringify(next)); } catch { /* private mode */ }
+      document.querySelectorAll('.aim-icons button').forEach(other => {
+        other.setAttribute('aria-pressed', other === btn ? 'true' : 'false');
+      });
+    });
+  });
+  const uhoh = $('#aimUhoh');
+  if (uhoh) uhoh.addEventListener('click', () => { aimArmed = true; aimBeep('uhoh'); });
+  const arm = () => { aimArmed = true; };
+  document.addEventListener('pointerdown', arm, { once: true });
+  paintBuddies();
 }
 function onlineCount(snap) {
   const now = Date.now();
   let n = 0;
   snap.forEach(ch => { if (now - Number(ch.child('t').val() || 0) < 180000) n += 1; });
+  if (seenPresence && n > lastPeople) aimBeep('door');
+  seenPresence = true;
+  lastPeople = n;
   people = n;
   refreshStatus();
+  paintBuddies();
 }
 async function setPresence(uid) {
   if (presenceRef) {
@@ -467,6 +572,10 @@ function init() {
     armHeart();
   });
   render(true);
+  armAim();
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && aimCtx && aimCtx.suspend) aimCtx.suspend();
+  });
   if (configured()) connect();
   else refreshStatus();
 }
