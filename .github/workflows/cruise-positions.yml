@@ -1,15 +1,15 @@
 name: Update cruise positions
 
-# Listens to aisstream.io for about three minutes and publishes cruises/positions.json.
-# Set the AISSTREAM_API_KEY repository secret from an aisstream.io account key.
-# The job skips without changing positions when that secret is empty, and it
-# never prints the key. Ships that stay quiet keep their last stored fix.
-# A push made with GITHUB_TOKEN does not start the Pages workflow, so this
-# job deploys the site itself when the snapshot changes.
+# Listens to aisstream.io for about 75 seconds, fills quiet ships from Open
+# Waters, and publishes cruises/positions.json. The cron is every 5 minutes,
+# the shortest interval GitHub Actions allows. Set the AISSTREAM_API_KEY
+# repository secret from an aisstream.io account key. The job never prints
+# the key. A push made with GITHUB_TOKEN does not start the Pages workflow,
+# so this job deploys the site itself when the snapshot changes.
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -18,13 +18,13 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: cruise-positions
   cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 6
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -38,6 +38,7 @@ jobs:
       - name: Fetch positions
         env:
           AISSTREAM_API_KEY: ${{ secrets.AISSTREAM_API_KEY }}
+          AISSTREAM_WINDOW_SECONDS: "75"
         run: |
           python3 -m pip install --disable-pip-version-check websockets==15.0.1
           python3 scripts/update-cruise-positions.py

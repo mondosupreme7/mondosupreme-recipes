@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Sample live AIS positions from aisstream.io and merge them into cruises/positions.json.
+"""Sample live AIS positions and merge them into cruises/positions.json.
 
-The AISSTREAM_API_KEY repository secret is sent only as the WebSocket
-subscription's APIKey field. A missing secret skips the run and leaves the
-previous file in place. The key is never printed. Ships that stay quiet
-during the short listen window keep their last stored coordinates and seen time.
+Listens to aisstream.io for about 75 seconds. Ships that stay quiet are
+filled from the Open Waters vessel API so the snapshot still moves. The
+AISSTREAM_API_KEY repository secret is sent only as the WebSocket
+subscription's APIKey field. A missing secret skips aisstream and still
+asks Open Waters. The key is never printed.
 
 Requires the websockets package (pinned in the workflow at 15.0.1).
+Open Waters is fetched with the standard library and needs no key.
 """
 
 from __future__ import annotations
@@ -15,6 +17,8 @@ import asyncio
 import json
 import os
 import re
+import urllib.error
+import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -23,11 +27,14 @@ FLEET_PATH = ROOT / "cruises" / "fleet.json"
 OUT_PATH = ROOT / "cruises" / "positions.json"
 STREAM_URL = "wss://stream.aisstream.io/v0/stream"
 ABOUT = (
-    "Positions sampled from aisstream.io for the Royal Caribbean ships in cruises/fleet.json. "
-    "Ships that were quiet during the sample keep their previous coordinates and seen time. "
+    "Positions for the Royal Caribbean ships in cruises/fleet.json. "
+    "aisstream.io is sampled for about 75 seconds every 5 minutes, then Open Waters fills ships that stayed quiet. "
+    "A ship with nothing newer keeps its previous coordinates and seen time. "
     "Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard."
 )
 AISSTREAM_CREDIT = "Live AIS sampled from aisstream.io (https://aisstream.io/)."
+OPENWATERS_URL = "https://ais.openwaters.io/v1/vessels"
+OPENWATERS_CREDIT = "Open Waters AIS (https://openwaters.io/ais/)."
 POSITION_TYPES = {
     "PositionReport",
     "StandardClassBPositionReport",
@@ -65,6 +72,13 @@ def redact(text, secret):
     if secret:
         text = text.replace(secret, "[redacted]")
     return text
+
+
+def clean_source(value):
+    text = clip(value or "", 24)
+    if text and re.fullmatch(r"[A-Za-z0-9._-]+", text):
+        return text
+    return "openwaters.io"
 
 
 def source_key(source):
@@ -132,12 +146,12 @@ def field(mapping, *names):
 
 
 def window_seconds():
-    raw = os.environ.get("AISSTREAM_WINDOW_SECONDS", "180")
+    raw = os.environ.get("AISSTREAM_WINDOW_SECONDS", "75")
     try:
         seconds = int(raw)
     except ValueError:
-        seconds = 180
-    return max(1, min(seconds, 240))
+        seconds = 75
+    return max(45, min(seconds, 90))
 
 
 def parse_stream_message(payload):
@@ -209,7 +223,9 @@ def apply_update(previous, update):
         rec["lat"] = update["lat"]
         rec["lon"] = update["lon"]
         rec.pop("near", None)
-        rec["source"] = "aisstream.io"
+        if update.get("near"):
+            rec["near"] = update["near"]
+        rec["source"] = clip(update.get("source") or "aisstream.io", 40) or "aisstream.io"
         if update.get("seen"):
             rec["seen"] = update["seen"]
         for key in ("sog", "cog", "heading", "navStatus"):
@@ -316,6 +332,87 @@ def collect(api_key, allowed, seconds):
         return {"ok": False, "rejected": "", "updates": {}, "confirmed": False, "failed": True}
 
 
+def parse_openwaters_feature(feature, allowed):
+    if not isinstance(feature, dict):
+        return None
+    props = feature.get("properties") if isinstance(feature.get("properties"), dict) else {}
+    mmsi = mmsi_text(props.get("mmsi")) or mmsi_text(feature.get("id"))
+    if mmsi not in allowed:
+        return None
+    geometry = feature.get("geometry") if isinstance(feature.get("geometry"), dict) else {}
+    coords = geometry.get("coordinates")
+    if not isinstance(coords, list) or len(coords) < 2:
+        return None
+    lon = number(coords[0], -180, 180, 5)
+    lat = number(coords[1], -90, 90, 5)
+    if lat is None or lon is None:
+        return None
+    parsed = {
+        "mmsi": mmsi,
+        "position": True,
+        "lat": lat,
+        "lon": lon,
+        "seen": parse_time(props.get("seen")) or stamp(now_utc()),
+        "source": clean_source(props.get("source")),
+    }
+    name = clip(props.get("name") or "", 40)
+    if name:
+        parsed["aisName"] = name
+    for key, names, low, high, places in (
+        ("sog", ("sog",), 0, 101.9, 1),
+        ("cog", ("cog",), 0, 359.9, 1),
+        ("heading", ("heading",), 0, 359, None),
+        ("navStatus", ("nav_status", "navStatus"), 0, 15, None),
+    ):
+        value = number(field(props, *names), low, high, places)
+        if value is not None:
+            parsed[key] = value
+    destination = clip(props.get("destination") or "", 80)
+    if destination:
+        parsed["destination"] = destination
+    eta = format_eta(props.get("eta"))
+    if eta:
+        parsed["eta"] = eta
+    near = clip(props.get("near") or "", 80)
+    if near:
+        parsed["near"] = near
+    return parsed
+
+
+def fetch_openwaters(mmsis):
+    found = {}
+    attribution = {"openwaters.io": OPENWATERS_CREDIT}
+    allowed = set(mmsis)
+    for start in range(0, len(mmsis), 10):
+        chunk = list(mmsis)[start:start + 10]
+        url = OPENWATERS_URL + "?mmsi=" + ",".join(chunk)
+        request = urllib.request.Request(
+            url,
+            headers={"Accept": "application/geo+json", "User-Agent": "mondosupreme-cruises"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=20) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+        except (OSError, urllib.error.URLError, json.JSONDecodeError, TimeoutError) as error:
+            print("Open Waters request failed (" + error.__class__.__name__ + ")")
+            continue
+        if not isinstance(payload, dict):
+            continue
+        raw_attr = payload.get("attribution")
+        if isinstance(raw_attr, dict):
+            for key, value in raw_attr.items():
+                if isinstance(key, str) and isinstance(value, str) and key != "station":
+                    attribution[clip(key, 40)] = value
+        features = payload.get("features")
+        if not isinstance(features, list):
+            continue
+        for feature in features:
+            parsed = parse_openwaters_feature(feature, allowed)
+            if parsed:
+                found[parsed["mmsi"]] = parsed
+    return found, attribution
+
+
 def fleet_mmsis(ships):
     found = []
     for ship in ships:
@@ -333,9 +430,6 @@ def build():
     if not isinstance(ships, list) or not ships:
         raise SystemExit("cruises/fleet.json has no ships")
     api_key = os.environ.get("AISSTREAM_API_KEY", "").strip()
-    if not api_key:
-        print("AISSTREAM_API_KEY is not set. Leaving cruises/positions.json unchanged.")
-        return 0
 
     previous = load_json(OUT_PATH, {})
     old_ships = previous.get("ships") if isinstance(previous, dict) else {}
@@ -347,39 +441,51 @@ def build():
         return 0
 
     seconds = window_seconds()
-    print(f"Listening to aisstream.io for {seconds} seconds across {len(allowed)} ships.")
-    try:
-        import websockets  # noqa: F401
-    except ImportError:
-        print("The websockets package is not installed. Leaving cruises/positions.json unchanged.")
-        return 0
-    result = collect(api_key, set(allowed), seconds)
-    if result.get("rejected"):
-        print("aisstream rejected the subscription (" + result["rejected"] + "). Leaving positions.json unchanged.")
-        return 0
-    if not result.get("ok"):
-        if not result.get("failed"):
-            print("aisstream did not confirm the subscription. Leaving positions.json unchanged.")
-        return 0
+    updates = {}
+    if not api_key:
+        print("AISSTREAM_API_KEY is not set. Skipping aisstream.io and asking Open Waters.")
+    else:
+        print(f"Listening to aisstream.io for {seconds} seconds across {len(allowed)} ships.")
+        try:
+            import websockets  # noqa: F401
+        except ImportError:
+            print("The websockets package is not installed. Skipping aisstream.io.")
+        else:
+            result = collect(api_key, set(allowed), seconds)
+            if result.get("rejected"):
+                print("aisstream rejected the subscription (" + result["rejected"] + ").")
+            elif not result.get("ok"):
+                if not result.get("failed"):
+                    print("aisstream did not confirm the subscription.")
+            else:
+                updates = result.get("updates") if isinstance(result.get("updates"), dict) else {}
 
-    updates = result.get("updates") if isinstance(result.get("updates"), dict) else {}
+    quiet = [mmsi for mmsi in allowed if not (isinstance(updates.get(mmsi), dict) and updates[mmsi].get("position"))]
+    openwaters = {}
+    openwaters_attr = {}
+    if quiet:
+        print(f"Asking Open Waters for {len(quiet)} ships that stayed quiet.")
+        openwaters, openwaters_attr = fetch_openwaters(quiet)
+
     merged = {}
     heard = 0
+    filled = 0
     for mmsi in allowed:
         prior = old_ships.get(mmsi) if isinstance(old_ships.get(mmsi), dict) else None
-        update = updates.get(mmsi)
-        if update:
-            updated = apply_update(prior, update)
-            if updated:
-                merged[mmsi] = updated
-                if update.get("position"):
-                    heard += 1
-                continue
-        if prior:
-            merged[mmsi] = prior
+        update = updates.get(mmsi) if isinstance(updates.get(mmsi), dict) else None
+        current = apply_update(prior, update) if update else (dict(prior) if prior else None)
+        if update and update.get("position"):
+            heard += 1
+        backup = openwaters.get(mmsi)
+        current_seen = current.get("seen") if isinstance(current, dict) else ""
+        if isinstance(backup, dict) and backup.get("position") and (not current_seen or backup.get("seen", "") >= current_seen):
+            current = apply_update(current, backup)
+            filled += 1
+        if isinstance(current, dict):
+            merged[mmsi] = current
 
-    print(f"Heard {heard} of {len(allowed)} ships on aisstream.io. Stored {len(merged)} positions.")
-    if heard == 0:
+    print(f"Heard {heard} of {len(allowed)} ships on aisstream.io. Open Waters refreshed {filled}. Stored {len(merged)} positions.")
+    if heard == 0 and filled == 0:
         print("No ships were heard. Leaving cruises/positions.json unchanged.")
         return 0
 
@@ -388,6 +494,9 @@ def build():
         old_attr = {}
     combined_attr = {str(key): value for key, value in old_attr.items() if isinstance(value, str)}
     combined_attr["aisstream.io"] = AISSTREAM_CREDIT
+    for key, value in openwaters_attr.items():
+        if key and isinstance(value, str):
+            combined_attr[key] = value
     document = {
         "about": ABOUT,
         "attribution": used_attribution(merged, combined_attr),
