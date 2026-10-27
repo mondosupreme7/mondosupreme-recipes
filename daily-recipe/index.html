@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.google.com https://www.gstatic.com; connect-src 'self' https://www.youtube.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>MondoTV '98 — Daily YouTube Recipe Show</title>
+<meta name="description" content="MondoTV '98 plays a different YouTube recipe every day, from Food Wishes, Brian Lagerstrom, J. Kenji López-Alt, America's Test Kitchen, Preppy Kitchen, Sip and Feast, and more.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="daily.css">
+</head>
+<body class="tv-page">
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ MondoTV '98 ~*~ ★ Daily YouTube Recipe Show ★ <span class="hot">ON AIR</span> ★ A different kitchen every day ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ MondoTV '98 ~*~ ★ Daily YouTube Recipe Show ★ <span class="hot">ON AIR</span> ★ A different kitchen every day ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/daily-recipe/" class="brand"><span class="logo">📺</span><span>MondoTV <em>'98</em></span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/daily-recipe/" aria-current="page">Daily</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/stocks/">Stocks</a>
+  <a href="/wiki/">Wiki</a>
+  <a href="/board/">Board</a>
+  <a href="/chat/">Chat</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/pet/">Pet</a>
+  <a href="/forum/">Forum</a>
+  <a href="/market/">Market</a>
+  <a href="/8ball/">8-Ball</a>
+  <a href="/mmo/">MMO</a>
+  <a href="/fps/">FPS</a>
+  <a href="/escape/" aria-label="The Locked Room">???</a>
+ </nav>
+</div></header>
+<main class="wrap tv-wrap">
+ <div class="hero tv-hero">
+  <p class="tv-kicker">RealPlayer G2 · Cable Kitchen</p>
+  <h1>MondoTV '98 — Daily YouTube Recipe Show</h1>
+  <p>One recipe video a day, picked from your calendar. Channel surf the rest of the pool whenever you want.</p>
+ </div>
+ <p id="fresh" class="tv-fresh">Tuning the set…</p>
+ <div class="tv-set">
+  <div class="tv-screen">
+   <div class="crt">
+    <iframe id="player" title="Today's recipe video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <div class="crt-glass" aria-hidden="true"></div>
+   </div>
+   <div class="channel-row">
+    <button type="button" class="btn ch-btn" id="chMinus">CH−</button>
+    <div class="ch-readout" id="channelReadout" aria-live="polite">CH --</div>
+    <button type="button" class="btn ch-btn" id="chPlus">CH+</button>
+   </div>
+  </div>
+  <div class="tv-side">
+   <p class="on-air"><b>ON AIR</b> · <span id="airDate"></span></p>
+   <h2 id="showTitle">Today's show</h2>
+   <p id="showMeta" class="tv-meta"></p>
+   <div class="tv-actions">
+    <button type="button" class="btn" id="surprise">🎲 Surprise Me — Channel Surf</button>
+    <button type="button" class="btn" id="backToday" hidden>Today's show</button>
+    <a class="btn" id="watch" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+    <button type="button" class="btn" id="saveRecipe">💾 Save to Mondosupreme Recipes</button>
+    <button type="button" class="btn" id="addGrocery">🛒 Add Ingredients to Grocery List</button>
+   </div>
+   <p id="actionStatus" class="tv-meta" role="status"></p>
+  </div>
+ </div>
+ <section class="recipe-sheet" aria-labelledby="sheetTitle">
+  <h2 id="sheetTitle">Recipe card</h2>
+  <h3>Ingredients</h3>
+  <ul id="ingredients"></ul>
+  <h3>Steps</h3>
+  <ol id="steps"></ol>
+  <div id="blurb" class="chef-note" hidden></div>
+ </section>
+ <section class="archive" aria-labelledby="archiveTitle">
+  <h2 id="archiveTitle">Last 30 Days Archive</h2>
+  <ul id="archive" class="archive-list"></ul>
+ </section>
+ <section id="ownerBox" class="tv-owner" hidden>
+  <h2>Webmaster override</h2>
+  <p>Signed in as the owner. Paste any YouTube URL to feature it as today's pick, or add it to the rotation. Pins go to Firebase <code>/dailyRecipe</code>.</p>
+  <form id="ownerForm">
+   <label>YouTube URL<input id="ytUrl" type="url" inputmode="url" required placeholder="https://www.youtube.com/watch?v=" autocomplete="off"></label>
+   <label>Title<input id="ytTitle" maxlength="140" autocomplete="off"></label>
+   <div class="tv-actions">
+    <button type="submit" class="btn" id="featureBtn" value="feature">Feature as today's pick</button>
+    <button type="submit" class="btn" id="rotateBtn" value="rotate">Add to the rotation</button>
+   </div>
+  </form>
+  <p id="ownerStatus" role="status"></p>
+ </section>
+ <p class="tv-disclaimer">Recipe videos belong to their chefs. This page embeds them for browsing and pulls ingredient lines from the public description when the chef included them. Save a card into your cookbook if you want to keep it.</p>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/stocks/">Stocks</a></div></footer>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="daily.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/members.js"></script>
+<script src="/shell.js"></script>
+<script src="/backup.js"></script>
+</body>
+</html>

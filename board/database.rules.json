@@ -818,6 +818,40 @@
         }
       }
     },
+    "dailyRecipe": {
+      "feature": {
+        ".read": true,
+        ".write": "auth.token.email == 'cbrooks_911@yahoo.com'",
+        ".validate": "!newData.exists() || (newData.hasChildren(['date', 'videoId', 'title', 'channel', 'published', 'ingredients', 'steps', 'thumbnail', 'youtube', 'updatedAt']) && newData.child('date').val().matches(/^\\d{4}-\\d{2}-\\d{2}$/) && newData.child('videoId').val().matches(/^[A-Za-z0-9_-]{11}$/) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 140 && !newData.child('title').val().contains('\\n') && !newData.child('title').val().contains('\\r') && newData.child('channel').isString() && newData.child('channel').val().length <= 80 && !newData.child('channel').val().contains('\\n') && !newData.child('channel').val().contains('\\r') && (newData.child('published').val() == '' || newData.child('published').val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)) && newData.child('ingredients').isString() && newData.child('ingredients').val().length <= 8000 && newData.child('steps').isString() && newData.child('steps').val().length <= 8000 && newData.child('thumbnail').isString() && newData.child('thumbnail').val().length <= 300 && (newData.child('thumbnail').val() == '' || newData.child('thumbnail').val().matches(/^https:\\/\\/i\\.ytimg\\.com\\/\\S+$/)) && newData.child('youtube').val().matches(/^https:\\/\\/www\\.youtube\\.com\\/watch\\?v=[A-Za-z0-9_-]{11}$/) && newData.child('youtube').val().contains(newData.child('videoId').val()) && newData.child('updatedAt').isNumber() && newData.child('updatedAt').val() > 0 && newData.child('updatedAt').val() <= now)",
+        "date": { ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)" },
+        "videoId": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{11}$/)" },
+        "title": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 140 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+        "channel": { ".validate": "newData.isString() && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+        "published": { ".validate": "newData.isString() && (newData.val() == '' || newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/))" },
+        "ingredients": { ".validate": "newData.isString() && newData.val().length <= 8000" },
+        "steps": { ".validate": "newData.isString() && newData.val().length <= 8000" },
+        "thumbnail": { ".validate": "newData.isString() && newData.val().length <= 300 && (newData.val() == '' || newData.val().matches(/^https:\\/\\/i\\.ytimg\\.com\\/\\S+$/))" },
+        "youtube": { ".validate": "newData.isString() && newData.val().matches(/^https:\\/\\/www\\.youtube\\.com\\/watch\\?v=[A-Za-z0-9_-]{11}$/)" },
+        "updatedAt": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+        "$other": { ".validate": false }
+      },
+      "rotation": {
+        ".read": true,
+        "$videoId": {
+          ".write": "auth.token.email == 'cbrooks_911@yahoo.com'",
+          ".validate": "!newData.exists() || ($videoId.matches(/^[A-Za-z0-9_-]{11}$/) && newData.hasChildren(['title', 'channel', 'published', 'ingredients', 'steps', 'thumbnail', 'youtube', 'updatedAt']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 140 && !newData.child('title').val().contains('\\n') && !newData.child('title').val().contains('\\r') && newData.child('channel').isString() && newData.child('channel').val().length <= 80 && !newData.child('channel').val().contains('\\n') && !newData.child('channel').val().contains('\\r') && (newData.child('published').val() == '' || newData.child('published').val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)) && newData.child('ingredients').isString() && newData.child('ingredients').val().length <= 8000 && newData.child('steps').isString() && newData.child('steps').val().length <= 8000 && newData.child('thumbnail').isString() && newData.child('thumbnail').val().length <= 300 && (newData.child('thumbnail').val() == '' || newData.child('thumbnail').val().matches(/^https:\\/\\/i\\.ytimg\\.com\\/\\S+$/)) && newData.child('youtube').val().matches(/^https:\\/\\/www\\.youtube\\.com\\/watch\\?v=[A-Za-z0-9_-]{11}$/) && newData.child('youtube').val().contains($videoId) && newData.child('updatedAt').isNumber() && newData.child('updatedAt').val() > 0 && newData.child('updatedAt').val() <= now)",
+          "title": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 140 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "channel": { ".validate": "newData.isString() && newData.val().length <= 80 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "published": { ".validate": "newData.isString() && (newData.val() == '' || newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/))" },
+          "ingredients": { ".validate": "newData.isString() && newData.val().length <= 8000" },
+          "steps": { ".validate": "newData.isString() && newData.val().length <= 8000" },
+          "thumbnail": { ".validate": "newData.isString() && newData.val().length <= 300 && (newData.val() == '' || newData.val().matches(/^https:\\/\\/i\\.ytimg\\.com\\/\\S+$/))" },
+          "youtube": { ".validate": "newData.isString() && newData.val().matches(/^https:\\/\\/www\\.youtube\\.com\\/watch\\?v=[A-Za-z0-9_-]{11}$/)" },
+          "updatedAt": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+          "$other": { ".validate": false }
+        }
+      }
+    },
     "users": {
       ".read": "auth != null",
       "$uid": {
