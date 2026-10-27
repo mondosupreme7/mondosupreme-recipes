@@ -2,7 +2,7 @@
 
 [mondosupreme.com](https://mondosupreme.com) is a small landing page. Its visitor counter is a shared Firebase total at `hits/total`: one browser session counts once, and the same visitor can count again after 30 minutes. Until `board/database.rules.json` is published, the counter keeps showing its saved local number. Recipes live at [/recipes/](https://mondosupreme.com/recipes/) and are shared through the same Firebase Realtime Database as the board and chat. Anyone can read and add recipes. Only the owner can edit or delete them. Favorites stay in this browser under `mondosupreme.favs.v1`, and `mondosupreme.recipes.v1` is a local cache. Search, filter, import, and export still work. Publish `board/database.rules.json` in the Firebase console before sharing goes live; until then the page keeps using local storage.
 
-[Wiki](https://mondosupreme.com/wiki/) is a personal set of notes and how-tos. Pages stay in this browser under `mondosupreme.wiki.v1`. Export the JSON backup to move them.
+[Wiki](https://mondosupreme.com/wiki/) is a shared set of notes and how-tos on that same Firebase project. Anyone can read and add pages. Only the owner can edit, rename, delete, restore an older version, or tick a checklist. `mondosupreme.wiki.v1` is the local cache until `board/database.rules.json` is published.
 
 [Board](https://mondosupreme.com/board/) is a shared drawing page: freehand pen, eraser, undo of your own last stroke, and pan and zoom. Strokes are shared through Firebase Realtime Database. The rules in `board/database.rules.json` cap stroke size, point count, and rate, keep about a day of strokes, and allow only the owner account to clear the board.
 

@@ -29,8 +29,28 @@
 .wiki-body p{margin:.65em 0}
 .wiki-body ul,.wiki-body ol{margin:.4em 0 .9em;padding-left:1.3em}
 .wiki-body li{margin:.28em 0}
-.wiki-body li.task{list-style:none;margin-left:-1.2em}
-.wiki-body li.task input{margin-right:8px;accent-color:var(--accent);pointer-events:none}
+.wiki-body li.task{list-style:none;margin-left:-1.2em;min-height:44px}
+.wiki-body li.task input{margin-right:8px;accent-color:var(--accent);pointer-events:none;width:1.4rem;height:1.4rem}
+.wiki-body.can-check li.task input{pointer-events:auto}
+.sync-banner{margin:14px 0 0;background:#ffff99;color:#000;border:3px solid #000;padding:10px 12px;font:700 .95rem "Comic Sans MS","Trebuchet MS",cursive}
+.owner-error{color:#990000;font-weight:700}
+.lock-note{color:#333;font-size:.95rem}
+.fmt-bar,.tmpl-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
+.fmt-bar button,.tmpl-bar button{min-height:44px;padding:8px 10px;font:700 .8rem Verdana,sans-serif;background:#c0c0c0;color:#000;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
+.fmt-bar button:active,.tmpl-bar button:active{border-top:2px solid #404040;border-left:2px solid #404040;border-right:2px solid #fff;border-bottom:2px solid #fff}
+.tmpl-bar span{font:700 .85rem Verdana,sans-serif}
+.wiki-toc{background:#ffffcc;color:#000;border:3px solid #000;margin:12px 0;padding:8px 12px}
+.wiki-toc summary{min-height:44px;display:flex;align-items:center;font:700 1rem "Comic Sans MS","Trebuchet MS",cursive;cursor:pointer}
+.wiki-toc ol{margin:.2em 0 .4em;padding-left:1.2em}
+.wiki-toc a{color:#003399}
+.wiki-toc .toc-2{margin-left:.6em}
+.wiki-toc .toc-3{margin-left:1.2em}
+.wiki-backlinks{margin-top:22px;padding-top:12px;border-top:4px solid #003399}
+.wiki-backlinks h2{font-size:1.2rem;margin:0 0 8px}
+.wiki-backlinks a{display:inline-flex;min-height:44px;align-items:center;margin-right:10px;color:#003399}
+.history-list{display:flex;flex-direction:column;gap:12px}
+.history-card{background:#fff;color:#000;border:2px solid #003399;padding:10px}
+.history-card .meta{margin:0 0 6px}
 .wiki-body a{color:var(--accent)}
 .wiki-body a.wiki-link.is-missing{border-bottom:1px dashed var(--accent);text-decoration:none}
 .wiki-body code{font-family:"Courier New",Courier,monospace;font-size:.9em;background:#ffffcc;padding:1px 6px;border:1px solid #000}
@@ -40,7 +60,7 @@
 .wiki-body img{max-width:100%;height:auto;border:2px solid #003399}
 .wiki-body hr{border:0;border-top:1px solid var(--line);margin:1.2em 0}
 @media print{
- .site-header,.site-footer,.no-print,#toast{display:none!important}
+ .site-header,.site-footer,.no-print,#toast,.sync-banner,.fmt-bar,.tmpl-bar{display:none!important}
  body.show-page #homeView,body.show-page #editorView{display:none!important}
  body{background:#fff}
  .wiki-article{box-shadow:none;margin:0;max-width:none}
