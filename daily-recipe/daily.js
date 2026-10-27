@@ -1,4 +1,4 @@
-/* MondoTV '98. Today's show is a function of the viewer's calendar date. */
+/* MondoTV. Today's show is a function of the viewer's calendar date. */
 (function () {
   'use strict';
   var OWNER = 'cbrooks_911@yahoo.com';
@@ -220,7 +220,7 @@
         cook: 0,
         ingredients: current.ingredients.slice(0, 80),
         steps: (current.steps.length ? current.steps : ['Watch the full method on YouTube: ' + current.youtube]).slice(0, 40),
-        notes: ('MondoTV \'98 · ' + (current.channel || 'YouTube') + (current.published ? ' · ' + current.published : '') + '\n' + current.youtube + (current.blurb ? '\n' + current.blurb : '')).replace(/[\u0000-\u0009\u000b\u000c\u000e-\u001f\u007f]/g, '').trim().slice(0, 4000),
+        notes: ('MondoTV · ' + (current.channel || 'YouTube') + (current.published ? ' · ' + current.published : '') + '\n' + current.youtube + (current.blurb ? '\n' + current.blurb : '')).replace(/[\u0000-\u0009\u000b\u000c\u000e-\u001f\u007f]/g, '').trim().slice(0, 4000),
         tags: tags,
         author: '',
         createdAt: 0
@@ -356,7 +356,7 @@
       saveOverride(action, id).then(function () {
         setText('ownerStatus', action === 'feature' ? 'Today\'s show is now that video.' : 'Added to the rotation.');
       }).catch(function () {
-        setText('ownerStatus', 'Could not write /dailyRecipe. Publish the rules in board/database.rules.json, then try again.');
+        setText('ownerStatus', 'Could not write /dailyRecipe. Open /board/rules.html, copy the rules, and publish them in the Firebase console.');
       });
     });
     var year = $('yr');

@@ -1,4 +1,4 @@
-/* MondoBay '98 classifieds. Firebase when the rules allow it, this browser otherwise. */
+/* MondoBay classifieds. Firebase when the rules allow it, this browser otherwise. */
 (function () {
   'use strict';
   var KEY = 'mondosupreme.market.v1';

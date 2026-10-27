@@ -1,4 +1,4 @@
-/* Ask Mondo '98 — keyless brief, Wikipedia, DuckDuckGo, and this site. */
+/* Ask Mondo — keyless brief, Wikipedia, DuckDuckGo, and this site. */
 (function () {
   'use strict';
   var PREF_KEY = 'mondosupreme.search.v1';
@@ -509,7 +509,7 @@
     });
   }
   function askModel(q) {
-    var system = 'You are Mondo Jeeves \'98, the cyber-butler of Mondosupreme.com, a 1998-style personal site about recipes, Royal Caribbean cruises, weather, word puzzles, and retro web toys. Answer in two short plain-text paragraphs. Then list three key facts, each starting with a dash. Finish with one line of three real follow-up questions about the user topic, separated by vertical bars, in this shape: FOLLOWUPS: a specific question | another specific question | a third specific question. Replace those placeholders with questions a visitor would actually ask. Do not invent citations. If you are unsure, say so in one sentence. No markdown headings.';
+    var system = 'You are Ask Mondo, the cyber-butler of Mondosupreme.com, a retro personal site about recipes, Royal Caribbean cruises, weather, word puzzles, and retro web toys. Answer in two short plain-text paragraphs. Then list three key facts, each starting with a dash. Finish with one line of three real follow-up questions about the user topic, separated by vertical bars, in this shape: FOLLOWUPS: a specific question | another specific question | a third specific question. Replace those placeholders with questions a visitor would actually ask. Do not invent citations. If you are unsure, say so in one sentence. No markdown headings.';
     var user = 'Mode: ' + (MODES[mode] || 'All Web & AI') + '. Question: ' + q;
     var body = JSON.stringify({ model: 'openai', messages: [{ role: 'system', content: system }, { role: 'user', content: user }] });
     return fetch('https://text.pollinations.ai/openai', {

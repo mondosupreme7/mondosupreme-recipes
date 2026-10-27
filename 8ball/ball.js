@@ -1,4 +1,4 @@
-/* Mystic 8-Ball '98. Public log uses Firebase; this browser keeps a copy. */
+/* Mystic 8-Ball. Public log uses Firebase; this browser keeps a copy. */
 (function () {
   'use strict';
   var OWNER = 'cbrooks_911@yahoo.com';

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MondoSupreme">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000080">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
+<title>Database Rules — MondoSupreme</title>
+<meta name="description" content="Compact Firebase Realtime Database rules for Mondosupreme. One tap copies the whole file.">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="rules.css">
+<link rel="stylesheet" href="/readable.css">
+</head>
+<body>
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Database Rules ~*~ ★ One tap copies the whole JSON ★ Publish it in the Firebase console ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Database Rules ~*~ ★ One tap copies the whole JSON ★ Publish it in the Firebase console ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/board/rules.html" class="brand"><span class="logo">📋</span><span>Database Rules</span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/cruises/">Cruises</a>
+  <a href="/weather/">Weather</a>
+  <a href="/search/">AI Search</a>
+  <a href="/board/">Board</a>
+  <a href="/board/rules.html" aria-current="page">Rules</a>
+ </nav>
+</div></header>
+<main class="wrap">
+ <section class="box">
+  <h2>Firebase rules for mondosupreme-3bf28</h2>
+  <div class="box-body">
+   <p>This file covers board, chat, recipes, wiki, hits, arcade, pet, forum, mmo, fps, countdown, guestbook, market, eightball, stocks, dailyRecipe, quotes, wordle, launches, crossword, search, and users. Anyone can read the public sections. A signed-in visitor can post. <b>cbrooks_911@yahoo.com</b> can moderate every section. Recipe and wiki items can be created by any signed-in visitor, and only that webmaster can edit or delete them. Board strokes and chat messages are indexed on <b>t</b>.</p>
+   <button type="button" id="copyRules" class="rules-copy">[📋 1-Tap Copy Rules JSON]</button>
+   <p id="copyStatus" class="rules-status" role="status">Loading the rules file…</p>
+   <pre id="rulesView" class="rules-pre" aria-label="Rules JSON"></pre>
+   <textarea id="rulesFallback" class="rules-fallback" hidden readonly aria-label="Rules JSON fallback"></textarea>
+   <p class="rules-note">Sign in to the Firebase console for project <b>mondosupreme-3bf28</b> as cbrooks_911@yahoo.com, open Realtime Database, Rules, paste this whole file, and publish. Pages keep their on-device copies until that publish succeeds.</p>
+  </div>
+ </section>
+</main>
+<script src="vendor/firebase/firebase-app-compat.js"></script>
+<script src="vendor/firebase/firebase-auth-compat.js"></script>
+<script src="vendor/firebase/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/members.js"></script>
+<script src="/shell.js"></script>
+<script src="rules.js"></script>
+</body>
+</html>

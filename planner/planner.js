@@ -146,7 +146,7 @@ function paintGrocery() {
   });
 }
 function menuText() {
-  const parts = ['MondoMeal Planner 98'];
+  const parts = ['MondoMeal Planner'];
   DAYS.forEach(day => {
     parts.push(day[1]);
     MEALS.forEach(meal => {

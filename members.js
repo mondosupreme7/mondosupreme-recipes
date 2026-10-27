@@ -83,13 +83,13 @@
     var row = directory[uid];
     if (!row) return '';
     if (row.webmaster) return "[★ Webmaster ★]";
-    if (row.member) return "[Member '98]";
+    if (row.member) return "[Member]";
     return '';
   }
   function buttonLabel() {
     if (isOwnerUser(user)) return '[👑 Webmaster: Cody]';
     if (isMemberUser(user)) return '[👤 ' + ((profile && profile.handle) || 'Member') + ']';
-    return "[👤 Sign In / Join '98]";
+    return "[👤 Sign In / Join]";
   }
   function paintButtons() {
     var label = buttonLabel();
@@ -390,7 +390,7 @@
     dlg.id = 'memberAuth';
     dlg.className = 'shell-find member-dialog';
     var title = document.createElement('h2');
-    title.textContent = "Sign In / Join '98";
+    title.textContent = "Sign In / Join";
     var tabs = document.createElement('div');
     tabs.className = 'member-tabs';
     var signTab = document.createElement('button');

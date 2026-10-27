@@ -15,18 +15,18 @@
     notes: [76, 79, 84, 79, 76, 72, 67, 72, 76, 79, 84, 88, 84, 79, 76, 72, 79, 76]
   };
   var THEMES = {
-    halloween: { label: "Halloween '98", marquee: "~*~ HAPPY HALLOWEEN FROM MONDOSUPREME'S CYBER REALM ~*~", track: MONSTER },
-    thanksgiving: { label: "Thanksgiving '98", marquee: "~*~ HAPPY THANKSGIVING FROM THE CYBER REALM ~*~" },
-    christmas: { label: "Christmas '98", marquee: "~*~ HAPPY HOLIDAYS FROM MONDOSUPREME'S CYBER REALM ~*~", track: JINGLE },
+    halloween: { label: "Halloween", marquee: "~*~ HAPPY HALLOWEEN FROM MONDOSUPREME'S CYBER REALM ~*~", track: MONSTER },
+    thanksgiving: { label: "Thanksgiving", marquee: "~*~ HAPPY THANKSGIVING FROM THE CYBER REALM ~*~" },
+    christmas: { label: "Christmas", marquee: "~*~ HAPPY HOLIDAYS FROM MONDOSUPREME'S CYBER REALM ~*~", track: JINGLE },
     y2k: { label: 'Y2K Party', marquee: "~*~ Y2K COUNTDOWN — PARTY LIKE IT'S 1999 ~*~" },
-    valentine: { label: "Valentine's '98", marquee: "~*~ BE MINE, CYBER REALM ~*~" },
-    patrick: { label: "St. Patrick's '98", marquee: "~*~ TOP O' THE CYBER REALM ~*~" },
-    july4: { label: "4th of July '98", marquee: "~*~ STARS AND STRIPES ON THE CYBER REALM ~*~" },
-    spring: { label: 'Spring', marquee: "~*~ SPRING NEON ON THE CYBER REALM '98 ~*~" },
-    summer: { label: 'Summer Cruise', marquee: "~*~ SUMMER CRUISE ON THE CYBER REALM '98 ~*~" },
-    earlyautumn: { label: 'Early Autumn', marquee: "~*~ EARLY AUTUMN ON THE CYBER REALM '98 ~*~" },
-    winter: { label: 'Winter Ice', marquee: "~*~ WINTER ICE ON THE CYBER REALM '98 ~*~" },
-    classic: { label: "Classic GeoCities '98", marquee: "~*~ MONDOSUPREME'S CYBER REALM '98 ~*~" }
+    valentine: { label: "Valentine's", marquee: "~*~ BE MINE, CYBER REALM ~*~" },
+    patrick: { label: "St. Patrick's", marquee: "~*~ TOP O' THE CYBER REALM ~*~" },
+    july4: { label: "4th of July", marquee: "~*~ STARS AND STRIPES ON THE CYBER REALM ~*~" },
+    spring: { label: 'Spring', marquee: "~*~ SPRING NEON ON THE CYBER REALM ~*~" },
+    summer: { label: 'Summer Cruise', marquee: "~*~ SUMMER CRUISE ON THE CYBER REALM ~*~" },
+    earlyautumn: { label: 'Early Autumn', marquee: "~*~ EARLY AUTUMN ON THE CYBER REALM ~*~" },
+    winter: { label: 'Winter Ice', marquee: "~*~ WINTER ICE ON THE CYBER REALM ~*~" },
+    classic: { label: "Classic GeoCities", marquee: "~*~ MONDOSUPREME'S CYBER REALM ~*~" }
   };
   var ORDER = ['halloween', 'thanksgiving', 'christmas', 'y2k', 'valentine', 'patrick', 'july4', 'spring', 'summer', 'earlyautumn', 'winter', 'classic'];
 

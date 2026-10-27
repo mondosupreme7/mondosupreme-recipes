@@ -141,9 +141,9 @@
       screen.id = 'bsod';
       screen.className = 'bsod';
       screen.setAttribute('role', 'dialog');
-      screen.setAttribute('aria-label', 'Windows 98 blue screen');
+      screen.setAttribute('aria-label', 'MondoOS blue screen');
       var pre = document.createElement('pre');
-      pre.textContent = 'Windows\n\nA fatal exception 0E has occurred at 0028:C0011E36 in VxD VMM(01) +\n00010E36. The current application will be terminated.\n\n*  Press any key / tap anywhere to return to Mondosupreme\n\nPress any key to continue _';
+      pre.textContent = 'MondoOS\n\nA fatal exception 0E has occurred at 0028:C0011E36 in VxD VMM(01) +\n00010E36. The current application will be terminated.\n\n*  Press any key / tap anywhere to return to Mondosupreme\n\nPress any key to continue _';
       screen.appendChild(pre);
       document.body.appendChild(screen);
       screen.addEventListener('click', function () { screen.hidden = true; });

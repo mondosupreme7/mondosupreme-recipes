@@ -421,25 +421,25 @@
   var AUDIO_KEY = 'mondosupreme.audio.v1';
   var FX_KEY = 'mondosupreme.fx.v1';
   var programs = [
-    { title: "Ask Mondo '98", href: '/search/', icon: 'search' },
+    { title: "Ask Mondo", href: '/search/', icon: 'search' },
     { title: 'Recipes', href: '/recipes/', icon: 'pot' },
-    { title: "MondoMeal '98", href: '/planner/', icon: 'meal' },
-    { title: "MondoTV '98", href: '/daily-recipe/', icon: 'tv' },
+    { title: "MondoMeal Planner", href: '/planner/', icon: 'meal' },
+    { title: "MondoTV", href: '/daily-recipe/', icon: 'tv' },
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
-    { title: "MondoWeather '98", href: '/weather/', icon: 'radar' },
-    { title: "Launch Control '98", href: '/launches/', icon: 'rocket' },
-    { title: "MondoQuote '98", href: '/stocks/', icon: 'quote' },
-    { title: "MondoWord '98", href: '/wordle/', icon: 'word' },
+    { title: "MondoWeather", href: '/weather/', icon: 'radar' },
+    { title: "Launch Control", href: '/launches/', icon: 'rocket' },
+    { title: "MondoQuote", href: '/stocks/', icon: 'quote' },
+    { title: "MondoWord", href: '/wordle/', icon: 'word' },
     { title: "Mini Crossword", href: '/crossword/', icon: 'cross' },
-    { title: 'Encarta Wiki', href: '/wiki/', icon: 'book' },
-    { title: 'MS Paint Board', href: '/board/', icon: 'paint' },
-    { title: 'AIM Chat', href: '/chat/', icon: 'aim' },
+    { title: 'MondoWiki', href: '/wiki/', icon: 'book' },
+    { title: 'MondoPaint', href: '/board/', icon: 'paint' },
+    { title: 'MondoChat', href: '/chat/', icon: 'aim' },
     { title: '90s Arcade', href: '/arcade/', icon: 'joy' },
     { title: 'MondoGotchi Pet', href: '/pet/', icon: 'egg' },
-    { title: "MondoFM 98.9", href: '/radio/', icon: 'radio' },
+    { title: "MondoFM Radio", href: '/radio/', icon: 'radio' },
     { title: 'Bulletin Forum', href: '/forum/', icon: 'note' },
-    { title: "MondoBay '98", href: '/market/', icon: 'gavel' },
-    { title: "Mystic 8-Ball '98", href: '/8ball/', icon: 'ball' },
+    { title: "MondoBay", href: '/market/', icon: 'gavel' },
+    { title: "Mystic 8-Ball", href: '/8ball/', icon: 'ball' },
     { title: 'World of MondoCraft', href: '/mmo/', icon: 'sword' },
     { title: "Half-Strike '99", href: '/fps/', icon: 'gun' },
     { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door' }
@@ -449,7 +449,7 @@
     { title: 'Magic 8-Ball', href: '/8ball/', icon: 'ball' },
     { title: 'Lava Lamp', href: '/#lava', icon: 'lava' },
     { title: 'Pog Collection', href: '/#pogs', icon: 'pog' },
-    { title: 'Windows 98 BSOD', href: '/#bsod', icon: 'bsod' }
+    { title: 'MondoOS BSOD', href: '/#bsod', icon: 'bsod' }
   ];
   var ICONS = {
     pot: [[2,10,12,4,'#c0c0c0'],[4,6,8,4,'#808080'],[6,4,4,2,'#404040'],[1,10,2,2,'#000'],[13,10,2,2,'#000'],[5,12,6,2,'#000']],
@@ -597,7 +597,7 @@
     apps.type = 'button';
     apps.className = 'nav-apps';
     apps.id = 'navApps';
-    apps.textContent = '☰ All 23 Apps / Start 98';
+    apps.textContent = '☰ All 23 Apps / Start';
     apps.addEventListener('click', function (event) {
       event.stopPropagation();
       var start = document.getElementById('shellStart');
@@ -632,7 +632,7 @@
     menu.setAttribute('role', 'menu');
     var side = document.createElement('div');
     side.className = 'win98-side';
-    side.textContent = 'Mondosupreme 98';
+    side.textContent = 'MondoSupreme';
     var cols = document.createElement('div');
     cols.className = 'win98-cols';
     var left = document.createElement('div');
@@ -709,7 +709,7 @@
     ownerBtn.type = 'button';
     ownerBtn.className = 'shell-tool';
     ownerBtn.id = 'shellOwner';
-    ownerBtn.textContent = "[👤 Sign In / Join '98]";
+    ownerBtn.textContent = "[👤 Sign In / Join]";
     bar.appendChild(findBtn);
     bar.appendChild(ownerBtn);
 
@@ -786,7 +786,7 @@
 
     function paintOwner(user) {
       var on = isOwnerUser(user);
-      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Owner Mode: ON' : "[👤 Sign In / Join '98]");
+      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Owner Mode: ON' : "[👤 Sign In / Join]");
       ownerBtn.classList.toggle('is-owner', on);
       ownerBtn.setAttribute('aria-pressed', window.MONDO_MEMBER && window.MONDO_MEMBER.isMember() ? 'true' : (on ? 'true' : 'false'));
       document.dispatchEvent(new CustomEvent('mondo-owner', {detail: {on: on}}));

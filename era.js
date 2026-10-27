@@ -111,7 +111,7 @@
     var row = el('div', 'wordart-row');
     row.appendChild(el('span', 'torch'));
     row.appendChild(el('span', 'theme-sprites theme-sprites-l'));
-    var h = el('h1', 'wordart', "~*~ MONDOSUPREME'S CYBER REALM '98 ~*~");
+    var h = el('h1', 'wordart', "~*~ MONDOSUPREME'S CYBER REALM ~*~");
     row.appendChild(h);
     row.appendChild(el('span', 'theme-sprites theme-sprites-r'));
     row.appendChild(el('span', 'torch'));
@@ -193,7 +193,7 @@
     foot.appendChild(since);
     var banners = el('div', 'microbanners');
     banners.appendChild(banner('#000080', '#fff', 'Netscape Now!', 'Navigator 4.0'));
-    banners.appendChild(banner('#c0c0c0', '#000080', 'Built with', 'MS FrontPage 98'));
+    banners.appendChild(banner('#c0c0c0', '#000080', 'Built with', 'MS FrontPage'));
     banners.appendChild(banner('#fff', '#008000', 'HTML 3.2', 'Checked'));
     banners.appendChild(banner('#ffff00', '#000', 'Y2K Compliant', 'No problem'));
     banners.appendChild(banner('#000', '#00ff00', 'No Frames', 'were harmed'));

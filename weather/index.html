@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Mondo '98">
+<meta name="apple-mobile-web-app-title" content="MondoSupreme">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" content="#000080">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org https://tilecache.rainviewer.com https://mesonet.agron.iastate.edu; connect-src 'self' https://api.rainviewer.com https://tilecache.rainviewer.com https://api.open-meteo.com https://marine-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com; object-src 'none'; base-uri 'self'">
-<title>MondoWeather '98 — Doppler 4000 Radar</title>
-<meta name="description" content="MondoWeather '98, a WeatherStar 4000 style Doppler radar and local forecast. Cocoa and Port Canaveral by default, plus any ZIP or city.">
+<title>MondoWeather — Doppler 4000 Radar</title>
+<meta name="description" content="MondoWeather, a WeatherStar 4000 style Doppler radar and local forecast. Cocoa and Port Canaveral by default, plus any ZIP or city.">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/cruises/vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="/retro.css">
@@ -24,11 +24,11 @@
 </head>
 <body>
 <div class="ticker"><div class="ticker-track">
- <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ MondoWeather '98 ~*~ ★ Doppler 4000 Radar ★ Local on the 8s ★ Cocoa · Port Canaveral 32927 ★</p>
- <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ MondoWeather '98 ~*~ ★ Doppler 4000 Radar ★ Local on the 8s ★ Cocoa · Port Canaveral 32927 ★</p>
+ <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ MondoWeather ~*~ ★ Doppler 4000 Radar ★ Local on the 8s ★ Cocoa · Port Canaveral 32927 ★</p>
+ <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ MondoWeather ~*~ ★ Doppler 4000 Radar ★ Local on the 8s ★ Cocoa · Port Canaveral 32927 ★</p>
 </div></div>
 <header class="site-header"><div class="wrap hdr">
- <a href="/weather/" class="brand"><span class="logo">🌦️</span><span>MondoWeather <em>'98</em></span></a>
+ <a href="/weather/" class="brand"><span class="logo">🌦️</span><span>MondoWeather</span></a>
  <nav class="site-nav" aria-label="Site">
   <a href="/">Home</a>
   <a href="/recipes/">Recipes</a>
@@ -58,7 +58,7 @@
 <main class="wrap">
  <div class="wx-hero">
   <p class="wx-kicker">The Weather Channel · WeatherStar 4000 · Local on the 8s</p>
-  <h1>MondoWeather '98 — Doppler 4000 Radar</h1>
+  <h1>MondoWeather — Doppler 4000 Radar</h1>
   <p id="wxPlace">Cocoa / Cape Canaveral, FL · 32927</p>
  </div>
  <form id="wxSearch" class="wx-search">
