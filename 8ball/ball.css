@@ -47,7 +47,7 @@ dialog input{font:16px Verdana,sans-serif;width:100%;min-height:44px;box-sizing:
 .shake-row .btn{min-height:44px}
 .odds{font:700 .95rem Verdana,sans-serif;background:#fff;border:2px inset #808080;padding:8px}
 .odds b.yes{color:#008000}.odds b.maybe{color:#000080}.odds b.no{color:#a00000}
-.table-wrap{overflow-x:auto;margin:8px 0}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0}
 table.log{width:100%;border-collapse:collapse;background:#fff;font:.9rem Verdana,sans-serif}
 table.log th,table.log td{border:2px solid #808080;padding:6px 8px;text-align:left;vertical-align:top}
 table.log th{background:#000080;color:#fff}
@@ -57,7 +57,7 @@ table.log th{background:#000080;color:#fff}
 .owner-only[hidden]{display:none}
 .sync-banner{background:#ffffcc;color:#000;border:2px solid #000;padding:8px;font-weight:700}
 .hint{color:#333;font-size:.85rem}
-@media (max-width:700px){
+@media (max-width:768px){
   table.log,table.log tbody,table.log tr,table.log td{display:block;width:100%}
   table.log thead{display:none}
   table.log tr{margin:0 0 8px;border:2px inset #808080}

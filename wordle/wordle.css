@@ -26,7 +26,7 @@
 .leg.absent{color:#3a3a3a}
 .word-keys{width:100%;max-width:100%;margin:8px 0}
 .kb-row{display:flex;gap:3px;width:100%;margin:0 0 4px}
-.key{flex:1 1 0;min-width:0;min-height:44px;padding:0 1px;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;font:700 13px Tahoma,Verdana,sans-serif;text-transform:uppercase}
+.key{flex:1 1 0;min-width:0;min-height:44px;padding:0 1px;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;font:700 13px Tahoma,Verdana,sans-serif;text-transform:uppercase;touch-action:manipulation}
 .key.wide{flex:1.45 1 0;font-size:11px}
 .key[data-state="correct"]{background:#538d4e;color:#fff}
 .key[data-state="present"]{background:#c9b458;color:#111}

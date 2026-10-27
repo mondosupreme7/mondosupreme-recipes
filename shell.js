@@ -574,10 +574,30 @@
     node.dateTime = now.toISOString();
   }
 
+  function armMobileNav() {
+    var nav = document.querySelector('.site-header .site-nav');
+    if (!nav || document.getElementById('navApps')) return;
+    var quick = { '/': 1, '/recipes/': 1, '/cruises/': 1, '/weather/': 1, '/search/': 1 };
+    nav.querySelectorAll('a').forEach(function (link) {
+      if (!quick[link.getAttribute('href') || '']) link.classList.add('nav-more');
+    });
+    var apps = document.createElement('button');
+    apps.type = 'button';
+    apps.className = 'nav-apps';
+    apps.id = 'navApps';
+    apps.textContent = '☰ All 19 Apps / Start 98';
+    apps.addEventListener('click', function (event) {
+      event.stopPropagation();
+      var start = document.getElementById('shellStart');
+      if (start) start.click();
+    });
+    nav.parentNode.insertBefore(apps, nav);
+  }
   function boot() {
     applyFx(readFx());
     document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
     armStars();
+    armMobileNav();
     var nav = document.querySelector('.site-header .site-nav');
     if (!nav || document.querySelector('.shell-bar')) return;
     window.__mondoPageAuth = appsReady();

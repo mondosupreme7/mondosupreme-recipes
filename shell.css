@@ -13,8 +13,8 @@
 .shell-tool[aria-expanded="true"]{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
 .shell-menu[hidden]{display:none}
 .shell-label{margin:4px 6px 2px;font:700 12px Tahoma,Verdana,sans-serif;color:#000080}
-html{overflow-x:hidden}
-:root{--task-h:calc(46px + env(safe-area-inset-bottom))}
+html,body{overflow-x:hidden;max-width:100%}
+:root{--task-h:calc(52px + env(safe-area-inset-bottom))}
 body{padding-bottom:var(--task-h)}
 .win98-taskbar{
   position:fixed;left:0;right:0;bottom:0;z-index:80;box-sizing:border-box;
@@ -73,15 +73,13 @@ body.is-playing{padding:0!important}
 body.is-playing .cabinet{min-height:calc(100dvh - var(--task-h))}
 body.is-playing .crt{height:calc(100dvh - var(--task-h) - 168px)}
 @media (max-width:900px){
-  :root{--task-h:calc(48px + env(safe-area-inset-top))}
-  body{padding-top:var(--task-h);padding-bottom:0}
-  .site-header{top:var(--task-h)}
-  .ticker{padding-top:0}
-  .win98-taskbar{top:0;bottom:auto;border-top:0;border-bottom:2px solid #404040;padding:env(safe-area-inset-top) 4px 2px}
-  .win98-menu{top:var(--task-h);bottom:auto;width:min(100vw - 4px,560px);max-height:calc(100dvh - var(--task-h) - 8px)}
+  body{padding-top:0;padding-bottom:var(--task-h)}
+  .site-header{top:0}
+  .win98-taskbar{top:auto;bottom:0;border-top:2px solid #fff;border-bottom:0;padding:2px 4px env(safe-area-inset-bottom)}
+  .win98-menu{top:auto;bottom:var(--task-h);width:min(100vw - 4px,560px);max-height:calc(100dvh - var(--task-h) - 8px)}
   .win98-start,.win98-mute,.win98-taskbar .shell-tool,.win98-item{min-height:44px}
   .win98-tray select{font-size:16px!important;min-height:44px}
-  body.chat-page,body.board-page,body.fps-live,body.is-playing{padding-top:0!important;margin-top:var(--task-h)}
+  body.chat-page,body.board-page,body.fps-live,body.is-playing{padding-top:0!important;margin-top:0;padding-bottom:0!important}
 }
 @media (max-width:640px){
   .win98-cols{flex-direction:column}
@@ -104,6 +102,7 @@ body.is-playing .crt{height:calc(100dvh - var(--task-h) - 168px)}
   -webkit-overflow-scrolling:touch;scrollbar-width:thin;gap:4px;padding-bottom:2px
 }
 .site-header .site-nav a{flex:0 0 auto;white-space:nowrap}
+.nav-apps{display:none}
 dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);box-sizing:border-box}
 .shell-find{width:min(520px,calc(100vw - 16px));background:#c0c0c0;color:#000;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040;padding:10px}
 .shell-find h2{margin:0 36px 8px 0;font:700 18px Tahoma,Verdana,sans-serif;color:#000080}
@@ -139,11 +138,28 @@ html[data-shell-paused="1"] *{animation-play-state:paused!important}
 .mava{image-rendering:pixelated;vertical-align:middle}
 .mbadge{font:700 11px Tahoma,Verdana,sans-serif;color:#000080;white-space:nowrap}
 .mbadge.is-web{color:#8b0000}
+@media (max-width:768px){
+  .nav-apps{
+    display:flex;flex:1 1 100%;align-items:center;justify-content:center;min-height:44px;
+    margin:0;padding:8px 10px;font:700 16px Tahoma,Verdana,sans-serif;color:#fff;background:#000080;cursor:pointer;
+    border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040
+  }
+  .site-header .site-nav a.nav-more{display:none}
+  .site-header .hdr{align-items:stretch}
+  dialog{
+    width:min(440px,calc(100vw - 16px));
+    max-height:calc(100dvh - var(--task-h) - 12px);
+    overflow:auto;-webkit-overflow-scrolling:touch
+  }
+  dialog .shell-x{position:sticky;top:0;z-index:3}
+  pre,code{overflow-wrap:anywhere;max-width:100%}
+  .dpad,.controls,#joy,#touch,.board-stage,.crt,#world,#stage{touch-action:none}
+}
 @media (max-width:900px){
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
   textarea,select{font-size:16px!important;min-height:44px}
-  button,input[type="button"],input[type="submit"],input[type="reset"],.btn,summary,.leaflet-control a{
-    min-height:44px
+  button,a.btn,input[type="button"],input[type="submit"],input[type="reset"],.btn,summary,.leaflet-control a{
+    min-height:44px;touch-action:manipulation
   }
   .leaflet-control-zoom a{width:44px!important;height:44px!important;line-height:44px!important;font-size:22px!important}
   .leaflet-popup-close-button{width:44px!important;height:44px!important;font-size:28px!important;line-height:40px!important}

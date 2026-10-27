@@ -70,9 +70,17 @@
 .deal-actions{display:flex;flex-direction:column;gap:6px;min-width:168px}
 .deal-actions .btn,.deal-actions a.btn{min-height:44px;text-align:center;text-decoration:none}
 .deals-note a{color:#000080}
-@media(max-width:720px){
+@media(max-width:768px){
  .deals h2{font-size:18px}
  .deals-filters label{flex:1 1 140px}
+ .deals-table{min-width:0}
+ .deals-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+ .deals-table thead{display:none}
+ .deals-table,.deals-table tbody,.deals-table tr,.deals-table td{display:block;width:auto}
+ .deals-table tr{margin:8px;border:2px solid #000080;background:#fff}
+ .deals-table td{border-top:0;padding:6px 8px}
+ .deals-table td::before{content:attr(data-label);display:block;font:700 12px Tahoma,Verdana,sans-serif;color:#000080}
+ .deal-actions{min-width:0}
 }
 @media(max-width:720px){
  .hero{padding:28px 0 12px}

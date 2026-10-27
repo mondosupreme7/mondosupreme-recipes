@@ -30,7 +30,7 @@
 #ownerDialog label { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; font-weight: 700; }
 .owner-error { color: #900; }
 
-body.fps-live { overflow: hidden; height: 100dvh; width: 100%; background: #000; }
+body.fps-live { overflow: hidden; height: calc(100dvh - var(--task-h)); width: 100%; background: #000; }
 body.fps-live .ticker,
 body.fps-live .site-header,
 body.fps-live .site-footer,
@@ -41,7 +41,7 @@ body.fps-live .sync-banner { display: none !important; }
 body.fps-page.fps-live main.wrap {
   max-width: none !important;
   width: 100% !important;
-  height: 100dvh !important;
+  height: calc(100dvh - var(--task-h)) !important;
   margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
@@ -54,7 +54,7 @@ body.fps-page.fps-live main.wrap {
 #playbar { display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: #0c0c0c; color: #d5d5d5; font-family: "Courier New", Courier, monospace; }
 #playbar span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #playbar button, #touch button, #replay, #buy .btn, #buy-grid button { font-family: "Courier New", Courier, monospace; }
-#playbar button { min-height: 36px; min-width: 44px; background: #222; color: #eee; border: 1px solid #666; padding: 4px 8px; }
+#playbar button { min-height: 44px; min-width: 44px; background: #222; color: #eee; border: 1px solid #666; padding: 4px 8px; }
 #stage { position: relative; flex: 1; min-height: 0; background: #000; touch-action: none; overflow: hidden; }
 #view { width: 100%; height: 100%; display: block; image-rendering: pixelated; background: #000; touch-action: none; }
 #stick {
@@ -128,7 +128,7 @@ body.fps-page.fps-live main.wrap {
 }
 #touch button { min-height: 48px; font-size: 13px; font-weight: 700; background: #2a2a2a; color: #f0f0f0; border: 2px solid #666; border-bottom-color: #111; border-right-color: #111; }
 #btnFire { background: #6a1a14; color: #fff; }
-#toast { position: fixed; left: 8px; bottom: 8px; background: #111; color: #fff; padding: 8px 10px; z-index: 8; margin: 0; }
+#toast { position: fixed; left: 8px; bottom: calc(var(--task-h) + 8px); background: #111; color: #fff; padding: 8px 10px; z-index: 8; margin: 0; }
 body.fps-live #toast { bottom: 120px; }
 
 @media (max-width: 640px) {

@@ -1,0 +1,23 @@
+{
+  "name": "Mondosupreme '98",
+  "short_name": "Mondo '98",
+  "description": "Recipes, cruises, weather, games, and the rest of Mondosupreme, in a Windows 98 window.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#008080",
+  "theme_color": "#000080",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

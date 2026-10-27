@@ -33,7 +33,7 @@ body.night .site-header{background:#14080c}
 .inv-bar{position:sticky;bottom:0;z-index:6;display:flex;gap:10px;align-items:center;background:#120d10;border-top:1px solid #3a2e32;padding:8px 0 calc(8px + env(safe-area-inset-bottom));margin-top:8px}
 .inventory{flex:1}
 .status{min-height:1.4em;color:#d9cbb8}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#c0c0c0;color:#000;border-top:3px ridge #fff;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:70dvh;overflow:auto;box-shadow:none}
+.sheet{position:fixed;left:0;right:0;bottom:var(--task-h);z-index:40;background:#c0c0c0;color:#000;border-top:3px ridge #fff;padding:16px;max-height:calc(100dvh - var(--task-h) - 12px);overflow:auto;-webkit-overflow-scrolling:touch;box-shadow:none}
 .sheet h2{font-family:"Courier New",Courier,monospace;margin:0 0 8px;color:#f0d0a0}
 .sheet p{margin:0 0 12px}
 .sheet ul{margin:0 0 12px;padding-left:18px}

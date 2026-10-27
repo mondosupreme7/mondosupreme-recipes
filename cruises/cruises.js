@@ -889,8 +889,10 @@
       var tr = document.createElement('tr');
       if (deal.bestValue) tr.className = 'is-value';
       var shipCell = document.createElement('td');
+      shipCell.setAttribute('data-label', 'Ship');
       shipCell.append(el('span', deal.ship, 'deal-ship'));
       var sailCell = document.createElement('td');
+      sailCell.setAttribute('data-label', 'Sailing');
       sailCell.append(el('span', deal.title || (deal.nights + '-night sailing')));
       sailCell.append(document.createElement('br'));
       sailCell.append(el('span', sailLabel(deal.sailDate)));
@@ -901,8 +903,10 @@
         sailCell.append(badges);
       }
       var portCell = document.createElement('td');
+      portCell.setAttribute('data-label', 'Ports');
       portCell.textContent = deal.portsLabel || (Array.isArray(deal.ports) ? deal.ports.join(' → ') : '');
       var priceCell = document.createElement('td');
+      priceCell.setAttribute('data-label', 'From');
       priceCell.append(el('span', dollars(deal.startingPrice), 'deal-price'));
       var cabinText = cabinLine(deal.cabins);
       if (cabinText) {
@@ -914,8 +918,10 @@
         priceCell.append(el('span', 'From ' + deal.startingCabin));
       }
       var nightCell = document.createElement('td');
+      nightCell.setAttribute('data-label', 'Per night');
       nightCell.append(el('span', perNightText(deal.perNight), 'deal-price'));
       var actionCell = document.createElement('td');
+      actionCell.setAttribute('data-label', 'Actions');
       var actions = el('div', null, 'deal-actions');
       var center = el('button', 'Center Ship on Map', 'btn');
       center.type = 'button';

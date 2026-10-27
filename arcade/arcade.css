@@ -38,8 +38,8 @@
 body.is-playing{overflow:hidden;height:100%;background:#c0c0c0}
 body.is-playing .ticker,body.is-playing .site-header,body.is-playing .site-footer,body.is-playing .scoreboard,body.is-playing .carts,body.is-playing .sync-banner,body.is-playing .hint{display:none!important}
 body.is-playing .wrap{max-width:none;padding:0}
-body.is-playing .cabinet{min-height:100dvh;max-width:none;margin:0;box-shadow:none}
-body.is-playing .crt{height:calc(100dvh - 168px);min-height:0}
+body.is-playing .cabinet{min-height:calc(100dvh - var(--task-h));max-width:none;margin:0;box-shadow:none}
+body.is-playing .crt{height:calc(100dvh - var(--task-h) - 168px);min-height:0}
 .controls{padding-bottom:env(safe-area-inset-bottom)}
 @keyframes blink{50%{opacity:0}}
 @media (prefers-reduced-motion: reduce){.blink{animation:none}}

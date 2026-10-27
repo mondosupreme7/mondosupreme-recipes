@@ -81,9 +81,9 @@ body.market-page #toast{z-index:95;bottom:calc(var(--task-h, 46px) + 10px)}
  .ebay-badge.blink{animation:none}
 }
 @media (max-width:900px){
- body.market-page #toast{bottom:12px}
+ body.market-page #toast{bottom:calc(var(--task-h) + 10px)}
 }
-@media (max-width:700px){
+@media (max-width:768px){
  table.lots thead{display:none}
  table.lots,table.lots tbody,table.lots tr,table.lots td{display:block;width:100%}
  table.lots tr{margin:0 0 12px;border:2px solid #000080}
