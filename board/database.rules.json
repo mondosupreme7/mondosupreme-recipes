@@ -852,6 +852,20 @@
         }
       }
     },
+    "quotes": {
+      ".read": true,
+      "custom": {
+        "$id": {
+          ".write": "auth.token.email == 'cbrooks_911@yahoo.com' && $id.matches(/^-[A-Za-z0-9_-]{1,40}$/)",
+          ".validate": "!newData.exists() || (newData.hasChildren(['text','author','pinned','createdAt']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 240 && !newData.child('text').val().contains('\\n') && !newData.child('text').val().contains('\\r') && newData.child('author').isString() && newData.child('author').val().length > 0 && newData.child('author').val().length <= 60 && !newData.child('author').val().contains('\\n') && !newData.child('author').val().contains('\\r') && newData.child('pinned').isBoolean() && newData.child('createdAt').isNumber() && newData.child('createdAt').val() > 0 && newData.child('createdAt').val() <= now)",
+          "text": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 240 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "author": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60 && !newData.val().contains('\\n') && !newData.val().contains('\\r')" },
+          "pinned": { ".validate": "newData.isBoolean()" },
+          "createdAt": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now" },
+          "$other": { ".validate": false }
+        }
+      }
+    },
     "users": {
       ".read": "auth != null",
       "$uid": {

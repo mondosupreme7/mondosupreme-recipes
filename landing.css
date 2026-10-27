@@ -4,6 +4,33 @@
 .mood,.network{margin:.2em 0;font-family:var(--display)}
 .mood{color:#000080}
 .network{color:#800080}
+.quote-box{margin:0 0 14px;background:#c0c0c0;color:#000;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
+.quote-box h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px Tahoma,Verdana,sans-serif}
+.quote-body{display:flex;gap:12px;align-items:flex-start;margin:4px;padding:10px 12px 12px;background:#ffffcc;border:2px inset #808080}
+.quote-bulb{flex:0 0 auto;width:54px;height:54px;font-size:40px;line-height:54px;text-align:center;background:#fff;border:2px outset #fff}
+.quote-copy{flex:1;min-width:0}
+.quote-kicker{margin:0;font:700 12px Tahoma,Verdana,sans-serif;color:#000080;letter-spacing:.02em}
+.quote-copy blockquote{margin:.4em 0;font:700 1.2rem/1.35 "Comic Sans MS",Tahoma,cursive;color:#000080}
+.quote-by{margin:0 0 8px;font-style:italic}
+.quote-flag{display:inline-block;margin-left:6px;padding:0 4px;background:#ff0;color:#000;border:1px solid #000;font:700 11px Tahoma,Verdana,sans-serif;font-style:normal}
+.quote-next{min-height:44px}
+.quote-owner{margin:4px;padding:8px;background:#fff;border:2px inset #808080}
+.quote-owner[hidden]{display:none}
+.quote-owner h3{margin:0 0 4px;font:700 15px Tahoma,Verdana,sans-serif;color:#000080}
+.quote-owner p{margin:.35em 0}
+.quote-owner label{display:block;margin:6px 0;font:700 12px Tahoma,Verdana,sans-serif}
+.quote-owner input[type="text"],.quote-owner textarea{display:block;width:100%;box-sizing:border-box;margin-top:3px;font:14px Tahoma,Verdana,sans-serif}
+.quote-pin-check{font-weight:400}
+.quote-owner-actions{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.quote-custom{list-style:none;margin:8px 0 0;padding:0}
+.quote-custom li{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0;padding:6px 0;border-bottom:1px dotted #808080}
+.quote-custom .quote-custom-text{flex:1;min-width:180px}
+@media(max-width:640px){
+ .quote-body{gap:0;padding:8px 10px}
+ .quote-bulb{display:none}
+ .quote-copy blockquote{font-size:1.05rem;margin:.25em 0}
+ .quote-by{margin:0 0 6px}
+}
 .profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:10px;align-items:start;margin-bottom:16px}
 .box{background:#fff;color:#000;border:3px ridge #dfdfdf;box-shadow:none}
 .box h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font:700 16px Tahoma,Verdana,sans-serif;text-shadow:none}

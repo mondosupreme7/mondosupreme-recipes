@@ -42,6 +42,31 @@
  </nav>
 </div></header>
 <main class="wrap">
+ <section class="quote-box" aria-labelledby="quoteTitle">
+  <h2 id="quoteTitle">💡 Thought for Your Journey</h2>
+  <div class="quote-body">
+   <div class="quote-bulb" aria-hidden="true">💡</div>
+   <div class="quote-copy">
+    <p class="quote-kicker">Windows 98 · Tip of the Visit</p>
+    <blockquote id="quoteText" aria-live="polite">Loading a thought for this visit…</blockquote>
+    <p class="quote-by" id="quoteBy"></p>
+    <button class="btn quote-next" id="quoteNext" type="button">[↻ Next Quote]</button>
+   </div>
+  </div>
+  <form class="quote-owner" id="quoteOwner" hidden>
+   <h3>Webmaster quote desk</h3>
+   <p>Add a quote to the shared pool, or pin one so visitors see a PINNED mark when it comes up.</p>
+   <label>Quote<textarea id="quoteInput" name="quote" maxlength="240" required rows="2"></textarea></label>
+   <label>Author<input id="quoteAuthorInput" name="author" type="text" maxlength="60" required></label>
+   <label class="quote-pin-check"><input id="quotePin" type="checkbox"> Pin this quote</label>
+   <div class="quote-owner-actions">
+    <button class="btn primary" type="submit">Add quote</button>
+    <button class="btn" id="quotePinCurrent" type="button">Pin the quote on screen</button>
+   </div>
+   <p id="quoteStatus" role="status"></p>
+   <ul class="quote-custom" id="quoteCustom"></ul>
+  </form>
+ </section>
  <div class="profile-head">
   <p class="sparkle">~*~ Welcome to Mondosupreme.com ~*~</p>
   <h1>Mondosupreme's Space</h1>
@@ -241,6 +266,7 @@
 <script src="/shell.js"></script>
 <script src="/8ball/oracle.js"></script>
 <script src="/toys.js"></script>
+<script src="/quotes.js"></script>
 <script src="/guestbook.js"></script>
 <script src="/backup.js"></script>
 </body>
