@@ -310,9 +310,16 @@ async function setPresence(uid) {
     await presenceRef.onDisconnect().remove();
     await presenceRef.set({ t: firebase.database.ServerValue.TIMESTAMP });
   } catch { /* presence is optional */ }
-  heart = setInterval(() => {
-    if (presenceRef) presenceRef.set({ t: firebase.database.ServerValue.TIMESTAMP }).catch(() => {});
-  }, 45000);
+  armHeart();
+}
+function pulsePresence() {
+  if (document.hidden || !presenceRef) return;
+  presenceRef.set({ t: firebase.database.ServerValue.TIMESTAMP }).catch(() => {});
+}
+function armHeart() {
+  if (heart) { clearInterval(heart); heart = null; }
+  if (document.hidden || !presenceRef) return;
+  heart = setInterval(pulsePresence, 45000);
 }
 function updateOwnerUi(user) {
   const email = user && user.email ? user.email.toLowerCase() : '';
@@ -449,6 +456,15 @@ function init() {
         : 'Could not sign in.';
       $('#ownerError').hidden = false;
     }
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (heart) { clearInterval(heart); heart = null; }
+      return;
+    }
+    if (!presenceRef) return;
+    pulsePresence();
+    armHeart();
   });
   render(true);
   if (configured()) connect();

@@ -182,7 +182,7 @@
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     if (!audioCtx.ac) audioCtx.ac = new AC();
-    if (audioCtx.ac.state === 'suspended') audioCtx.ac.resume();
+    if (audioCtx.ac.state === 'suspended' && !document.hidden) audioCtx.ac.resume();
     return audioCtx.ac;
   }
 
@@ -1732,12 +1732,14 @@
     g.fill();
   }
 
+  var loopGen = 0;
   function ensureLoop() {
-    if (looping) return;
+    if (document.hidden || looping) return;
     looping = true;
+    var gen = ++loopGen;
     lastT = 0;
     var tick = function (t) {
-      if (!looping) return;
+      if (!looping || gen !== loopGen || document.hidden) { looping = false; return; }
       var dt = 0.016;
       if (lastT) dt = Math.min(0.05, (t - lastT) / 1000);
       lastT = t;
@@ -1753,6 +1755,16 @@
     };
     window.requestAnimationFrame(tick);
   }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      looping = false;
+      loopGen += 1;
+      if (audioCtx.ac && audioCtx.ac.suspend) audioCtx.ac.suspend();
+      return;
+    }
+    if (audioCtx.ac && profile.sound && audioCtx.ac.resume) audioCtx.ac.resume();
+    if (state.phase === 'play' && player) ensureLoop();
+  });
 
   function paintPicks() {
     var teams = document.querySelectorAll('#lobby [data-team]');

@@ -258,7 +258,18 @@
     var label = document.querySelector('.counter-label');
     if (label) label.textContent = 'You are visitor number since Oct 1998';
     document.getElementById('jbPlay').addEventListener('click', play);
-    document.getElementById('jbStop').addEventListener('click', silence);
+    document.getElementById('jbStop').addEventListener('click', function () { resumeTune = false; silence(); });
+    var resumeTune = false;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        resumeTune = playing;
+        if (playing) silence();
+        if (ctx && ctx.suspend) ctx.suspend();
+      } else if (resumeTune) {
+        resumeTune = false;
+        play();
+      }
+    });
     document.getElementById('jbNext').addEventListener('click', function () {
       index = (index + 1) % TRACKS.length;
       if (playing) play();

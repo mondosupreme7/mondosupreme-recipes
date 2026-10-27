@@ -605,6 +605,7 @@ function draw() {
   }
 }
 function frame(ts) {
+  if (!raf || document.hidden) { raf = 0; return; }
   const dt = Math.min(0.033, last ? (ts - last) / 1000 : 0.016);
   last = ts;
   if (phase === 'play' && run) {
@@ -614,6 +615,15 @@ function frame(ts) {
   }
   draw();
   raf = requestAnimationFrame(frame);
+}
+function startArcade() {
+  if (document.hidden) {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    if (audioCtx && audioCtx.suspend) audioCtx.suspend();
+    return;
+  }
+  if (!raf) raf = requestAnimationFrame(frame);
 }
 function startGame() {
   phase = 'play';
@@ -894,9 +904,18 @@ function init() {
     }
   });
   $('#btnClear').onclick = clearScores;
-  document.addEventListener('visibilitychange', () => { if (document.hidden) { input.left = input.right = input.up = input.down = input.fire = false; } });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      input.left = input.right = input.up = input.down = input.fire = false;
+      startArcade();
+      return;
+    }
+    if (soundOn && audioCtx && audioCtx.resume) audioCtx.resume();
+    startArcade();
+  });
   connectArcade();
-  requestAnimationFrame(frame);
+  raf = 0;
+  startArcade();
 }
 if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', init);
 })();

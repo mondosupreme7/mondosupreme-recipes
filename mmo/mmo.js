@@ -1413,14 +1413,27 @@
     if (Object.keys(updates).length) await firebase.database().ref().update(updates);
   }
 
+  var loopQueued = false;
+  function queueLoop() {
+    if (loopQueued || document.hidden) return;
+    loopQueued = true;
+    loopOn = true;
+    requestAnimationFrame(loop);
+  }
   function loop(ts) {
+    loopQueued = false;
+    if (document.hidden) { loopOn = false; return; }
     var dt = Math.min(0.05, (ts - (loop.last || ts)) / 1000);
     loop.last = ts;
     update(dt || 0);
     render();
     if (playing) ui();
-    requestAnimationFrame(loop);
+    queueLoop();
   }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { loopOn = false; return; }
+    queueLoop();
+  });
 
   function boot() {
     canvas = $('world');
@@ -1578,7 +1591,7 @@
     }
     bootAuth();
     resize();
-    if (!loopOn) { loopOn = true; requestAnimationFrame(loop); }
+    queueLoop();
 
     window.MONDO_MMO = {
       player: function () {

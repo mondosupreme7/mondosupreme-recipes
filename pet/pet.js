@@ -485,7 +485,22 @@ function paintStatus() {
   }
   el.textContent = pet.name + ' the ' + (LABELS[pet.species] || pet.stage) + '. Hunger hearts ' + pet.hunger + '/4. Happiness hearts ' + pet.happy + '/4. ' + ageText(pet) + '.' + (pet.sick ? ' Sick.' : '') + (pet.vacation ? ' With the sitter.' : '');
 }
-function frame() { draw(); requestAnimationFrame(frame); }
+let petTimer = 0, petDrawing = false;
+function frame() {
+  if (!petDrawing || document.hidden) { petDrawing = false; return; }
+  draw();
+  requestAnimationFrame(frame);
+}
+function startPetLoops() {
+  if (document.hidden) {
+    petDrawing = false;
+    if (petTimer) { clearInterval(petTimer); petTimer = 0; }
+    if (audioCtx && audioCtx.suspend) audioCtx.suspend();
+    return;
+  }
+  if (!petTimer) petTimer = setInterval(tick, 400);
+  if (!petDrawing) { petDrawing = true; requestAnimationFrame(frame); }
+}
 
 function syncBanner() {
   const el = $('#syncBanner');
@@ -647,12 +662,16 @@ function init() {
     try { await firebase.database().ref('pet/park/' + id).remove(); toast('Removed'); }
     catch (err) { if (isDenied(err)) showBanner(); toast('Could not remove that pet'); }
   });
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) catchUp(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { startPetLoops(); return; }
+    catchUp();
+    if (soundOn && audioCtx && audioCtx.resume) audioCtx.resume();
+    startPetLoops();
+  });
   connectPet();
   renderPark();
   paintStatus();
-  setInterval(tick, 400);
-  requestAnimationFrame(frame);
+  startPetLoops();
 }
 if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', init);
 })();

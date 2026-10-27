@@ -328,7 +328,12 @@ function showPlay() {
   $('#ending').hidden = true;
   $('#play').hidden = false;
   render();
-  if (tick) clearInterval(tick);
+  armTick();
+}
+function armTick() {
+  if (tick) { clearInterval(tick); tick = null; }
+  if (document.hidden || $('#play').hidden) return;
+  $('#timer').textContent = formatDuration(elapsed());
   tick = setInterval(() => { $('#timer').textContent = formatDuration(elapsed()); }, 250);
 }
 function showEnding() {
@@ -652,6 +657,7 @@ function toggleSound() {
   lfoGain.connect(droneGain.gain);
   lfo.start();
   audio = {
+    ctx: ctx,
     stop() { drone.stop(); air.stop(); lfo.stop(); ctx.close(); }
   };
   btn.setAttribute('aria-pressed', 'true');
@@ -734,6 +740,15 @@ function boot() {
   $('#padOk').addEventListener('click', tryPad);
   $('#pad').addEventListener('click', onPad);
   $('#play').addEventListener('click', onClick);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (tick) { clearInterval(tick); tick = null; }
+      if (audio && audio.ctx && audio.ctx.suspend) audio.ctx.suspend();
+      return;
+    }
+    if (!$('#play').hidden) armTick();
+    if (audio && audio.ctx && audio.ctx.resume) audio.ctx.resume();
+  });
   if (raw && raw.finale) { showEnding(); return; }
   bootSplash(raw);
 }

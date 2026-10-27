@@ -1,0 +1,55 @@
+/* Shared header, Start menu, Find, and iPhone field sizing. Cached once for every section. */
+.site-header .hdr{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.site-header .brand{flex:1 1 auto;min-width:0}
+.site-header .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shell-bar{display:flex;flex:0 1 auto;gap:6px;align-items:center;min-width:0;position:relative;z-index:6}
+.shell-tool,.shell-x,.shell-menu a,.shell-hit{
+  font:700 15px Tahoma,Verdana,sans-serif;color:#000;background:#d4d0c8;text-decoration:none;
+  border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;
+  min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;cursor:pointer
+}
+.shell-tool{white-space:nowrap}
+.shell-tool.is-owner{background:#000080;color:#fff;border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
+.shell-tool[aria-expanded="true"]{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
+.shell-pop{position:relative}
+.shell-menu{
+  position:fixed;left:8px;top:8px;z-index:90;width:min(300px,calc(100vw - 16px));
+  max-height:calc(100dvh - 16px);overflow:auto;-webkit-overflow-scrolling:touch;background:#c0c0c0;padding:4px;
+  border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;
+  box-shadow:4px 4px 0 #000
+}
+.shell-menu[hidden]{display:none}
+.shell-menu .shell-x{float:right;margin:0 0 4px 4px;min-width:88px}
+.shell-label{clear:both;margin:8px 4px 2px;font:700 12px Tahoma,Verdana,sans-serif;color:#000080}
+.shell-menu a{display:flex;width:100%;margin:0 0 3px;justify-content:flex-start;background:#fff}
+.shell-menu a[aria-current="page"]{background:#000080;color:#fff}
+.site-header .site-nav{
+  flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;max-width:100%;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin;gap:4px;padding-bottom:2px
+}
+.site-header .site-nav a{flex:0 0 auto;white-space:nowrap}
+dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);box-sizing:border-box}
+.shell-find{width:min(520px,calc(100vw - 16px));background:#c0c0c0;color:#000;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040;padding:10px}
+.shell-find h2{margin:0 36px 8px 0;font:700 18px Tahoma,Verdana,sans-serif;color:#000080}
+.shell-find p{margin:0 0 8px}
+.shell-find .shell-x{float:right}
+.shell-find label{display:block;font:700 14px Tahoma,Verdana,sans-serif}
+.shell-find input,.shell-find textarea,.shell-find select{width:100%;box-sizing:border-box;margin:4px 0 8px}
+.shell-results{max-height:min(50dvh,420px);overflow:auto;clear:both}
+.shell-hit{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin:0 0 4px;background:#fff;text-align:left}
+.shell-hit b{font-size:16px}
+.shell-kind{font:700 12px Tahoma,Verdana,sans-serif;color:#000080}
+.shell-empty{margin:0;padding:8px;background:#fff}
+html[data-shell-paused="1"] *{animation-play-state:paused!important}
+@media (max-width:900px){
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  textarea,select{font-size:16px!important;min-height:44px}
+  button,input[type="button"],input[type="submit"],input[type="reset"],.btn,summary,.leaflet-control a{
+    min-height:44px
+  }
+  .leaflet-control-zoom a{width:44px!important;height:44px!important;line-height:44px!important;font-size:22px!important}
+  .leaflet-popup-close-button{width:44px!important;height:44px!important;font-size:28px!important;line-height:40px!important}
+}
+@media (min-width:901px){
+  .site-header .site-nav{scrollbar-width:thin}
+}

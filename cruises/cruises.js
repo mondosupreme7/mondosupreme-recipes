@@ -546,10 +546,18 @@
     }, 120000);
   }
 
+  function openHashedShip() {
+    var wanted = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    if (!wanted || !fleet.some(function (ship) { return ship.mmsi === wanted; })) return;
+    if (selected === wanted) return;
+    selectShip(wanted, false);
+  }
+
   document.getElementById('refresh').addEventListener('click', function () { refreshAll(true); });
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) refreshAll(false);
   });
+  window.addEventListener('hashchange', openHashedShip);
 
   fetch('fleet.json', {cache: 'no-cache'})
     .then(function (response) {
@@ -575,6 +583,7 @@
       fitted = true;
       renderList();
       armRefresh();
+      openHashedShip();
     })
     .catch(function () {
       show('The fleet list could not be loaded.');
