@@ -362,6 +362,9 @@ html[data-theme] .studio-dock button {
 }
 html[data-theme="dark"] .counter svg,
 html[data-theme="harbor"] .counter svg { filter: grayscale(1) invert(1) contrast(1.4); }
+html[data-theme] .key[data-state="correct"]{background:#538d4e!important;color:#fff!important;border-color:#214d1e!important}
+html[data-theme] .key[data-state="present"]{background:#c9b458!important;color:#111827!important;border-color:#6a5610!important}
+html[data-theme] .key[data-state="absent"]{background:#c62828!important;color:#fff!important;border-color:#8e1c1c!important}
 html[data-theme] main a:not(.btn):not(.choice):not(.brand):not(.status-card):not(.cat-card) { color: var(--link); }
 .studio-hero h1, .studio-hero p, .counter-label, .hero h1, .hero p, .mc-brand { color: var(--ink, #0f172a); }
 .studio-nav #shellBackup, .studio-nav #shellRestoreBtn { display: none !important; }

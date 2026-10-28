@@ -240,7 +240,7 @@
     $('wordShare').disabled = game.status === 'play';
     if (game.status === 'won') setMsg(state.mode === 'daily' ? 'Solved in ' + game.guesses.length + '/6.' : 'Got it in ' + game.guesses.length + '/6.');
     else if (game.status === 'lost') setMsg('The word was ' + secret().toUpperCase() + '.');
-    else if (!$('wordMsg').dataset.lock) setMsg('Six tries. Green is the right spot. Gold is in the word. Gray is out.');
+    else if (!$('wordMsg').dataset.lock) setMsg('Six tries. Green is the right spot. Gold is in the word. Gray tiles are out, and those keys turn red.');
     paintStats();
   }
   function paintStats() {
