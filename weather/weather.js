@@ -210,9 +210,63 @@
     setTimeout(function () { map.invalidateSize(); }, 200);
   }
 
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function align5(ms) {
+    var step = 5 * 60 * 1000;
+    return Math.floor(ms / step) * step;
+  }
+  function iemStamp(ms) {
+    var d = new Date(ms);
+    return String(d.getUTCFullYear()) + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate()) + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes());
+  }
+  function iemTemplate(ms) {
+    return 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-' + iemStamp(ms) + '/{z}/{x}/{y}.png';
+  }
+  function probeTile(ms) {
+    var url = 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-' + iemStamp(ms) + '/2/1/1.png';
+    return new Promise(function (resolve) {
+      var img = new Image();
+      var done = false;
+      function finish(ok) {
+        if (done) return;
+        done = true;
+        resolve(ok);
+      }
+      img.onload = function () { finish(img.naturalWidth > 0); };
+      img.onerror = function () { finish(false); };
+      setTimeout(function () { finish(false); }, 5000);
+      img.src = url;
+    });
+  }
+  function findLatest() {
+    var start = align5(Date.now() - 5 * 60 * 1000);
+    function next(i) {
+      var ms = start - i * 5 * 60 * 1000;
+      if (i >= 8) return Promise.resolve(ms);
+      return probeTile(ms).then(function (ok) { return ok ? ms : next(i + 1); });
+    }
+    return next(0);
+  }
+  function relLabel(ms, newest) {
+    var mins = Math.round((ms - newest) / 60000);
+    if (mins >= -7) return 'Now';
+    var abs = -mins;
+    var h = Math.floor(abs / 60);
+    var m = abs % 60;
+    if (!h) return '-' + m + 'm';
+    if (!m) return '-' + h + 'h';
+    return '-' + h + 'h ' + m + 'm';
+  }
   function frameWhen(frame) {
     var t = frame.time;
     return new Date(t > 1e12 ? t : t * 1000);
+  }
+  function frameCaption(frame) {
+    var newest = frames.length ? frames[frames.length - 1].time : frame.time;
+    var when = frameWhen(frame).toLocaleString(undefined, {
+      weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+    });
+    return relLabel(frame.time, newest) + ' · ' + when;
   }
   function showFrame(index) {
     if (!frames.length) return;
@@ -226,12 +280,20 @@
       }
     });
     var frame = frames[frameIndex];
+    var caption = frameCaption(frame);
     var stamp = $('wxStamp');
-    if (stamp) {
-      var when = frameWhen(frame).toLocaleString(undefined, {
-        weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
-      });
-      stamp.textContent = when + (frame.nowcast ? ' · NOWCAST' : '') + ' · ' + (frameIndex + 1) + '/' + frames.length;
+    if (stamp) stamp.textContent = caption + ' · ' + (frameIndex + 1) + '/' + frames.length;
+    var read = $('wxScrubRead');
+    if (read) read.textContent = caption;
+    var scrub = $('wxScrub');
+    if (scrub) {
+      scrub.min = '0';
+      scrub.max = String(frames.length - 1);
+      scrub.value = String(frameIndex);
+      scrub.setAttribute('aria-valuemin', '0');
+      scrub.setAttribute('aria-valuemax', String(frames.length - 1));
+      scrub.setAttribute('aria-valuenow', String(frameIndex));
+      scrub.setAttribute('aria-valuetext', caption);
     }
   }
   function clearLoop() {
@@ -241,44 +303,33 @@
     frames = [];
   }
   function loadRadar() {
-    fetch('https://api.rainviewer.com/public/weather-maps.json').then(function (res) {
-      if (!res.ok) throw new Error('radar');
-      return res.json();
-    }).then(function (data) {
-      var host = data.host || 'https://tilecache.rainviewer.com';
-      var now = Date.now() / 1000;
-      var past = ((data.radar && data.radar.past) || []).filter(function (frame) {
-        return frame.time >= now - 2 * 3600;
-      });
-      if (!past.length) past = ((data.radar && data.radar.past) || []).slice(-12);
-      var cast = ((data.radar && data.radar.nowcast) || []).map(function (frame) {
-        frame.nowcast = true;
-        return frame;
-      });
-      var wasPlaying = playing;
+    var wasPlaying = playing;
+    var first = frames.length === 0;
+    if ($('wxStamp')) $('wxStamp').textContent = 'Loading the 6-hour loop…';
+    findLatest().then(function (latest) {
+      var step = 15 * 60 * 1000;
+      var start = latest - 6 * 60 * 60 * 1000;
+      var times = [];
+      for (var t = start; t <= latest; t += step) times.push(t);
       clearLoop();
-      frames = past.concat(cast);
+      frames = times.map(function (ms) { return { time: ms }; });
       frames.forEach(function (frame) {
-        frameLayers.push(L.tileLayer(host + frame.path + '/256/{z}/{x}/{y}/3/1_1.png', {
+        frameLayers.push(L.tileLayer(iemTemplate(frame.time), {
           pane: 'radar',
           opacity: opacity,
-          maxNativeZoom: 7,
-          attribution: 'RainViewer'
+          maxNativeZoom: 8,
+          attribution: 'NEXRAD composite via Iowa Environmental Mesonet'
         }));
       });
-      if (!frames.length) {
-        $('wxStamp').textContent = 'No RainViewer frames';
-        if (!nexradOn) setNexrad(true);
-        note('RainViewer published no frames. NEXRAD is on so the US mosaic still draws.');
-        return;
-      }
-      showFrame(Math.max(0, past.length - 1));
+      showFrame(frames.length - 1);
       if (wasPlaying) play();
-      note('RainViewer loop, last 2 hours' + (cast.length ? ' plus nowcast' : '') + '. NEXRAD ' + (nexradOn ? 'is under the loop.' : 'is off.'));
+      note('6-hour loop, ' + frames.length + ' frames from -6h to Now. Iowa Environmental Mesonet US composite, 15-minute steps.');
     }).catch(function () {
-      $('wxStamp').textContent = 'RainViewer unavailable';
-      if (!nexradOn) setNexrad(true);
-      note('RainViewer did not answer. NEXRAD base reflectivity is on.');
+      if (first) {
+        $('wxStamp').textContent = 'Radar loop unavailable';
+        if (!nexradOn) setNexrad(true);
+      }
+      note('The 6-hour composite did not load. The live NEXRAD mosaic is still available.');
     });
   }
   function play() {
@@ -648,8 +699,12 @@
     });
     $('wxPlay').addEventListener('click', play);
     $('wxPause').addEventListener('click', pause);
-    $('wxPrev').addEventListener('click', function () { showFrame(frameIndex - 1); });
-    $('wxNext').addEventListener('click', function () { showFrame(frameIndex + 1); });
+    $('wxPrev').addEventListener('click', function () { pause(); showFrame(frameIndex - 1); });
+    $('wxNext').addEventListener('click', function () { pause(); showFrame(frameIndex + 1); });
+    $('wxScrub').addEventListener('input', function (event) {
+      pause();
+      showFrame(Number(event.target.value));
+    });
     $('wxOpacity').addEventListener('input', function (event) {
       opacity = Number(event.target.value) / 100;
       frameLayers.forEach(function (layer) { layer.setOpacity(opacity); });
