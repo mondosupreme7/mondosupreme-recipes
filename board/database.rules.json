@@ -29,6 +29,8 @@
     "launches": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
     "crossword": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
     "search": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
+    "puzzles": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
+    "local": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
     "users": { ".read": "auth != null", ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" }
   }
 }

@@ -428,6 +428,11 @@
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
     { title: "MondoWeather", href: '/weather/', icon: 'radar' },
     { title: "Launch Control", href: '/launches/', icon: 'rocket' },
+    { title: 'Tide & Surf', href: '/tides/', icon: 'radar' },
+    { title: 'Grocery List', href: '/grocery/', icon: 'pot' },
+    { title: 'Connections', href: '/connections/', icon: 'word' },
+    { title: 'Local Guide', href: '/local/', icon: 'note' },
+    { title: 'Tropics', href: '/tropics/', icon: 'ship' },
     { title: "MondoQuote", href: '/stocks/', icon: 'quote' },
     { title: "MondoWord", href: '/wordle/', icon: 'word' },
     { title: "Mini Crossword", href: '/crossword/', icon: 'cross' },
@@ -620,7 +625,12 @@
       ['Recipes', '/recipes/'],
       ['Cruises', '/cruises/'],
       ['Weather', '/weather/'],
+      ['Tides', '/tides/'],
       ['Launches', '/launches/'],
+      ['Grocery', '/grocery/'],
+      ['Puzzles', '/connections/'],
+      ['Local', '/local/'],
+      ['Tropics', '/tropics/'],
       ['Markets', '/stocks/'],
       ['Search', '/search/'],
       ['Community', '/forum/'],
@@ -645,11 +655,11 @@
     menu.hidden = true;
     menu.setAttribute('role', 'menu');
     var groups = [
-      ['Kitchen & Food', ['Recipes', 'MondoMeal Planner', 'MondoTV']],
-      ['Space Coast & Travel', ['Cruises', 'MondoWeather', 'Launch Control']],
+      ['Kitchen & Food', ['Recipes', 'MondoMeal Planner', 'MondoTV', 'Grocery List']],
+      ['Space Coast & Travel', ['Cruises', 'MondoWeather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
       ['Finance & Search', ['MondoQuote', 'Ask Mondo', 'MondoWiki']],
       ['Community', ['Bulletin Forum', 'MondoChat', 'MondoPaint', 'MondoBay', 'MondoFM Radio']],
-      ['Game Studio', ['90s Arcade', 'MondoGotchi Pet', 'MondoWord', 'Mini Crossword', 'Mystic 8-Ball', 'World of MondoCraft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
+      ['Game Studio', ['90s Arcade', 'MondoGotchi Pet', 'MondoWord', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'World of MondoCraft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
     ];
     groups.forEach(function (group) {
       var block = document.createElement('section');
