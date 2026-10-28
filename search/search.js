@@ -9,7 +9,7 @@
     cruise: 'Cruises & Travel',
     retro: '90s Retro',
     tech: 'Tech & Finance',
-    site: 'Search Inside MondoSupreme'
+    site: 'Search Inside Mondosupreme'
   };
   var RADICAL = [
     'What is Perfect Day at CocoCay?',
@@ -709,7 +709,7 @@
       var outside = mode !== 'site';
       $('askStatus').textContent = outside
         ? 'Ground truth is in. The cyber-butler line fills in when it answers.'
-        : 'Search Inside MondoSupreme is ready.';
+        : 'Search Inside Mondosupreme is ready.';
     });
     aiJob.then(function (text) {
       if (mine !== ticket || mode === 'site') return;

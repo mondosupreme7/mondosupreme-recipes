@@ -102,13 +102,32 @@ body.fps-page.fps-live main.wrap{height:calc(100dvh - var(--nav-h))!important}
 body.is-playing{padding-top:var(--nav-h)!important;padding-bottom:0!important}
 body.is-playing .cabinet{min-height:calc(100dvh - var(--nav-h))}
 body.is-playing .crt{height:calc(100dvh - var(--nav-h) - 168px)}
+.studio-dock{display:none}
+@media (max-width:768px){
+  :root{--dock-h:calc(62px + env(safe-area-inset-bottom))}
+  body{padding-bottom:var(--dock-h)}
+  .studio-dock{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:85;box-sizing:border-box;
+    height:var(--dock-h);padding:4px 4px env(safe-area-inset-bottom);
+    background:var(--nav,#fff);border-top:1px solid var(--line,#e2e8f0);align-items:stretch;justify-content:space-around
+  }
+  .studio-dock a,.studio-dock button{
+    flex:1 1 0;min-height:44px;border:0;background:transparent;color:var(--ink,#0f172a);
+    font:700 12px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    text-decoration:none;display:flex;align-items:center;justify-content:center;border-radius:12px
+  }
+  .studio-dock a[aria-current="page"]{background:var(--chip,#f1f5f9)}
+  .studio-drawer{max-height:calc(100dvh - var(--nav-h) - var(--dock-h) - 16px)}
+  body.chat-page,body.board-page,body.fps-live{height:calc(100dvh - var(--nav-h) - var(--dock-h))}
+}
 @media (max-width:900px){
-  body{padding-top:var(--nav-h);padding-bottom:20px}
+  body{padding-top:var(--nav-h)}
   .studio-links{display:none}
   .studio-clock,#shellMute{display:none}
   .studio-drawer{left:8px;right:8px;width:auto}
   body.chat-page,body.board-page,body.fps-live,body.is-playing{padding-top:var(--nav-h)!important;margin-top:0}
   .studio-apps,.studio-ghost,.studio-account{min-height:44px}
+  .studio-apps kbd{display:none}
 }
 @media (max-width:640px){
   .win98-cols{flex-direction:column}

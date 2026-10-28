@@ -612,7 +612,7 @@
     var brand = document.createElement('a');
     brand.className = 'studio-brand';
     brand.href = '/';
-    brand.textContent = 'MondoSupreme';
+    brand.textContent = 'Mondosupreme';
     var links = document.createElement('nav');
     links.className = 'studio-links';
     links.setAttribute('aria-label', 'Primary');
@@ -716,6 +716,31 @@
     taskbar.appendChild(clock);
     document.body.appendChild(taskbar);
     document.body.appendChild(menu);
+    var dock = document.createElement('nav');
+    dock.className = 'studio-dock';
+    dock.setAttribute('aria-label', 'Shortcuts');
+    [
+      ['Home', '/'],
+      ['Recipes', '/recipes/'],
+      ['Weather', '/weather/'],
+      ['Search', '/search/']
+    ].forEach(function (pair) {
+      var a = document.createElement('a');
+      a.href = pair[1];
+      a.textContent = pair[0];
+      if (pair[1] === '/' ? location.pathname === '/' : location.pathname.indexOf(pair[1]) === 0) a.setAttribute('aria-current', 'page');
+      dock.appendChild(a);
+    });
+    var more = document.createElement('button');
+    more.type = 'button';
+    more.textContent = 'More';
+    more.setAttribute('aria-label', 'All apps');
+    more.addEventListener('click', function (event) {
+      event.stopPropagation();
+      start.click();
+    });
+    dock.appendChild(more);
+    document.body.appendChild(dock);
     var tray = menu;
     function parkTheme() {
       var theme = document.querySelector('.theme-switch');

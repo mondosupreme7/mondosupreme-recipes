@@ -244,11 +244,12 @@ main h1, .studio-hero h1, .hero h1, .profile-head h1, .wiki-article h1, .recipe-
 .quote-copy blockquote { font-family: Newsreader, Georgia, serif !important; font-size: 1.35rem; line-height: 1.35; }
 .num-up, .tick.up, .delta.up { color: #047857 !important; }
 .num-down, .tick.down, .delta.down { color: #b91c1c !important; }
-body.studio-telemetry { background: #e7eef6 !important; }
-body.studio-telemetry .leaflet-container { border-radius: 14px; border: 1px solid #cbd5e1; overflow: hidden; }
-body.studio-finance { background: #f8fafc !important; }
+body.studio-telemetry .leaflet-container { border-radius: 14px; overflow: hidden; }
 body.studio-game canvas, #view, #world, #lcd, #screen { border-radius: 12px; }
-.studio-hero { padding: 28px 0 8px; }
+body:not(.chat-page):not(.board-page):not(.fps-live) main.wrap { padding: 22px 16px 40px; }
+button, .btn, a.btn, .studio-apps, .studio-account { transition: background .15s ease, color .15s ease, box-shadow .15s ease; }
+.box, .card, .quote-box, .status-card, .cat-card { transition: box-shadow .2s ease; }
+.studio-hero { padding: 12px 0 8px; }
 .studio-hero h1 { margin: 0 0 8px; font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: 1.02; }
 .studio-hero p { max-width: 42rem; color: #334155; font-size: 1.05rem; }
 .status-grid, .cat-grid { display: grid; gap: 12px; margin: 16px 0; }
@@ -263,15 +264,106 @@ body.studio-game canvas, #view, #world, #lcd, #screen { border-radius: 12px; }
 .cat-card h2 { font-family: Newsreader, Georgia, serif !important; font-size: 1.45rem; }
 .cat-card ul { margin: 8px 0 0; padding-left: 18px; }
 .studio-footer { margin-top: 28px; color: #64748b; font-size: .9rem; }
-html[data-theme]:not([data-theme="classic"]) body,
+html[data-theme="light"] {
+  --bg: #f4f3ef; --paper: #ffffff; --ink: #0f172a; --muted: #334155; --line: #e2e8f0;
+  --link: #1d4ed8; --nav: rgba(255,255,255,.94); --accent: #0f172a; --accent-ink: #ffffff;
+  --chip: #f1f5f9;
+}
+html[data-theme="dark"] {
+  --bg: #0b1220; --paper: #151c2c; --ink: #f8fafc; --muted: #cbd5e1; --line: #334155;
+  --link: #93c5fd; --nav: rgba(15,23,42,.94); --accent: #e2e8f0; --accent-ink: #0f172a;
+  --chip: #1e293b;
+}
+html[data-theme="harbor"] {
+  --bg: #071422; --paper: #10243a; --ink: #f8fafc; --muted: #dbeafe; --line: #1e3a5f;
+  --link: #7dd3fc; --nav: rgba(7,20,34,.94); --accent: #5eead4; --accent-ink: #042f2e;
+  --chip: #16324c;
+}
+html[data-theme="warm"] {
+  --bg: #f6f1e7; --paper: #fffaf3; --ink: #1c1917; --muted: #44403c; --line: #e7e5e4;
+  --link: #9a3412; --nav: rgba(255,250,243,.96); --accent: #9a3412; --accent-ink: #fffaf3;
+  --chip: #f3ece1;
+}
 html[data-theme] body,
-main.wrap {
-  background: #f4f3ef !important;
+html[data-theme] main.wrap {
+  background: var(--bg) !important;
   background-image: none !important;
-  color: #0f172a !important;
+  color: var(--ink) !important;
   border: 0 !important;
 }
-.studio-hero h1, .studio-hero p, .counter-label, .hero h1, .hero p, .mc-brand { color: #0f172a !important; }
+html[data-theme] .studio-nav,
+html[data-theme] .studio-dock,
+html[data-theme] .studio-drawer {
+  background: var(--nav) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme] .studio-brand,
+html[data-theme] .studio-links a,
+html[data-theme] .studio-dock a,
+html[data-theme] .studio-dock button,
+html[data-theme] .studio-clock { color: var(--ink) !important; }
+html[data-theme] .studio-links a[aria-current="page"],
+html[data-theme] .studio-links a:hover,
+html[data-theme] .studio-dock a[aria-current="page"] { background: var(--chip) !important; }
+html[data-theme] .studio-apps,
+html[data-theme] .studio-ghost,
+html[data-theme] .studio-close,
+html[data-theme] button:not(.studio-dock button),
+html[data-theme] .btn {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme] .btn.primary,
+html[data-theme] .studio-account {
+  background: var(--accent) !important;
+  color: var(--accent-ink) !important;
+  border-color: var(--accent) !important;
+}
+html[data-theme] .box,
+html[data-theme] .card,
+html[data-theme] .quote-box,
+html[data-theme] .gb-box,
+html[data-theme] .hero,
+html[data-theme] .status-card,
+html[data-theme] .cat-card,
+html[data-theme] .quote-body,
+html[data-theme] .counter,
+html[data-theme] input,
+html[data-theme] select,
+html[data-theme] textarea,
+html[data-theme] dialog {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme] .studio-hero h1,
+html[data-theme] .studio-hero p,
+html[data-theme] .counter-label,
+html[data-theme] .hero h1,
+html[data-theme] .hero p,
+html[data-theme] .mc-brand,
+html[data-theme] h1,
+html[data-theme] h2,
+html[data-theme] h3 { color: var(--ink) !important; }
+html[data-theme] .status-card span,
+html[data-theme] .cat-card p,
+html[data-theme] .studio-footer,
+html[data-theme] .quote-by,
+html[data-theme] .quote-kicker { color: var(--muted) !important; }
+html[data-theme] .quote-copy,
+html[data-theme] .quote-copy blockquote,
+html[data-theme] .quote-box,
+html[data-theme] .quote-box h2 { color: var(--ink) !important; }
+html[data-theme] .studio-dock button {
+  background: transparent !important;
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] .counter svg,
+html[data-theme="harbor"] .counter svg { filter: grayscale(1) invert(1) contrast(1.4); }
+html[data-theme] main a:not(.btn):not(.choice):not(.brand):not(.status-card):not(.cat-card) { color: var(--link); }
+.studio-hero h1, .studio-hero p, .counter-label, .hero h1, .hero p, .mc-brand { color: var(--ink, #0f172a); }
 .studio-nav #shellBackup, .studio-nav #shellRestoreBtn { display: none !important; }
 .quote-body { background: #fff !important; border: 0 !important; }
 .quote-bulb { display: none !important; }
