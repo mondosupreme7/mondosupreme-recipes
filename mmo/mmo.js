@@ -959,30 +959,62 @@
     if (kind === 'defias') shirt = '#a32020';
     if (kind === 'raptor') shirt = '#3f8f4e';
     if (kind === 'boar') shirt = '#8a5a32';
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.fillStyle = 'rgba(15,23,42,.28)';
+    ctx.beginPath();
+    ctx.ellipse(0, 2, kind === 'boss' ? 18 : 8, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
     if (kind === 'boss') {
-      ctx.fillStyle = '#ff6a00';
-      ctx.fillRect(sx - 16, sy - 42, 32, 28);
-      ctx.fillRect(sx - 20, sy - 50, 6, 12);
-      ctx.fillRect(sx + 14, sy - 50, 6, 12);
-      ctx.fillStyle = '#ffe14a';
-      ctx.fillRect(sx - 8, sy - 34, 4, 4);
-      ctx.fillRect(sx + 4, sy - 34, 4, 4);
+      var aura = ctx.createRadialGradient(0, -28, 4, 0, -28, 36);
+      aura.addColorStop(0, 'rgba(255,120,20,.55)');
+      aura.addColorStop(1, 'rgba(255,80,0,0)');
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(0, -28, 36, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#7c2d12';
+      ctx.beginPath();
+      ctx.moveTo(-18, -8);
+      ctx.lineTo(-8, -46);
+      ctx.lineTo(0, -28);
+      ctx.lineTo(8, -48);
+      ctx.lineTo(18, -8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fb923c';
+      ctx.fillRect(-4, -34, 3, 8);
+      ctx.fillRect(3, -36, 3, 8);
+      ctx.restore();
       return;
     }
-    var skin = kind === 'kobold' ? '#c9a24a' : '#e6b48a';
-    ctx.fillStyle = shirt;
-    ctx.fillRect(sx - 6, sy - 20, 12, 10);
-    ctx.fillStyle = faction === 'horde' ? '#c41e3a' : (faction === 'alliance' ? '#2458c9' : shirt);
-    ctx.fillRect(sx - 6, sy - 16, 12, 3);
+    var skin = kind === 'kobold' ? '#d6b15a' : '#f3c7a1';
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(-5, -12, 4, 10);
+    ctx.fillRect(2, -12, 4, 10);
+    var body = ctx.createLinearGradient(-8, -28, 8, -6);
+    body.addColorStop(0, '#fff7ed');
+    body.addColorStop(0.4, shirt);
+    body.addColorStop(1, '#1c1917');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(0, -24);
+    ctx.lineTo(9, -8);
+    ctx.lineTo(-9, -8);
+    ctx.closePath();
+    ctx.fill();
     ctx.fillStyle = skin;
-    ctx.fillRect(sx - 4, sy - 28, 8, 8);
-    ctx.fillStyle = '#2a2118';
-    ctx.fillRect(sx - 5, sy - 10, 4, 8);
-    ctx.fillRect(sx + 1, sy - 10, 4, 8);
+    ctx.beginPath();
+    ctx.arc(0, -28, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-2, -30, 1, 1);
+    ctx.fillRect(2, -30, 1, 1);
     if (kind === 'kobold') {
-      ctx.fillStyle = '#ff6600';
-      ctx.fillRect(sx + 6, sy - 26, 3, 6);
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(6, -30, 2, 7);
     }
+    ctx.restore();
   }
   function taggedName(uid, name) {
     var badge = window.MONDO_MEMBER ? window.MONDO_MEMBER.badgeText(uid) : '';
@@ -1023,13 +1055,36 @@
         if (tile === 'block') color = zoneId === 'molten' ? '#140808' : '#143018';
         if (tile === 'tree') color = '#1d4a22';
         if (tile === 'portal') color = '#6d28d9';
+        var px = tx * TILE - cam.x;
+        var py = ty * TILE - cam.y;
         ctx.fillStyle = color;
-        ctx.fillRect(tx * TILE - cam.x, ty * TILE - cam.y, TILE, TILE);
+        ctx.fillRect(px, py, TILE, TILE);
+        if (tile === 'liquid') {
+          ctx.fillStyle = zoneId === 'molten' ? 'rgba(255,180,40,.35)' : 'rgba(255,255,255,.2)';
+          var wave = Math.sin((tx + ty + Date.now() / 400) ) * 3;
+          ctx.fillRect(px, py + 8 + wave, TILE, 3);
+        } else if (tile !== 'block' && tile !== 'path' && zoneId !== 'molten' && (tx + ty) % 3 === 0) {
+          ctx.strokeStyle = 'rgba(20,80,30,.45)';
+          ctx.beginPath();
+          ctx.moveTo(px + 8, py + TILE - 4);
+          ctx.quadraticCurveTo(px + 10, py + 8, px + 14, py + 6);
+          ctx.stroke();
+        }
         if (tile === 'tree') {
-          ctx.fillStyle = '#14381a';
-          ctx.fillRect(tx * TILE - cam.x + 12, ty * TILE - cam.y + 8, 8, 16);
-          ctx.fillStyle = '#2f8f3a';
-          ctx.fillRect(tx * TILE - cam.x + 6, ty * TILE - cam.y + 2, 20, 12);
+          ctx.fillStyle = 'rgba(15,23,42,.25)';
+          ctx.beginPath();
+          ctx.ellipse(px + 18, py + 26, 10, 3, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#3f2a1d';
+          ctx.fillRect(px + 14, py + 14, 6, 14);
+          ctx.fillStyle = '#166534';
+          ctx.beginPath();
+          ctx.arc(px + 17, py + 12, 12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#4ade80';
+          ctx.beginPath();
+          ctx.arc(px + 12, py + 8, 5, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
     }

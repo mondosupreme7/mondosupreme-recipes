@@ -1470,17 +1470,21 @@
     };
   }
 
-  function wallPaint(ch, side, stripe) {
+  function wallPaint(ch, side, stripe, band) {
     var table = {
-      hl: ['#2f6470', '#16343c', '#214852'],
-      cs: ['#d2b48a', '#8a6240', '#c49a62'],
-      tfc: ['#a84848', '#5c2424', '#7a3030']
-    }[state.mode] || ['#888', '#444', '#666'];
-    if (ch === 'C') return stripe ? '#a56b3c' : (side ? '#6b4423' : '#8a5a30');
-    if (ch === 'D') return stripe ? '#8a7040' : (side ? '#4a3a22' : '#6a5430');
-    if (ch === '=') return side ? '#3a4550' : '#52606c';
-    if (stripe) return table[0];
-    return side ? table[1] : table[2];
+      hl: ['#6d8c96', '#1a3038', '#2c4d58'],
+      cs: ['#e7d2ae', '#8a6240', '#c49a62'],
+      tfc: ['#c45a4a', '#5c2424', '#7a3030']
+    }[state.mode] || ['#9aa4ae', '#3a4450', '#5c6772'];
+    var base;
+    if (ch === 'C') base = stripe ? '#b98352' : (side ? '#6b4423' : '#8a5a30');
+    else if (ch === 'D') base = stripe ? '#d7c08a' : (side ? '#4a3a22' : '#6a5430');
+    else if (ch === '=') base = side ? '#5c6b78' : '#8ea0b0';
+    else if (stripe) base = table[0];
+    else base = side ? table[1] : table[2];
+    if (band === 'rivet') return '#d9e2ea';
+    if (band === 'seam') return '#0f172a';
+    return base;
   }
 
   function render() {
@@ -1491,10 +1495,30 @@
     var h = view.height;
     updateCam();
     var horizon = h / 2 + pitch;
-    var ceil = state.mode === 'hl' ? '#101820' : state.mode === 'cs' ? '#e4c89a' : '#79b4e0';
-    var floor = state.mode === 'hl' ? '#1c1a16' : state.mode === 'cs' ? '#c4a36a' : '#3c4a30';
-    ctx.fillStyle = ceil;
+    var sky = ctx.createLinearGradient(0, 0, 0, Math.max(1, horizon));
+    if (state.mode === 'cs') {
+      sky.addColorStop(0, '#f4e2c4');
+      sky.addColorStop(1, '#c9844a');
+    } else if (state.mode === 'tfc') {
+      sky.addColorStop(0, '#8ec6ef');
+      sky.addColorStop(0.7, '#d7ecff');
+      sky.addColorStop(1, '#f7f1df');
+    } else {
+      sky.addColorStop(0, '#07111c');
+      sky.addColorStop(0.45, '#16324a');
+      sky.addColorStop(1, '#3d2a22');
+    }
+    ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, Math.max(0, horizon));
+    var sunX = w * 0.72;
+    var glow = ctx.createRadialGradient(sunX, horizon * 0.35, 4, sunX, horizon * 0.35, 90);
+    glow.addColorStop(0, 'rgba(255,236,180,.85)');
+    glow.addColorStop(1, 'rgba(255,236,180,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, w, Math.max(0, horizon));
+    var floor = ctx.createLinearGradient(0, Math.max(0, horizon), 0, h);
+    floor.addColorStop(0, state.mode === 'cs' ? '#e7c99a' : '#3a342c');
+    floor.addColorStop(1, state.mode === 'cs' ? '#8d6a3d' : '#12100e');
     ctx.fillStyle = floor;
     ctx.fillRect(0, Math.max(0, horizon), w, h);
     var zbuf = new Float32Array(w);
@@ -1535,9 +1559,20 @@
       var wallX = side === 0 ? player.y + perp * rayY : player.x + perp * rayX;
       wallX -= Math.floor(wallX);
       var stripe = (Math.floor(wallX * 8) % 2) === 0;
-      ctx.globalAlpha = Math.max(0.28, 1 - perp / 16);
-      ctx.fillStyle = wallPaint(tile, side, stripe);
+      var fog = Math.max(0.34, 1 - perp / 14);
+      ctx.globalAlpha = fog;
+      ctx.fillStyle = wallPaint(tile, side, stripe, 'base');
       ctx.fillRect(x, y0, 1, lineH);
+      var seam = Math.floor(wallX * 16) % 16;
+      if (seam === 0 || seam === 8) {
+        ctx.fillStyle = wallPaint(tile, side, stripe, 'seam');
+        ctx.fillRect(x, y0, 1, lineH);
+      }
+      if (seam === 2 || seam === 10) {
+        ctx.fillStyle = wallPaint(tile, side, stripe, 'rivet');
+        var step = Math.max(8, Math.floor(lineH / 7));
+        for (var riv = y0 + 6; riv < y0 + lineH; riv += step) ctx.fillRect(x, riv, 1, 2);
+      }
       ctx.globalAlpha = 1;
     }
     var sprites = [];
@@ -1582,15 +1617,24 @@
       var spriteW = spriteH * 0.55;
       var y0 = Math.floor(h / 2 - spriteH / 2 + pitch);
       var x0 = Math.floor(screenX - spriteW / 2);
-      ctx.globalAlpha = Math.max(0.4, 1 - ty / 16);
+      ctx.globalAlpha = Math.max(0.45, 1 - ty / 16);
       for (var stripe = Math.max(0, x0); stripe < Math.min(w, x0 + spriteW); stripe++) {
         if (ty >= zbuf[stripe]) continue;
         var local = (stripe - x0) / spriteW;
-        ctx.fillStyle = local > 0.35 && local < 0.65 ? shadeHex(sp.color) : '#111';
-        ctx.fillRect(stripe, y0, 1, spriteH);
-        if (local > 0.4 && local < 0.6) {
+        var head = local > 0.32 && local < 0.68;
+        var torso = local > 0.18 && local < 0.82;
+        if (!torso) continue;
+        var top = head ? y0 : y0 + spriteH * 0.22;
+        var tall = head ? spriteH : spriteH * 0.78;
+        ctx.fillStyle = head ? '#1c1917' : '#111827';
+        ctx.fillRect(stripe, top, 1, tall);
+        if (local > 0.34 && local < 0.66) {
           ctx.fillStyle = sp.color;
-          ctx.fillRect(stripe, y0, 1, Math.max(2, spriteH * 0.28));
+          ctx.fillRect(stripe, top + tall * 0.18, 1, tall * 0.5);
+        }
+        if (Math.abs(local - 0.5) < 0.06) {
+          ctx.fillStyle = '#f8fafc';
+          ctx.fillRect(stripe, top + 2, 1, Math.max(2, tall * 0.08));
         }
       }
       ctx.globalAlpha = 1;
@@ -1651,52 +1695,68 @@
     var kick = recoil * 16;
     ctx.save();
     ctx.translate(w * 0.68, h - 6 + bob - kick);
+    var metal = ctx.createLinearGradient(-20, -90, 20, 10);
+    metal.addColorStop(0, '#f8fafc');
+    metal.addColorStop(0.45, '#94a3b8');
+    metal.addColorStop(1, '#1e293b');
+    function barrel(x, y, bw, bh, color) {
+      var g = ctx.createLinearGradient(x, y, x + bw, y);
+      g.addColorStop(0, '#0f172a');
+      g.addColorStop(0.35, color);
+      g.addColorStop(1, '#020617');
+      ctx.fillStyle = g;
+      ctx.fillRect(x, y, bw, bh);
+    }
     if (id === 'crowbar' || id === 'knife' || id === 'wrench') {
       ctx.rotate(-0.7 - swing * 0.9);
-      ctx.fillStyle = id === 'wrench' ? '#c0c0c0' : '#cc1e1e';
+      ctx.fillStyle = id === 'wrench' ? metal : '#b91c1c';
       ctx.fillRect(-5, -78, 10, 84);
-      ctx.fillStyle = '#777';
+      ctx.fillStyle = '#334155';
       ctx.fillRect(-7, -10, 14, 16);
     } else if (id === 'rocket') {
-      ctx.fillStyle = '#3f7a38';
-      ctx.fillRect(-16, -58, 28, 18);
-      ctx.fillRect(-8, -40, 14, 36);
-      if (flash > 0) { ctx.fillStyle = '#ffcc66'; ctx.fillRect(-18, -70, 20, 14); }
+      barrel(-16, -58, 28, 18, '#3f7a38');
+      barrel(-8, -40, 14, 36, '#14532d');
     } else if (id === 'mini') {
-      ctx.fillStyle = '#8d979b';
-      ctx.fillRect(-28, -36, 48, 22);
-      ctx.fillRect(-8, -18, 16, 22);
-      if (flash > 0) { ctx.fillStyle = '#ffe080'; ctx.fillRect(-36, -34, 12, 10); }
+      barrel(-28, -36, 48, 22, '#94a3b8');
+      barrel(-8, -18, 16, 22, '#334155');
     } else if (id === 'awp') {
-      ctx.fillStyle = '#2a2a2a';
-      ctx.fillRect(-8, -92, 8, 88);
-      ctx.fillStyle = '#6a4a2a';
+      barrel(-8, -92, 8, 88, '#1e293b');
+      ctx.fillStyle = '#7c5a32';
       ctx.fillRect(-14, -30, 20, 12);
     } else if (id === 'tau') {
-      ctx.fillStyle = '#e07020';
-      ctx.fillRect(-12, -70, 22, 16);
-      ctx.fillRect(-6, -54, 12, 40);
-      if (flash > 0) { ctx.fillStyle = '#fff2a0'; ctx.fillRect(-10, -86, 18, 16); }
+      barrel(-12, -70, 22, 16, '#ea580c');
+      barrel(-6, -54, 12, 40, '#9a3412');
     } else if (id === 'shot') {
-      ctx.fillStyle = '#7a4a28';
-      ctx.fillRect(-10, -78, 14, 70);
+      barrel(-10, -78, 14, 70, '#92400e');
+      ctx.fillStyle = '#44403c';
       ctx.fillRect(-16, -28, 24, 12);
-      if (flash > 0) { ctx.fillStyle = '#ffe080'; ctx.fillRect(-8, -90, 12, 12); }
     } else {
-      ctx.fillStyle = id === 'deagle' ? '#d8d8d8' : id === 'ak' ? '#6a3a22' : '#4d5a34';
-      ctx.fillRect(-8, -64, 12, 52);
+      barrel(-8, -64, 12, 52, id === 'deagle' ? '#e2e8f0' : id === 'ak' ? '#7c2d12' : '#3f6212');
+      ctx.fillStyle = '#1e293b';
       ctx.fillRect(-18, -24, 22, 12);
-      if (flash > 0) { ctx.fillStyle = '#ffe9a0'; ctx.fillRect(-6, -78, 10, 14); }
+    }
+    if (flash > 0) {
+      var bloom = ctx.createRadialGradient(-8, -78, 2, -8, -78, 36);
+      bloom.addColorStop(0, 'rgba(255,244,214,.95)');
+      bloom.addColorStop(0.4, 'rgba(251,191,36,.55)');
+      bloom.addColorStop(1, 'rgba(251,191,36,0)');
+      ctx.fillStyle = bloom;
+      ctx.beginPath();
+      ctx.arc(-8, -78, 34, 0, Math.PI * 2);
+      ctx.fill();
     }
     ctx.restore();
   }
 
   function drawRadar(ctx) {
-    ctx.fillStyle = 'rgba(0, 16, 0, 0.55)';
-    ctx.fillRect(6, 6, 52, 52);
-    ctx.strokeStyle = '#39ff6a';
+    ctx.save();
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+    ctx.strokeStyle = 'rgba(226, 232, 240, 0.45)';
     ctx.lineWidth = 1;
-    ctx.strokeRect(6, 6, 52, 52);
+    ctx.beginPath();
+    ctx.arc(32, 32, 28, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
     function dot(wx, wy, color) {
       var dx = wx - player.x;
       var dy = wy - player.y;
@@ -1712,8 +1772,11 @@
     bots.forEach(function (b) { if (b.hp > 0) dot(b.x, b.y, b.team === player.team ? '#7ec8ff' : '#ff5555'); });
     remotes.forEach(function (r) { if (r.hp > 0) dot(r.x, r.y, '#ffffff'); });
     if (bomb && bomb.planted) dot(bomb.x, bomb.y, '#ff9900');
-    ctx.fillStyle = '#b6ff6a';
-    ctx.fillRect(31, 31, 3, 3);
+    ctx.fillStyle = '#e2e8f0';
+    ctx.beginPath();
+    ctx.arc(32, 32, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
   }
 
   function drawStick() {

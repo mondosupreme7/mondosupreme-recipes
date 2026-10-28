@@ -531,7 +531,7 @@
   };
   function menuLink(item) {
     var link = document.createElement('a');
-    link.className = 'win98-item';
+    link.className = 'studio-app';
     link.href = item.href;
     link.setAttribute('role', 'menuitem');
     link.appendChild(pixelIcon(item.icon));
@@ -586,138 +586,110 @@
     node.dateTime = now.toISOString();
   }
 
-  function armMobileNav() {
-    var nav = document.querySelector('.site-header .site-nav');
-    if (!nav || document.getElementById('navApps')) return;
-    var quick = { '/': 1, '/recipes/': 1, '/cruises/': 1, '/weather/': 1, '/search/': 1 };
-    nav.querySelectorAll('a').forEach(function (link) {
-      if (!quick[link.getAttribute('href') || '']) link.classList.add('nav-more');
-    });
-    var apps = document.createElement('button');
-    apps.type = 'button';
-    apps.className = 'nav-apps';
-    apps.id = 'navApps';
-    apps.textContent = '☰ All 23 Apps / Start';
-    apps.addEventListener('click', function (event) {
-      event.stopPropagation();
-      var start = document.getElementById('shellStart');
-      if (start) start.click();
-    });
-    nav.parentNode.insertBefore(apps, nav);
+  function tagSection() {
+    var path = location.pathname;
+    var section = 'studio-portal';
+    if (path.indexOf('/recipes') === 0 || path.indexOf('/daily-recipe') === 0 || path.indexOf('/planner') === 0) section = 'studio-kitchen';
+    else if (path.indexOf('/cruises') === 0 || path.indexOf('/weather') === 0 || path.indexOf('/launches') === 0) section = 'studio-telemetry';
+    else if (path.indexOf('/stocks') === 0) section = 'studio-finance';
+    else if (path.indexOf('/search') === 0 || path.indexOf('/wiki') === 0) section = 'studio-editorial';
+    else if (path.indexOf('/forum') === 0 || path.indexOf('/chat') === 0 || path.indexOf('/market') === 0 || path.indexOf('/board') === 0) section = 'studio-community';
+    else if (path.indexOf('/arcade') === 0 || path.indexOf('/pet') === 0 || path.indexOf('/mmo') === 0 || path.indexOf('/fps') === 0 || path.indexOf('/wordle') === 0 || path.indexOf('/crossword') === 0 || path.indexOf('/8ball') === 0 || path.indexOf('/escape') === 0) section = 'studio-game';
+    document.body.classList.add(section);
   }
   function boot() {
-    applyFx(readFx());
+    writeFx({ scan: 0, stars: 0 });
     document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
-    armStars();
-    armMobileNav();
+    tagSection();
     var nav = document.querySelector('.site-header .site-nav');
-    if (!nav || document.querySelector('.shell-bar')) return;
+    if (!nav || document.querySelector('.studio-nav')) return;
     window.__mondoPageAuth = appsReady();
     loadRemoteCache();
 
-    var taskbar = document.createElement('div');
-    taskbar.className = 'win98-taskbar';
+    var taskbar = document.createElement('header');
+    taskbar.className = 'studio-nav';
     taskbar.id = 'win98Taskbar';
+    var brand = document.createElement('a');
+    brand.className = 'studio-brand';
+    brand.href = '/';
+    brand.textContent = 'MondoSupreme';
+    var links = document.createElement('nav');
+    links.className = 'studio-links';
+    links.setAttribute('aria-label', 'Primary');
+    [
+      ['Recipes', '/recipes/'],
+      ['Cruises', '/cruises/'],
+      ['Weather', '/weather/'],
+      ['Launches', '/launches/'],
+      ['Markets', '/stocks/'],
+      ['Search', '/search/'],
+      ['Community', '/forum/'],
+      ['Games', '/arcade/']
+    ].forEach(function (pair) {
+      var a = document.createElement('a');
+      a.href = pair[1];
+      a.textContent = pair[0];
+      if (location.pathname.indexOf(pair[1]) === 0) a.setAttribute('aria-current', 'page');
+      links.appendChild(a);
+    });
     var start = document.createElement('button');
     start.type = 'button';
-    start.className = 'win98-start';
+    start.className = 'studio-apps';
     start.id = 'shellStart';
-    start.textContent = '⊞ Start';
     start.setAttribute('aria-haspopup', 'true');
     start.setAttribute('aria-expanded', 'false');
+    start.innerHTML = 'All Apps <kbd>⌘K</kbd>';
     var menu = document.createElement('div');
-    menu.className = 'shell-menu win98-menu';
+    menu.className = 'studio-drawer';
     menu.id = 'shellMenu';
     menu.hidden = true;
     menu.setAttribute('role', 'menu');
-    var side = document.createElement('div');
-    side.className = 'win98-side';
-    side.textContent = 'MondoSupreme';
-    var cols = document.createElement('div');
-    cols.className = 'win98-cols';
-    var left = document.createElement('div');
-    left.className = 'win98-col';
-    var right = document.createElement('div');
-    right.className = 'win98-col';
-    var leftLabel = document.createElement('div');
-    leftLabel.className = 'shell-label';
-    leftLabel.textContent = 'Programs';
-    var rightLabel = document.createElement('div');
-    rightLabel.className = 'shell-label';
-    rightLabel.textContent = '90s Toys';
-    left.appendChild(leftLabel);
-    programs.forEach(function (item) { left.appendChild(menuLink(item)); });
+    var groups = [
+      ['Kitchen & Food', ['Recipes', 'MondoMeal Planner', 'MondoTV']],
+      ['Space Coast & Travel', ['Cruises', 'MondoWeather', 'Launch Control']],
+      ['Finance & Search', ['MondoQuote', 'Ask Mondo', 'MondoWiki']],
+      ['Community', ['Bulletin Forum', 'MondoChat', 'MondoPaint', 'MondoBay', 'MondoFM Radio']],
+      ['Game Studio', ['90s Arcade', 'MondoGotchi Pet', 'MondoWord', 'Mini Crossword', 'Mystic 8-Ball', 'World of MondoCraft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
+    ];
+    groups.forEach(function (group) {
+      var block = document.createElement('section');
+      block.className = 'studio-group';
+      var heading = document.createElement('h2');
+      heading.textContent = group[0];
+      block.appendChild(heading);
+      var list = document.createElement('div');
+      list.className = 'studio-apps-grid';
+      group[1].forEach(function (title) {
+        var item = null;
+        for (var i = 0; i < programs.length; i++) if (programs[i].title === title) item = programs[i];
+        if (item) list.appendChild(menuLink(item));
+      });
+      block.appendChild(list);
+      menu.appendChild(block);
+    });
     var home = menuLink({ title: 'Home', href: '/', icon: 'note' });
-    left.appendChild(home);
-    right.appendChild(rightLabel);
-    toyLinks.forEach(function (item) { right.appendChild(menuLink(item)); });
-    var scanBtn = document.createElement('button');
-    scanBtn.type = 'button';
-    scanBtn.className = 'win98-item';
-    scanBtn.id = 'fxScan';
-    scanBtn.appendChild(pixelIcon('bsod'));
-    var scanText = document.createElement('span');
-    scanBtn.appendChild(scanText);
-    var starBtn = document.createElement('button');
-    starBtn.type = 'button';
-    starBtn.className = 'win98-item';
-    starBtn.id = 'fxStars';
-    starBtn.appendChild(pixelIcon('pog'));
-    var starText = document.createElement('span');
-    starBtn.appendChild(starText);
-    function paintFxButtons() {
-      var fx = readFx();
-      scanText.textContent = fx.scan ? 'CRT Scanlines: On' : 'CRT Scanlines: Off';
-      starText.textContent = fx.stars ? 'Star Trail: On' : 'Star Trail: Off';
-      scanBtn.setAttribute('aria-pressed', fx.scan ? 'true' : 'false');
-      starBtn.setAttribute('aria-pressed', fx.stars ? 'true' : 'false');
-    }
-    paintFxButtons();
-    scanBtn.addEventListener('click', function (event) {
-      event.stopPropagation();
-      var fx = readFx();
-      writeFx({ scan: fx.scan ? 0 : 1, stars: fx.stars });
-      paintFxButtons();
-    });
-    starBtn.addEventListener('click', function (event) {
-      event.stopPropagation();
-      var fx = readFx();
-      writeFx({ scan: fx.scan, stars: fx.stars ? 0 : 1 });
-      paintFxButtons();
-    });
-    document.addEventListener('mondo-fx', paintFxButtons);
-    right.appendChild(scanBtn);
-    right.appendChild(starBtn);
+    menu.insertBefore(home, menu.firstChild);
     var closeMenu = document.createElement('button');
     closeMenu.type = 'button';
-    closeMenu.className = 'shell-x';
-    closeMenu.textContent = 'X Close';
-    cols.appendChild(left);
-    cols.appendChild(right);
-    menu.appendChild(side);
-    menu.appendChild(cols);
+    closeMenu.className = 'studio-close';
+    closeMenu.textContent = 'Close';
     menu.appendChild(closeMenu);
 
-    var bar = document.createElement('div');
-    bar.className = 'shell-bar';
+    var actions = document.createElement('div');
+    actions.className = 'studio-actions shell-bar';
     var findBtn = document.createElement('button');
     findBtn.type = 'button';
-    findBtn.className = 'shell-tool';
+    findBtn.className = 'studio-ghost';
     findBtn.id = 'shellFindBtn';
     findBtn.textContent = 'Find';
     var ownerBtn = document.createElement('button');
     ownerBtn.type = 'button';
-    ownerBtn.className = 'shell-tool';
+    ownerBtn.className = 'studio-account';
     ownerBtn.id = 'shellOwner';
-    ownerBtn.textContent = "[👤 Sign In / Join]";
-    bar.appendChild(findBtn);
-    bar.appendChild(ownerBtn);
-
-    var tray = document.createElement('div');
-    tray.className = 'win98-tray';
+    ownerBtn.textContent = 'Sign In';
     var muteBtn = document.createElement('button');
     muteBtn.type = 'button';
-    muteBtn.className = 'win98-mute';
+    muteBtn.className = 'studio-ghost';
     muteBtn.id = 'shellMute';
     function paintMute() {
       var muted = audioMuted();
@@ -731,19 +703,23 @@
       paintMute();
     });
     var clock = document.createElement('time');
-    clock.className = 'win98-clock';
+    clock.className = 'studio-clock';
     clock.id = 'shellClock';
     paintClock(clock);
-    tray.appendChild(muteBtn);
-    tray.appendChild(clock);
+    actions.appendChild(findBtn);
+    actions.appendChild(muteBtn);
+    actions.appendChild(ownerBtn);
+    taskbar.appendChild(brand);
+    taskbar.appendChild(links);
     taskbar.appendChild(start);
-    taskbar.appendChild(bar);
-    taskbar.appendChild(tray);
+    taskbar.appendChild(actions);
+    taskbar.appendChild(clock);
     document.body.appendChild(taskbar);
     document.body.appendChild(menu);
+    var tray = menu;
     function parkTheme() {
       var theme = document.querySelector('.theme-switch');
-      if (theme && theme.parentNode !== tray) tray.insertBefore(theme, muteBtn);
+      if (theme && theme.parentNode !== menu) menu.appendChild(theme);
     }
     parkTheme();
     setTimeout(parkTheme, 0);
@@ -765,6 +741,10 @@
       if (!menu.hidden && !menu.contains(event.target)) setMenu(false);
     });
     document.addEventListener('keydown', function (event) {
+      if ((event.metaKey || event.ctrlKey) && (event.key === 'k' || event.key === 'K')) {
+        event.preventDefault();
+        setMenu(menu.hidden);
+      }
       if (event.key === 'Escape') setMenu(false);
     });
 
@@ -786,7 +766,7 @@
 
     function paintOwner(user) {
       var on = isOwnerUser(user);
-      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Owner Mode: ON' : "[👤 Sign In / Join]");
+      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Owner' : 'Sign In');
       ownerBtn.classList.toggle('is-owner', on);
       ownerBtn.setAttribute('aria-pressed', window.MONDO_MEMBER && window.MONDO_MEMBER.isMember() ? 'true' : (on ? 'true' : 'false'));
       document.dispatchEvent(new CustomEvent('mondo-owner', {detail: {on: on}}));

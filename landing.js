@@ -15,8 +15,8 @@
   var SHARED = 'mondosupreme.hits.shared';
   var SESSION = 'mondosupreme.hits.visit';
   var BASE = 8421;
-  var ON = '#ff3333';
-  var OFF = '#4a0000';
+  var ON = '#0f172a';
+  var OFF = '#e2e8f0';
   var SEGS = {
     0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg',
     5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg'

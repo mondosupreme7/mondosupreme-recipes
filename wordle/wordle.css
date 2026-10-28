@@ -7,7 +7,7 @@
 .word-modes .btn[aria-pressed="true"]{outline:2px solid #000080;background:#ffffcc}
 .word-msg{min-height:2.6em;margin:.3em 0;font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .word-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:min(320px,100%);margin:0 auto}
-.tile{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:#c0c0c0;color:#111827;border-top:3px solid #fff;border-left:3px solid #fff;border-right:3px solid #404040;border-bottom:3px solid #404040;font:700 clamp(18px,6vw,28px) -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-transform:uppercase}
+.tile{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:#fff;color:#0f172a;border:2px solid #cbd5e1;border-radius:8px;font:700 clamp(20px,6vw,30px) Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;text-transform:uppercase;box-shadow:0 1px 0 #e2e8f0}
 .tile.is-filled{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
 .tile[data-state="correct"]{background:#538d4e;color:#fff;border:3px solid #214d1e}
 .tile[data-state="present"]{background:#c9b458;color:#111;border:3px dashed #6a5610}
@@ -26,7 +26,7 @@
 .leg.absent{color:#3a3a3a}
 .word-keys{width:100%;max-width:100%;margin:8px 0}
 .kb-row{display:flex;gap:3px;width:100%;margin:0 0 4px}
-.key{flex:1 1 0;min-width:0;min-height:44px;padding:0 1px;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-transform:uppercase;touch-action:manipulation}
+.key{flex:1 1 0;min-width:0;min-height:48px;padding:0 1px;background:#fff;color:#0f172a;border:1px solid #e2e8f0;border-radius:8px;box-shadow:0 2px 0 #cbd5e1;font:700 13px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;text-transform:uppercase;touch-action:manipulation}
 .key.wide{flex:1.45 1 0;font-size:11px}
 .key[data-state="correct"]{background:#538d4e;color:#fff}
 .key[data-state="present"]{background:#c9b458;color:#111}

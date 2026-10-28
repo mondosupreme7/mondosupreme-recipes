@@ -87,9 +87,9 @@
     return '';
   }
   function buttonLabel() {
-    if (isOwnerUser(user)) return '[👑 Webmaster: Cody]';
-    if (isMemberUser(user)) return '[👤 ' + ((profile && profile.handle) || 'Member') + ']';
-    return "[👤 Sign In / Join]";
+    if (isOwnerUser(user)) return 'Cody';
+    if (isMemberUser(user)) return (profile && profile.handle) || 'Member';
+    return 'Sign In';
   }
   function paintButtons() {
     var label = buttonLabel();

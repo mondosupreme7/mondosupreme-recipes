@@ -1,12 +1,21 @@
-/* Crisp system type and high-contrast text. Loaded last on every page. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,560;6..72,650&family=JetBrains+Mono:wght@500;700&display=swap");
+/* Studio type and surfaces. Loaded last on every page. */
 :root {
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
-  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
-  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: Newsreader, Georgia, "Times New Roman", serif;
+  --font-ui: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --sans: var(--font-sans);
-  --display: var(--font-sans);
-  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --display: var(--font-display);
+  --mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --studio-bg: #f4f3ef;
+  --studio-bg-2: #f8fafc;
+  --studio-paper: #ffffff;
+  --studio-line: #e2e8f0;
+  --studio-ink: #0f172a;
+  --studio-muted: #475569;
+  --studio-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+  --studio-radius: 14px;
   --ink: #111827;
   --muted: #374151;
   --link: #0b3d91;
@@ -34,7 +43,7 @@ dialog,
 nav,
 h1, h2, h3, h4, h5, h6,
 svg text {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 body :where(*):not(
@@ -44,7 +53,7 @@ body :where(*):not(
   .wa-track, .wa-clock, .ch-readout, .radar-caption, .hud, .clock, .bsod, .bsod *,
   .quote-tape, .quote-tape *, .quote-fresh
 ) {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 pre, code, kbd, samp,
@@ -52,7 +61,7 @@ pre, code, kbd, samp,
 .quote-table, .quote-table *, .tick, .jb-lcd, .wa-lcd, .wa-lcd *,
 .wa-track, .wa-clock, .ch-readout, .radar-caption, .hud, .clock, .bsod, .bsod *,
 .quote-tape, .quote-tape *, .quote-fresh {
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
 }
 
 body {
@@ -183,3 +192,89 @@ body.fps-page, #play, #matchInfo { color: #f8fafc; }
     font-size: 16px !important;
   }
 }
+
+/* Professional portal surfaces. */
+html, body { background: var(--studio-bg) !important; color: var(--studio-ink); }
+.ticker, .era-top, .era-foot, .era-toys, .wordart, .wordart-row, .rainbow-rule, .torch,
+.construct, .construction, .winamp, .webring, .webring-table, .microbanners, .geo-badge,
+.theme-sky, .btnbar, .toybox, .hazard, .guestbook.atspin, .site-header, .aim-chrome,
+.pixel-btn, .sparkle, .network, .mail-banner {
+  display: none !important;
+}
+.site-footer { background: transparent !important; color: var(--studio-muted); border: 0; text-align: center; padding: 28px 16px 12px; }
+.box, .card, .quote-box, .gb-box, .hero, .detail, .wiki-article, .recipe-sheet, .panel, .toy,
+.word-box, .mystic-shell, .bay-shell, .forum-shell, .ask-shell, .launch-card, .wx-card {
+  background: var(--studio-paper) !important;
+  color: var(--studio-ink) !important;
+  border: 1px solid var(--studio-line) !important;
+  border-radius: var(--studio-radius) !important;
+  box-shadow: var(--studio-shadow);
+}
+.box h2, .quote-box h2, .gb-box h2, dialog h2 {
+  background: transparent !important;
+  color: var(--studio-ink) !important;
+  border: 0 !important;
+  border-radius: 0;
+  padding: 14px 16px 0;
+}
+.box-body, .quote-body, .gb-form { padding: 8px 16px 16px; }
+button, .btn, .key, .file-tab, .night-btn, .mode-tabs button {
+  background: #fff !important;
+  color: var(--studio-ink) !important;
+  border: 1px solid var(--studio-line) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+.btn.primary, button.primary, .studio-account {
+  background: #0f172a !important;
+  color: #fff !important;
+  border-color: #0f172a !important;
+}
+input, select, textarea, dialog {
+  border: 1px solid var(--studio-line) !important;
+  border-radius: 10px !important;
+  background: #fff;
+  color: var(--studio-ink);
+}
+main h1, .studio-hero h1, .hero h1, .profile-head h1, .wiki-article h1, .recipe-title, body.studio-kitchen h1, body.studio-editorial h1 {
+  font-family: Newsreader, Georgia, "Times New Roman", serif !important;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+.quote-copy blockquote { font-family: Newsreader, Georgia, serif !important; font-size: 1.35rem; line-height: 1.35; }
+.num-up, .tick.up, .delta.up { color: #047857 !important; }
+.num-down, .tick.down, .delta.down { color: #b91c1c !important; }
+body.studio-telemetry { background: #e7eef6 !important; }
+body.studio-telemetry .leaflet-container { border-radius: 14px; border: 1px solid #cbd5e1; overflow: hidden; }
+body.studio-finance { background: #f8fafc !important; }
+body.studio-game canvas, #view, #world, #lcd, #screen { border-radius: 12px; }
+.studio-hero { padding: 28px 0 8px; }
+.studio-hero h1 { margin: 0 0 8px; font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: 1.02; }
+.studio-hero p { max-width: 42rem; color: #334155; font-size: 1.05rem; }
+.status-grid, .cat-grid { display: grid; gap: 12px; margin: 16px 0; }
+.status-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.cat-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.status-card, .cat-card {
+  display: block; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+  box-shadow: var(--studio-shadow); padding: 16px; text-decoration: none; color: #0f172a;
+}
+.status-card b, .cat-card h2 { display: block; margin: 0 0 6px; font-size: 1rem; }
+.status-card span, .cat-card p { color: #475569; font-size: .95rem; }
+.cat-card h2 { font-family: Newsreader, Georgia, serif !important; font-size: 1.45rem; }
+.cat-card ul { margin: 8px 0 0; padding-left: 18px; }
+.studio-footer { margin-top: 28px; color: #64748b; font-size: .9rem; }
+html[data-theme]:not([data-theme="classic"]) body,
+html[data-theme] body,
+main.wrap {
+  background: #f4f3ef !important;
+  background-image: none !important;
+  color: #0f172a !important;
+  border: 0 !important;
+}
+.studio-hero h1, .studio-hero p, .counter-label, .hero h1, .hero p, .mc-brand { color: #0f172a !important; }
+.studio-nav #shellBackup, .studio-nav #shellRestoreBtn { display: none !important; }
+.quote-body { background: #fff !important; border: 0 !important; }
+.quote-bulb { display: none !important; }
+.counter { background: #fff !important; border: 1px solid #e2e8f0 !important; border-radius: 10px; }
+.counter svg { filter: grayscale(1) contrast(2); }
+.studio-links { scrollbar-width: none; }

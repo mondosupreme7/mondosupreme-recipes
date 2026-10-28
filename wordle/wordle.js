@@ -284,6 +284,32 @@
       for (var i = 0; i < 5; i++) tile(row, i).classList.remove('row-shake');
     }, 360);
   }
+  function celebrate() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var box = document.createElement('canvas');
+    box.width = window.innerWidth;
+    box.height = window.innerHeight;
+    box.setAttribute('aria-hidden', 'true');
+    box.style.cssText = 'position:fixed;inset:0;z-index:60;pointer-events:none';
+    document.body.appendChild(box);
+    var g = box.getContext('2d');
+    var bits = [];
+    var colors = ['#0f766e', '#1d4ed8', '#b45309', '#be123c', '#f8fafc'];
+    for (var i = 0; i < 90; i++) bits.push({ x: Math.random() * box.width, y: -10 - Math.random() * 120, v: 2 + Math.random() * 4, c: colors[i % colors.length], s: 4 + Math.random() * 5 });
+    var frame = 0;
+    function tick() {
+      g.clearRect(0, 0, box.width, box.height);
+      bits.forEach(function (bit) {
+        bit.y += bit.v;
+        g.fillStyle = bit.c;
+        g.fillRect(bit.x, bit.y, bit.s, bit.s * 0.55);
+      });
+      frame += 1;
+      if (frame < 80) requestAnimationFrame(tick);
+      else if (box.parentNode) box.parentNode.removeChild(box);
+    }
+    tick();
+  }
   function onKey(key) {
     var game = current();
     $('wordMsg').dataset.lock = '';
@@ -325,6 +351,7 @@
     if (word === answer) {
       game.status = 'won';
       game.ended = Date.now();
+      celebrate();
       if (state.mode === 'daily') recordDaily(true);
     } else if (game.guesses.length >= 6) {
       game.status = 'lost';

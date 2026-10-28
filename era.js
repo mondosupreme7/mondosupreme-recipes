@@ -371,22 +371,17 @@
     }
   };
   function boot() {
-    if (document.querySelector('.era-top')) return;
+    if (document.documentElement.dataset.era === '1') return;
     var extra = window.MONDO_THEME_TRACKS || [];
     TRACKS = extra.length ? extra.concat(BASE) : BASE.slice();
     index = 0;
     document.documentElement.dataset.era = '1';
-    var ticker = document.querySelector('.ticker');
-    var top = buildTop();
-    if (ticker && ticker.parentNode) ticker.parentNode.insertBefore(top, ticker.nextSibling);
-    else document.body.insertBefore(top, document.body.firstChild);
-    var footer = document.querySelector('.site-footer .wrap') || document.querySelector('.site-footer');
-    var foot = buildFoot();
-    if (footer) footer.appendChild(foot);
-    else if (!document.body.classList.contains('chat-page') && !document.body.classList.contains('board-page')) document.body.appendChild(foot);
     var label = document.querySelector('.counter-label');
-    if (label) label.textContent = 'You are visitor number since Oct 1998';
-    document.getElementById('jbPlay').addEventListener('click', play);
+    if (label) label.textContent = 'Visitors';
+    if (typeof window.MONDO_THEME_MOUNT === 'function') window.MONDO_THEME_MOUNT();
+    var playBtn = document.getElementById('jbPlay');
+    if (!playBtn) return;
+    playBtn.addEventListener('click', play);
     document.getElementById('jbPause').addEventListener('click', pauseTune);
     document.getElementById('jbStop').addEventListener('click', function () {
       resumeTune = false;
@@ -431,7 +426,6 @@
       else showTrack();
     });
     paintFace();
-    if (typeof window.MONDO_THEME_MOUNT === 'function') window.MONDO_THEME_MOUNT(top);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

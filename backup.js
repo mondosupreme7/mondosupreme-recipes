@@ -272,17 +272,21 @@
     });
     return dlg;
   }
-  function mount() {
-    var bar = document.querySelector('.shell-bar');
-    if (!bar || document.getElementById('shellBackup')) return;
+  function mount(tries) {
+    var bar = document.getElementById('shellMenu');
+    if (!bar) {
+      if ((tries || 0) < 20) setTimeout(function () { mount((tries || 0) + 1); }, 50);
+      return;
+    }
+    if (document.getElementById('shellBackup')) return;
     var backup = document.createElement('button');
     backup.type = 'button';
-    backup.className = 'shell-tool';
+    backup.className = 'studio-ghost';
     backup.id = 'shellBackup';
     backup.textContent = 'Full Site Backup';
     var restore = document.createElement('button');
     restore.type = 'button';
-    restore.className = 'shell-tool';
+    restore.className = 'studio-ghost';
     restore.id = 'shellRestoreBtn';
     restore.textContent = 'Restore Full Backup';
     bar.append(backup, restore);

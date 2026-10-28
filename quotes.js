@@ -148,7 +148,7 @@
       flag.textContent = 'PINNED';
       byEl.appendChild(flag);
     }
-    if (kicker) kicker.textContent = 'MondoOS · Tip of the Visit · ' + (index + 1) + ' of ' + total;
+    if (kicker) kicker.textContent = 'Quote of the Visit · ' + (index + 1) + ' of ' + total;
   }
   function choice() {
     var list = pool();

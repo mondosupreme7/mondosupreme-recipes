@@ -750,21 +750,41 @@ function drawRoom() {
   }
   if (room === 'beach') {
     drawSky(0, 0, W, 150);
-    ctx.fillStyle = '#1c6b9a';
-    ctx.fillRect(0, 150, W, 70);
-    ctx.fillStyle = 'rgba(255,255,255,.35)';
-    for (let i = 0; i < 4; i++) {
-      const wx = (clock / 12 + i * 120) % (W + 40) - 20;
-      ctx.fillRect(wx, 168 + Math.sin(clock / 200 + i) * 4, 50, 3);
+    const sea = ctx.createLinearGradient(0, 140, 0, 230);
+    sea.addColorStop(0, '#7dd3fc');
+    sea.addColorStop(1, '#0c4a6e');
+    ctx.fillStyle = sea;
+    ctx.fillRect(0, 140, W, 80);
+    ctx.strokeStyle = 'rgba(255,255,255,.55)';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 5; i++) {
+      const wx = (clock / 10 + i * 110) % (W + 60) - 30;
+      const wy = 168 + Math.sin(clock / 180 + i) * 5;
+      ctx.beginPath();
+      ctx.moveTo(wx, wy);
+      ctx.quadraticCurveTo(wx + 18, wy - 6, wx + 36, wy);
+      ctx.stroke();
     }
-    ctx.fillStyle = '#e6d2a2';
+    const sand = ctx.createLinearGradient(0, 210, 0, H);
+    sand.addColorStop(0, '#fde68a');
+    sand.addColorStop(1, '#d6b07a');
+    ctx.fillStyle = sand;
     ctx.fillRect(0, 214, W, H - 214);
-    ctx.fillStyle = '#f4f7fb';
-    const shipX = 300 + Math.sin(clock / 900) * 8;
-    ctx.fillRect(shipX, 132, 70, 16);
-    ctx.fillRect(shipX + 24, 116, 16, 16);
-    ctx.fillStyle = '#ff4040';
-    ctx.fillRect(shipX + 28, 108, 3, 10);
+    const shipX = 280 + Math.sin(clock / 900) * 10;
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(shipX, 148);
+    ctx.lineTo(shipX + 86, 148);
+    ctx.lineTo(shipX + 74, 164);
+    ctx.lineTo(shipX + 12, 164);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(shipX + 28, 128, 22, 20);
+    for (let win = 0; win < 5; win++) {
+      ctx.fillStyle = '#fde68a';
+      ctx.fillRect(shipX + 16 + win * 12, 152, 6, 4);
+    }
     ctx.fillStyle = '#c2a06a';
     ctx.fillRect(0, FLOOR, W, H - FLOOR);
     return;
@@ -829,37 +849,51 @@ function drawCreature(x, y, scale, species, hat, flip, shiverOn) {
   const left = x - w / 2;
   const top = y - h;
   const blink = clock < blinkUntil;
-  const ear = reduceMotion ? 0 : Math.round(Math.sin(clock / 90) * scale * 0.45);
+  const ear = reduceMotion ? 0 : Math.sin(clock / 90) * 3;
   const shiver = shiverOn && species !== 'egg' ? Math.sin(clock / 28) * 2 : 0;
+  const squish = reduceMotion ? 1 : 1 + Math.sin(clock / 140) * 0.04;
   ctx.save();
-  if (flip < 0) {
-    ctx.translate(x, 0);
-    ctx.scale(-1, 1);
-    ctx.translate(-x, 0);
-  }
-  for (let j = 0; j < rows.length; j++) {
-    for (let i = 0; i < rows[j].length; i++) {
-      const ch = rows[j][i];
-      if (ch === ' ') continue;
-      const bob = j === 0 ? ear : 0;
-      if (ch === 'o') ctx.fillStyle = blink ? FUR[species] || '#7dff6a' : '#071006';
-      else if (ch === '+') ctx.fillStyle = '#f4f7e8';
-      else ctx.fillStyle = FUR[species] || '#7dff6a';
-      ctx.fillRect(left + shiver + i * scale, top + bob + j * scale, scale, scale);
-      if (ch !== 'o' && ch !== '+') {
-        ctx.fillStyle = 'rgba(0,0,0,.18)';
-        ctx.fillRect(left + shiver + i * scale, top + bob + j * scale + scale - 1, scale, 1);
-      }
-    }
-  }
-  drawHat(left + shiver, top + ear, w, hat, scale);
+  ctx.translate(x + shiver, y);
+  ctx.scale((flip < 0 ? -1 : 1) * squish, 1 / squish);
+  ctx.translate(0, ear * 0.2);
+  ctx.fillStyle = 'rgba(15,23,42,.18)';
+  ctx.beginPath();
+  ctx.ellipse(0, 4, w * 0.32, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+  const fur = FUR[species] || '#86efac';
+  const body = ctx.createRadialGradient(-w * 0.12, -h * 0.55, 4, 0, -h * 0.35, w * 0.55);
+  body.addColorStop(0, '#fff');
+  body.addColorStop(0.25, fur);
+  body.addColorStop(1, '#0f172a');
+  ctx.fillStyle = body;
+  ctx.beginPath();
+  if (species === 'egg') ctx.ellipse(0, -h * 0.42, w * 0.28, h * 0.42, 0, 0, Math.PI * 2);
+  else ctx.ellipse(0, -h * 0.38, w * 0.34, h * 0.4, 0, 0, Math.PI * 2);
+  ctx.fill();
   if (species !== 'egg') {
-    ctx.fillStyle = '#1c2410';
-    const sway = Math.sin(clock / 80) * 3;
-    ctx.fillRect(left + 2, top - 2 + sway, scale, scale * 2);
-    ctx.fillRect(left + w - scale - 2, top - 2 - sway, scale, scale * 2);
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.ellipse(-w * 0.1, -h * 0.48, 7, blink ? 1 : 8, 0, 0, Math.PI * 2);
+    ctx.ellipse(w * 0.1, -h * 0.48, 7, blink ? 1 : 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#0f172a';
+    if (!blink) {
+      ctx.beginPath();
+      ctx.arc(-w * 0.08, -h * 0.46, 3, 0, Math.PI * 2);
+      ctx.arc(w * 0.12, -h * 0.46, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(-w * 0.1, -h * 0.5, 2, 2);
+      ctx.fillRect(w * 0.1, -h * 0.5, 2, 2);
+    }
+    ctx.fillStyle = 'rgba(244,114,182,.55)';
+    ctx.beginPath();
+    ctx.ellipse(-w * 0.2, -h * 0.32, 5, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(w * 0.2, -h * 0.32, 5, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
   }
   ctx.restore();
+  drawHat(left + shiver, top + ear, w, hat, scale);
 }
 function drawHat(left, top, w, hat) {
   if (!hat) return;

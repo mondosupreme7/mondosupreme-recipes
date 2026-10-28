@@ -453,15 +453,18 @@ function drawShip(x, y, inv) {
 }
 function drawSeas() {
   const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, '#04243f');
-  g.addColorStop(1, '#021018');
+  g.addColorStop(0, '#7dd3fc');
+  g.addColorStop(0.35, '#0284c7');
+  g.addColorStop(1, '#082f49');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = 'rgba(0,229,255,.25)';
-  for (let y = (run ? run.t * 40 : 0) % 24; y < H; y += 24) {
+  ctx.strokeStyle = 'rgba(255,255,255,.28)';
+  const drift = run ? run.t * 40 : last / 30;
+  for (let y = drift % 28; y < H; y += 28) {
     ctx.beginPath();
     ctx.moveTo(0, y);
-    ctx.lineTo(W, y);
+    ctx.quadraticCurveTo(W * 0.25, y - 6, W * 0.5, y);
+    ctx.quadraticCurveTo(W * 0.75, y + 6, W, y);
     ctx.stroke();
   }
   if (!run) { drawShip(W / 2, H - 130 + Math.sin(last / 400) * 6, 0); return; }
@@ -507,9 +510,13 @@ function drawSeas() {
   if (run.flash > 0) { ctx.fillStyle = 'rgba(255,40,40,.28)'; ctx.fillRect(0, 0, W, H); }
 }
 function drawKitchen() {
-  ctx.fillStyle = '#14081c';
+  const counter = ctx.createLinearGradient(0, 0, 0, H);
+  counter.addColorStop(0, '#fff7ed');
+  counter.addColorStop(0.2, '#fdba74');
+  counter.addColorStop(1, '#7c2d12');
+  ctx.fillStyle = counter;
   ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#3a1020';
+  ctx.fillStyle = '#1c1917';
   ctx.fillRect(0, 0, W, 58);
   ctx.fillStyle = '#ffe14a';
   ctx.font = '700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
@@ -558,18 +565,26 @@ function drawKitchen() {
   }
 }
 function drawBreaker() {
-  ctx.fillStyle = '#070014';
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#020617');
+  bg.addColorStop(1, '#1e1b4b');
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = '#201040';
-  for (let x = 0; x < W; x += 20) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
   const bricks = run ? run.bricks : layoutBricks(1);
   bricks.forEach(b => {
     if (!b.alive) return;
-    ctx.fillStyle = b.color;
-    ctx.fillRect(b.x, b.y, b.w, b.h);
+    const glass = ctx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
+    glass.addColorStop(0, '#fff');
+    glass.addColorStop(0.25, b.color);
+    glass.addColorStop(1, '#020617');
+    ctx.fillStyle = glass;
+    ctx.fillRect(b.x + 1, b.y + 1, b.w - 2, b.h - 2);
   });
   const p = run ? run.paddle : { x: W / 2 - 32 + Math.sin(last / 450) * 50, y: H - 36, w: 64, laser: 0 };
-  ctx.fillStyle = p.laser > 0 ? '#ff2bd6' : '#00e5ff';
+  const paddle = ctx.createLinearGradient(p.x, p.y, p.x, p.y + 12);
+  paddle.addColorStop(0, '#e0f2fe');
+  paddle.addColorStop(1, p.laser > 0 ? '#e879f9' : '#0284c7');
+  ctx.fillStyle = paddle;
   ctx.fillRect(p.x, p.y, p.w, 10);
   if (run) {
     run.shots.forEach(s => { ctx.fillStyle = '#ff2bd6'; ctx.fillRect(s.x - 2, s.y - 12, 4, 12); });
