@@ -25,6 +25,7 @@
   var frames = [];
   var frameLayers = [];
   var frameIndex = 0;
+  var showToken = 0;
   var playing = false;
   var playTimer = 0;
   var music = { ctx: null, timer: 0, step: 0, on: false };
@@ -197,7 +198,7 @@
   }
 
   function initMap() {
-    map = L.map('map', { minZoom: 2, maxZoom: 14, worldCopyJump: true });
+    map = L.map('map', { minZoom: 2, maxZoom: 14, worldCopyJump: true, fadeAnimation: false });
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap'
@@ -220,7 +221,7 @@
       maxNativeZoom: 8,
       attribution: 'NEXRAD composite via Iowa Environmental Mesonet'
     });
-    if (nexradOn) nexradLayer.addTo(map);
+    if (nexradOn && !rainOn) nexradLayer.addTo(map);
     shipLayer = L.layerGroup();
     movePin();
     setTimeout(function () { map.invalidateSize(); }, 200);
@@ -337,21 +338,11 @@
       var i = (from + step * n + frames.length * 4) % frames.length;
       if (frames[i].ok !== false) return i;
     }
-    return (from + frames.length) % frames.length;
+    return -1;
   }
-  function showFrame(index) {
-    if (!frames.length) return;
-    frameIndex = nextGood(index, index >= frameIndex ? 1 : -1);
-    var next = frameLayers[frameIndex];
-    if (rainOn && next) {
-      if (!map.hasLayer(next)) next.addTo(map);
-      next.setOpacity(opacity);
-      if (next.bringToFront) next.bringToFront();
-    }
-    frameLayers.forEach(function (layer, i) {
-      if (i !== frameIndex && map.hasLayer(layer)) map.removeLayer(layer);
-    });
+  function paintChrome() {
     var frame = frames[frameIndex];
+    if (!frame) return;
     var caption = frameCaption(frame);
     var forecast = frame.kind === 'forecast';
     var badge = document.querySelector('.wx-live');
@@ -381,7 +372,69 @@
       scrub.setAttribute('aria-valuetext', caption);
     }
   }
+  function whenReady(layer) {
+    return new Promise(function (resolve) {
+      if (!layer) { resolve(false); return; }
+      var settled = false;
+      var loaded = 0;
+      var errors = 0;
+      function finish(ok) {
+        if (settled) return;
+        settled = true;
+        layer.off('tileload', onLoad);
+        layer.off('tileerror', onErr);
+        layer.off('load', onDone);
+        resolve(ok);
+      }
+      function onLoad() { loaded += 1; }
+      function onErr() { errors += 1; }
+      function onDone() { finish(loaded > 0); }
+      layer.on('tileload', onLoad);
+      layer.on('tileerror', onErr);
+      layer.on('load', onDone);
+      layer.setOpacity(0);
+      if (!map.hasLayer(layer)) layer.addTo(map);
+      setTimeout(function () {
+        if (layer.isLoading && layer.isLoading()) return;
+        if (loaded > 0) finish(true);
+      }, 60);
+      setTimeout(function () { finish(loaded > 0); }, 5000);
+    });
+  }
+  function showFrame(index) {
+    if (!frames.length) return Promise.resolve();
+    var token = ++showToken;
+    var dir = index >= frameIndex ? 1 : -1;
+    var target = nextGood(index, dir);
+    if (target < 0) return Promise.resolve();
+    var layer = frameLayers[target];
+    syncLiveUnderlay();
+    return whenReady(layer).then(function (ok) {
+      if (token !== showToken) return;
+      if (!ok) {
+        frames[target].ok = false;
+        if (layer && map.hasLayer(layer)) map.removeLayer(layer);
+        var skip = nextGood(target + dir, dir);
+        if (skip < 0) return;
+        return showFrame(skip);
+      }
+      frameIndex = target;
+      frameLayers.forEach(function (other, i) {
+        if (!other) return;
+        if (i === frameIndex) {
+          if (!map.hasLayer(other)) other.addTo(map);
+          other.setOpacity(rainOn ? opacity : 0);
+          if (other.bringToFront) other.bringToFront();
+        } else if (map.hasLayer(other)) {
+          other.setOpacity(0);
+          map.removeLayer(other);
+        }
+      });
+      paintChrome();
+    });
+  }
   function clearLoop() {
+    showToken += 1;
     pause();
     frameLayers.forEach(function (layer) { map.removeLayer(layer); });
     frameLayers = [];
@@ -391,7 +444,7 @@
     return new RadarTile('', {
       frame: frame,
       pane: 'radar',
-      opacity: opacity,
+      opacity: 0,
       maxZoom: 14,
       maxNativeZoom: 8,
       attribution: frame.kind === 'forecast' ? 'NOAA HRRR via Iowa Environmental Mesonet' : 'NEXRAD via Iowa Environmental Mesonet'
@@ -522,13 +575,18 @@
     playing = true;
     var playBtn = $('wxPlay');
     if (playBtn) playBtn.setAttribute('aria-pressed', 'true');
-    if (frameIndex >= frames.length - 1) showFrame(0);
+    if (frameIndex >= frames.length - 1) frameIndex = 0;
     function tick() {
       if (!playing) return;
-      showFrame(frameIndex + 1);
-      playTimer = setTimeout(tick, speedMs);
+      showFrame(frameIndex + 1).then(function () {
+        if (!playing) return;
+        playTimer = setTimeout(tick, speedMs);
+      });
     }
-    playTimer = setTimeout(tick, speedMs);
+    showFrame(frameIndex).then(function () {
+      if (!playing) return;
+      playTimer = setTimeout(tick, speedMs);
+    });
   }
   function pause() {
     playing = false;
