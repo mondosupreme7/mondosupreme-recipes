@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Marketplace — Mondosupreme</title>
-<meta name="description" content="Marketplace / Cyber Classifieds — post things for sale, add a photo from your phone, and ask questions on the listing.">
+<meta name="description" content="Marketplace — post things for sale, add photos from your phone, and message the seller on the listing.">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="market.css">
 <link rel="stylesheet" href="/retro.css">
@@ -25,8 +25,8 @@
 </head>
 <body class="market-page">
 <div class="ticker"><div class="ticker-track">
- <p><span class="flame" aria-hidden="true"></span> ~*~ Marketplace / Cyber Classifieds ~*~ ★ Post it · Price it · Photo it ★ Electronics · Toys · Home · Cruise Gear · Misc ★</p>
- <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Marketplace / Cyber Classifieds ~*~ ★ Post it · Price it · Photo it ★ Electronics · Toys · Home · Cruise Gear · Misc ★</p>
+ <p><span class="flame" aria-hidden="true"></span> Marketplace · Electronics · Home · Collectibles · Outdoors · Boats · Cruise · Clothing · Free</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> Marketplace · Electronics · Home · Collectibles · Outdoors · Boats · Cruise · Clothing · Free</p>
 </div></div>
 <header class="site-header"><div class="wrap hdr">
  <a href="/market/" class="brand"><span class="logo">🔨</span><span>Marketplace</span></a>
@@ -62,104 +62,144 @@
 <main class="wrap">
  <p id="syncBanner" class="sync-banner" role="status" hidden>Market sync waiting on updated Firebase rules — listings stay on this device until published</p>
  <section class="bay-shell">
-  <header class="bay-head">
-   <div class="bay-brand">
-    <svg class="gavel" viewBox="0 0 16 16" width="32" height="32" aria-hidden="true"><rect x="1" y="3" width="9" height="2" fill="#c4a574"/><rect x="1" y="5" width="9" height="2" fill="#8b5a2b"/><rect x="8" y="2" width="3" height="2" fill="#e8e8e8"/><rect x="4" y="7" width="2" height="6" fill="#6b3e1e"/><rect x="3" y="12" width="4" height="2" fill="#3a2412"/></svg>
-    <h1 class="ebay-word"><span class="c1">m</span><span class="c2">o</span><span class="c3">n</span><span class="c4">d</span><span class="c5">o</span><span class="c6">B</span><span class="c7">a</span><span class="c8">y</span></h1>
-   </div>
-   <p>Cyber Classifieds — the Marketplace trading post. Post it, price it, and take a photo.</p>
+  <header class="market-head">
+   <h1>Marketplace</h1>
+   <p>Post a photo, set a price, and let buyers reach you on the listing.</p>
   </header>
   <div id="listView">
-   <div class="cat-tabs" id="catTabs" role="tablist" aria-label="Categories">
-    <button type="button" data-cat="all" role="tab" aria-selected="true">All Items</button>
-    <button type="button" data-cat="tech" role="tab" aria-selected="false">Electronics &amp; Retro Tech</button>
-    <button type="button" data-cat="toys" role="tab" aria-selected="false">Collectibles &amp; Toys</button>
-    <button type="button" data-cat="home" role="tab" aria-selected="false">Home &amp; Kitchen</button>
-    <button type="button" data-cat="cruise" role="tab" aria-selected="false">Cruise &amp; Travel Gear</button>
-    <button type="button" data-cat="misc" role="tab" aria-selected="false">Misc</button>
+   <div class="filters">
+    <div class="search-row">
+     <label class="search-label">Search
+      <input id="search" type="search" placeholder="Search titles, places, sellers" autocomplete="off" enterkeyhint="search">
+     </label>
+     <a class="btn primary post-link" href="#/new">Post</a>
+    </div>
+    <div class="cat-tabs" id="catTabs" role="tablist" aria-label="Categories">
+     <button type="button" data-cat="all" role="tab" aria-selected="true">All</button>
+     <button type="button" data-cat="electronics" role="tab" aria-selected="false">Electronics</button>
+     <button type="button" data-cat="home" role="tab" aria-selected="false">Home &amp; Kitchen</button>
+     <button type="button" data-cat="collectibles" role="tab" aria-selected="false">Collectibles &amp; Toys</button>
+     <button type="button" data-cat="outdoors" role="tab" aria-selected="false">Outdoors &amp; Fishing</button>
+     <button type="button" data-cat="boats" role="tab" aria-selected="false">Boats &amp; Marine</button>
+     <button type="button" data-cat="cruise" role="tab" aria-selected="false">Cruise &amp; Travel</button>
+     <button type="button" data-cat="clothing" role="tab" aria-selected="false">Clothing</button>
+     <button type="button" data-cat="free" role="tab" aria-selected="false">Free</button>
+     <button type="button" data-cat="misc" role="tab" aria-selected="false">Misc</button>
+    </div>
+    <div class="filter-row">
+     <label>Sort
+      <select id="sort">
+       <option value="newest">Newest</option>
+       <option value="low">Price low</option>
+       <option value="high">Price high</option>
+      </select>
+     </label>
+     <label>Condition
+      <select id="condFilter">
+       <option value="all">Any</option>
+       <option value="new">New</option>
+       <option value="like">Like new</option>
+       <option value="good">Good</option>
+       <option value="fair">Fair</option>
+       <option value="parts">For parts</option>
+      </select>
+     </label>
+     <label>Min
+      <input id="priceMin" inputmode="decimal" maxlength="12" placeholder="Any" autocomplete="off">
+     </label>
+     <label>Max
+      <input id="priceMax" inputmode="decimal" maxlength="12" placeholder="Any" autocomplete="off">
+     </label>
+    </div>
    </div>
-   <div class="bay-bar">
-    <label>Search<input id="search" type="search" placeholder="Search titles, sellers, places" autocomplete="off"></label>
-    <label>Sort
-     <select id="sort">
-      <option value="newest">Newest</option>
-      <option value="low">Price: Low to High</option>
-      <option value="high">Price: High to Low</option>
-     </select>
-    </label>
-    <a class="btn primary" href="#/new">Post an Item</a>
+   <div id="skeleton" class="lot-grid" aria-busy="true" aria-label="Loading listings">
+    <div class="skel"><div class="skel-photo"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+    <div class="skel"><div class="skel-photo"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+    <div class="skel"><div class="skel-photo"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+    <div class="skel"><div class="skel-photo"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
    </div>
-   <div class="table-wrap">
-    <table class="lots">
-     <thead>
-      <tr>
-       <th>Item</th>
-       <th>Price</th>
-       <th>Condition</th>
-       <th>Seller</th>
-       <th>Q&amp;A</th>
-      </tr>
-     </thead>
-     <tbody id="rows"></tbody>
-    </table>
+   <div id="rows" class="lot-grid"></div>
+   <div id="empty" class="empty-bay" hidden>
+    <p id="emptyTitle">Nothing in the marketplace yet</p>
+    <p id="emptyCopy">Try another category, or post something of your own.</p>
+    <a class="btn primary" href="#/new">Post an item</a>
    </div>
-   <p id="empty" class="empty-bay" hidden>No listings in this aisle. Be the first to post one.</p>
   </div>
   <div id="detailView" hidden></div>
   <div id="formView" hidden>
-   <form id="itemForm">
+   <form id="itemForm" novalidate>
     <h2 id="formTitle">Post an item</h2>
-    <div class="form-grid">
-     <label>Title<input id="postTitle" maxlength="80" required autocomplete="off"></label>
-     <label>Price ($)<input id="postPrice" inputmode="decimal" maxlength="12" placeholder="12.50" required autocomplete="off"></label>
-     <label>Condition
-      <select id="postCondition" required>
-       <option value="">Pick a condition</option>
-       <option value="new">New</option>
-       <option value="mint">Mint in Box</option>
-       <option value="good">Good Used</option>
-       <option value="parts">For Parts / Retro</option>
-      </select>
-     </label>
+    <p id="stepLabel" class="step-label">Step 1 of 4 · Details</p>
+    <div class="step" data-step="1">
+     <label>Title<input id="postTitle" maxlength="80" autocomplete="off"></label>
      <label>Category
-      <select id="postCat" required>
+      <select id="postCat">
        <option value="">Pick a category</option>
-       <option value="tech">Electronics &amp; Retro Tech</option>
-       <option value="toys">Collectibles &amp; Toys</option>
+       <option value="electronics">Electronics</option>
        <option value="home">Home &amp; Kitchen</option>
-       <option value="cruise">Cruise &amp; Travel Gear</option>
+       <option value="collectibles">Collectibles &amp; Toys</option>
+       <option value="outdoors">Outdoors &amp; Fishing</option>
+       <option value="boats">Boats &amp; Marine</option>
+       <option value="cruise">Cruise &amp; Travel</option>
+       <option value="clothing">Clothing</option>
+       <option value="free">Free</option>
        <option value="misc">Misc</option>
       </select>
      </label>
-     <label>Seller Name<input id="postSeller" maxlength="24" autocomplete="nickname" required></label>
-     <label>Location / Shipping note<input id="postLocation" maxlength="80" autocomplete="off" placeholder="Ships from the kitchen"></label>
+     <label>Condition
+      <select id="postCondition">
+       <option value="">Pick a condition</option>
+       <option value="new">New</option>
+       <option value="like">Like new</option>
+       <option value="good">Good</option>
+       <option value="fair">Fair</option>
+       <option value="parts">For parts</option>
+      </select>
+     </label>
+     <label>Description<textarea id="postBody" maxlength="2000" rows="5"></textarea></label>
     </div>
-    <label>Description<textarea id="postBody" maxlength="2000" rows="6" required></textarea></label>
-    <label>Contact / How to Buy<input id="postContact" maxlength="160" required placeholder="Email, chat handle, or ask on the Q&amp;A" autocomplete="off"></label>
-    <fieldset class="photo-box">
-     <legend>Photo</legend>
-     <label>Photo URL (https://)<input id="photoUrl" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off"></label>
-     <p class="hint">Or take a photo / choose one from your iPhone. It is resized in this browser to a small JPEG.</p>
-     <label class="btn file-btn">Take or choose a photo<input id="photoFile" type="file" accept="image/*"></label>
-     <p id="photoNote" class="hint" hidden></p>
-     <img id="photoPreview" class="photo-preview" alt="" hidden>
-     <label id="photoClearRow" hidden><input id="photoClear" type="checkbox"> Remove the current photo</label>
-    </fieldset>
+    <div class="step" data-step="2" hidden>
+     <label>Price
+      <input id="postPrice" inputmode="decimal" maxlength="12" placeholder="12.50" autocomplete="off">
+     </label>
+     <p id="priceReadout" class="price-readout" aria-live="polite"></p>
+     <p class="hint">Use 0 if it is free. Prices show as dollars and cents.</p>
+     <label>Seller name<input id="postSeller" maxlength="24" autocomplete="nickname"></label>
+     <label>Location<input id="postLocation" maxlength="80" autocomplete="off" placeholder="Cocoa, pickup, or ships"></label>
+     <p class="hint">Buyers reach you through the listing. Your email is not posted.</p>
+    </div>
+    <div class="step" data-step="3" hidden>
+     <fieldset class="photo-box">
+      <legend>Photos</legend>
+      <p class="hint">Up to 4. Each one is resized in this browser to a small JPEG.</p>
+      <label class="btn file-btn">Add photos<input id="photoFile" type="file" accept="image/*" multiple></label>
+      <label>Or a photo URL (https://)<input id="photoUrl" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off"></label>
+      <button id="addPhotoUrl" class="btn" type="button">Add URL</button>
+      <p id="photoNote" class="hint" hidden></p>
+      <div id="photoStrip" class="photo-strip"></div>
+      <img id="photoPreview" class="photo-preview" alt="" hidden>
+     </fieldset>
+    </div>
+    <div class="step" data-step="4" hidden>
+     <div id="preview" class="preview"></div>
+    </div>
     <p id="formError" class="owner-error" hidden></p>
     <div class="form-actions">
      <a class="btn ghost" href="#/">Cancel</a>
-     <button id="postBtn" class="btn primary" type="submit">Post item</button>
+     <button id="stepBack" class="btn" type="button" hidden>Back</button>
+     <button id="stepNext" class="btn primary" type="button">Next</button>
+     <button id="postBtn" class="btn primary" type="submit" hidden>Post item</button>
     </div>
    </form>
   </div>
  </section>
 </main>
-<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Marketplace. The owner can edit, feature, mark sold, or remove a listing.</div></footer>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Marketplace. The seller can edit, mark sold or pending, or remove a listing.</div></footer>
 <div id="toast" role="status"></div>
 <dialog id="ownerDialog">
  <form id="ownerForm">
   <h2>Owner sign-in</h2>
-  <p>Sign in to edit, feature, mark sold, or delete any listing or question. The same sign-in works across Mondosupreme.</p>
+  <p>Sign in to manage listings you posted. The same sign-in works across Mondosupreme.</p>
   <label>Email<input id="ownerEmail" type="email" autocomplete="username" required></label>
   <label>Password<input id="ownerPass" type="password" autocomplete="current-password" required></label>
   <p id="ownerError" class="owner-error" hidden></p>

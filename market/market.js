@@ -9,22 +9,22 @@
   var RATE_MS = 6000;
   var DAILY = 24;
   var CATS = {
-    tech: 'Electronics & Retro Tech',
-    toys: 'Collectibles & Toys',
+    electronics: 'Electronics',
     home: 'Home & Kitchen',
-    cruise: 'Cruise & Travel Gear',
+    collectibles: 'Collectibles & Toys',
+    outdoors: 'Outdoors & Fishing',
+    boats: 'Boats & Marine',
+    cruise: 'Cruise & Travel',
+    clothing: 'Clothing',
+    free: 'Free',
     misc: 'Misc'
   };
-  var CONDITIONS = {
-    new: 'New',
-    mint: 'Mint in Box',
-    good: 'Good Used',
-    parts: 'For Parts / Retro'
-  };
+  var CAT_MAP = { tech: 'electronics', toys: 'collectibles', home: 'home', cruise: 'cruise', misc: 'misc' };
+  var CONDITIONS = { new: 'New', like: 'Like new', good: 'Good', fair: 'Fair', parts: 'For parts' };
+  var COND_MAP = { new: 'new', mint: 'like', good: 'good', parts: 'parts', fair: 'fair', like: 'like' };
   var NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}$/;
   var PHOTO_RE = /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/;
   var ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
-  var OFFICIAL = '★ Official Seller (999) ★';
 
   var $ = function (sel) { return document.querySelector(sel); };
   var cache = load();
@@ -32,20 +32,28 @@
   var isOwner = false;
   var readsOk = false;
   var rulesBlocked = false;
+  var mailBlocked = false;
   var listenedUid = '';
+  var mailUid = '';
   var posting = false;
   var anonTimer = 0;
   var query = '';
   var cat = 'all';
   var sort = 'newest';
+  var cond = 'all';
+  var priceMin = '';
+  var priceMax = '';
   var serverItems = null;
   var serverOffers = null;
+  var inbox = {};
   var gotItems = false;
   var gotOffers = false;
+  var step = 1;
+  var photoDraft = [];
 
   function isAdminNow() {
-  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
-}
+    return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+  }
   function denied(err) {
     return /PERMISSION_DENIED|permission[-_ ]denied/i.test(String(err && (err.code || err.message) || ''));
   }
@@ -56,6 +64,7 @@
     if (!data || typeof data !== 'object' || Array.isArray(data)) data = {};
     if (!data.items || typeof data.items !== 'object' || Array.isArray(data.items)) data.items = {};
     if (!data.offers || typeof data.offers !== 'object' || Array.isArray(data.offers)) data.offers = {};
+    if (!data.mail || typeof data.mail !== 'object' || Array.isArray(data.mail)) data.mail = {};
     if (!data.quota || typeof data.quota !== 'object') data.quota = { n: 0, day: 0 };
     data.name = typeof data.name === 'string' ? data.name : '';
     data.seeded = !!data.seeded;
@@ -70,8 +79,66 @@
       return true;
     } catch (e) { return false; }
   }
+  function canonCat(value) {
+    if (Object.prototype.hasOwnProperty.call(CATS, value)) return value;
+    if (Object.prototype.hasOwnProperty.call(CAT_MAP, value)) return CAT_MAP[value];
+    return 'misc';
+  }
+  function canonCond(value) {
+    if (Object.prototype.hasOwnProperty.call(COND_MAP, value)) return COND_MAP[value];
+    return 'good';
+  }
+  function statusOf(item) {
+    if (!item) return 'active';
+    if (item.status === 'sold' || item.status === 'pending' || item.status === 'active') return item.status;
+    return item.sold ? 'sold' : 'active';
+  }
+  function photosOf(item) {
+    var list = [];
+    function push(raw) {
+      var safe = safePhoto(raw);
+      if (safe && list.indexOf(safe) === -1 && list.length < 4) list.push(safe);
+    }
+    if (item && item.photos) {
+      if (Array.isArray(item.photos)) item.photos.forEach(push);
+      else if (typeof item.photos === 'object') ['0', '1', '2', '3'].forEach(function (key) { push(item.photos[key]); });
+    }
+    if (item) push(item.photo);
+    return list;
+  }
+  function scrubItem(item) {
+    if (!item || typeof item !== 'object') return item;
+    delete item.contact;
+    item.category = canonCat(item.category);
+    item.condition = canonCond(item.condition);
+    item.status = statusOf(item);
+    item.sold = item.status === 'sold';
+    var photos = photosOf(item);
+    item.photos = photos;
+    item.photo = photos[0] || '';
+    return item;
+  }
+  function swatch(label, color) {
+    try {
+      var canvas = document.createElement('canvas');
+      canvas.width = 360;
+      canvas.height = 360;
+      var ctx = canvas.getContext('2d', { alpha: false });
+      if (!ctx) return '';
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 360, 360);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '700 36px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, 180, 180);
+      var data = canvas.toDataURL('image/jpeg', 0.72);
+      return data.length <= PHOTO_MAX && PHOTO_RE.test(data) ? data : '';
+    } catch (e) { return ''; }
+  }
   function sample(id, fields) {
-    return {
+    var photos = fields.photo ? [fields.photo] : [];
+    return scrubItem({
       id: id,
       title: fields.title,
       price: fields.price,
@@ -80,17 +147,18 @@
       location: fields.location,
       description: fields.description,
       seller: fields.seller,
-      contact: fields.contact,
-      photo: '',
+      photo: photos[0] || '',
+      photos: photos,
       author: 'local',
       createdAt: fields.createdAt,
       updatedAt: fields.createdAt,
       sold: !!fields.sold,
+      status: fields.sold ? 'sold' : 'active',
       featured: !!fields.featured,
       official: false,
       localOnly: true,
       sample: true
-    };
+    });
   }
   function seed() {
     if (cache.seeded) return;
@@ -101,11 +169,11 @@
         title: 'Sony Walkman WM-FX195',
         price: 2499,
         condition: 'good',
-        category: 'tech',
-        location: 'Kitchen drawer, ships in a bubble mailer',
+        category: 'electronics',
+        location: 'Cocoa, ships in a bubble mailer',
         description: 'Yellow sports Walkman. It still rewinds, it still eats AA batteries, and the radio hiss is part of the charm.',
         seller: 'RetroCody',
-        contact: 'Ask on this listing',
+        photo: swatch('Walkman', '#0f766e'),
         createdAt: now - 5 * DAY_MS,
         featured: true
       });
@@ -114,12 +182,12 @@
       cache.items['sample-pogs'] = sample('sample-pogs', {
         title: 'Tube of milk-cap pogs',
         price: 350,
-        condition: 'mint',
-        category: 'toys',
-        location: 'Pickup or a stamped envelope',
+        condition: 'like',
+        category: 'collectibles',
+        location: 'Merritt Island, pickup',
         description: 'A full tube of milk caps, slammer included. Colors from a 1995 school cafeteria.',
         seller: 'PogKid',
-        contact: 'Leave a question or an offer below',
+        photo: swatch('Pogs', '#b45309'),
         createdAt: now - 2 * 60 * 60 * 1000,
         featured: false
       });
@@ -130,14 +198,24 @@
         price: 4000,
         condition: 'good',
         category: 'cruise',
-        location: 'Already sailed',
-        description: 'A sample of a finished sale. The Q&A closes when a listing is marked sold.',
+        location: 'Port Canaveral',
+        description: 'A sample of a finished sale. Questions close when a listing is marked sold.',
         seller: 'HarborDesk',
-        contact: 'This one already sold',
+        photo: swatch('Sold', '#1e3a8a'),
         createdAt: now - 9 * DAY_MS,
         sold: true
       });
     }
+    save();
+  }
+  function scrubAll() {
+    Object.keys(cache.items).forEach(function (id) {
+      if (cache.items[id]) scrubItem(cache.items[id]);
+    });
+    Object.keys(cache.mail).forEach(function (id) {
+      var row = cache.mail[id];
+      if (!row || !row.localOnly) delete cache.mail[id];
+    });
     save();
   }
   function cleanName(value) {
@@ -159,9 +237,18 @@
     if (!isFinite(cents) || cents < 0 || cents > 100000000) return null;
     return cents;
   }
+  function formatPriceInput(raw) {
+    var text = String(raw || '').replace(/[^\d.]/g, '');
+    var parts = text.split('.');
+    var dollars = parts[0].replace(/^0+(?=\d)/, '').slice(0, 7);
+    if (!dollars && parts.length > 1) dollars = '0';
+    if (parts.length === 1) return dollars;
+    return dollars + '.' + parts.slice(1).join('').slice(0, 2);
+  }
   function formatMoney(cents) {
     var n = Number(cents);
     if (!isFinite(n)) n = 0;
+    if (n === 0) return 'Free';
     return '$' + (n / 100).toFixed(2);
   }
   function safeHttps(raw) {
@@ -181,6 +268,19 @@
     var t = Number(ms);
     if (!t) return '';
     try { return new Date(t).toLocaleString(); } catch (e) { return ''; }
+  }
+  function ago(ms) {
+    var t = Number(ms);
+    if (!t) return '';
+    var delta = Date.now() - t;
+    if (delta < 60000) return 'Just now';
+    var mins = Math.floor(delta / 60000);
+    if (mins < 60) return mins + ' min ago';
+    var hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs === 1 ? '1 hour ago' : hrs + ' hours ago';
+    var days = Math.floor(hrs / 24);
+    if (days < 14) return days === 1 ? '1 day ago' : days + ' days ago';
+    try { return new Date(t).toLocaleDateString(); } catch (e) { return ''; }
   }
   function makeId() {
     var prefix = user && user.uid ? String(user.uid).replace(/[^A-Za-z0-9]/g, '').slice(0, 28) : 'local';
@@ -214,54 +314,46 @@
   }
   function formError(text) {
     var el = $('#formError');
-    if (!el) return;
+    if (!el) return false;
     el.textContent = text || '';
     el.hidden = !text;
+    return false;
   }
-  function gavelSvg() {
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 16 16');
-    svg.setAttribute('class', 'gavel-ph');
-    svg.setAttribute('aria-hidden', 'true');
-    [[1, 3, 9, 2, '#c4a574'], [1, 5, 9, 2, '#8b5a2b'], [8, 2, 3, 2, '#e8e8e8'], [4, 7, 2, 6, '#6b3e1e'], [3, 12, 4, 2, '#3a2412']].forEach(function (cell) {
-      var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      rect.setAttribute('x', String(cell[0]));
-      rect.setAttribute('y', String(cell[1]));
-      rect.setAttribute('width', String(cell[2]));
-      rect.setAttribute('height', String(cell[3]));
-      rect.setAttribute('fill', cell[4]);
-      svg.appendChild(rect);
-    });
-    return svg;
-  }
-  function photoNode(src, alt, className) {
+  function photoEl(src, alt, className, lazy) {
     var safe = safePhoto(src);
-    if (!safe) return gavelSvg();
+    if (!safe) {
+      var ph = document.createElement('div');
+      ph.className = (className || 'lot-photo') + ' lot-ph';
+      ph.setAttribute('role', 'img');
+      ph.setAttribute('aria-label', 'No photo');
+      ph.textContent = 'No photo';
+      return ph;
+    }
     var img = document.createElement('img');
     img.className = className || 'lot-photo';
     img.alt = alt || 'Listing photo';
+    img.loading = lazy === false ? 'eager' : 'lazy';
+    img.decoding = 'async';
     img.src = safe;
     return img;
   }
-  function addBadge(parent, text, cls) {
-    var badge = document.createElement('span');
-    badge.className = 'ebay-badge blink ' + cls;
-    badge.textContent = text;
-    parent.appendChild(badge);
+  function chip(text, cls) {
+    var el = document.createElement('span');
+    el.className = 'chip' + (cls ? ' ' + cls : '');
+    el.textContent = text;
+    return el;
   }
-  function badgesFor(item, parent) {
+  function chipsFor(item, parent) {
     var wrap = document.createElement('span');
-    wrap.className = 'badges';
-    if (item.sold) addBadge(wrap, 'SOLD!', 'sold');
-    if (item.featured) addBadge(wrap, 'FEATURED!', 'feat');
-    if (!item.sold && Date.now() - Number(item.createdAt || 0) < NEW_MS) addBadge(wrap, 'NEW LISTING!', 'fresh');
-    if (item.official) {
-      var star = document.createElement('span');
-      star.className = 'ebay-badge official';
-      star.textContent = OFFICIAL;
-      wrap.appendChild(star);
-    }
-    if (wrap.childNodes.length) parent.appendChild(wrap);
+    wrap.className = 'chips';
+    wrap.appendChild(chip(CONDITIONS[canonCond(item.condition)] || 'Good'));
+    var status = statusOf(item);
+    if (status === 'sold') wrap.appendChild(chip('Sold', 'sold'));
+    else if (status === 'pending') wrap.appendChild(chip('Pending'));
+    else if (Date.now() - Number(item.createdAt || 0) < NEW_MS) wrap.appendChild(chip('New'));
+    if (item.featured) wrap.appendChild(chip('Featured'));
+    if (item.official) wrap.appendChild(chip('Official'));
+    parent.appendChild(wrap);
   }
   function fillText(el, text) {
     var src = String(text || '');
@@ -279,9 +371,7 @@
         link.textContent = raw;
         el.appendChild(link);
         if (match[0].length > raw.length) el.appendChild(document.createTextNode(match[0].slice(raw.length)));
-      } else {
-        el.appendChild(document.createTextNode(match[0]));
-      }
+      } else el.appendChild(document.createTextNode(match[0]));
       last = match.index + match[0].length;
     }
     el.appendChild(document.createTextNode(src.slice(last)));
@@ -295,8 +385,16 @@
     if (item) return { view: 'item', id: item[1] };
     return { view: 'list' };
   }
+  function boundCents(raw) {
+    var text = String(raw || '').trim();
+    if (!text) return null;
+    var parsed = parsePrice(text);
+    return parsed == null ? null : parsed;
+  }
   function visibleItems() {
     var q = query.trim().toLowerCase();
+    var min = boundCents(priceMin);
+    var max = boundCents(priceMax);
     return Object.keys(cache.items).map(function (id) {
       var item = cache.items[id];
       if (!item || !item.title) return null;
@@ -304,24 +402,35 @@
       return item;
     }).filter(function (item) {
       if (!item) return false;
-      if (cat !== 'all' && item.category !== cat) return false;
+      var category = canonCat(item.category);
+      var condition = canonCond(item.condition);
+      if (cat !== 'all' && category !== cat) return false;
+      if (cond !== 'all' && condition !== cond) return false;
+      var price = Number(item.price) || 0;
+      if (min != null && price < min) return false;
+      if (max != null && price > max) return false;
       if (!q) return true;
-      var blob = [item.title, item.description, item.seller, item.location, item.contact].join(' ').toLowerCase();
+      var blob = [item.title, item.description, item.seller, item.location, CATS[category] || ''].join(' ').toLowerCase();
       return blob.indexOf(q) !== -1;
     }).sort(function (a, b) {
-      if (sort === 'low') return a.price - b.price || b.createdAt - a.createdAt;
-      if (sort === 'high') return b.price - a.price || b.createdAt - a.createdAt;
+      if (sort === 'low') return (Number(a.price) || 0) - (Number(b.price) || 0) || b.createdAt - a.createdAt;
+      if (sort === 'high') return (Number(b.price) || 0) - (Number(a.price) || 0) || b.createdAt - a.createdAt;
       return (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || b.createdAt - a.createdAt;
     });
   }
   function paintRows() {
     var body = $('#rows');
     var empty = $('#empty');
+    var skeleton = $('#skeleton');
     if (!body) return;
     var items = visibleItems();
     var sig = items.map(function (item) {
-      return item.id + ':' + item.price + ':' + (item.sold ? 1 : 0) + ':' + (item.featured ? 1 : 0) + ':' + offerCount(item.id);
-    }).join('|') + '|' + query + '|' + cat + '|' + sort;
+      return item.id + ':' + item.price + ':' + statusOf(item) + ':' + (item.featured ? 1 : 0);
+    }).join('|') + '|' + query + '|' + cat + '|' + sort + '|' + cond + '|' + priceMin + '|' + priceMax;
+    if (skeleton) {
+      skeleton.hidden = true;
+      skeleton.setAttribute('aria-busy', 'false');
+    }
     if (paintRows.sig === sig) {
       empty.hidden = items.length > 0;
       return;
@@ -329,59 +438,40 @@
     paintRows.sig = sig;
     body.textContent = '';
     empty.hidden = items.length > 0;
+    var any = Object.keys(cache.items).some(function (id) { return cache.items[id] && cache.items[id].title; });
+    var title = $('#emptyTitle');
+    var copy = $('#emptyCopy');
+    if (title) title.textContent = any ? 'Nothing matches those filters' : 'Nothing in the marketplace yet';
+    if (copy) copy.textContent = any ? 'Clear the search, pick another category, or widen the price range.' : 'Be the first to post a photo and a price.';
     items.forEach(function (item) {
-      var tr = document.createElement('tr');
-      if (item.featured) tr.classList.add('featured');
-      if (item.sold) tr.classList.add('sold');
-      var itemTd = document.createElement('td');
-      itemTd.setAttribute('data-label', 'Item');
-      var cell = document.createElement('div');
-      cell.className = 'item-cell';
-      cell.appendChild(photoNode(item.photo, item.title, 'lot-photo'));
-      var copy = document.createElement('div');
-      copy.className = 'item-copy';
-      var link = document.createElement('a');
-      link.className = 'item-link';
-      link.href = '#/item/' + encodeURIComponent(item.id);
-      link.textContent = item.title;
-      copy.appendChild(link);
-      badgesFor(item, copy);
+      var card = document.createElement('a');
+      card.className = 'lot-card' + (statusOf(item) === 'sold' ? ' sold' : '');
+      card.href = '#/item/' + encodeURIComponent(item.id);
+      card.appendChild(photoEl(photosOf(item)[0], item.title, 'lot-photo', true));
+      var info = document.createElement('div');
+      info.className = 'lot-body';
+      var price = document.createElement('p');
+      price.className = 'lot-price';
+      price.textContent = formatMoney(item.price);
+      var name = document.createElement('p');
+      name.className = 'lot-title';
+      name.textContent = item.title;
+      info.appendChild(price);
+      info.appendChild(name);
+      chipsFor(item, info);
       if (item.location) {
         var place = document.createElement('p');
+        place.className = 'lot-place';
         place.textContent = item.location;
-        copy.appendChild(place);
+      info.appendChild(place);
       }
-      cell.appendChild(copy);
-      itemTd.appendChild(cell);
-      var priceTd = document.createElement('td');
-      priceTd.setAttribute('data-label', 'Price');
-      priceTd.className = 'price';
-      priceTd.textContent = formatMoney(item.price);
-      var condTd = document.createElement('td');
-      condTd.setAttribute('data-label', 'Condition');
-      condTd.textContent = CONDITIONS[item.condition] || item.condition || '';
-      var sellerTd = document.createElement('td');
-      sellerTd.setAttribute('data-label', 'Seller');
-      var seller = document.createElement('div');
-      seller.className = 'seller-name';
-      seller.textContent = item.seller || '';
-      if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(seller, item.author);
-      sellerTd.appendChild(seller);
-      if (item.official) {
-        var star = document.createElement('div');
-        star.className = 'ebay-badge official';
-        star.textContent = OFFICIAL;
-        sellerTd.appendChild(star);
-      }
-      var qaTd = document.createElement('td');
-      qaTd.setAttribute('data-label', 'Q&A');
-      qaTd.textContent = String(offerCount(item.id));
-      tr.appendChild(itemTd);
-      tr.appendChild(priceTd);
-      tr.appendChild(condTd);
-      tr.appendChild(sellerTd);
-      tr.appendChild(qaTd);
-      body.appendChild(tr);
+      var time = document.createElement('time');
+      time.className = 'lot-time';
+      if (item.createdAt) time.dateTime = new Date(Number(item.createdAt)).toISOString();
+      time.textContent = ago(item.createdAt);
+      info.appendChild(time);
+      card.appendChild(info);
+      body.appendChild(card);
     });
   }
   function showList() {
@@ -390,19 +480,8 @@
     $('#formView').hidden = true;
     paintRows();
   }
-  function metaRow(table, label, valueNode) {
-    var tr = document.createElement('tr');
-    var th = document.createElement('th');
-    th.textContent = label;
-    var td = document.createElement('td');
-    if (typeof valueNode === 'string') td.textContent = valueNode;
-    else td.appendChild(valueNode);
-    tr.appendChild(th);
-    tr.appendChild(td);
-    table.appendChild(tr);
-  }
   function ownsItem(item) {
-    return !!(user && user.email && item && item.author === user.uid);
+    return !!(user && item && item.author && item.author === user.uid);
   }
   function ownerButtons(parent, item) {
     var own = ownsItem(item);
@@ -418,17 +497,120 @@
       b.textContent = label;
       bar.appendChild(b);
     }
+    var status = statusOf(item);
     btn('edit', 'Edit');
-    btn('sold', item.sold ? 'Mark as available' : 'Mark as SOLD');
-    if (isOwner) {
-      btn('feature', item.featured ? 'Unfeature' : 'Feature / Pin');
-      btn('delete', 'Delete');
-    }
+    if (status === 'pending') btn('pending', 'Mark as available');
+    else btn('pending', 'Mark as pending');
+    if (status === 'sold') btn('sold', 'Mark as available');
+    else btn('sold', 'Mark as sold');
+    btn('delete', 'Delete');
+    if (isOwner) btn('feature', item.featured ? 'Unfeature' : 'Feature');
     parent.appendChild(bar);
+  }
+  function metaLine(list, label, value) {
+    var row = document.createElement('div');
+    var dt = document.createElement('dt');
+    dt.textContent = label;
+    var dd = document.createElement('dd');
+    if (typeof value === 'string') dd.textContent = value;
+    else dd.appendChild(value);
+    row.appendChild(dt);
+    row.appendChild(dd);
+    list.appendChild(row);
+  }
+  function mailRows(lid) {
+    var map = {};
+    Object.keys(cache.mail || {}).forEach(function (id) {
+      var row = cache.mail[id];
+      if (row && row.localOnly && row.lid === lid && row.body) map[id] = Object.assign({ id: id }, row);
+    });
+    Object.keys(inbox).forEach(function (id) {
+      var row = inbox[id];
+      if (row && row.lid === lid && row.body) map[id] = Object.assign({ id: id, localOnly: false }, row);
+    });
+    return Object.keys(map).map(function (id) { return map[id]; }).sort(function (a, b) {
+      return Number(a.createdAt) - Number(b.createdAt);
+    });
+  }
+  function detailSig(id) {
+    var item = cache.items[id] || {};
+    var mail = mailRows(id);
+    return [item.updatedAt, statusOf(item), item.price, item.title, offerCount(id), mail.length, mail.map(function (row) { return row.id; }).join(',')].join('|');
+  }
+  function gallery(item) {
+    var photos = photosOf(item);
+    var box = document.createElement('div');
+    box.className = 'gallery';
+    var track = document.createElement('div');
+    track.className = 'gallery-track';
+    track.setAttribute('data-i', '0');
+    if (!photos.length) {
+      var slide = document.createElement('div');
+      slide.className = 'gallery-slide';
+      slide.appendChild(photoEl('', item.title, 'detail-photo', false));
+      track.appendChild(slide);
+      box.appendChild(track);
+      return box;
+    }
+    photos.forEach(function (src, index) {
+      var slide = document.createElement('div');
+      slide.className = 'gallery-slide';
+      slide.appendChild(photoEl(src, item.title + ' photo ' + (index + 1), 'detail-photo', index > 0));
+      track.appendChild(slide);
+    });
+    box.appendChild(track);
+    if (photos.length < 2) return box;
+    var index = 0;
+    function go(delta) {
+      index = (index + delta + photos.length) % photos.length;
+      track.setAttribute('data-i', String(index));
+      box.querySelectorAll('.dots button').forEach(function (dot, i) {
+        if (i === index) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+    var prev = document.createElement('button');
+    prev.type = 'button';
+    prev.className = 'btn gal-btn gal-prev';
+    prev.setAttribute('aria-label', 'Previous photo');
+    prev.textContent = '‹';
+    prev.addEventListener('click', function () { go(-1); });
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'btn gal-btn gal-next';
+    next.setAttribute('aria-label', 'Next photo');
+    next.textContent = '›';
+    next.addEventListener('click', function () { go(1); });
+    box.appendChild(prev);
+    box.appendChild(next);
+    var dots = document.createElement('div');
+    dots.className = 'dots';
+    photos.forEach(function (_, i) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Photo ' + (i + 1));
+      if (i === 0) dot.setAttribute('aria-current', 'true');
+      dot.addEventListener('click', function () { go(i - index); });
+      dots.appendChild(dot);
+    });
+    box.appendChild(dots);
+    var startX = 0;
+    box.addEventListener('touchstart', function (event) {
+      if (!event.changedTouches || !event.changedTouches[0]) return;
+      startX = event.changedTouches[0].clientX;
+    }, { passive: true });
+    box.addEventListener('touchend', function (event) {
+      if (!event.changedTouches || !event.changedTouches[0]) return;
+      var dx = event.changedTouches[0].clientX - startX;
+      if (dx > 40) go(-1);
+      else if (dx < -40) go(1);
+    }, { passive: true });
+    return box;
   }
   function showDetail(id, force) {
     var view = $('#detailView');
-    if (!force && view.dataset.id === id && !view.hidden) {
+    var sig = detailSig(id);
+    if (!force && view.dataset.id === id && view.dataset.sig === sig && !view.hidden) {
       $('#listView').hidden = true;
       $('#formView').hidden = true;
       return;
@@ -438,14 +620,22 @@
     $('#formView').hidden = true;
     view.hidden = false;
     view.dataset.id = id;
+    view.dataset.sig = sig;
     view.textContent = '';
     var back = document.createElement('div');
     back.className = 'detail-nav';
     var backLink = document.createElement('a');
     backLink.className = 'btn ghost';
     backLink.href = '#/';
-    backLink.textContent = '« Back to listings';
+    backLink.textContent = 'Back to listings';
+    var share = document.createElement('button');
+    share.type = 'button';
+    share.className = 'btn';
+    share.setAttribute('data-act', 'share');
+    share.setAttribute('data-id', id);
+    share.textContent = 'Share';
     back.appendChild(backLink);
+    back.appendChild(share);
     view.appendChild(back);
     if (!item) {
       var missing = document.createElement('p');
@@ -454,46 +644,40 @@
       return;
     }
     item.id = id;
-    var layout = document.createElement('div');
-    layout.className = 'detail-layout';
-    var pic = photoNode(item.photo, item.title, 'detail-photo');
-    if (!safePhoto(item.photo)) pic.classList.add('detail-ph');
-    layout.appendChild(pic);
-    var info = document.createElement('div');
+    view.appendChild(gallery(item));
     var title = document.createElement('h2');
     title.textContent = item.title;
-    info.appendChild(title);
-    badgesFor(item, info);
+    view.appendChild(title);
+    chipsFor(item, view);
     var price = document.createElement('p');
     price.className = 'detail-price';
     price.textContent = formatMoney(item.price);
-    info.appendChild(price);
-    var table = document.createElement('table');
-    table.className = 'meta';
-    metaRow(table, 'Condition', CONDITIONS[item.condition] || '');
-    metaRow(table, 'Category', CATS[item.category] || '');
+    view.appendChild(price);
+    var list = document.createElement('dl');
+    list.className = 'meta';
+    metaLine(list, 'Category', CATS[canonCat(item.category)] || 'Misc');
     var sellerNode = document.createElement('span');
     sellerNode.textContent = item.seller || '';
     if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(sellerNode, item.author);
-    metaRow(table, 'Seller', sellerNode);
-    if (item.official) metaRow(table, 'Rating', OFFICIAL);
-    metaRow(table, 'Location', item.location || 'Not listed');
-    var contact = document.createElement('span');
-    fillText(contact, item.contact || '');
-    metaRow(table, 'How to buy', contact);
-    metaRow(table, 'Posted', when(item.createdAt));
-    info.appendChild(table);
-    layout.appendChild(info);
-    view.appendChild(layout);
+    metaLine(list, 'Seller', sellerNode);
+    metaLine(list, 'Location', item.location || 'Not listed');
+    metaLine(list, 'Posted', when(item.createdAt));
+    if (item.updatedAt && item.updatedAt !== item.createdAt) metaLine(list, 'Updated', when(item.updatedAt));
+    view.appendChild(list);
     var desc = document.createElement('div');
     desc.className = 'desc';
     fillText(desc, item.description || '');
     view.appendChild(desc);
     ownerButtons(view, item);
+    paintQa(view, item);
+    paintMail(view, item);
+  }
+  function paintQa(view, item) {
+    var id = item.id;
     var qa = document.createElement('section');
     qa.className = 'qa';
     var heading = document.createElement('h3');
-    heading.textContent = 'Public Q&A / Offers';
+    heading.textContent = 'Questions';
     qa.appendChild(heading);
     var list = document.createElement('div');
     list.className = 'qa-list';
@@ -505,7 +689,7 @@
     }).filter(Boolean).sort(function (a, b) { return Number(a.createdAt) - Number(b.createdAt); });
     if (!offers.length) {
       var none = document.createElement('p');
-      none.textContent = 'No questions yet. Ask one below.';
+      none.textContent = 'No questions yet. Ask one below, or send a private message.';
       list.appendChild(none);
     }
     offers.forEach(function (row) {
@@ -514,12 +698,12 @@
       var head = document.createElement('header');
       var kind = document.createElement('span');
       kind.className = 'qa-kind';
-      kind.textContent = row.kind === 'offer' ? 'OFFER' : 'QUESTION';
+      kind.textContent = row.kind === 'offer' ? 'Offer' : 'Question';
       var who = document.createElement('strong');
       who.textContent = row.name || 'Guest';
       if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(who, row.author);
       var time = document.createElement('time');
-      time.dateTime = row.createdAt ? new Date(Number(row.createdAt)).toISOString() : '';
+      if (row.createdAt) time.dateTime = new Date(Number(row.createdAt)).toISOString();
       time.textContent = when(row.createdAt);
       head.appendChild(kind);
       head.appendChild(who);
@@ -528,7 +712,7 @@
       fillText(body, row.body);
       card.appendChild(head);
       card.appendChild(body);
-      if (isOwner) {
+      if (isOwner || (user && row.author === user.uid)) {
         var tools = document.createElement('div');
         tools.className = 'owner-tools';
         [['edit-offer', 'Edit'], ['delete-offer', 'Delete']].forEach(function (pair) {
@@ -546,7 +730,7 @@
       list.appendChild(card);
     });
     qa.appendChild(list);
-    if (item.sold) {
+    if (statusOf(item) === 'sold') {
       var note = document.createElement('p');
       note.className = 'sold-note';
       note.textContent = 'This listing is sold.';
@@ -554,8 +738,6 @@
     } else {
       var form = document.createElement('form');
       form.id = 'offerForm';
-      var grid = document.createElement('div');
-      grid.className = 'form-grid';
       var nameLabel = document.createElement('label');
       nameLabel.appendChild(document.createTextNode('Your name'));
       var nameInput = document.createElement('input');
@@ -576,8 +758,6 @@
         kindSelect.appendChild(opt);
       });
       kindLabel.appendChild(kindSelect);
-      grid.appendChild(nameLabel);
-      grid.appendChild(kindLabel);
       var bodyLabel = document.createElement('label');
       bodyLabel.appendChild(document.createTextNode('Question or offer'));
       var bodyInput = document.createElement('textarea');
@@ -596,9 +776,10 @@
       submit.className = 'btn primary';
       submit.type = 'submit';
       submit.id = 'offerBtn';
-      submit.textContent = 'Post to this listing';
+      submit.textContent = 'Post question';
       actions.appendChild(submit);
-      form.appendChild(grid);
+      form.appendChild(nameLabel);
+      form.appendChild(kindLabel);
       form.appendChild(bodyLabel);
       form.appendChild(err);
       form.appendChild(actions);
@@ -610,10 +791,208 @@
     }
     view.appendChild(qa);
   }
+  function paintMail(view, item) {
+    var section = document.createElement('section');
+    section.className = 'mail';
+    var heading = document.createElement('h3');
+    heading.textContent = 'Private messages';
+    var note = document.createElement('p');
+    note.className = 'hint';
+    note.textContent = mailBlocked
+      ? 'Private messages stay on this device until the database rules are published.'
+      : 'Only you and the other person can read these. They are not on the public listing.';
+    section.appendChild(heading);
+    section.appendChild(note);
+    var rows = mailRows(item.id);
+    var list = document.createElement('div');
+    list.className = 'mail-list';
+    if (!rows.length && user && item.author === user.uid) {
+      var wait = document.createElement('p');
+      wait.textContent = 'When a buyer messages you, the note shows up here.';
+      list.appendChild(wait);
+    }
+    rows.forEach(function (row) {
+      var card = document.createElement('article');
+      card.className = 'mail-card';
+      var head = document.createElement('header');
+      var who = document.createElement('strong');
+      who.textContent = row.name || 'Message';
+      var time = document.createElement('time');
+      if (row.createdAt) time.dateTime = new Date(Number(row.createdAt)).toISOString();
+      time.textContent = when(row.createdAt);
+      head.appendChild(who);
+      head.appendChild(time);
+      var body = document.createElement('p');
+      body.textContent = row.body;
+      card.appendChild(head);
+      card.appendChild(body);
+      list.appendChild(card);
+    });
+    section.appendChild(list);
+    if (statusOf(item) === 'sold') {
+      var sold = document.createElement('p');
+      sold.className = 'sold-note';
+      sold.textContent = 'This listing is sold, so new messages are closed.';
+      section.appendChild(sold);
+    } else if (!user) {
+      var sign = document.createElement('p');
+      sign.textContent = 'A private message is available once sign-in finishes. You can also ask in the public questions.';
+      section.appendChild(sign);
+    } else if (item.author !== user.uid) {
+      section.appendChild(mailForm(item, user.uid, item.author));
+    } else if (rows.length) {
+      var buyers = {};
+      rows.forEach(function (row) { if (row.buyer && row.buyer !== user.uid) buyers[row.buyer] = true; });
+      Object.keys(buyers).forEach(function (buyer) {
+        section.appendChild(mailForm(item, buyer, user.uid, 'Reply'));
+      });
+    }
+    view.appendChild(section);
+  }
+  function mailForm(item, buyer, seller, label) {
+    var form = document.createElement('form');
+    form.className = 'mail-form';
+    form.dataset.buyer = buyer;
+    form.dataset.seller = seller;
+    var nameLabel = document.createElement('label');
+    nameLabel.appendChild(document.createTextNode('Your name'));
+    var nameInput = document.createElement('input');
+    nameInput.maxLength = 24;
+    nameInput.autocomplete = 'nickname';
+    nameInput.value = cache.name || (item.author === (user && user.uid) ? item.seller : '') || '';
+    nameLabel.appendChild(nameInput);
+    var bodyLabel = document.createElement('label');
+    bodyLabel.appendChild(document.createTextNode(label || 'Message the seller'));
+    var bodyInput = document.createElement('textarea');
+    bodyInput.maxLength = 400;
+    bodyInput.rows = 3;
+    bodyInput.required = true;
+    bodyLabel.appendChild(bodyInput);
+    var err = document.createElement('p');
+    err.className = 'owner-error';
+    err.hidden = true;
+    var actions = document.createElement('div');
+    actions.className = 'form-actions';
+    var submit = document.createElement('button');
+    submit.className = 'btn primary';
+    submit.type = 'submit';
+    submit.textContent = label || 'Send private message';
+    actions.appendChild(submit);
+    form.appendChild(nameLabel);
+    form.appendChild(bodyLabel);
+    form.appendChild(err);
+    form.appendChild(actions);
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      submitMail(item.id, buyer, seller, nameInput.value, bodyInput.value, err);
+    });
+    return form;
+  }
   function setTabs() {
     document.querySelectorAll('#catTabs button').forEach(function (btn) {
       btn.setAttribute('aria-selected', btn.getAttribute('data-cat') === cat ? 'true' : 'false');
     });
+  }
+  function showStep(n) {
+    step = n;
+    document.querySelectorAll('#itemForm .step').forEach(function (el) {
+      el.hidden = el.getAttribute('data-step') !== String(n);
+    });
+    var labels = ['Details', 'Price', 'Photos', 'Preview'];
+    var label = $('#stepLabel');
+    if (label) label.textContent = 'Step ' + n + ' of 4 · ' + labels[n - 1];
+    $('#stepBack').hidden = n === 1;
+    $('#stepNext').hidden = n === 4;
+    $('#postBtn').hidden = n !== 4;
+    if (n === 4) paintPreview();
+  }
+  function validateStep(n) {
+    if (n === 1) {
+      if (!cleanLine($('#postTitle').value, 80)) return formError('Add a title, up to 80 characters.');
+      if (!cleanCat($('#postCat').value)) return formError('Pick a category.');
+      if (!cleanCondition($('#postCondition').value)) return formError('Pick a condition.');
+      if (!cleanBody($('#postBody').value, 2000)) return formError('Add a description.');
+    }
+    if (n === 2) {
+      if (parsePrice($('#postPrice').value) == null) return formError('Enter a price from $0.00 to $1,000,000.00. Use 0 for free.');
+      if (!cleanName($('#postSeller').value)) return formError('Seller name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.');
+    }
+    formError('');
+    return true;
+  }
+  function paintPhotoStrip() {
+    var strip = $('#photoStrip');
+    var preview = $('#photoPreview');
+    if (!strip) return;
+    strip.textContent = '';
+    photoDraft.forEach(function (src, index) {
+      var thumb = document.createElement('div');
+      thumb.className = 'photo-thumb';
+      thumb.appendChild(photoEl(src, 'Photo ' + (index + 1), 'thumb', true));
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'btn';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', 'Remove photo ' + (index + 1));
+      remove.addEventListener('click', function () {
+        photoDraft.splice(index, 1);
+        paintPhotoStrip();
+      });
+      thumb.appendChild(remove);
+      strip.appendChild(thumb);
+    });
+    if (preview) {
+      if (photoDraft[0]) {
+        preview.src = photoDraft[0];
+        preview.alt = 'Selected photo';
+        preview.hidden = false;
+      } else {
+        preview.removeAttribute('src');
+        preview.hidden = true;
+      }
+    }
+  }
+  function addDraft(src) {
+    var safe = safePhoto(src);
+    if (!safe) return false;
+    if (photoDraft.length >= 4) {
+      formError('Four photos is the limit.');
+      return false;
+    }
+    if (safe.length > PHOTO_RULE) {
+      formError('That photo is too big to store. Try a smaller one.');
+      return false;
+    }
+    photoDraft.push(safe);
+    formError('');
+    paintPhotoStrip();
+    return true;
+  }
+  function paintPreview() {
+    var box = $('#preview');
+    if (!box) return;
+    var fields = fieldsFromForm(true);
+    box.textContent = '';
+    if (!fields) return;
+    if (photoDraft[0]) box.appendChild(photoEl(photoDraft[0], fields.title, 'detail-photo', false));
+    var title = document.createElement('h3');
+    title.textContent = fields.title;
+    var price = document.createElement('p');
+    price.className = 'detail-price';
+    price.textContent = formatMoney(fields.price);
+    var meta = document.createElement('p');
+    meta.textContent = [CONDITIONS[fields.condition], CATS[fields.category], fields.seller, fields.location].filter(Boolean).join(' · ');
+    var desc = document.createElement('div');
+    desc.className = 'desc';
+    desc.textContent = fields.description;
+    var note = document.createElement('p');
+    note.className = 'hint';
+    note.textContent = photoDraft.length ? photoDraft.length + ' photo' + (photoDraft.length === 1 ? '' : 's') + ' ready.' : 'No photo yet. You can still post.';
+    box.appendChild(title);
+    box.appendChild(price);
+    box.appendChild(meta);
+    box.appendChild(desc);
+    box.appendChild(note);
   }
   function showForm(id, force) {
     var painted = id || 'new';
@@ -636,33 +1015,31 @@
     $('#itemForm').dataset.id = existing ? existing.id : '';
     $('#postTitle').value = existing ? existing.title : '';
     $('#postPrice').value = existing ? (Number(existing.price) / 100).toFixed(2) : '';
-    $('#postCondition').value = existing ? existing.condition : '';
-    $('#postCat').value = existing ? existing.category : '';
+    $('#postCondition').value = existing ? canonCond(existing.condition) : '';
+    $('#postCat').value = existing ? canonCat(existing.category) : '';
     $('#postSeller').value = existing ? existing.seller : (cache.name || '');
     $('#postLocation').value = existing ? (existing.location || '') : '';
     $('#postBody').value = existing ? existing.description : '';
-    $('#postContact').value = existing ? existing.contact : '';
-    $('#photoUrl').value = existing && safeHttps(existing.photo) ? existing.photo : '';
+    $('#photoUrl').value = '';
     $('#photoFile').value = '';
-    $('#photoClear').checked = false;
-    $('#photoClearRow').hidden = !(existing && existing.photo);
+    photoDraft = existing ? photosOf(existing).slice(0, 4) : [];
     formError('');
     setPhotoNote('');
-    var preview = $('#photoPreview');
-    var kept = existing ? safePhoto(existing.photo) : '';
-    if (kept) {
-      preview.src = kept;
-      preview.alt = existing.title;
-      preview.hidden = false;
-    } else {
-      preview.removeAttribute('src');
-      preview.hidden = true;
-    }
+    paintPrice();
+    paintPhotoStrip();
+    showStep(1);
   }
   function setPhotoNote(text) {
     var note = $('#photoNote');
+    if (!note) return;
     note.hidden = !text;
     note.textContent = text || '';
+  }
+  function paintPrice() {
+    var el = $('#priceReadout');
+    if (!el) return;
+    var cents = parsePrice($('#postPrice').value);
+    el.textContent = cents == null ? '' : formatMoney(cents);
   }
   function drawJpeg(img, edge, quality) {
     var scale = Math.min(1, edge / Math.max(img.width, img.height, 1));
@@ -706,50 +1083,22 @@
       reader.readAsDataURL(file);
     });
   }
-  function fieldsFromForm() {
+  function fieldsFromForm(silent) {
     var title = cleanLine($('#postTitle').value, 80);
-    if (!title) return formError('Add a title, up to 80 characters.');
+    if (!title) return silent ? null : formError('Add a title, up to 80 characters.');
     var price = parsePrice($('#postPrice').value);
-    if (price == null) return formError('Price must be from $0.00 to $1,000,000.00.');
+    if (price == null) return silent ? null : formError('Enter a price from $0.00 to $1,000,000.00. Use 0 for free.');
     var condition = cleanCondition($('#postCondition').value);
-    if (!condition) return formError('Pick a condition.');
+    if (!condition) return silent ? null : formError('Pick a condition.');
     var category = cleanCat($('#postCat').value);
-    if (!category) return formError('Pick a category.');
+    if (!category) return silent ? null : formError('Pick a category.');
     var seller = cleanName($('#postSeller').value);
-    if (!seller) return formError('Seller name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.');
+    if (!seller) return silent ? null : formError('Seller name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.');
     var location = cleanLine($('#postLocation').value, 80);
     var description = cleanBody($('#postBody').value, 2000);
-    if (!description) return formError('Add a description.');
-    var contact = cleanLine($('#postContact').value, 160);
-    if (!contact) return formError('Add a way to buy: an email, a chat handle, or “ask below”.');
-    formError('');
-    return { title: title, price: price, condition: condition, category: category, seller: seller, location: location, description: description, contact: contact };
-  }
-  async function photoFromForm(existing) {
-    var file = $('#photoFile').files && $('#photoFile').files[0];
-    if (file) {
-      setPhotoNote('Resizing photo…');
-      try {
-        var data = await shrinkFile(file);
-        setPhotoNote('Photo ready.');
-        return data;
-      } catch (e) {
-        formError('That photo is too big to store. Try a smaller one.');
-        setPhotoNote('');
-        throw e;
-      }
-    }
-    var typed = $('#photoUrl').value.trim();
-    if (typed) {
-      var href = safeHttps(typed);
-      if (!href) {
-        formError('Photo URLs have to start with https://');
-        throw new Error('url');
-      }
-      return href;
-    }
-    if ($('#photoClear').checked) return '';
-    return existing && safePhoto(existing.photo) ? existing.photo : '';
+    if (!description) return silent ? null : formError('Add a description.');
+    if (!silent) formError('');
+    return { title: title, price: price, condition: condition, category: category, seller: seller, location: location, description: description, photos: photoDraft.slice(0, 4) };
   }
   function dayStamp() { return Math.floor(Date.now() / DAY_MS) * DAY_MS; }
   function takeQuota() {
@@ -770,7 +1119,9 @@
     cache.quota = { n: q.n, day: q.day };
   }
   function baseRecord(fields, existing) {
-    return {
+    var photos = (fields.photos || []).slice(0, 4);
+    var status = existing ? statusOf(existing) : 'active';
+    return scrubItem({
       id: existing ? existing.id : makeId(),
       title: fields.title,
       price: fields.price,
@@ -779,34 +1130,39 @@
       location: fields.location,
       description: fields.description,
       seller: fields.seller,
-      contact: fields.contact,
-      photo: fields.photo || '',
+      photo: photos[0] || '',
+      photos: photos,
       author: existing && existing.author ? existing.author : (user ? user.uid : 'local'),
       createdAt: existing && existing.createdAt ? existing.createdAt : Date.now(),
       updatedAt: Date.now(),
-      sold: existing ? !!existing.sold : false,
+      sold: status === 'sold',
+      status: status,
       featured: existing ? !!existing.featured : false,
       official: existing ? !!existing.official : !!isOwner,
       localOnly: true,
       pendingSync: !existing || !existing.sample,
       sample: existing ? !!existing.sample : false
-    };
+    });
   }
   function wirePayload(record, quota, fresh) {
+    var photos = {};
+    photosOf(record).forEach(function (src, index) { photos[String(index)] = src; });
+    var status = statusOf(record);
     var payload = {
       title: record.title,
       price: record.price,
-      condition: record.condition,
-      category: record.category,
+      condition: canonCond(record.condition),
+      category: canonCat(record.category),
       location: record.location || '',
       description: record.description,
       seller: record.seller,
-      contact: record.contact,
-      photo: record.photo || '',
+      photo: photos['0'] || '',
+      photos: photos,
+      status: status,
       author: record.author,
       createdAt: fresh ? firebase.database.ServerValue.TIMESTAMP : record.createdAt,
       updatedAt: firebase.database.ServerValue.TIMESTAMP,
-      sold: !!record.sold,
+      sold: status === 'sold',
       featured: !!record.featured,
       official: !!record.official
     };
@@ -814,6 +1170,7 @@
       payload.seq = quota.n;
       payload.day = quota.day;
       payload.sold = false;
+      payload.status = 'active';
       payload.featured = false;
       payload.official = false;
     }
@@ -848,19 +1205,23 @@
   async function submitItem(event) {
     event.preventDefault();
     if (posting) return;
+    if (step < 4) {
+      if (!validateStep(step)) return;
+      showStep(step + 1);
+      return;
+    }
     var fields = fieldsFromForm();
-    if (!fields) return;
+    if (!fields) { showStep(1); return; }
     var editing = $('#itemForm').dataset.id || '';
     var existing = editing ? cache.items[editing] : null;
     if (editing && (!existing || !(isOwner || ownsItem(existing)))) { formError('Only the seller can edit this listing.'); return; }
+    if (fields.photos.some(function (src) { return src && src.length > PHOTO_RULE; })) {
+      formError('That photo is too big to store. Try a smaller one.');
+      return;
+    }
     posting = true;
     $('#postBtn').disabled = true;
     try {
-      fields.photo = await photoFromForm(existing);
-      if (fields.photo && fields.photo.length > PHOTO_RULE) {
-        formError('That photo is too big to store. Try a smaller one.');
-        return;
-      }
       cache.name = fields.seller;
       if (existing && !existing.localOnly && readsOk && user) {
         await patchItem(existing.id, fields);
@@ -898,8 +1259,6 @@
       else toast('Posted.');
       location.hash = '#/item/' + record.id;
     } catch (err) {
-      if (err && err.message === 'photo') return;
-      if (err && err.message === 'url') return;
       if (err && err.code === 'quota') { formError(err.message); return; }
       if (denied(err) && await rulesMissing()) {
         showBanner();
@@ -912,17 +1271,32 @@
         location.hash = '#/item/' + fallback.id;
         return;
       }
+      if (denied(err)) {
+        showBanner();
+        var local = baseRecord(fields, existing);
+        if (!existing) {
+          try {
+            var q = takeQuota();
+            if (q.wait) await sleep(q.wait);
+            rememberQuota(q);
+          } catch (e) { formError(e.message); return; }
+        }
+        keepLocal(local);
+        location.hash = '#/item/' + local.id;
+        return;
+      }
       formError('Could not post. Wait a few seconds and try again.');
     } finally {
       posting = false;
-      $('#postBtn').disabled = false;
+      var btn = $('#postBtn');
+      if (btn) btn.disabled = false;
     }
   }
   async function submitOffer(lid) {
     if (posting) return;
     var item = cache.items[lid];
     var errEl = $('#offerError');
-    if (!item || item.sold) { toast('This listing is sold.'); return; }
+    if (!item || statusOf(item) === 'sold') { toast('This listing is sold.'); return; }
     var name = cleanName($('#offerName').value);
     if (!name) { errEl.textContent = 'Name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.'; errEl.hidden = false; return; }
     var body = cleanBody($('#offerBody').value, 400).replace(/[\r\n]+/g, ' ').trim();
@@ -975,7 +1349,7 @@
       showDetail(lid, true);
     } catch (err) {
       if (err && err.code === 'quota') { toast(err.message); return; }
-      if (denied(err) && await rulesMissing()) {
+      if (denied(err)) {
         showBanner();
         readsOk = false;
         if (!cache.offers[lid]) cache.offers[lid] = {};
@@ -992,6 +1366,74 @@
       if (btn) btn.disabled = false;
     }
   }
+  async function submitMail(lid, buyer, seller, nameRaw, bodyRaw, errEl) {
+    if (posting) return;
+    var item = cache.items[lid];
+    if (!item || statusOf(item) === 'sold') { toast('This listing is sold.'); return; }
+    if (!user) { toast('Sign-in is still starting.'); return; }
+    var name = cleanName(nameRaw);
+    if (!name) { errEl.textContent = 'Name should start with a letter or number. Letters, numbers, underscores, and spaces, up to 24 characters.'; errEl.hidden = false; return; }
+    var body = cleanBody(bodyRaw, 400).replace(/[\r\n]+/g, ' ').trim();
+    if (!body) { errEl.textContent = 'Write a short message.'; errEl.hidden = false; return; }
+    if (buyer !== user.uid && seller !== user.uid) { errEl.textContent = 'Only the buyer and the seller can use this thread.'; errEl.hidden = false; return; }
+    errEl.hidden = true;
+    cache.name = name;
+    var id = makeId();
+    var record = { id: id, lid: lid, buyer: buyer, seller: seller, name: name, body: body, createdAt: Date.now(), localOnly: true };
+    posting = true;
+    try {
+      var remoteSeller = item.author && item.author !== 'local' && !item.sample && !item.localOnly;
+      if (!remoteSeller || !readsOk) {
+        var localQuota = takeQuota();
+        if (localQuota.wait) await sleep(localQuota.wait);
+        cache.mail[id] = record;
+        rememberQuota(localQuota);
+        save();
+        toast('Saved on this device.');
+        showDetail(lid, true);
+        return;
+      }
+      var quota = isOwner ? null : await serverQuota();
+      var payload = {
+        lid: lid,
+        buyer: buyer,
+        seller: seller,
+        name: name,
+        body: body,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      };
+      var updates = {};
+      updates['market/mail/' + buyer + '/' + id] = payload;
+      if (seller !== buyer) updates['market/mail/' + seller + '/' + id] = payload;
+      if (!isOwner && quota) {
+        updates['market/rate/' + user.uid] = firebase.database.ServerValue.TIMESTAMP;
+        updates['market/c/' + user.uid] = { n: quota.n, day: quota.day };
+      }
+      await firebase.database().ref().update(updates);
+      record.localOnly = false;
+      inbox[id] = record;
+      delete cache.mail[id];
+      rememberQuota(quota);
+      save();
+      toast('Message sent.');
+      showDetail(lid, true);
+    } catch (err) {
+      if (err && err.code === 'quota') { toast(err.message); return; }
+      if (denied(err)) {
+        mailBlocked = true;
+        var q2 = null;
+        try { q2 = takeQuota(); } catch (e) { toast(e.message); return; }
+        if (q2.wait) await sleep(q2.wait);
+        cache.mail[id] = record;
+        rememberQuota(q2);
+        save();
+        toast('Saved on this device until Firebase rules are published.');
+        showDetail(lid, true);
+        return;
+      }
+      toast('Could not send that. Wait a few seconds and try again.');
+    } finally { posting = false; }
+  }
   async function patchItem(id, changes) {
     var item = cache.items[id];
     if (!item || !(isOwner || ownsItem(item))) return;
@@ -1003,7 +1445,14 @@
         createdAt: item.createdAt
       });
     }
-    var next = Object.assign({}, item, changes, { updatedAt: Date.now(), id: id });
+    if (changes.photos) {
+      changes.photo = changes.photos[0] || '';
+    }
+    if (changes.status) changes.sold = changes.status === 'sold';
+    if (changes.sold === true) changes.status = 'sold';
+    if (changes.sold === false && changes.status !== 'pending') changes.status = changes.status || 'active';
+    var next = scrubItem(Object.assign({}, item, changes, { updatedAt: Date.now(), id: id }));
+    delete next.contact;
     if (item.localOnly || item.sample || !readsOk || !user) {
       cache.items[id] = next;
       save();
@@ -1014,23 +1463,44 @@
     payload.createdAt = item.createdAt;
     try {
       await firebase.database().ref('market/items/' + id).set(payload);
+      next.localOnly = false;
       cache.items[id] = next;
       save();
     } catch (e) {
+      if (denied(e)) showBanner();
       toast('Could not save that change.');
       throw e;
     }
   }
+  async function shareItem(id) {
+    var item = cache.items[id];
+    if (!item) return;
+    var url = location.origin + '/market/#/item/' + encodeURIComponent(id);
+    var data = { title: item.title, text: item.title + ' · ' + formatMoney(item.price), url: url };
+    if (navigator.share) {
+      try { await navigator.share(data); return; } catch (e) {
+        if (e && e.name === 'AbortError') return;
+      }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try { await navigator.clipboard.writeText(url); toast('Link copied.'); return; } catch (e) {}
+    }
+    toast('Copy this link: ' + url);
+  }
   async function onTool(act, id, extra) {
-    if (act === 'edit' || act === 'sold') {
+    if (act === 'share') { shareItem(id); return; }
+    if (act === 'edit' || act === 'sold' || act === 'pending' || act === 'delete') {
       var owned = cache.items[id];
       if (!owned || !(isOwner || ownsItem(owned))) return;
-    } else if (!isOwner) return;
+    } else if (act !== 'edit-offer' && act !== 'delete-offer' && !isOwner) return;
     if (act === 'edit') { location.hash = '#/edit/' + id; return; }
-    if (act === 'sold' || act === 'feature') {
+    if (act === 'sold' || act === 'pending' || act === 'feature') {
       var item = cache.items[id];
       if (!item) return;
-      var changes = act === 'sold' ? { sold: !item.sold } : { featured: !item.featured };
+      var changes;
+      if (act === 'feature') changes = { featured: !item.featured };
+      else if (act === 'pending') changes = statusOf(item) === 'pending' ? { status: 'active', sold: false } : { status: 'pending', sold: false };
+      else changes = statusOf(item) === 'sold' ? { status: 'active', sold: false } : { status: 'sold', sold: true };
       try { await patchItem(id, changes); } catch (e) { return; }
       render(true);
       return;
@@ -1055,9 +1525,10 @@
       return;
     }
     if (act === 'delete-offer') {
-      if (!confirm('Delete this question or offer?')) return;
       var bag = cache.offers[extra] || {};
       var row = bag[id];
+      if (!row || !(isOwner || (user && row.author === user.uid))) return;
+      if (!confirm('Delete this question or offer?')) return;
       if (row && !row.localOnly && readsOk && user) {
         try { await firebase.database().ref('market/offers/' + extra + '/' + id).set(null); }
         catch (e) { toast('Could not delete that.'); return; }
@@ -1069,7 +1540,7 @@
     }
     if (act === 'edit-offer') {
       var current = (cache.offers[extra] || {})[id];
-      if (!current) return;
+      if (!current || !(isOwner || (user && current.author === user.uid))) return;
       var nextBody = prompt('Edit question or offer', current.body);
       if (nextBody == null) return;
       var body = cleanBody(nextBody, 400).replace(/[\r\n]+/g, ' ').trim();
@@ -1100,11 +1571,12 @@
       var items = {};
       Object.keys(serverItems || {}).forEach(function (id) {
         if (!ID_RE.test(id) || !serverItems[id] || !serverItems[id].title) return;
-        items[id] = Object.assign({ id: id, localOnly: false, pendingSync: false, sample: false }, serverItems[id]);
+        items[id] = scrubItem(Object.assign({ id: id, localOnly: false, pendingSync: false, sample: false }, serverItems[id]));
+        delete items[id].contact;
       });
       Object.keys(cache.items || {}).forEach(function (id) {
         var item = cache.items[id];
-        if (item && item.localOnly && !items[id]) items[id] = item;
+        if (item && item.localOnly && !items[id]) items[id] = scrubItem(item);
       });
       cache.items = items;
     }
@@ -1158,7 +1630,10 @@
           item.pendingSync = false;
           rememberQuota(quota);
           save();
-        } catch (e) { break; }
+        } catch (e) {
+          if (denied(e)) showBanner();
+          break;
+        }
       }
     } finally { flushPending.running = false; }
   }
@@ -1190,6 +1665,28 @@
       if (denied(err)) { readsOk = false; showBanner(); }
       render();
     });
+    listenMail();
+  }
+  function listenMail() {
+    if (!user || mailUid === user.uid) return;
+    var db = firebase.database();
+    if (mailUid) db.ref('market/mail/' + mailUid).off();
+    mailUid = user.uid;
+    inbox = {};
+    db.ref('market/mail/' + user.uid).on('value', function (snap) {
+      var next = {};
+      var val = snap.val() || {};
+      Object.keys(val).forEach(function (id) {
+        if (!ID_RE.test(id) || !val[id] || !val[id].body) return;
+        if (val[id].buyer !== user.uid && val[id].seller !== user.uid) return;
+        next[id] = val[id];
+      });
+      inbox = next;
+      mailBlocked = false;
+      render();
+    }, function (err) {
+      if (denied(err)) mailBlocked = true;
+    });
   }
   function connect() {
     var config = window.MONDO_BOARD_CONFIG;
@@ -1199,6 +1696,7 @@
       if (!next) {
         user = null;
         isOwner = false;
+        inbox = {};
         clearTimeout(anonTimer);
         anonTimer = setTimeout(function () {
           if (firebase.auth().currentUser) return;
@@ -1210,7 +1708,15 @@
       clearTimeout(anonTimer);
       user = next;
       isOwner = isAdminNow();
-      if (!connect.ownerListen) { connect.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); if (on === isOwner) return; isOwner = on; render(); }); }
+      if (!connect.ownerListen) {
+        connect.ownerListen = true;
+        document.addEventListener('mondo-owner', function () {
+          var on = isAdminNow();
+          if (on === isOwner) return;
+          isOwner = on;
+          render();
+        });
+      }
       listen();
       render();
     });
@@ -1220,23 +1726,39 @@
     if (ownerBtn && !window.MONDO_MEMBER) ownerBtn.textContent = isOwner ? 'Sign out' : 'Owner sign in';
     var where = route();
     var active = document.activeElement;
-    var typing = active && active.closest && (active.closest('#itemForm') || active.closest('#offerForm'));
+    var typing = active && active.closest && (active.closest('#itemForm') || active.closest('#offerForm') || active.closest('.mail-form'));
     if (where.view === 'new' || where.view === 'edit') {
       if (!(typing && active.closest('#itemForm'))) showForm(where.view === 'edit' ? where.id : '', force);
       return;
     }
     if (where.view === 'item') {
-      if (!(typing && active.closest('#offerForm'))) showDetail(where.id, force);
+      if (!typing) showDetail(where.id, force);
       return;
     }
     showList();
   }
   function boot() {
     seed();
+    scrubAll();
     var year = $('#yr');
     if (year) year.textContent = String(new Date().getFullYear());
     $('#search').addEventListener('input', function () { query = $('#search').value; paintRows(); });
     $('#sort').addEventListener('change', function () { sort = $('#sort').value; paintRows(); });
+    $('#condFilter').addEventListener('change', function () {
+      cond = $('#condFilter').value;
+      if (!CONDITIONS[cond]) cond = 'all';
+      paintRows();
+    });
+    $('#priceMin').addEventListener('input', function () {
+      priceMin = formatPriceInput($('#priceMin').value);
+      if (priceMin !== $('#priceMin').value) $('#priceMin').value = priceMin;
+      paintRows();
+    });
+    $('#priceMax').addEventListener('input', function () {
+      priceMax = formatPriceInput($('#priceMax').value);
+      if (priceMax !== $('#priceMax').value) $('#priceMax').value = priceMax;
+      paintRows();
+    });
     $('#catTabs').addEventListener('click', function (event) {
       var btn = event.target.closest('button[data-cat]');
       if (!btn) return;
@@ -1246,21 +1768,50 @@
       paintRows();
     });
     $('#itemForm').addEventListener('submit', submitItem);
+    $('#stepNext').addEventListener('click', function () {
+      if (!validateStep(step)) return;
+      showStep(Math.min(4, step + 1));
+    });
+    $('#stepBack').addEventListener('click', function () {
+      formError('');
+      showStep(Math.max(1, step - 1));
+    });
+    $('#postPrice').addEventListener('input', function () {
+      var next = formatPriceInput($('#postPrice').value);
+      if (next !== $('#postPrice').value) $('#postPrice').value = next;
+      paintPrice();
+    });
+    $('#postPrice').addEventListener('blur', function () {
+      var cents = parsePrice($('#postPrice').value);
+      if (cents != null) $('#postPrice').value = (cents / 100).toFixed(2);
+      paintPrice();
+    });
     $('#photoFile').addEventListener('change', function () {
-      var file = $('#photoFile').files && $('#photoFile').files[0];
-      if (!file) return;
+      var files = $('#photoFile').files ? Array.prototype.slice.call($('#photoFile').files) : [];
+      if (!files.length) return;
       setPhotoNote('Resizing photo…');
-      shrinkFile(file).then(function (data) {
-        var preview = $('#photoPreview');
-        preview.src = data;
-        preview.alt = 'Selected photo';
-        preview.hidden = false;
-        setPhotoNote('Photo ready.');
-        $('#photoClear').checked = false;
+      var chain = Promise.resolve();
+      files.forEach(function (file) {
+        chain = chain.then(function () {
+          if (photoDraft.length >= 4) return;
+          return shrinkFile(file).then(function (data) { addDraft(data); });
+        });
+      });
+      chain.then(function () {
+        setPhotoNote(photoDraft.length ? 'Photo ready.' : '');
+        $('#photoFile').value = '';
       }).catch(function () {
         setPhotoNote('');
         formError('That photo is too big to store. Try a smaller one.');
       });
+    });
+    $('#addPhotoUrl').addEventListener('click', function () {
+      var href = safeHttps($('#photoUrl').value.trim());
+      if (!href) { formError('Photo URLs have to start with https://'); return; }
+      if (addDraft(href)) {
+        $('#photoUrl').value = '';
+        setPhotoNote('Photo ready.');
+      }
     });
     document.body.addEventListener('click', function (event) {
       var btn = event.target.closest('[data-act]');
@@ -1269,14 +1820,13 @@
     });
     $('#ownerBtn').addEventListener('click', function () {
       if (typeof firebase === 'undefined' || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
-      var current = firebase.auth().currentUser;
       if (isAdminNow()) {
         firebase.auth().signOut();
         return;
       }
       $('#ownerError').hidden = true;
       $('#ownerPass').value = '';
-            $('#ownerDialog').showModal();
+      $('#ownerDialog').showModal();
     });
     $('#ownerCancel').addEventListener('click', function () { $('#ownerDialog').close(); });
     $('#ownerForm').addEventListener('submit', function (event) {
@@ -1291,7 +1841,7 @@
         $('#ownerError').hidden = false;
       });
     });
-    window.addEventListener('hashchange', render);
+    window.addEventListener('hashchange', function () { render(true); });
     connect();
     render();
   }

@@ -51,6 +51,9 @@
     updates['fps/leaderboard/' + uid] = null;
     updates['stocks/watchlist/' + uid] = null;
     updates['chat/presence/' + uid] = null;
+    updates['market/mail/' + uid] = null;
+    updates['market/c/' + uid] = null;
+    updates['market/rate/' + uid] = null;
     updates['board/presence/' + uid] = null;
     var lists = [
       ['forum/threads', 'author'],

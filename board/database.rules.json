@@ -99,11 +99,33 @@
       "vrate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
     },
     "market": {
-      ".read": true,
-      "items": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 80 && newData.child('description').isString() && newData.child('description').val().length <= 2000 && newData.child('seller').isString() && newData.child('seller').val().length <= 24 && newData.child('contact').isString() && newData.child('contact').val().length <= 160 && (newData.child('author').val() === auth.uid || newData.child('author').val() === data.child('author').val() || root.child('admins').child(auth.uid).val() === true)" } },
-      "offers": { "$lid": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('body').isString() && newData.child('body').val().length <= 400 && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('author').val() === auth.uid" } } },
-      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
-      "rate": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 1500 || root.child('admins').child(auth.uid).val() === true)" } }
+      "items": {
+        ".read": true,
+        "$id": {
+          ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)",
+          ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 80 && newData.child('description').isString() && newData.child('description').val().length <= 2000 && newData.child('seller').isString() && newData.child('seller').val().length <= 24 && newData.child('price').isNumber() && newData.child('price').val() >= 0 && newData.child('price').val() <= 100000000 && (newData.child('contact').exists() === false || newData.child('contact').val() === '') && (newData.child('status').exists() === false || newData.child('status').val().matches(/^(active|pending|sold)$/)) && (newData.child('photo').exists() === false || (newData.child('photo').isString() && newData.child('photo').val().length <= 80000)) && (newData.child('author').val() === auth.uid || newData.child('author').val() === data.child('author').val() || root.child('admins').child(auth.uid).val() === true)",
+          "photos": {
+            "$i": { ".validate": "$i.matches(/^[0-3]$/) && newData.isString() && newData.val().length <= 80000" }
+          }
+        }
+      },
+      "offers": {
+        ".read": true,
+        "$lid": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('body').isString() && newData.child('body').val().length <= 400 && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('author').val() === auth.uid" } }
+      },
+      "mail": {
+        ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        "$uid": {
+          ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+          "$id": {
+            ".write": "auth != null && ((data.exists() === false && ((newData.child('buyer').val() === auth.uid && ($uid === auth.uid || (newData.child('seller').val() === $uid && root.child('market').child('items').child(newData.child('lid').val()).child('author').val() === $uid))) || (newData.child('seller').val() === auth.uid && root.child('market').child('items').child(newData.child('lid').val()).child('author').val() === auth.uid && ($uid === auth.uid || newData.child('buyer').val() === $uid)))) || data.child('buyer').val() === auth.uid || data.child('seller').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)",
+            ".validate": "newData.child('body').isString() && newData.child('body').val().length > 0 && newData.child('body').val().length <= 400 && newData.child('buyer').isString() && newData.child('buyer').val().length > 0 && newData.child('buyer').val().length <= 128 && newData.child('seller').isString() && newData.child('seller').val().length > 0 && newData.child('seller').val().length <= 128 && newData.child('lid').isString() && newData.child('lid').val().length > 0 && newData.child('lid').val().length <= 80 && newData.child('name').isString() && newData.child('name').val().length <= 24 && (newData.child('buyer').val() === auth.uid || newData.child('seller').val() === auth.uid)"
+          }
+        }
+      },
+      "c": { "$uid": { ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.isNumber() && (data.exists() === false || newData.val() >= data.val() + 1500 || root.child('admins').child(auth.uid).val() === true)" } }
     },
     "guestbook": {
       ".read": true,

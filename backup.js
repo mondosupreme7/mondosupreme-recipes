@@ -191,6 +191,10 @@
       });
     }
     if (cloud.marketItems && typeof cloud.marketItems === 'object') {
+      Object.keys(cloud.marketItems).forEach(function (id) {
+        var row = cloud.marketItems[id];
+        if (row && typeof row === 'object') delete row.contact;
+      });
       putMap('market/items', cloud.marketItems, /^[A-Za-z0-9_-]{1,80}$/);
     }
     if (cloud.eightballAsks && typeof cloud.eightballAsks === 'object') {
