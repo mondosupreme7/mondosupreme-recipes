@@ -378,3 +378,229 @@ html[data-theme] main a:not(.btn):not(.choice):not(.brand):not(.status-card):not
 .counter { background: #fff !important; border: 1px solid #e2e8f0 !important; border-radius: 10px; }
 .counter svg { filter: grayscale(1) contrast(2); }
 .studio-links { scrollbar-width: none; }
+
+html[data-theme="light"],
+html[data-theme="warm"] { color-scheme: light; --surface: var(--paper); --text: var(--ink); --border: var(--line); }
+html[data-theme="dark"],
+html[data-theme="harbor"] { color-scheme: dark; --surface: var(--paper); --text: var(--ink); --border: var(--line); }
+html[data-theme="dark"] ::placeholder,
+html[data-theme="harbor"] ::placeholder { color: #e2e8f0; opacity: 1; }
+html[data-theme="light"] ::placeholder,
+html[data-theme="warm"] ::placeholder { color: #475569; opacity: 1; }
+html[data-theme="dark"] ::selection,
+html[data-theme="harbor"] ::selection { background: #334155; color: #f8fafc; }
+html[data-theme="light"] ::selection,
+html[data-theme="warm"] ::selection { background: #bfdbfe; color: #0f172a; }
+
+html[data-theme="dark"] :is(
+  .note, .wiki-note, .wiki-h, .recipe-sheet, .chef-note, .archive, .tv-owner,
+  .aim-buddies, .aim-buddies h2, .msg, .ask-empty, .hlp-caption, .rules-status,
+  .status, .best-line, .day, .day h2, .aisle, .aisle h3, .slot span,
+  .wx-crt, .wx-star, .wx-screen-title, .mystic-shell, .bay-shell, .forum-shell,
+  .search-shell, .ask-shell, .word-box, .coast-card, .coast-panel, .launch-card,
+  .stat, .meta, .lock-note, .sync-banner, .park
+),
+html[data-theme="harbor"] :is(
+  .note, .wiki-note, .wiki-h, .recipe-sheet, .chef-note, .archive, .tv-owner,
+  .aim-buddies, .aim-buddies h2, .msg, .ask-empty, .hlp-caption, .rules-status,
+  .status, .best-line, .day, .day h2, .aisle, .aisle h3, .slot span,
+  .wx-crt, .wx-star, .wx-screen-title, .mystic-shell, .bay-shell, .forum-shell,
+  .search-shell, .ask-shell, .word-box, .coast-card, .coast-panel, .launch-card,
+  .stat, .meta, .lock-note, .sync-banner, .park
+) {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme="dark"] :is(.recipe-sheet, .archive, .note, .wiki-note, .aim-buddies, .msg, .day, .aisle, .wx-crt, .chef-note, .tv-owner) :is(h1, h2, h3, p, li, span, time, label, a, small),
+html[data-theme="harbor"] :is(.recipe-sheet, .archive, .note, .wiki-note, .aim-buddies, .msg, .day, .aisle, .wx-crt, .chef-note, .tv-owner) :is(h1, h2, h3, p, li, span, time, label, a, small) {
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] :is(.plan-kicker, .launch-kicker, .xw-kicker, .fm-kicker, .ask-kicker, .rules-status, .status, .best-line, .meta, .lock-note, .stat span),
+html[data-theme="harbor"] :is(.plan-kicker, .launch-kicker, .xw-kicker, .fm-kicker, .ask-kicker, .rules-status, .status, .best-line, .meta, .lock-note, .stat span) {
+  color: var(--link) !important;
+}
+html[data-theme="dark"] .site-footer,
+html[data-theme="dark"] .site-footer .wrap,
+html[data-theme="dark"] .site-footer a,
+html[data-theme="dark"] .site-footer span,
+html[data-theme="harbor"] .site-footer,
+html[data-theme="harbor"] .site-footer .wrap,
+html[data-theme="harbor"] .site-footer a,
+html[data-theme="harbor"] .site-footer span {
+  color: var(--muted) !important;
+}
+html[data-theme="dark"] a:not(.btn):not(.qbadge):not(.rule-chip),
+html[data-theme="harbor"] a:not(.btn):not(.qbadge):not(.rule-chip) { color: var(--link) !important; }
+html[data-theme="dark"] a.qbadge,
+html[data-theme="dark"] a.rule-chip,
+html[data-theme="harbor"] a.qbadge,
+html[data-theme="harbor"] a.rule-chip { color: #111827 !important; }
+html[data-theme="dark"] .num-down,
+html[data-theme="harbor"] .num-down { color: #fca5a5 !important; }
+html[data-theme="dark"] .num-up,
+html[data-theme="harbor"] .num-up { color: #86efac !important; }
+html[data-theme="dark"] :is(.deal-badge.is-hot, .qbadge.is-hot, .wx-live),
+html[data-theme="harbor"] :is(.deal-badge.is-hot, .qbadge.is-hot, .wx-live) {
+  background: #7f1d1d !important;
+  color: #fff !important;
+}
+html[data-theme="dark"] .wx-live.is-forecast,
+html[data-theme="harbor"] .wx-live.is-forecast,
+html[data-theme="dark"] .wx-track-future,
+html[data-theme="harbor"] .wx-track-future {
+  background: #7c2d12 !important;
+  color: #ffedd5 !important;
+}
+html[data-theme="dark"] .blink,
+html[data-theme="harbor"] .blink { color: #fef3c7 !important; }
+html[data-theme="dark"] .ebay-word :is(.c1, .c2, .c3, .c4, .c5, .c6, .c7, .c8),
+html[data-theme="harbor"] .ebay-word :is(.c1, .c2, .c3, .c4, .c5, .c6, .c7, .c8),
+html[data-theme="dark"] .bay-head,
+html[data-theme="dark"] .bay-head *,
+html[data-theme="harbor"] .bay-head,
+html[data-theme="harbor"] .bay-head * { color: #1c1917 !important; }
+html[data-theme="dark"] h1.mystic-word,
+html[data-theme="dark"] .mystic-word span,
+html[data-theme="harbor"] h1.mystic-word,
+html[data-theme="harbor"] .mystic-word span,
+html[data-theme="dark"] :is(.answer-line, .odds, .hint),
+html[data-theme="harbor"] :is(.answer-line, .odds, .hint) { color: var(--ink) !important; }
+html[data-theme="dark"] .meter,
+html[data-theme="harbor"] .meter,
+html[data-theme="dark"] .meter span,
+html[data-theme="harbor"] .meter span { color: var(--ink) !important; }
+html[data-theme="dark"] :is(.leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-bar a, .leaflet-control a),
+html[data-theme="harbor"] :is(.leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-bar a, .leaflet-control a) {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] .leaflet-popup-content,
+html[data-theme="dark"] .leaflet-popup-content a,
+html[data-theme="harbor"] .leaflet-popup-content,
+html[data-theme="harbor"] .leaflet-popup-content a { color: var(--ink) !important; }
+html[data-theme="dark"] .wx-screen-title,
+html[data-theme="harbor"] .wx-screen-title,
+html[data-theme="dark"] .hlp-caption,
+html[data-theme="harbor"] .hlp-caption,
+html[data-theme="dark"] .aim-titlebar,
+html[data-theme="harbor"] .aim-titlebar,
+html[data-theme="dark"] .day h2,
+html[data-theme="harbor"] .day h2 {
+  background: #0f2744 !important;
+  color: #f8fafc !important;
+}
+html[data-theme="dark"] :is(
+  .deals, .deals h2, .deals-lead, .win, .win h2, .card, .sight-list li,
+  table.lots, table.lots td, table.lots th, .bay-shell, .bay-bar, .detail-layout, .desc, .qa, .qa-card, .seller-name,
+  .forum-shell, .forum-bar, .forum-head, table.board, table.board td, table.board th, .post, .post-head, .empty-board,
+  .ask-win, .ask-win h2, .brief-ai, .brief-local, .hit, .wire-list li, .tool-card, .butler-card, .ask-bar,
+  .q, .clues, .clues h2, .paint-body, .paint-status, .paint-tools, .paint-titlebar, .quote-card, .quote-disclaimer,
+  .quote-watch, .fps-wrap, .hud, .score, .won
+),
+html[data-theme="harbor"] :is(
+  .deals, .deals h2, .deals-lead, .win, .win h2, .card, .sight-list li,
+  table.lots, table.lots td, table.lots th, .bay-shell, .bay-bar, .detail-layout, .desc, .qa, .qa-card, .seller-name,
+  .forum-shell, .forum-bar, .forum-head, table.board, table.board td, table.board th, .post, .post-head, .empty-board,
+  .ask-win, .ask-win h2, .brief-ai, .brief-local, .hit, .wire-list li, .tool-card, .butler-card, .ask-bar,
+  .q, .clues, .clues h2, .paint-body, .paint-status, .paint-tools, .paint-titlebar, .quote-card, .quote-disclaimer,
+  .quote-watch, .fps-wrap, .hud, .score, .won
+) {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme="dark"] :is(.deals, .win, .card, .sight-list, table.lots, .forum-shell, .ask-win, .hit, .quote-card, .post) :is(h1, h2, h3, p, li, td, th, span, label, a, small),
+html[data-theme="harbor"] :is(.deals, .win, .card, .sight-list, table.lots, .forum-shell, .ask-win, .hit, .quote-card, .post) :is(h1, h2, h3, p, li, td, th, span, label, a, small) {
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] .bay-head,
+html[data-theme="harbor"] .bay-head { background: #ffcc00 !important; }
+html[data-theme="dark"] .deals-table tr,
+html[data-theme="dark"] .deals-table td,
+html[data-theme="dark"] .deal-ship,
+html[data-theme="dark"] .deal-price,
+html[data-theme="dark"] .deals-table td::before,
+html[data-theme="harbor"] .deals-table tr,
+html[data-theme="harbor"] .deals-table td,
+html[data-theme="harbor"] .deal-ship,
+html[data-theme="harbor"] .deal-price,
+html[data-theme="harbor"] .deals-table td::before,
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .sample,
+html[data-theme="dark"] .card .cat,
+html[data-theme="harbor"] .tag,
+html[data-theme="harbor"] .sample,
+html[data-theme="harbor"] .card .cat,
+html[data-theme="dark"] .lede,
+html[data-theme="dark"] .local-stats,
+html[data-theme="dark"] .board-status,
+html[data-theme="dark"] .won,
+html[data-theme="harbor"] .lede,
+html[data-theme="harbor"] .local-stats,
+html[data-theme="harbor"] .board-status,
+html[data-theme="harbor"] .won,
+html[data-theme="dark"] .butler-card figcaption,
+html[data-theme="harbor"] .butler-card figcaption {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] .deal-badge.is-value,
+html[data-theme="harbor"] .deal-badge.is-value {
+  background: #14532d !important;
+  color: #ecfdf5 !important;
+}
+html[data-theme="dark"] .ebay-badge.fresh,
+html[data-theme="harbor"] .ebay-badge.fresh {
+  background: #14532d !important;
+  color: #ecfdf5 !important;
+}
+html[data-theme="dark"] .overlay,
+html[data-theme="harbor"] .overlay {
+  background: #0b1f4b !important;
+  color: #f8fafc !important;
+}
+html[data-theme="dark"] .overlay :is(p, .blink, .hint, .how, .best-line),
+html[data-theme="harbor"] .overlay :is(p, .blink, .hint, .how, .best-line) {
+  color: #f8fafc !important;
+  background: transparent !important;
+}
+html[data-theme="dark"] p.hint,
+html[data-theme="harbor"] p.hint { color: var(--ink) !important; background: transparent !important; }
+html[data-theme="dark"] b,
+html[data-theme="dark"] label,
+html[data-theme="harbor"] b,
+html[data-theme="harbor"] label { color: inherit !important; }
+html[data-theme="dark"] .quote-card .why-chip,
+html[data-theme="harbor"] .quote-card .why-chip {
+  background: var(--chip) !important;
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] .quote-card .why-chip b,
+html[data-theme="harbor"] .quote-card .why-chip b { color: var(--link) !important; }
+html[data-theme="dark"] a.qbadge.is-caution,
+html[data-theme="harbor"] a.qbadge.is-caution { color: #111827 !important; }
+html[data-theme="dark"] .cabinet,
+html[data-theme="harbor"] .cabinet { background: var(--paper) !important; color: var(--ink) !important; }
+html[data-theme="dark"] .wiki-h span,
+html[data-theme="harbor"] .wiki-h span,
+html[data-theme="dark"] .odds,
+html[data-theme="harbor"] .odds { color: var(--ink) !important; background: transparent !important; }
+html[data-theme="dark"] .leaflet-control-attribution,
+html[data-theme="harbor"] .leaflet-control-attribution,
+html[data-theme="dark"] .leaflet-control-attribution span,
+html[data-theme="harbor"] .leaflet-control-attribution span {
+  background: rgba(15, 23, 42, .92) !important;
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] .gb-box,
+html[data-theme="dark"] .gb-form,
+html[data-theme="dark"] .gb-stamps,
+html[data-theme="dark"] .gb-stamps label,
+html[data-theme="harbor"] .gb-box,
+html[data-theme="harbor"] .gb-form,
+html[data-theme="harbor"] .gb-stamps,
+html[data-theme="harbor"] .gb-stamps label {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
