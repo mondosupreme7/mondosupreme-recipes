@@ -1,4 +1,4 @@
-/* World of MondoCraft. Pixel combat realm. Sound stays off. Saved in mondosupreme.mmo.v1. */
+/* Craft. Pixel combat realm. Sound stays off. Saved in mondosupreme.mmo.v1. */
 (function () {
   'use strict';
   var KEY = 'mondosupreme.mmo.v1';

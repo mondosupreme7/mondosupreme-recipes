@@ -57,7 +57,7 @@
     var banner = document.getElementById('mailBanner');
     if (banner) banner.hidden = true;
     stopModem();
-    if (status) status.textContent = 'Dialing MondoNet…';
+    if (status) status.textContent = 'Dialing the network…';
     if (muted()) {
       if (status) status.textContent = 'Connected at 56000 bps. Sound is muted.';
       if (banner) banner.hidden = false;
@@ -141,9 +141,9 @@
       screen.id = 'bsod';
       screen.className = 'bsod';
       screen.setAttribute('role', 'dialog');
-      screen.setAttribute('aria-label', 'MondoOS blue screen');
+      screen.setAttribute('aria-label', 'Desktop blue screen');
       var pre = document.createElement('pre');
-      pre.textContent = 'MondoOS\n\nA fatal exception 0E has occurred at 0028:C0011E36 in VxD VMM(01) +\n00010E36. The current application will be terminated.\n\n*  Press any key / tap anywhere to return to Mondosupreme\n\nPress any key to continue _';
+      pre.textContent = 'Desktop\n\nA fatal exception 0E has occurred at 0028:C0011E36 in VxD VMM(01) +\n00010E36. The current application will be terminated.\n\n*  Press any key / tap anywhere to return to Mondosupreme\n\nPress any key to continue _';
       screen.appendChild(pre);
       document.body.appendChild(screen);
       screen.addEventListener('click', function () { screen.hidden = true; });

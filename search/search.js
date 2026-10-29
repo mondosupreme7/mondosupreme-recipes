@@ -1,4 +1,4 @@
-/* Ask Mondo — keyless brief, Wikipedia, DuckDuckGo, and this site. */
+/* Ask the Butler — keyless brief, Wikipedia, DuckDuckGo, and this site. */
 (function () {
   'use strict';
   var PREF_KEY = 'mondosupreme.search.v1';
@@ -281,21 +281,21 @@
     [
       ['App', 'Home', '/', 'landing welcome mondosupreme'],
       ['App', 'Recipes', '/recipes/', 'kitchen cookbook mastercook food dinner'],
-      ['App', 'MondoTV Daily', '/daily-recipe/', 'daily youtube recipe show chef'],
+      ['App', 'Recipe TV', '/daily-recipe/', 'daily youtube recipe show chef'],
       ['App', 'Cruises', '/cruises/', 'royal caribbean ships harbor port canaveral'],
-      ['App', 'MondoWeather', '/weather/', 'doppler radar forecast cocoa local on the 8s'],
-      ['App', 'MondoWord', '/wordle/', 'daily wordle five letter puzzle'],
+      ['App', 'Weather', '/weather/', 'doppler radar forecast cocoa local on the 8s'],
+      ['App', 'Word Game', '/wordle/', 'daily wordle five letter puzzle'],
       ['App', 'AI Search', '/search/', 'ask mondo jeeves cyber butler search engine'],
-      ['App', 'MondoQuote Stocks', '/stocks/', 'oversold rsi swing screen finance'],
+      ['App', 'Stocks', '/stocks/', 'oversold rsi swing screen finance'],
       ['App', 'Wiki', '/wiki/', 'encarta notes how-to notebook'],
       ['App', 'Drawing Board', '/board/', 'ms paint shared whiteboard'],
       ['App', 'Chat', '/chat/', 'aim chat room talk'],
       ['App', 'Arcade', '/arcade/', '90s games neon cabinet'],
-      ['App', 'MondoGotchi', '/pet/', 'virtual pet egg tamagotchi'],
+      ['App', 'Virtual Pet', '/pet/', 'virtual pet egg tamagotchi'],
       ['App', 'Forum', '/forum/', 'bulletin board posts blog'],
-      ['App', 'MondoBay', '/market/', 'classifieds for sale ebay listings'],
+      ['App', 'Marketplace', '/market/', 'classifieds for sale ebay listings'],
       ['App', 'Mystic 8-Ball', '/8ball/', 'magic eight ball fortune'],
-      ['App', 'World of MondoCraft', '/mmo/', 'pixel mmo realm'],
+      ['App', 'Craft', '/mmo/', 'pixel mmo realm'],
       ['App', 'Half-Strike', '/fps/', 'goldsrc fps labs'],
       ['App', 'The Locked Room', '/escape/', 'escape door']
     ].forEach(function (row) { addItem({ kind: row[0], title: row[1], href: row[2], text: row[3] }); });
@@ -324,7 +324,7 @@
     });
     eachRecord(readJson('mondosupreme.market.v1'), function (row) {
       if (!row || !row.title) return;
-      addItem({ kind: 'MondoBay', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || ''), text: [row.category, row.price, row.description, row.location].join(' ') });
+      addItem({ kind: 'Marketplace', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || ''), text: [row.category, row.price, row.description, row.location].join(' ') });
     });
   }
   function loadJson(url) {
@@ -386,7 +386,7 @@
     });
     take('market/items', function (row, key) {
       if (!row.title) return;
-      addItem({ kind: 'MondoBay', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || key), text: [row.category, row.price, row.description, row.location, row.sold ? 'sold' : ''].join(' ') });
+      addItem({ kind: 'Marketplace', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || key), text: [row.category, row.price, row.description, row.location, row.sold ? 'sold' : ''].join(' ') });
     });
   }
   function scoreItem(item, q, toks) {
@@ -508,7 +508,7 @@
     });
   }
   function askModel(q) {
-    var system = 'You are Ask Mondo, the cyber-butler of Mondosupreme.com, a retro personal site about recipes, Royal Caribbean cruises, weather, word puzzles, and retro web toys. Answer in two short plain-text paragraphs. Then list three key facts, each starting with a dash. Finish with one line of three real follow-up questions about the user topic, separated by vertical bars, in this shape: FOLLOWUPS: a specific question | another specific question | a third specific question. Replace those placeholders with questions a visitor would actually ask. Do not invent citations. If you are unsure, say so in one sentence. No markdown headings.';
+    var system = 'You are Ask the Butler, the cyber-butler of Mondosupreme.com, a retro personal site about recipes, Royal Caribbean cruises, weather, word puzzles, and retro web toys. Answer in two short plain-text paragraphs. Then list three key facts, each starting with a dash. Finish with one line of three real follow-up questions about the user topic, separated by vertical bars, in this shape: FOLLOWUPS: a specific question | another specific question | a third specific question. Replace those placeholders with questions a visitor would actually ask. Do not invent citations. If you are unsure, say so in one sentence. No markdown headings.';
     var user = 'Mode: ' + (MODES[mode] || 'All Web & AI') + '. Question: ' + q;
     var body = JSON.stringify({ model: 'openai', messages: [{ role: 'system', content: system }, { role: 'user', content: user }] });
     return fetch('https://text.pollinations.ai/openai', {
@@ -608,9 +608,9 @@
     if (mode === 'site') {
       paragraphs = [];
       facts = sites.slice(0, 3).map(function (s) { return s.title + ' — ' + s.text; });
-      paragraphs.push(sites.length ? 'Mondo Jeeves looked only inside Mondosupreme and found ' + sites.length + ' matching corner' + (sites.length === 1 ? '' : 's') + '.' : 'Mondo Jeeves looked through Mondosupreme and did not find a close match. Try a ship name, a recipe, or an app.');
+      paragraphs.push(sites.length ? 'The butler looked only inside Mondosupreme and found ' + sites.length + ' matching corner' + (sites.length === 1 ? '' : 's') + '.' : 'The butler looked through Mondosupreme and did not find a close match. Try a ship name, a recipe, or an app.');
     }
-    if (!paragraphs.length) paragraphs.push('Mondo Jeeves is still pulling the wires. The notes below fill in as soon as a source answers.');
+    if (!paragraphs.length) paragraphs.push('The butler is still pulling the wires. The notes below fill in as soon as a source answers.');
     var cites = [];
     wiki.forEach(function (hit) { if (hit.url) cites.push({ title: hit.title + ' — Wikipedia', url: hit.url }); });
     if (ddg.url) cites.push({ title: (ddg.heading || 'DuckDuckGo instant answer'), url: ddg.url });
@@ -701,7 +701,7 @@
       if (waiting <= 0) document.body.classList.remove('is-asking');
     }
     rememberUrl(q);
-    $('askStatus').textContent = 'Mondo Jeeves is asking the wires…';
+    $('askStatus').textContent = 'The butler is asking the wires…';
     postAsk(q);
     var localChips = [];
     var jobs = [loadCatalog()];
@@ -728,7 +728,7 @@
         return;
       }
       renderAi(parsed, localChips);
-      $('askStatus').textContent = 'Ask Mondo Cyber-Butler answered, with sources underneath.';
+      $('askStatus').textContent = 'Ask the Butler answered, with sources underneath.';
     }).catch(function () { /* The brief stays on the sources already on the page. */ }).then(function () {
       if (mode !== 'site') finishAsk();
     });

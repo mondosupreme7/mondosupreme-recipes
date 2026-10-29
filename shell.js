@@ -34,7 +34,7 @@
     { group: 'Home', title: 'AI Search', href: '/search/', text: 'ask mondo jeeves search engine cyber butler altavista yahoo' },
     { group: 'Kitchen', title: 'Recipes', href: '/recipes/', text: 'kitchen cookbook food' },
     { group: 'Kitchen', title: 'Grocery List', href: '/grocery/', text: 'mondorecipe grocery list recipes servings aisle shopping' },
-    { group: 'Kitchen', title: 'MondoTV', href: '/daily-recipe/', text: 'daily recipe youtube mondotv realplayer chef' },
+    { group: 'Kitchen', title: 'Recipe TV', href: '/daily-recipe/', text: 'daily recipe youtube mondotv realplayer chef' },
     { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
     { group: 'Harbor', title: 'Weather', href: '/weather/', text: 'weather radar doppler forecast cocoa port canaveral local on the 8s' },
     { group: 'Harbor', title: 'Launches', href: '/launches/', text: 'cape canaveral kennedy rocket falcon artemis starship countdown 32927' },
@@ -60,7 +60,7 @@
     { kind: 'Game', title: 'Supreme Kitchen Rush', href: '/arcade/', text: 'arcade kitchen cart' },
     { kind: 'Game', title: 'Cyber Brick Breaker 1999', href: '/arcade/', text: 'arcade breaker cart' },
     { kind: 'Game', title: 'Virtual Pet', href: '/pet/', text: 'pet egg tamagotchi' },
-    { kind: 'Game', title: 'World of MondoCraft', href: '/mmo/', text: 'mmo mondocraft goldhaven' },
+    { kind: 'Game', title: 'Craft', href: '/mmo/', text: 'mmo mondocraft goldhaven' },
     { kind: 'Game', title: "Half-Strike — Sector C Labs", href: '/fps/', text: 'fps half-life labs crowbar' },
     { kind: 'Game', title: 'Half-Strike — de_sandstorm', href: '/fps/', text: 'fps counter-strike bomb sandstorm' },
     { kind: 'Game', title: "Half-Strike — 2Fort_99", href: '/fps/', text: 'fps team fortress sentry 2fort' },
@@ -417,30 +417,30 @@
   var AUDIO_KEY = 'mondosupreme.audio.v1';
   var FX_KEY = 'mondosupreme.fx.v1';
   var programs = [
-    { title: "Ask Mondo", href: '/search/', icon: 'search' },
+    { title: "Ask the Butler", href: '/search/', icon: 'search' },
     { title: 'Recipes', href: '/recipes/', icon: 'pot' },
     { title: 'Grocery List', href: '/grocery/', icon: 'meal' },
-    { title: "MondoTV", href: '/daily-recipe/', icon: 'tv' },
+    { title: "Recipe TV", href: '/daily-recipe/', icon: 'tv' },
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
-    { title: "MondoWeather", href: '/weather/', icon: 'radar' },
+    { title: "Weather", href: '/weather/', icon: 'radar' },
     { title: "Launch Control", href: '/launches/', icon: 'rocket' },
     { title: 'Tide & Surf', href: '/tides/', icon: 'radar' },
     { title: 'Connections', href: '/connections/', icon: 'word' },
     { title: 'Local Guide', href: '/local/', icon: 'note' },
     { title: 'Tropics', href: '/tropics/', icon: 'ship' },
-    { title: "MondoQuote", href: '/stocks/', icon: 'quote' },
-    { title: "MondoWord", href: '/wordle/', icon: 'word' },
+    { title: "Stocks", href: '/stocks/', icon: 'quote' },
+    { title: "Word Game", href: '/wordle/', icon: 'word' },
     { title: "Mini Crossword", href: '/crossword/', icon: 'cross' },
-    { title: 'MondoWiki', href: '/wiki/', icon: 'book' },
-    { title: 'MondoPaint', href: '/board/', icon: 'paint' },
-    { title: 'MondoChat', href: '/chat/', icon: 'aim' },
+    { title: 'Wiki', href: '/wiki/', icon: 'book' },
+    { title: 'Paint', href: '/board/', icon: 'paint' },
+    { title: 'Chat', href: '/chat/', icon: 'aim' },
     { title: 'Arcade', href: '/arcade/', icon: 'joy' },
-    { title: 'MondoGotchi Pet', href: '/pet/', icon: 'egg' },
-    { title: "MondoFM Radio", href: '/radio/', icon: 'radio' },
+    { title: 'Virtual Pet', href: '/pet/', icon: 'egg' },
+    { title: "Radio", href: '/radio/', icon: 'radio' },
     { title: 'Bulletin Forum', href: '/forum/', icon: 'note' },
-    { title: "MondoBay", href: '/market/', icon: 'gavel' },
+    { title: "Marketplace", href: '/market/', icon: 'gavel' },
     { title: "Mystic 8-Ball", href: '/8ball/', icon: 'ball' },
-    { title: 'World of MondoCraft', href: '/mmo/', icon: 'sword' },
+    { title: 'Craft', href: '/mmo/', icon: 'sword' },
     { title: "Half-Strike '99", href: '/fps/', icon: 'gun' },
     { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door' }
   ];
@@ -449,7 +449,7 @@
     { title: 'Magic 8-Ball', href: '/8ball/', icon: 'ball' },
     { title: 'Lava Lamp', href: '/#lava', icon: 'lava' },
     { title: 'Pog Collection', href: '/#pogs', icon: 'pog' },
-    { title: 'MondoOS BSOD', href: '/#bsod', icon: 'bsod' }
+    { title: 'Desktop blue screen', href: '/#bsod', icon: 'bsod' }
   ];
   var ICONS = {
     pot: [[2,10,12,4,'#c0c0c0'],[4,6,8,4,'#808080'],[6,4,4,2,'#404040'],[1,10,2,2,'#000'],[13,10,2,2,'#000'],[5,12,6,2,'#000']],
@@ -669,11 +669,11 @@
     menu.hidden = true;
     menu.setAttribute('role', 'menu');
     var groups = [
-      ['Kitchen & Food', ['Recipes', 'Grocery List', 'MondoTV']],
-      ['Space Coast & Travel', ['Cruises', 'MondoWeather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
-      ['Finance & Search', ['MondoQuote', 'Ask Mondo', 'MondoWiki']],
-      ['Community', ['Bulletin Forum', 'MondoChat', 'MondoPaint', 'MondoBay', 'MondoFM Radio']],
-      ['Game Studio', ['Arcade', 'MondoGotchi Pet', 'MondoWord', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'World of MondoCraft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
+      ['Kitchen & Food', ['Recipes', 'Grocery List', 'Recipe TV']],
+      ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
+      ['Finance & Search', ['Stocks', 'Ask the Butler', 'Wiki']],
+      ['Community', ['Bulletin Forum', 'Chat', 'Paint', 'Marketplace', 'Radio']],
+      ['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
     ];
     groups.forEach(function (group) {
       var block = document.createElement('section');

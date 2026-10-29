@@ -12,7 +12,7 @@ const PUZZLES = [
     id: 'space', title: 'Space Coast',
     grid: ['ORBIT', '#A#N#', 'ADAPT', '#I#U#', 'MONTH'],
     across: [[1, 'The path a rocket rides around Earth'], [4, 'To change the plan when the weather slips'], [5, 'About thirty days, or a page on a calendar']],
-    down: [[2, 'The box that plays MondoFM'], [3, 'What you type into a computer']]
+    down: [[2, 'The box that plays Radio'], [3, 'What you type into a computer']]
   },
   {
     id: 'cruise', title: 'Cruise & Travel',
@@ -45,7 +45,7 @@ const TRIVIA = [
   ['A mini crossword clue that reads Across means the word goes…', ['Left to right', 'Bottom to top', 'In a circle', 'Only on black squares'], 0],
   ['Netscape Navigator was a famous 90s…', ['Web browser', 'Cruise ship', 'Weather radar', 'Stock exchange'], 0],
   ['Port Canaveral Terminal 1 on this site is the tip sheet for…', ['Royal Caribbean sailings', 'Cargo containers only', 'A space shuttle', 'A fishing tournament'], 0],
-  ['The MondoGotchi egg hatches into a pet you can…', ['Feed, bathe, and dress', 'Trade on the stock board', 'File as a tax form', 'Use as a modem'], 0],
+  ['The Virtual Pet egg hatches into a pet you can…', ['Feed, bathe, and dress', 'Trade on the stock board', 'File as a tax form', 'Use as a modem'], 0],
   ['An eastbound rocket from the Cape is watched from Cocoa by looking…', ['East and northeast', 'Due west inland', 'Straight down', 'South toward the Keys'], 0],
   ['Chickpea coconut curry in the sample box is which style of dinner?', ['A one-pot plant dinner', 'A raw dessert', 'A frozen pizza', 'A cheese plate only'], 0]
 ];

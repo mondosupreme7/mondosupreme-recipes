@@ -1,5 +1,5 @@
 {
- "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
+ "about": "Daily YouTube recipe pool for Recipe TV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
  "fetchedAt": "2026-10-29T13:05:32Z",
  "channels": [

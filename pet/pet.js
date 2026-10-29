@@ -46,7 +46,7 @@ let reduceMotion = false;
 
 function fresh() {
   return {
-    name: 'Mondo', owner: 'You', shell: 'purple', stage: 'egg', species: 'egg',
+    name: 'Pip', owner: 'You', shell: 'purple', stage: 'egg', species: 'egg',
     eggStarted: Date.now(), born: 0, lastSeen: Date.now(), ageMs: 0,
     hunger: 80, happy: 80, clean: 100, weight: 5, care: 0, snacks: 0, meals: 0, games: 0,
     poops: 0, sick: false, sleepy: false, light: true, vacation: false,
@@ -65,7 +65,7 @@ function load() {
   const base = fresh();
   if (!raw || typeof raw !== 'object') return base;
   Object.keys(base).forEach(k => { if (raw[k] !== undefined) base[k] = raw[k]; });
-  base.name = cleanName(base.name) || 'Mondo';
+  base.name = cleanName(base.name) || 'Pip';
   base.owner = cleanName(base.owner) || 'You';
   if (!/^(purple|blue|pink|green|yellow)$/.test(base.shell)) base.shell = 'purple';
   if (ROOMS.indexOf(base.room) < 0) base.room = 'bedroom';
@@ -1337,7 +1337,7 @@ async function postPing(to, kind, theirName) {
   if (!myUid || typeof firebase === 'undefined' || !firebase.apps.length || rulesBlocked) return;
   const wait = 8200 - (Date.now() - lastPost);
   if (lastPost && wait > 0) await new Promise(r => setTimeout(r, wait));
-  const name = cleanName(pet.name) || 'Mondo';
+  const name = cleanName(pet.name) || 'Pip';
   if (!/^[A-Za-z0-9]/.test(name)) return;
   const ref = firebase.database().ref('pet/pings').push();
   const updates = {};

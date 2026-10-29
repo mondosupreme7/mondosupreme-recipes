@@ -1,4 +1,4 @@
-/* MondoTV. Today's show is a function of the viewer's calendar date. */
+/* Recipe TV. Today's show is a function of the viewer's calendar date. */
 (function () {
   'use strict';
   var RECIPE_KEY = 'mondosupreme.recipes.v1';
@@ -219,7 +219,7 @@
         cook: 0,
         ingredients: current.ingredients.slice(0, 80),
         steps: (current.steps.length ? current.steps : ['Watch the full method on YouTube: ' + current.youtube]).slice(0, 40),
-        notes: ('MondoTV · ' + (current.channel || 'YouTube') + (current.published ? ' · ' + current.published : '') + '\n' + current.youtube + (current.blurb ? '\n' + current.blurb : '')).replace(/[\u0000-\u0009\u000b\u000c\u000e-\u001f\u007f]/g, '').trim().slice(0, 4000),
+        notes: ('Recipe TV · ' + (current.channel || 'YouTube') + (current.published ? ' · ' + current.published : '') + '\n' + current.youtube + (current.blurb ? '\n' + current.blurb : '')).replace(/[\u0000-\u0009\u000b\u000c\u000e-\u001f\u007f]/g, '').trim().slice(0, 4000),
         tags: tags,
         author: '',
         createdAt: 0

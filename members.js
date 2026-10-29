@@ -469,7 +469,7 @@
     var jStatus = makeInput('text', 'off');
     jStatus.required = false;
     jStatus.maxLength = 80;
-    jStatus.placeholder = 'Away surfing the MondoNet';
+    jStatus.placeholder = 'Away surfing the network';
     var picker = document.createElement('div');
     picker.className = 'avatar-picker';
     var chosen = 'smiley';

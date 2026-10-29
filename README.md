@@ -10,7 +10,7 @@
 
 [Arcade](https://mondosupreme.com/arcade/) is a three-cartridge cabinet: High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker 1999. Personal bests stay in `mondosupreme.arcade.v1`. Shared top-10 scores use the same Firebase project once `board/database.rules.json` is published. Only the owner can clear a board.
 
-[Pet](https://mondosupreme.com/pet/) is MondoGotchi, a keychain virtual pet. The egg, care, and evolutions stay in `mondosupreme.pet.v1`, including time away (capped so a long break does not silently end the pet). The Pet Park shares a snapshot on the same Firebase project once `board/database.rules.json` is published. Only the owner can remove a pet from the park.
+[Pet](https://mondosupreme.com/pet/) is Virtual Pet, a keychain virtual pet. The egg, care, and evolutions stay in `mondosupreme.pet.v1`, including time away (capped so a long break does not silently end the pet). The Pet Park shares a snapshot on the same Firebase project once `board/database.rules.json` is published. Only the owner can remove a pet from the park.
 
 [Forum](https://mondosupreme.com/forum/) is a bulletin board for blog posts and replies. Threads stay in `mondosupreme.forum.v1` until `board/database.rules.json` is published, then anyone signed in can post and reply. Only the owner can edit, delete, pin, lock, mark an official post, or ban a writer.
 

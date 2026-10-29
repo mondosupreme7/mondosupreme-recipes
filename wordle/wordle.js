@@ -230,7 +230,7 @@
     var game = current();
     var number = puzzleNo(today);
     var kicker = $('wordKicker');
-    if (state.mode === 'daily') kicker.textContent = 'Daily · ' + today + ' · MondoWord #' + number + ' · flips at midnight Eastern';
+    if (state.mode === 'daily') kicker.textContent = 'Daily · ' + today + ' · Word Game #' + number + ' · flips at midnight Eastern';
     else if (state.mode === 'free') kicker.textContent = 'Free Play · unlimited random 5-letter words';
     else kicker.textContent = 'Bonus · the harbor, the kitchen, and classic culture';
     $('modeDaily').setAttribute('aria-pressed', state.mode === 'daily' ? 'true' : 'false');
@@ -383,9 +383,9 @@
     var game = current();
     var answer = secret();
     var title;
-    if (state.mode === 'daily') title = "MondoWord #" + puzzleNo(today) + ' ' + (game.status === 'won' ? game.guesses.length : 'X') + '/6';
-    else if (state.mode === 'free') title = "MondoWord Free Play " + (game.status === 'won' ? game.guesses.length : 'X') + '/6';
-    else title = "MondoWord Bonus " + (game.status === 'won' ? game.guesses.length : 'X') + '/6';
+    if (state.mode === 'daily') title = "Word Game #" + puzzleNo(today) + ' ' + (game.status === 'won' ? game.guesses.length : 'X') + '/6';
+    else if (state.mode === 'free') title = "Word Game Free Play " + (game.status === 'won' ? game.guesses.length : 'X') + '/6';
+    else title = "Word Game Bonus " + (game.status === 'won' ? game.guesses.length : 'X') + '/6';
     var rows = game.guesses.map(function (guess) {
       return score(guess, answer).map(function (mark) {
         if (mark === 'correct') return '🟩';

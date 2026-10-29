@@ -14,8 +14,8 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<title>Ask Mondo — AI Cyber-Butler &amp; Web Search Engine</title>
-<meta name="description" content="Ask Mondo, a cyber-butler that answers from a keyless AI line, Wikipedia, DuckDuckGo, and every corner of Mondosupreme.">
+<title>Ask the Butler — AI Cyber-Butler &amp; Web Search Engine</title>
+<meta name="description" content="Ask the Butler, a cyber-butler that answers from a keyless AI line, Wikipedia, DuckDuckGo, and every corner of Mondosupreme.">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
@@ -25,7 +25,7 @@
 </head>
 <body class="search-page">
 <header class="site-header"><div class="wrap hdr">
- <a href="/search/" class="brand"><span class="logo">🔍</span><span>Ask Mondo</span></a>
+ <a href="/search/" class="brand"><span class="logo">🔍</span><span>Ask the Butler</span></a>
  <nav class="site-nav" aria-label="Site">
   <a href="/">Home</a>
   <a href="/recipes/">Recipes</a>
@@ -55,17 +55,17 @@
 <main class="wrap ask-main">
  <div class="ask-hero">
   <figure class="butler-card">
-   <img class="butler" src="butler-uncanny.jpg" srcset="butler-uncanny-256.jpg 256w, butler-uncanny.jpg 512w" sizes="(min-width: 860px) 168px, 128px" width="128" height="128" alt="Ask Mondo, the uncanny butler" decoding="async">
-   <figcaption>Ask Mondo</figcaption>
+   <img class="butler" src="butler-uncanny.jpg" srcset="butler-uncanny-256.jpg 256w, butler-uncanny.jpg 512w" sizes="(min-width: 860px) 168px, 128px" width="128" height="128" alt="Ask the Butler, the uncanny butler" decoding="async">
+   <figcaption>Ask the Butler</figcaption>
   </figure>
   <div class="ask-intro">
    <p class="ask-kicker">AI Cyber-Butler</p>
-   <h1>Ask Mondo — AI Cyber-Butler &amp; Web Search Engine</h1>
-   <p class="ask-lead">Ask in plain language. Mondo Jeeves writes an answer brief, checks Wikipedia and DuckDuckGo, and looks through recipes, ships, the wiki, the forum, MondoBay, and the rest of this site.</p>
+   <h1>Ask the Butler — AI Cyber-Butler &amp; Web Search Engine</h1>
+   <p class="ask-lead">Ask in plain language. The butler writes an answer brief, checks Wikipedia and DuckDuckGo, and looks through recipes, ships, the wiki, the forum, Marketplace, and the rest of this site.</p>
   </div>
  </div>
  <form class="ask-form" id="askForm" role="search">
-  <label class="ask-label" for="q">Ask Mondo</label>
+  <label class="ask-label" for="q">Ask the Butler</label>
   <div class="ask-bar">
    <input id="q" name="q" type="search" enterkeyhint="search" maxlength="140" autocomplete="off" placeholder="Ask anything… pancakes, Port Canaveral, 2 cups to ml" aria-describedby="askStatus">
    <button class="btn primary ask-go" type="submit">Search</button>
@@ -86,13 +86,13 @@
   <button class="btn priv-btn" id="privPrivate" type="button" aria-pressed="false">Private</button>
   <p id="privNote">Public questions join What Visitors Are Asking. Private questions stay on this computer.</p>
  </div>
- <p class="ask-status" id="askStatus" role="status" aria-live="polite">Mondo Jeeves is at the door. Ask a question.</p>
+ <p class="ask-status" id="askStatus" role="status" aria-live="polite">The butler is at the door. Ask a question.</p>
  <section class="ask-win" id="toolWin" hidden>
   <h2>Instant tool bar</h2>
   <div id="toolBody"></div>
  </section>
  <section class="ask-win" id="briefWin" aria-labelledby="briefTitle">
-  <h2 id="briefTitle">Ask Mondo Cyber-Butler</h2>
+  <h2 id="briefTitle">Ask the Butler</h2>
   <div id="briefBody">
    <p>The brief lands here. If the outside AI line is slow, Wikipedia, DuckDuckGo, and this site still fill the page.</p>
   </div>
@@ -104,7 +104,7 @@
  </section>
  <section class="ask-win" id="siteWin">
   <h2>On Mondosupreme</h2>
-  <div id="siteBody"><p class="ask-empty">Recipes, wiki pages, Royal Caribbean ships, Port Canaveral deals, forum posts, MondoBay listings, and site apps show up beside the web results.</p></div>
+  <div id="siteBody"><p class="ask-empty">Recipes, wiki pages, Royal Caribbean ships, Port Canaveral deals, forum posts, Marketplace listings, and site apps show up beside the web results.</p></div>
  </section>
  <section class="ask-win" id="webWin">
   <h2>Web results</h2>

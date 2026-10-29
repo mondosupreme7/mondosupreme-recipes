@@ -977,7 +977,7 @@ function showPage(id, keepScroll) {
     if (!keepScroll) window.scrollTo(0, 0);
     return;
   }
-  document.title = p.title + ' · MONDO.HLP';
+  document.title = p.title + ' · Wiki';
   pushHistory(p);
   const tags = (p.tags || []).map(t => '<span class="tag">#' + esc(t) + '</span>').join('');
   const when = editedLabel(p.updated);

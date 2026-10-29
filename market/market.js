@@ -1,4 +1,4 @@
-/* MondoBay classifieds. Firebase when the rules allow it, this browser otherwise. */
+/* Marketplace classifieds. Firebase when the rules allow it, this browser otherwise. */
 (function () {
   'use strict';
   var KEY = 'mondosupreme.market.v1';
@@ -24,7 +24,7 @@
   var NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}$/;
   var PHOTO_RE = /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/;
   var ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
-  var OFFICIAL = '★ Official Mondo Seller (999) ★';
+  var OFFICIAL = '★ Official Seller (999) ★';
 
   var $ = function (sel) { return document.querySelector(sel); };
   var cache = load();

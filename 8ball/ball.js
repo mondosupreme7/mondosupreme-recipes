@@ -482,7 +482,7 @@
       paintOdds();
       return;
     }
-    entry.name = isOwner && name === 'Seeker' ? 'Mondo' : name;
+    entry.name = isOwner && name === 'Seeker' ? 'Host' : name;
     if (!isOwner && rateWait() > 0) {
       bumpPrivate(result.tone);
       status('Shown here only. The public log allows one question every 4 seconds.');

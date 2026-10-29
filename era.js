@@ -223,7 +223,7 @@
     var track = TRACKS[index];
     if (!track) return '';
     var file = /\.mid$/i.test(track.name) ? track.name : track.name + '.mid';
-    return (index + 1) + '. DJ Mondo - ' + file + ' [' + clockText(trackSeconds(track)) + ']';
+    return (index + 1) + '. DJ -  ' + file + ' [' + clockText(trackSeconds(track)) + ']';
   }
   function volumeGain() {
     return Math.max(0, Math.min(100, volume)) / 100 * 0.15;
