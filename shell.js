@@ -38,7 +38,7 @@
     { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
     { group: 'Harbor', title: 'Weather', href: '/weather/', text: 'weather radar doppler forecast cocoa port canaveral local on the 8s' },
     { group: 'Harbor', title: 'Launches', href: '/launches/', text: 'cape canaveral kennedy rocket falcon artemis starship countdown 32927' },
-    { group: 'Harbor', title: 'Stocks', href: '/stocks/', text: 'mondoquote oversold rsi screener etrade stocks rcl' },
+    { group: 'Harbor', title: 'Stocks', href: '/stocks/', text: 'mondoquote oversold rsi swing screen stocks' },
     { group: 'Notes', title: 'Wiki', href: '/wiki/', text: 'notes wiki' },
     { group: 'Notes', title: 'Forum', href: '/forum/', text: 'bulletin posts forum' },
     { group: 'Shop', title: 'Market', href: '/market/', text: 'ebay classifieds market mondobay for sale' },

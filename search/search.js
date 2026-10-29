@@ -286,7 +286,7 @@
       ['App', 'MondoWeather', '/weather/', 'doppler radar forecast cocoa local on the 8s'],
       ['App', 'MondoWord', '/wordle/', 'daily wordle five letter puzzle'],
       ['App', 'AI Search', '/search/', 'ask mondo jeeves cyber butler search engine'],
-      ['App', 'MondoQuote Stocks', '/stocks/', 'oversold rsi scanner finance etrade'],
+      ['App', 'MondoQuote Stocks', '/stocks/', 'oversold rsi swing screen finance'],
       ['App', 'Wiki', '/wiki/', 'encarta notes how-to notebook'],
       ['App', 'Drawing Board', '/board/', 'ms paint shared whiteboard'],
       ['App', 'Chat', '/chat/', 'aim chat room talk'],

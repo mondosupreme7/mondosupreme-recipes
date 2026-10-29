@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>MondoQuote — Oversold Stock Scanner</title>
-<meta name="description" content="MondoQuote, an oversold stock scanner for liquid US stocks. RSI, Bollinger Bands, and a bounce score. Not financial advice.">
+<meta name="description" content="MondoQuote, a swing screen for S&amp;P 500, Nasdaq-100, and MidCap names. Each card explains the setup from fetched prices and fundamentals. Informational only, not financial advice.">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
@@ -55,15 +55,15 @@
 </div></header>
 <main class="wrap">
  <div class="hero quote-hero">
-  <p class="quote-kicker">E*TRADE Desk · Wall Street</p>
+  <p class="quote-kicker">MondoQuote Desk · Swing Screen</p>
   <h1>MondoQuote — Oversold Stock Scanner</h1>
-  <p>RSI(14), Bollinger Bands, and a bounce score for liquid US stocks. Royal Caribbean is on the board as RCL.</p>
+  <p>Each name screens as a swing candidate from the latest daily bars and, when Yahoo returns them, a fundamentals sheet. The note on a card uses only those fetched numbers. Informational only, not financial advice.</p>
  </div>
  <p id="fresh" class="quote-fresh">Loading the screener…</p>
  <div class="quote-tools">
   <label>Screen
    <select id="screen" aria-label="Filter the screener">
-    <option value="all">All Scanned</option>
+    <option value="all">Swing list</option>
     <option value="deep">RSI &lt; 30 (Strictly Oversold)</option>
     <option value="ready">Oversold + Turning Up (Ready to Buy)</option>
     <option value="pull">Above 200-Day MA Pullbacks</option>
@@ -72,6 +72,7 @@
   </label>
   <label>Sort
    <select id="sort" aria-label="Sort the screener">
+    <option value="rank" selected>Best swing rank</option>
     <option value="rsi">Lowest RSI</option>
     <option value="score">Highest Bounce Score</option>
     <option value="drop">Biggest 5-Day Drop</option>
@@ -82,7 +83,7 @@
  <p id="count" class="quote-count"></p>
  <div class="quote-scroll">
   <table class="quote-table">
-   <caption>Oversold scan of liquid US stocks</caption>
+   <caption>Swing screen of S&amp;P 500, Nasdaq-100, and MidCap names</caption>
    <thead>
     <tr>
      <th scope="col">Ticker</th>
@@ -93,7 +94,7 @@
      <th scope="col">5-Day</th>
      <th scope="col">1-Month</th>
      <th scope="col">52-Wk</th>
-     <th scope="col">Score</th>
+     <th scope="col">Rank</th>
     </tr>
    </thead>
    <tbody id="rows"></tbody>
@@ -107,7 +108,7 @@
   </div>
   <p id="detailMeta"></p>
   <canvas id="chart" width="720" height="320" aria-label="Price, Bollinger Bands, and RSI chart"></canvas>
-  <p id="detailWhy"></p>
+  <div id="detailWhy" class="why-box"></div>
   <p id="detailLinks"></p>
   <form id="pinForm" class="pin-form">
    <label>Note<input id="pinNote" maxlength="140" autocomplete="off"></label>
@@ -121,13 +122,13 @@
   <h2 id="watchTitle">My Watchlist</h2>
   <p id="watchLead">Pins stay in this browser. Sign in to sync them to your account.</p>
   <form id="addForm" class="pin-form">
-   <label>Add ticker<input id="addTicker" maxlength="6" autocapitalize="characters" autocomplete="off" placeholder="RCL" aria-label="Ticker to pin"></label>
+   <label>Add ticker<input id="addTicker" maxlength="6" autocapitalize="characters" autocomplete="off" placeholder="AAPL" aria-label="Ticker to pin"></label>
    <button type="submit" class="btn">Add</button>
   </form>
   <p id="addStatus" class="quote-note"></p>
   <ul id="watchList" class="watch-list"></ul>
  </section>
- <p class="quote-disclaimer">Technical indicator screener for informational use only — not financial advice. Prices are delayed daily closes from the public Yahoo Finance chart.</p>
+ <p class="quote-disclaimer">Informational only, not financial advice and not a recommendation to buy or sell. A stock is here because it matched a rules-based swing screen. Prices are delayed daily closes. Fundamentals come from Yahoo's quote summary when that request succeeds, and otherwise from Nasdaq's public quote, financials, analyst targets, and earnings calendar.</p>
 </main>
 <footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Not financial advice. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">AI Search</a> · <a href="/stocks/">Stocks</a> · <a href="/wiki/">Wiki</a> · <a href="/board/">Board</a> · <a href="/chat/">Chat</a> · <a href="/arcade/">Arcade</a> · <a href="/pet/">Pet</a> · <a href="/forum/">Forum</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a> · <a href="/mmo/">MMO</a> · <a href="/fps/">FPS</a> · <a href="/escape/" aria-label="The Locked Room">???</a></div></footer>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>

@@ -1,14 +1,24 @@
 name: Update oversold stock screener
 
-# Prices liquid US stocks from Yahoo Finance's public daily chart API and
-# writes stocks/oversold.json. Weekday runs cover the cash session and the
-# close. A push made with GITHUB_TOKEN does not start the Pages workflow, so
-# this job deploys the site itself when the snapshot changes. A failed fetch
-# keeps the previous file.
+# Prices the S&P 500, Nasdaq-100, and S&P MidCap 400 from Yahoo Finance and
+# writes stocks/oversold.json. Weekday crons are UTC so they cover 9:30am–4pm
+# Eastern in both EST and EDT: the 13:30 UTC run is the EDT open (and 8:30am
+# EST), and the 21:00 UTC run is the EST close (and 5:00pm EDT). Sunday
+# refreshes the Wikipedia constituent list. A push made with GITHUB_TOKEN does
+# not start the Pages workflow, so this job deploys the site itself when the
+# snapshot changes. A failed fetch keeps the previous file.
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/update-oversold-stocks.py
+      - .github/workflows/stock-screener.yml
   schedule:
-    - cron: '20 14,18,21 * * 1-5'
+    - cron: '30 13 * * 1-5'
+    - cron: '0,30 14-20 * * 1-5'
+    - cron: '0 21 * * 1-5'
+    - cron: '15 12 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -23,7 +33,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -37,6 +47,8 @@ jobs:
       - name: Fetch oversold snapshot
         env:
           STOCKS_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+          STOCKS_REFRESH_UNIVERSE: ${{ (github.event_name == 'workflow_dispatch' || github.event.schedule == '15 12 * * 0') && '1' || '0' }}
+          STOCKS_UNIVERSE_ONLY: ${{ github.event.schedule == '15 12 * * 0' && '1' || '0' }}
         run: python3 scripts/update-oversold-stocks.py
 
       - name: Commit snapshot
@@ -44,7 +56,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add stocks/oversold.json
+          git add stocks/oversold.json scripts/universe.json
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Screener unchanged."

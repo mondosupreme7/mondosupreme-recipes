@@ -5,6 +5,8 @@
   var TICKER = /^[A-Z]{1,5}(?:-[A-Z])?$/;
   var rows = [];
   var fetchedAt = '';
+  var universeCount = 0;
+  var pricedCount = 0;
   var watch = {};
   var selected = '';
   var uid = '';
@@ -116,13 +118,15 @@
       if (sort === 'score') return (b.score || 0) - (a.score || 0) || a.symbol.localeCompare(b.symbol);
       if (sort === 'drop') return (a.drop5 == null ? 0 : a.drop5) - (b.drop5 == null ? 0 : b.drop5) || a.symbol.localeCompare(b.symbol);
       if (sort === 'ticker') return a.symbol.localeCompare(b.symbol);
-      return (a.rsi == null ? 999 : a.rsi) - (b.rsi == null ? 999 : b.rsi) || a.symbol.localeCompare(b.symbol);
+      if (sort === 'rsi') return (a.rsi == null ? 999 : a.rsi) - (b.rsi == null ? 999 : b.rsi) || a.symbol.localeCompare(b.symbol);
+      return (b.rankScore || 0) - (a.rankScore || 0) || a.symbol.localeCompare(b.symbol);
     });
     return list;
   }
 
   function badges(row) {
     var box = el('span', null, 'badge-row');
+    if (row.flags && row.flags.length) box.appendChild(el('span', row.flags[0], 'qbadge is-caution'));
     if (row.strongBounce) box.appendChild(el('span', 'STRONG BOUNCE SETUP!', 'qbadge is-bounce'));
     if (typeof row.rsi === 'number' && row.rsi < 30) box.appendChild(el('span', 'RSI < 30!', 'qbadge is-hot'));
     else if (row.zone === 'watch') box.appendChild(el('span', 'WATCH / BOUNCE ZONE', 'qbadge is-bounce'));
@@ -149,6 +153,7 @@
       name.setAttribute('data-label', 'Ticker');
       name.appendChild(el('span', row.symbol, 'tick'));
       name.appendChild(el('small', row.name || ''));
+      if (row.chips && row.chips.setup) name.appendChild(el('small', row.chips.setup, 'row-setup'));
       var marks = badges(row);
       if (marks) name.appendChild(marks);
       tr.appendChild(name);
@@ -175,8 +180,9 @@
       var range = el('td', row.range52 == null ? '—' : row.range52.toFixed(0) + '%');
       range.setAttribute('data-label', '52-Wk');
       tr.appendChild(range);
-      var score = el('td', row.score == null ? '—' : String(row.score));
-      score.setAttribute('data-label', 'Score');
+      var rankValue = row.rankScore != null ? row.rankScore : row.score;
+      var score = el('td', rankValue == null ? '—' : String(rankValue));
+      score.setAttribute('data-label', 'Rank');
       tr.appendChild(score);
       tr.addEventListener('click', function () { openDetail(row.symbol); });
       tr.addEventListener('keydown', function (event) {
@@ -192,6 +198,30 @@
     document.getElementById('count').textContent = list.length === scanned && document.getElementById('screen').value === 'all'
       ? scanned + ' stocks scanned'
       : 'Showing ' + list.length + ' of ' + scanned + ' scanned stocks';
+  }
+
+  function fillWhy(row) {
+    var box = document.getElementById('detailWhy');
+    box.replaceChildren();
+    box.appendChild(el('p', row.why || why(row)));
+    if (row.chips) {
+      var chips = el('div', null, 'why-chips');
+      [['Value', row.chips.value], ['Setup', row.chips.setup], ['Risk', row.chips.risk]].forEach(function (pair) {
+        if (!pair[1]) return;
+        var chip = el('span', null, 'why-chip');
+        chip.appendChild(el('b', pair[0]));
+        chip.appendChild(document.createTextNode(pair[1]));
+        chips.appendChild(chip);
+      });
+      if (chips.childNodes.length) box.appendChild(chips);
+    }
+    if (row.flags && row.flags.length) {
+      var flags = el('div', null, 'why-flags');
+      row.flags.forEach(function (flag) {
+        flags.appendChild(el('span', flag, 'qbadge is-caution'));
+      });
+      box.appendChild(flags);
+    }
   }
 
   function why(row) {
@@ -289,7 +319,7 @@
     ctx.fillText('Price + Bollinger 20, 2σ', pad, 14);
   }
 
-  function openDetail(symbol) {
+  function openDetail(symbol, scroll) {
     var row = bySymbol(symbol) || {
       symbol: symbol,
       name: 'Pinned ticker',
@@ -304,12 +334,17 @@
     var bits = [];
     if (row.price != null) bits.push('Last ' + money(row.price));
     if (row.rsi != null) bits.push('RSI ' + row.rsi.toFixed(1));
+    if (row.rankScore != null) bits.push('Rank ' + row.rankScore);
     if (row.score != null) bits.push('Bounce score ' + row.score);
+    if (row.entryLow != null && row.entryHigh != null) bits.push('Entry zone ' + money(row.entryLow) + '–' + money(row.entryHigh));
+    if (row.stop != null) bits.push('Stop ' + money(row.stop));
+    if (row.target != null) bits.push('Target ' + money(row.target));
+    if (row.rewardRisk != null) bits.push('Reward:risk ' + row.rewardRisk.toFixed(1) + ':1');
     if (row.sma20) bits.push('SMA20 ' + money(row.sma20));
     if (row.sma50) bits.push('SMA50 ' + money(row.sma50));
     if (row.sma200) bits.push('SMA200 ' + money(row.sma200));
     document.getElementById('detailMeta').textContent = bits.join(' · ');
-    document.getElementById('detailWhy').textContent = why(row);
+    fillWhy(row);
     var links = document.getElementById('detailLinks');
     links.replaceChildren();
     var yahoo = document.createElement('a');
@@ -329,7 +364,7 @@
     document.getElementById('pinStatus').textContent = watch[symbol] ? 'Pinned on your watchlist.' : '';
     drawChart(row);
     renderTable();
-    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (scroll !== false) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function renderWatch() {
@@ -367,9 +402,14 @@
 
   function paintFresh() {
     var box = document.getElementById('fresh');
-    box.textContent = rows.length
-      ? 'Market data timestamp ' + localTime(fetchedAt) + '. ' + rows.length + ' names. Daily bars, not a live quote.'
-      : 'The screener snapshot has not been fetched yet.';
+    if (!rows.length) {
+      box.textContent = 'The screener snapshot has not been fetched yet.';
+      return;
+    }
+    var scope = universeCount
+      ? rows.length + ' swing candidates from ' + (pricedCount || universeCount) + ' priced names in a universe of ' + universeCount + '.'
+      : rows.length + ' names.';
+    box.textContent = 'Market data timestamp ' + localTime(fetchedAt) + '. ' + scope + ' Daily bars, not a live quote. Informational only, not financial advice.';
   }
 
   function savePin(symbol, note, target) {
@@ -459,10 +499,16 @@
         return row && TICKER.test(row.symbol || '') && typeof row.rsi === 'number';
       }) : [];
       fetchedAt = data && data.fetchedAt || '';
+      universeCount = data && data.universeCount || 0;
+      pricedCount = data && data.priced || 0;
       paintFresh();
       paintTape();
       renderTable();
-      if (selected) openDetail(selected);
+      if (selected) openDetail(selected, false);
+      else if (rows.length) {
+        var first = visibleRows()[0];
+        if (first) openDetail(first.symbol, false);
+      }
     }).catch(function () {
       document.getElementById('fresh').textContent = 'The saved screener could not be loaded. The last good snapshot stays on the server when a fetch fails.';
     });
@@ -495,7 +541,7 @@
     var symbol = document.getElementById('addTicker').value.trim().toUpperCase();
     var status = document.getElementById('addStatus');
     if (!TICKER.test(symbol)) {
-      status.textContent = 'Use a ticker like RCL or BRK-B.';
+      status.textContent = 'Use a ticker like AAPL or BRK-B.';
       return;
     }
     if (savePin(symbol, '', null)) {
