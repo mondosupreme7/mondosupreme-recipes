@@ -37,9 +37,10 @@
   <div id="eventCats" class="chip-scroller" role="group" aria-label="Event category"></div>
   <p id="eventsStatus" class="coast-note" role="status"></p>
   <div id="eventList" class="event-list"></div>
-  <form id="eventForm">
+  <p id="eventNote" class="coast-note">Events are read-only. Only an admin can add or remove one.</p>
+  <form id="eventForm" hidden>
    <h3>Add a community event</h3>
-   <p class="coast-note">Sign in to post. The note is public, the account email is not.</p>
+   <p class="coast-note">This post is public. The account email is not.</p>
    <label>Title <input id="evTitle" maxlength="120" required></label>
    <label>Starts (Eastern) <input id="evStart" type="datetime-local" required></label>
    <label>Town <select id="evTown"></select></label>
@@ -56,7 +57,8 @@
  <div id="cats" class="filter-row" role="group" aria-label="Category"></div>
  <p id="placeCount" class="coast-note"></p>
  <div id="places" class="place-list"></div>
- <form id="tipForm" class="coast-panel">
+ <p id="tipNote" class="coast-note">Tips are read-only. Only an admin can add one.</p>
+ <form id="tipForm" class="coast-panel" hidden>
   <h2>Add a tip</h2>
   <label>Place <select id="tipPlace"></select></label>
   <label>Rating

@@ -514,7 +514,7 @@
       cal.node.type = 'button';
       cal.node.addEventListener('click', function () { downloadIcs(ev); });
       actions.appendChild(cal.node);
-      if (ev.kind === 'community' && ev.id && (ev.uid === me || isAdmin())) {
+      if (ev.kind === 'community' && ev.id && isAdmin()) {
         var remove = document.createElement('button');
         remove.type = 'button';
         remove.className = 'btn';
@@ -543,9 +543,17 @@
       host.appendChild(card);
     });
   }
+  function syncEventForm() {
+    var admin = isAdmin();
+    var form = $('eventForm');
+    var note = $('eventNote');
+    if (form) form.hidden = !admin;
+    if (note) note.hidden = admin;
+  }
   function post(event) {
     event.preventDefault();
     var status = $('evStatus');
+    if (!isAdmin()) { status.textContent = 'Only an admin can post an event.'; return; }
     var user = window.firebase && firebase.auth && firebase.auth().currentUser;
     if (!user || user.isAnonymous) { status.textContent = 'Sign in to post an event.'; return; }
     var title = $('evTitle').value.replace(/\s+/g, ' ').trim().slice(0, 120);
@@ -603,7 +611,8 @@
     CATS.forEach(function (name) { chip('eventCats', name, 'cat', cat, function (value) { cat = value; }); });
     fillSelects();
     $('eventForm').addEventListener('submit', post);
-    document.addEventListener('mondo-owner', paint);
+    document.addEventListener('mondo-owner', function () { syncEventForm(); paint(); });
+    syncEventForm();
     document.addEventListener('mondo-member', paint);
     loadFile();
     loadLaunches();

@@ -40,7 +40,7 @@ function isSample(r){
   return !!(r&&(r.sample||r.id==='sample-1'||r.id==='sample-2'||r.id==='sample-3'||/^Sample:/.test(r.title||'')));
 }
 function isAdminNow(){return !!(window.MONDO_MEMBER&&window.MONDO_MEMBER.isOwner&&window.MONDO_MEMBER.isOwner())}
-function canMutate(){return !serverLive||!!isOwner}
+function canMutate(){return !!isOwner}
 function showRulesBanner(){
   rulesBlocked=true; serverLive=false;
   const el=$('#syncBanner');
@@ -120,8 +120,11 @@ function refreshViews(){
 }
 function updateOwnerButton(){
   const b=$('#ownerBtn');
-  if(!b)return;
-  if(!window.MONDO_MEMBER)b.textContent=isOwner?'Sign out':'Owner sign in';
+  if(b&&!window.MONDO_MEMBER)b.textContent=isOwner?'Sign out':'Owner sign in';
+  const tools=$('#adminTools');
+  const note=$('#readNote');
+  if(tools)tools.hidden=!isOwner;
+  if(note)note.hidden=!!isOwner;
 }
 async function ensureQuota(){
   if(quotaLoaded||!myUid||typeof firebase==='undefined')return;
@@ -138,6 +141,7 @@ async function preparePhoto(recipe){
   return recipe.photo;
 }
 async function createNow(id){
+  if(!isOwner){pendingCreates.delete(id);return}
   if(rulesBlocked||!serverLive||!myUid||!pendingCreates.has(id))return;
   let recipe=recipes.find(r=>r.id===id);
   if(!recipe||isSample(recipe)){pendingCreates.delete(id);return}
@@ -243,7 +247,7 @@ function applySnapshot(val){
   migrateHeld(remoteIds);
 }
 function migrateHeld(remoteIds){
-  if(migrating||rulesBlocked||!serverLive||quotaStop)return;
+  if(!isOwner||migrating||rulesBlocked||!serverLive||quotaStop)return;
   const pushed=loadPushed();
   const pool=[...heldCustoms, ...recipes.filter(r=>r&&!(r.author&&r.createdAt))];
   const seen=new Set();
@@ -400,8 +404,6 @@ function saveChefToMine(id){
       delete copy.collection; delete copy.partial; delete copy.watch; delete copy.q; delete copy.video; delete copy.part;
       recipes.unshift(copy);
       save();
-      unsynced.add(copy.id);
-      if(serverLive&&!rulesBlocked)shareCreate(copy.id);
       toast('Saved to my recipes');
     }
     return copy;
@@ -650,7 +652,7 @@ function paintDetail(r, readonly){
   v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
    <div class="dbar"><a href="#/" class="btn ghost">← Back</a><button class="btn ghost" id="dFav">${readonly?'♡ Save & favorite':(favs.has(r.id)?'♥ Favorited':'♡ Favorite')}</button>
    <button class="btn ghost" id="dPrint">🖨 Print</button>${own?'<button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button>':''}</div>
-   ${serverLive&&!isOwner&&!readonly?'<p class="lock-note">Anyone can add recipes. Only the owner can edit or delete them.</p>':''}
+   ${!isOwner&&!readonly?'<p class="lock-note">This recipe is read-only. Only an admin can change the shared notebook. Favorites stay on this device.</p>':''}
    <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}${readonly?' · Backyard Chef':''}</div>
    ${partial?'<p class="partial-badge" style="position:static;display:inline-block;margin:0 0 8px">Partial recipe, see video</p>':''}
    <h1>${esc(r.title)}</h1>
@@ -786,7 +788,7 @@ function focusScanWord(word){
   }
 }
 function openEditor(r,prefill){
-  if(r&&!canMutate()){toast('Only the owner can edit recipes');return}
+  if(!isOwner){toast('Only an admin can change recipes');return}
   const f=$('#recipeForm'); f.reset();
   const scanned=!r&&prefill;
   $('#formTitle').textContent=r?'Edit Recipe':(scanned?'Review scanned recipe':'Add Recipe');
@@ -1915,6 +1917,7 @@ async function onSave(e){
     prep:+f.prep.value||0,cook:+f.cook.value||0,ingredients:lines(f.ingredients.value),steps:lines(f.steps.value),notes:f.notes.value.trim(),
     tags:[...new Set(f.tags.value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean))]};
   if(!data.title)return;
+  if(!isOwner){toast('Only an admin can change recipes');return}
   let id=f.id.value;
   if(!id&&userRecipeCount()>=LIMITS.recipes){toast('Your notebook holds 500 recipes. Remove one before adding another.');return}
   if(id){
@@ -2003,6 +2006,7 @@ function parseBackup(data){
   return {recipes:out,favorites:favIds};
 }
 function importJSON(file){
+  if(!isOwner){toast('Only an admin can import recipes');return}
   const rd=new FileReader();
   rd.onload=()=>{
     let parsed;

@@ -97,11 +97,24 @@
       }, function () {});
     } catch (e) {}
   }
+  function isAdmin() {
+    return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+  }
+  function syncTipForm() {
+    var admin = isAdmin();
+    var form = $('tipForm');
+    var note = $('tipNote');
+    if (form) form.hidden = !admin;
+    if (note) note.hidden = admin;
+  }
   function boot() {
     bootFilters();
     $('q').addEventListener('input', function () { q = $('q').value.trim().toLowerCase(); paint(); });
+    document.addEventListener('mondo-owner', syncTipForm);
+    syncTipForm();
     $('tipForm').addEventListener('submit', function (event) {
       event.preventDefault();
+      if (!isAdmin()) { $('tipStatus').textContent = 'Only an admin can add a tip.'; return; }
       var text = $('tipText').value.replace(/\s+/g, ' ').trim().slice(0, 240);
       if (!text) return;
       var tip = { place: $('tipPlace').value, text: text, rating: Number($('tipRating').value) || 5, t: Date.now() };

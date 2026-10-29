@@ -551,7 +551,7 @@ function isStock(p) {
   const b = String(p.body || '');
   return b === WELCOME || b.includes('Pages in this wiki stay in this browser') || b.includes('## Saved on this device');
 }
-function canMutate() { return !serverLive || !!isOwner; }
+function canMutate() { return !!isOwner; }
 function isAdminNow() { return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner()); }
 function showRulesBanner() {
   rulesBlocked = true;
@@ -646,8 +646,11 @@ function refreshViews() {
 }
 function updateOwnerButton() {
   const b = $('#ownerBtn');
-  if (!b) return;
-  if (!window.MONDO_MEMBER) b.textContent = isOwner ? 'Sign out' : 'Owner sign in';
+  if (b && !window.MONDO_MEMBER) b.textContent = isOwner ? 'Sign out' : 'Owner sign in';
+  const tools = $('#adminTools');
+  const note = $('#readNote');
+  if (tools) tools.hidden = !isOwner;
+  if (note) note.hidden = !!isOwner;
 }
 async function ensureQuota() {
   if (quotaLoaded || !myUid || typeof firebase === 'undefined') return;
@@ -657,6 +660,7 @@ async function ensureQuota() {
   quotaLoaded = true;
 }
 async function createNow(id) {
+  if (!isOwner) { pendingCreates.delete(id); return; }
   if (rulesBlocked || !serverLive || !myUid || !pendingCreates.has(id)) return;
   let page = pages.find(p => p.id === id);
   if (!page || isStock(page)) { pendingCreates.delete(id); return; }
@@ -763,7 +767,7 @@ function applySnapshot(val) {
   migrateHeld(remoteIds);
 }
 function migrateHeld(remoteIds) {
-  if (migrating || rulesBlocked || !serverLive || quotaStop) return;
+  if (!isOwner || migrating || rulesBlocked || !serverLive || quotaStop) return;
   const pushed = loadPushed();
   const pool = [...heldPages, ...pages.filter(p => p && !(p.author && p.createdAt))];
   const seen = new Set();
@@ -948,7 +952,7 @@ function renderHome() {
   $('#all').innerHTML = all.map(row).join('');
   const empty = $('#empty');
   empty.hidden = all.length !== 0 || hlpMode === 'history';
-  empty.textContent = pages.length ? 'No pages match that search.' : 'No pages yet. Tap New page to start one.';
+  empty.textContent = pages.length ? 'No pages match that search.' : (isOwner ? 'No pages yet. Tap New page to start one.' : 'No pages yet.');
   applyHlp();
 }
 function showHome() {
@@ -989,7 +993,7 @@ function showPage(id, keepScroll) {
     '<button type="button" class="btn ghost" id="btnPrint">Print</button>' +
     (own ? '<button type="button" class="btn danger" id="btnDelete">Delete</button>' : '') +
     '</div>' +
-    (serverLive && !isOwner ? '<p class="lock-note">Anyone can add pages. Only the owner can edit, rename, or delete them.</p>' : '') +
+    (!isOwner ? '<p class="lock-note">This page is read-only. Only an admin can change it.</p>' : '') +
     '<h1>' + esc(p.title) + '</h1>' +
     (when ? '<p class="meta">Edited ' + esc(when) + '</p>' : '') +
     (tags ? '<div class="tags">' + tags + '</div>' : '') +
@@ -1097,9 +1101,9 @@ function showEditor(id, prefill) {
   if (!$('#editorView').hidden && editHash === hash && ((id && editingId === id) || (!id && !editingId))) return;
   const p = id ? pages.find(x => x.id === id) : null;
   if (id && !p) { location.hash = '#/'; return; }
-  if (p && !canMutate()) {
-    toast('Only the owner can edit pages');
-    location.hash = '#/page/' + p.id;
+  if (!canMutate()) {
+    toast('Only an admin can change pages');
+    location.hash = p ? '#/page/' + p.id : '#/';
     return;
   }
   editingId = p ? p.id : null;
@@ -1233,6 +1237,7 @@ function exportJSON() {
   toast('Backup exported');
 }
 function importJSON(file) {
+  if (!isOwner) { toast('Only an admin can import pages'); return; }
   const rd = new FileReader();
   rd.onload = () => {
     let parsed;
