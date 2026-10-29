@@ -198,10 +198,55 @@ html, body { background: var(--studio-bg) !important; color: var(--studio-ink); 
 .ticker, .era-top, .era-foot, .era-toys, .wordart, .wordart-row, .rainbow-rule, .torch,
 .construct, .construction, .winamp, .webring, .webring-table, .microbanners, .geo-badge,
 .theme-sky, .btnbar, .toybox, .hazard, .guestbook.atspin, .site-header, .aim-chrome,
-.pixel-btn, .sparkle, .network, .mail-banner,
-.counter, .counter-label {
+.pixel-btn, .sparkle, .network, .mail-banner {
   display: none !important;
 }
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.home-visits {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 12px;
+  padding: 12px 16px;
+  background: #fff;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+.home-visits .counter-label {
+  display: block !important;
+  margin: 0;
+  color: #0f172a;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.home-visits .counter {
+  display: inline-flex !important;
+  gap: 2px;
+  margin: 0;
+  padding: 5px 7px;
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px;
+}
+.home-visits .counter svg { width: 16px; height: 28px; }
+.site-footer:has(.home-visits) { padding: 8px 16px 20px; }
+.site-footer:has(.home-visits) .studio-footer { margin-top: 4px; }
 .site-footer { background: transparent !important; color: var(--studio-muted); border: 0; text-align: center; padding: 28px 16px 12px; }
 .box, .card, .quote-box, .gb-box, .hero, .detail, .wiki-article, .recipe-sheet, .panel, .toy,
 .word-box, .mystic-shell, .bay-shell, .forum-shell, .ask-shell, .launch-card, .wx-card {
@@ -363,6 +408,20 @@ html[data-theme] .studio-dock button {
 }
 html[data-theme="dark"] .counter svg,
 html[data-theme="harbor"] .counter svg { filter: grayscale(1) invert(1) contrast(1.4); }
+html[data-theme="dark"] .home-visits,
+html[data-theme="harbor"] .home-visits {
+  background: var(--paper);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .home-visits .counter-label,
+html[data-theme="harbor"] .home-visits .counter-label,
+html[data-theme="retro"] .home-visits .counter-label { color: var(--ink) !important; }
+html[data-theme="retro"] .home-visits {
+  background: #d4d0c8;
+  color: #111827;
+  border-color: #404040;
+  border-radius: 0;
+}
 html[data-theme] .key[data-state="correct"]{background:#538d4e!important;color:#fff!important;border-color:#214d1e!important}
 html[data-theme] .key[data-state="present"]{background:#c9b458!important;color:#111827!important;border-color:#6a5610!important}
 html[data-theme] .key[data-state="absent"]{background:#c62828!important;color:#fff!important;border-color:#8e1c1c!important}
