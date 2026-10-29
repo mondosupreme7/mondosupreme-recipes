@@ -781,6 +781,7 @@
     function setMenu(open) {
       menu.hidden = !open;
       start.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.classList.toggle('apps-open', !!open);
     }
     start.addEventListener('click', function (event) {
       event.stopPropagation();
