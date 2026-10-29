@@ -21,15 +21,17 @@ const SAMPLES=[
 const PUSHED='mondosupreme.recipes.pushed.v1';
 const RULES_BANNER='Server sync waiting on updated Firebase rules — using local storage until published';
 const PHOTO_MAX=200000;
-let recipes, favs, state={q:'',cat:'',tag:'',fav:false};
+let recipes, favs, state={q:'',cat:'',tag:'',fav:false,source:''};
+let chef=null, chefPromise=null, chefParts={}, chefPage=0;
+const CHEF_PAGE=24;
 let serverLive=false, rulesBlocked=false, isOwner=false, myUid='';
 let quota={n:0,day:0}, quotaLoaded=false, quotaStop=false;
 let heldCustoms=[], chain=Promise.resolve(), itemsRef=null, syncStarted=false, migrating=false, lastCreate=0;
 const pendingCreates=new Set(), unsynced=new Set();
 function load(){
   try{recipes=JSON.parse(localStorage.getItem(KEY));}catch{recipes=null}
-  if(!Array.isArray(recipes)){recipes=SAMPLES.map(r=>({...r}));save();}
   try{favs=new Set(JSON.parse(localStorage.getItem(FKEY))||[]);}catch{favs=new Set()}
+  if(!Array.isArray(recipes)){recipes=SAMPLES.map(r=>({...r}));save();}
 }
 function saveCache(){try{localStorage.setItem(KEY,JSON.stringify(recipes));}catch(e){toast('Could not save: storage full?')}}
 function saveFavs(){try{localStorage.setItem(FKEY,JSON.stringify([...favs]));}catch(e){toast('Could not save: storage full?')}}
@@ -332,9 +334,92 @@ function paintPhoto(el,url){
 }
 const total=r=>(+r.prep||0)+(+r.cook||0);
 
+function isChefId(id){return typeof id==='string'&&id.indexOf('bbc-')===0}
+function userRecipeCount(){return recipes.filter(r=>!isSample(r)).length}
+function loadChefIndex(){
+  if(chef)return Promise.resolve(chef);
+  if(chefPromise)return chefPromise;
+  chefPromise=fetch('/recipes/collections/backyard-chef-index.json',{cache:'force-cache'}).then(res=>{
+    if(!res.ok)throw new Error('index');
+    return res.json();
+  }).then(data=>{
+    const byId=new Map();
+    (data.items||[]).forEach(row=>{
+      const video=row[3]||'';
+      const item={
+        id:row[0], title:row[1], category:row[2]||'Other', video:video,
+        part:row[4]||0, partial:!!row[5], q:row[6]||'',
+        collection:'backyard',
+        photo:video?('https://i.ytimg.com/vi/'+video+'/hqdefault.jpg'):'',
+        watch:video?('https://www.youtube.com/watch?v='+video):''
+      };
+      byId.set(item.id, item);
+    });
+    chef={count:data.count||byId.size, categories:data.categories||[], byId:byId, items:[...byId.values()]};
+    return chef;
+  }).catch(err=>{chefPromise=null;throw err});
+  return chefPromise;
+}
+function loadChefRecipe(id){
+  const ready=chef&&chef.byId.get(id);
+  if(!ready)return loadChefIndex().then(()=>loadChefRecipe(id));
+  if(ready.full)return Promise.resolve(ready.full);
+  const part=ready.part||0;
+  const finish=()=>{
+    const found=(chefParts[part]||[]).find(row=>row.id===id);
+    if(!found)throw new Error('missing');
+    ready.full=Object.assign({}, found, {collection:'backyard', partial:ready.partial, watch:ready.watch||found.watch, photo:found.photo||ready.photo});
+    return ready.full;
+  };
+  if(chefParts[part])return Promise.resolve(finish());
+  return fetch('/recipes/collections/backyard-chef-'+(part+1)+'.json',{cache:'force-cache'}).then(res=>{
+    if(!res.ok)throw new Error('part');
+    return res.json();
+  }).then(data=>{chefParts[part]=data.recipes||[];return finish()});
+}
+function publicNotes(recipe){
+  return String(recipe.notes||'').split(/\n/).filter(line=>!/INCOMPLETE\s*:/i.test(line)).join('\n').trim();
+}
+function chefMatches(){
+  if(!chef)return [];
+  const q=state.q.toLowerCase();
+  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && !state.tag && !state.fav &&
+    (!q||(r.q||r.title||'').toLowerCase().includes(q)));
+}
+function saveChefToMine(id){
+  return loadChefRecipe(id).then(full=>{
+    let copy=recipes.find(r=>r.savedFrom===id);
+    if(!copy){
+      if(userRecipeCount()>=LIMITS.recipes){toast('Your notebook holds 500 recipes. Remove one before adding another.');return null}
+      copy=cloneRecipe(full);
+      copy.id=uid();
+      copy.savedFrom=id;
+      copy.author='';
+      copy.createdAt=0;
+      copy.notes=publicNotes(full);
+      delete copy.collection; delete copy.partial; delete copy.watch; delete copy.q; delete copy.video; delete copy.part;
+      recipes.unshift(copy);
+      save();
+      unsynced.add(copy.id);
+      if(serverLive&&!rulesBlocked)shareCreate(copy.id);
+      toast('Saved to my recipes');
+    }
+    return copy;
+  }).catch(()=>{toast('That recipe did not load');return null});
+}
+function addChefToGrocery(id){
+  return loadChefRecipe(id).then(full=>{
+    const lines=full.ingredients||[];
+    if(!lines.length){toast('This recipe has no ingredient list. Watch the video.');return}
+    addGroceryLines(lines, full);
+    toast('Added to Grocery List');
+    openGrocery();
+  }).catch(()=>toast('That recipe did not load'));
+}
 function fillFilters(){
-  const cats=[...new Set(recipes.map(r=>r.category).filter(Boolean))].sort();
-  const tags=[...new Set(recipes.flatMap(r=>r.tags||[]))].sort();
+  const pool=state.source==='backyard'&&chef?chef.items:recipes;
+  const cats=[...new Set(pool.map(r=>r.category).filter(Boolean))].sort();
+  const tags=state.source==='backyard'?[]:[...new Set(recipes.flatMap(r=>r.tags||[]))].sort();
   const fill=(sel,arr,label,cur)=>{sel.innerHTML=`<option value="">${label}</option>`+arr.map(v=>`<option${v===cur?' selected':''}>${esc(v)}</option>`).join('');};
   if(!cats.includes(state.cat))state.cat=''; if(!tags.includes(state.tag))state.tag='';
   fill($('#catFilter'),cats,'All categories',state.cat); fill($('#tagFilter'),tags,'All tags',state.tag);
@@ -347,27 +432,75 @@ function clipArt(category){
   if(/drink|bev|smoothie/.test(c))return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><path d="M18 8h28l-4 26H22z" fill="#7fdfff" stroke="#000"/><rect x="29" y="34" width="6" height="8" fill="#ccc" stroke="#000"/><path d="M22 42h20" stroke="#000" stroke-width="2"/><rect x="30" y="2" width="3" height="8" fill="#c4553d"/></svg>';
   return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><path d="M16 18h28l4 16H14z" fill="#c0c0c0" stroke="#000"/><path d="M20 18c0-8 24-8 24 0" fill="none" stroke="#000" stroke-width="2"/><circle cx="24" cy="28" r="3" fill="#c4553d"/><circle cx="34" cy="26" r="3" fill="#2f6f4e"/><circle cx="40" cy="31" r="3" fill="#f28f3b"/></svg>';
 }
-function renderList(){
-  fillFilters();
-  const cats=[...new Set(recipes.map(r=>r.category).filter(Boolean))].sort();
-  const tabs=$('#fileTabs');
-  if(tabs){
-    tabs.innerHTML='<button type="button" class="file-tab" data-cat="" aria-pressed="'+(!state.cat)+'">All</button>'+
-      cats.map(c=>'<button type="button" class="file-tab" data-cat="'+esc(c)+'" aria-pressed="'+(state.cat===c)+'">'+esc(c)+'</button>').join('');
-  }
-  const q=state.q.toLowerCase();
-  const list=recipes.filter(r=>(!state.cat||r.category===state.cat)&&(!state.tag||(r.tags||[]).includes(state.tag))&&(!state.fav||favs.has(r.id))&&
-    (!q||[r.title,r.category,r.notes,...(r.tags||[]),...(r.ingredients||[])].join(' ').toLowerCase().includes(q)));
-  $('#grid').innerHTML=list.map(r=>`<article class="card" data-id="${esc(r.id)}" tabindex="0">
+function mineCard(r){
+  return `<article class="card" data-id="${esc(r.id)}" tabindex="0">
     ${r.sample?'<span class="sample">SAMPLE</span>':''}
     <button class="fav" data-fav="${esc(r.id)}" aria-label="Toggle favorite">${favs.has(r.id)?'♥':'♡'}</button>
     <div class="thumb">${clipArt(r.category)}</div>
     <div class="card-body"><div class="cat"><span class="clip-slot">${clipArt(r.category)}</span><span>${esc(r.category||'Uncategorized')}</span></div><h3>${esc(r.title)}</h3>
     <div class="meta">${total(r)?`<span>⏱ ${total(r)} min</span>`:''}${r.servings?`<span>🍽 ${esc(r.servings)} servings</span>`:''}</div>
     <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
-    <a class="btn grocery-add" href="/grocery/?add=${esc(r.id)}">Add to Grocery List</a></div></article>`).join('');
-  $('#grid').querySelectorAll('.thumb').forEach((el,i)=>paintPhoto(el,list[i].photo));
-  $('#empty').hidden=list.length>0;
+    <a class="btn grocery-add" href="/grocery/?add=${esc(r.id)}">Add to Grocery List</a></div></article>`;
+}
+function chefCard(r){
+  return `<article class="card card-chef" data-id="${esc(r.id)}" data-chef="1" tabindex="0">
+    <span class="source-chip">Backyard Chef</span>
+    ${r.partial?'<span class="partial-badge">Partial recipe, see video</span>':''}
+    <div class="thumb">${r.photo?'<img alt="" src="'+esc(r.photo)+'" loading="lazy" decoding="async" width="320" height="180">':clipArt(r.category)}</div>
+    <div class="card-body"><div class="cat"><span>${esc(r.category||'Other')}</span></div><h3>${esc(r.title)}</h3>
+    <p class="credit">From Backyard Chef on YouTube</p>
+    ${r.watch?'<a class="btn yt-link" href="'+esc(r.watch)+'" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>':''}
+    <button type="button" class="btn ghost save-chef" data-save="${esc(r.id)}">Save to my recipes</button>
+    <button type="button" class="btn grocery-add" data-groc="${esc(r.id)}">Add to Grocery List</button></div></article>`;
+}
+function paintSource(){
+  document.querySelectorAll('#sourceChips [data-source]').forEach(btn=>{
+    btn.setAttribute('aria-pressed', (btn.dataset.source||'')===state.source ? 'true' : 'false');
+  });
+}
+function renderList(){
+  fillFilters();
+  paintSource();
+  const cats=[...new Set((state.source==='backyard'&&chef?chef.items:recipes).map(r=>r.category).filter(Boolean))].sort();
+  const tabs=$('#fileTabs');
+  if(tabs){
+    tabs.innerHTML='<button type="button" class="file-tab" data-cat="" aria-pressed="'+(!state.cat)+'">All</button>'+
+      cats.map(c=>'<button type="button" class="file-tab" data-cat="'+esc(c)+'" aria-pressed="'+(state.cat===c)+'">'+esc(c)+'</button>').join('');
+  }
+  const q=state.q.toLowerCase();
+  const mine=state.source==='backyard'?[]:recipes.filter(r=>(!state.cat||r.category===state.cat)&&(!state.tag||(r.tags||[]).includes(state.tag))&&(!state.fav||favs.has(r.id))&&
+    (!q||[r.title,r.category,r.notes,...(r.tags||[]),...(r.ingredients||[])].join(' ').toLowerCase().includes(q)));
+  const wantChef=state.source==='backyard'||!!q;
+  const chefList=wantChef?chefMatches():[];
+  const pageEnd=(chefPage+1)*CHEF_PAGE;
+  const shownChef=chefList.slice(0, pageEnd);
+  const countEl=$('#listCount');
+  const more=$('#listMore');
+  if(state.source==='backyard'&&!chef){
+    $('#grid').innerHTML='';
+    if(countEl){countEl.hidden=false;countEl.textContent='Loading Backyard Chef recipes…';}
+    if(more)more.hidden=true;
+    $('#empty').hidden=true;
+    return;
+  }
+  $('#grid').innerHTML=mine.map(mineCard).join('')+shownChef.map(chefCard).join('');
+  $('#grid').querySelectorAll('.card:not(.card-chef) .thumb').forEach((el,i)=>paintPhoto(el,mine[i]&&mine[i].photo));
+  const totalShown=mine.length+chefList.length;
+  if(countEl){
+    if(state.source==='backyard'&&chef){
+      countEl.hidden=false;
+      const shownCount=state.cat||state.q?chefList.length:chef.count;
+      countEl.textContent=shownCount.toLocaleString('en-US')+' Backyard Chef recipe'+(shownCount===1?'':'s');
+    }else if(q&&chef){
+      countEl.hidden=false;
+      countEl.textContent=chefList.length+' Backyard Chef match'+(chefList.length===1?'':'es');
+    }else countEl.hidden=true;
+  }
+  if(more){
+    more.hidden=shownChef.length>=chefList.length;
+    more.textContent='Show more ('+shownChef.length+' of '+chefList.length+')';
+  }
+  $('#empty').hidden=totalShown>0;
 }
 const GKEY='mondosupreme.grocery.v1';
 const FRACS={'½':1/2,'⅓':1/3,'¼':1/4,'¾':3/4,'⅔':2/3,'⅛':1/8,'⅜':3/8,'⅝':5/8,'⅞':7/8};
@@ -494,17 +627,35 @@ function openGrocery(){
   renderGrocery();
 }
 function renderDetail(id){
-  const r=recipes.find(x=>x.id===id); if(!r){location.hash='#/';return}
-  if(detailFor!==id){detailScale=1;detailFor=id;}
+  const local=recipes.find(x=>x.id===id);
+  if(local)return paintDetail(local,false);
+  if(isChefId(id)){
+    const v=$('#detailView');
+    if(v)v.innerHTML='<p class="empty">Loading recipe…</p>';
+    loadChefRecipe(id).then(full=>paintDetail(full,true)).catch(()=>{
+      if(v)v.innerHTML='<p class="empty">That recipe did not load. <a class="btn" href="#/">Back</a></p>';
+    });
+    return;
+  }
+  location.hash='#/';
+}
+function paintDetail(r, readonly){
+  if(detailFor!==r.id){detailScale=1;detailFor=r.id;}
   const v=$('#detailView');
-  const own=canMutate();
+  const own=!readonly&&canMutate();
   const lines=(r.ingredients||[]).map(i=>scaleLine(i,detailScale));
+  const notes=readonly?publicNotes(r):String(r.notes||'').trim();
+  const partial=!!(r.partial||/INCOMPLETE\s*:/i.test(r.notes||''));
   const factors=[[0.5,'½x'],[1,'1x'],[2,'2x'],[3,'3x']];
   v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
-   <div class="dbar"><a href="#/" class="btn ghost">← Back</a><button class="btn ghost" id="dFav">${favs.has(r.id)?'♥ Favorited':'♡ Favorite'}</button>
+   <div class="dbar"><a href="#/" class="btn ghost">← Back</a><button class="btn ghost" id="dFav">${readonly?'♡ Save & favorite':(favs.has(r.id)?'♥ Favorited':'♡ Favorite')}</button>
    <button class="btn ghost" id="dPrint">🖨 Print</button>${own?'<button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button>':''}</div>
-   ${serverLive&&!isOwner?'<p class="lock-note">Anyone can add recipes. Only the owner can edit or delete them.</p>':''}
-   <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}</div><h1>${esc(r.title)}</h1>
+   ${serverLive&&!isOwner&&!readonly?'<p class="lock-note">Anyone can add recipes. Only the owner can edit or delete them.</p>':''}
+   <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}${readonly?' · Backyard Chef':''}</div>
+   ${partial?'<p class="partial-badge" style="position:static;display:inline-block;margin:0 0 8px">Partial recipe, see video</p>':''}
+   <h1>${esc(r.title)}</h1>
+   ${readonly?'<p class="credit">From Backyard Chef on YouTube</p>'+(r.watch?'<p><a class="btn" href="'+esc(r.watch)+'" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></p>':''):''}
+   ${readonly?'<p><button type="button" class="btn primary" id="saveMine">Save to my recipes</button></p>':''}
    <div class="stats"><div class="stat"><b>${+r.prep||0} min</b><span>Prep</span></div><div class="stat"><b>${+r.cook||0} min</b><span>Cook</span></div>
    <div class="stat"><b>${total(r)} min</b><span>Total</span></div><div class="stat"><b>${esc(r.servings||'–')}</b><span>Servings</span></div></div>
    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
@@ -513,13 +664,17 @@ function renderDetail(id){
    <button type="button" class="btn primary" id="addGrocery">Add to Grocery List</button></div>
    <ul>${lines.map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
    <section><h2>Steps</h2><ol>${(r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section></div>
-   ${r.notes?`<div class="notes"><strong>Notes:</strong> ${esc(r.notes)}</div>`:''}</div></article>`;
+   ${notes?`<div class="notes"><strong>Notes:</strong> ${esc(notes)}</div>`:''}</div></article>`;
   paintPhoto(v.querySelector('.detail-hero'),r.photo);
   v.querySelectorAll('.scale-btn').forEach(btn=>{
     btn.onclick=()=>{detailScale=Number(btn.dataset.scale)||1;renderDetail(r.id);};
   });
   $('#addGrocery').onclick=()=>{addGroceryLines(lines,r);toast('Added to Grocery List');openGrocery();};
-  $('#dFav').onclick=()=>{toggleFav(r.id);renderDetail(r.id)};
+  if($('#saveMine'))$('#saveMine').onclick=()=>{saveChefToMine(r.id)};
+  $('#dFav').onclick=()=>{
+    if(readonly){saveChefToMine(r.id).then(copy=>{if(copy&&!favs.has(copy.id))toggleFav(copy.id);});return}
+    toggleFav(r.id);renderDetail(r.id);
+  };
   $('#dPrint').onclick=()=>window.print();
   if($('#dEdit'))$('#dEdit').onclick=()=>openEditor(r);
   if($('#dDel'))$('#dDel').onclick=()=>{
@@ -1761,6 +1916,7 @@ async function onSave(e){
     tags:[...new Set(f.tags.value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean))]};
   if(!data.title)return;
   let id=f.id.value;
+  if(!id&&userRecipeCount()>=LIMITS.recipes){toast('Your notebook holds 500 recipes. Remove one before adding another.');return}
   if(id){
     if(!canMutate()){toast('Only the owner can edit recipes');return}
     const i=recipes.findIndex(x=>x.id===id);
@@ -1770,6 +1926,7 @@ async function onSave(e){
     toast('Recipe updated');
     if(serverLive&&!rulesBlocked&&!pendingCreates.has(id)&&recipes[i].createdAt&&recipes[i].author)shareUpdate(id);
   }else{
+    if(userRecipeCount()>=LIMITS.recipes){toast('Your notebook holds 500 recipes. Remove one before adding another.');return}
     id=uid();
     recipes.unshift({id,...data,author:'',createdAt:0});
     save();
@@ -1984,8 +2141,11 @@ function init(){
   $('#recipeForm').addEventListener('submit',onSave);
   $('#btnExport').onclick=exportJSON;
   $('#importFile').onchange=e=>{if(e.target.files[0])importJSON(e.target.files[0]);e.target.value=''};
-  $('#search').oninput=e=>{state.q=e.target.value;renderList()};
-  $('#catFilter').onchange=e=>{state.cat=e.target.value;renderList()};
+  $('#search').oninput=e=>{
+    state.q=e.target.value; chefPage=0; renderList();
+    if(state.q)loadChefIndex().then(()=>renderList()).catch(()=>{});
+  };
+  $('#catFilter').onchange=e=>{state.cat=e.target.value;chefPage=0;renderList()};
   $('#tagFilter').onchange=e=>{state.tag=e.target.value;renderList()};
   $('#favFilter').onclick=e=>{state.fav=!state.fav;e.currentTarget.setAttribute('aria-pressed',state.fav);e.currentTarget.textContent=state.fav?'♥ Favorites':'♡ Favorites';renderList()};
   paintGroceryButton();
@@ -2030,11 +2190,29 @@ function init(){
     const tab=e.target.closest('[data-cat]');
     if(!tab)return;
     state.cat=tab.dataset.cat||'';
+    chefPage=0;
     renderList();
   });
+  const sourceChips=$('#sourceChips');
+  if(sourceChips)sourceChips.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-source]');
+    if(!btn)return;
+    state.source=btn.dataset.source||'';
+    state.cat=''; state.tag=''; chefPage=0;
+    if(state.source==='backyard'){
+      renderList();
+      loadChefIndex().then(()=>renderList()).catch(()=>toast('Backyard Chef recipes did not load'));
+    }else renderList();
+  });
+  const listMore=$('#listMore');
+  if(listMore)listMore.addEventListener('click',()=>{chefPage+=1;renderList()});
   $('#grid').addEventListener('click',e=>{
+    const save=e.target.closest('[data-save]');
+    if(save){e.preventDefault();e.stopPropagation();saveChefToMine(save.dataset.save);return}
+    const groc=e.target.closest('[data-groc]');
+    if(groc){e.preventDefault();e.stopPropagation();addChefToGrocery(groc.dataset.groc);return}
     const fb=e.target.closest('[data-fav]'); if(fb){e.stopPropagation();toggleFav(fb.dataset.fav);renderList();return}
-    if(e.target.closest('a'))return;
+    if(e.target.closest('a,button'))return;
     const c=e.target.closest('.card'); if(c)location.hash='#/recipe/'+encodeURIComponent(c.dataset.id);
   });
   $('#grid').addEventListener('keydown',e=>{

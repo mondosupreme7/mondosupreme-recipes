@@ -44,6 +44,17 @@ a.btn{text-decoration:none;color:#111827}
 .card .cat .clip{width:28px;height:22px}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.tag{background:#ffffcc;color:#111827;border:1px solid #000;border-radius:0;padding:4px 8px;font-size:.8rem}
 .sample{position:absolute;top:10px;left:10px;background:#ff0;color:#111827;border:2px solid #000;font:700 .75rem var(--display);padding:2px 6px}
+.source-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.source-chips .file-tab{min-height:44px}
+.list-count{margin:0 0 8px;font:700 .95rem/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#334155}
+.list-more{display:block;margin:12px auto 4px;min-height:44px;min-width:160px}
+.card-chef .thumb{padding:0;height:140px}
+.card-chef .thumb img{width:100%;height:140px;object-fit:cover;display:block;background:#e7e5e4}
+.source-chip,.partial-badge{position:absolute;z-index:2;font:700 .72rem/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;border-radius:999px;padding:3px 8px}
+.source-chip{top:8px;left:8px;background:#0f172a;color:#fff}
+.partial-badge{top:8px;right:8px;background:#fff7ed;color:#9a3412;border:1px solid #fdba74;max-width:46%}
+.credit{margin:0 0 8px;color:#334155;font-size:.9rem}
+.card-chef .yt-link,.card-chef .save-chef,.card-chef .grocery-add{margin-top:6px}
 .fav{position:absolute;top:8px;right:8px;background:var(--chrome);border-radius:0;width:44px;height:44px;font-size:1.15rem;cursor:pointer;color:#c00;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
 .empty{text-align:center;color:#111827;padding:28px;font-family:var(--display)}
 .detail{background:#fff;color:#111827;border:3px ridge #dfdfdf;border-radius:0;box-shadow:none;overflow:hidden;margin:12px 0 24px}
