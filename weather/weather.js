@@ -20,7 +20,7 @@
   var futureOn = true;
   var speedMs = 700;
   var radarCache = null;
-  var SITE_ZOOM = 8;
+  var radarToken = 0;
   var map, pin, nexradLayer, shipLayer, shipLoaded = false;
   var frames = [];
   var frameLayers = [];
@@ -209,17 +209,15 @@
     map.createPane('labels');
     map.getPane('labels').style.zIndex = 450;
     map.getPane('labels').style.pointerEvents = 'none';
-    L.tileLayer('https://basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
       pane: 'labels',
-      maxZoom: 19,
-      detectRetina: true,
-      attribution: '&copy; CARTO'
+      maxZoom: 16,
+      attribution: '&copy; Esri'
     }).addTo(map);
     nexradLayer = L.tileLayer('https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-0/{z}/{x}/{y}.png', {
       pane: 'nexrad',
       opacity: opacity,
-      maxNativeZoom: 9,
-      detectRetina: true,
+      maxNativeZoom: 8,
       attribution: 'NEXRAD composite via Iowa Environmental Mesonet'
     });
     if (nexradOn) nexradLayer.addTo(map);
@@ -238,24 +236,10 @@
     var d = new Date(ms);
     return String(d.getUTCFullYear()) + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate()) + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes());
   }
-  function stampToMs(stamp) {
-    var y = Number(stamp.slice(0, 4));
-    var m = Number(stamp.slice(4, 6));
-    var d = Number(stamp.slice(6, 8));
-    var h = Number(stamp.slice(8, 10));
-    var min = Number(stamp.slice(10, 12));
-    return Date.UTC(y, m - 1, d, h, min);
-  }
-  function nearMelbourne() {
-    if (!map) return true;
-    var c = map.getCenter();
-    return miles(c.lat, c.lng, 28.113, -80.654) < 190;
-  }
   function tileUrl(frame, z, x, y) {
-    var layer;
-    if (frame.kind === 'forecast') layer = 'hrrr::REFD-F' + frame.lead + '-' + frame.run;
-    else if (z >= SITE_ZOOM && frame.site && nearMelbourne()) layer = 'ridge::MLB-N0B-' + frame.site;
-    else layer = 'ridge::USCOMP-N0Q-' + frame.comp;
+    var layer = frame.kind === 'forecast'
+      ? 'hrrr::REFD-F' + frame.lead + '-' + frame.run
+      : 'ridge::USCOMP-N0Q-' + frame.comp;
     return 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/' + layer + '/' + z + '/' + x + '/' + y + '.png';
   }
   var RadarTile = L.TileLayer.extend({
@@ -287,33 +271,6 @@
       return probeUrl(url).then(function (ok) { return ok ? ms : next(i + 1); });
     }
     return next(0);
-  }
-  function fetchSiteTimes() {
-    function dayUrl(ms) {
-      var d = new Date(ms);
-      return 'https://mesonet.agron.iastate.edu/archive/data/' + d.getUTCFullYear() + '/' + pad2(d.getUTCMonth() + 1) + '/' + pad2(d.getUTCDate()) + '/GIS/ridge/MLB/N0B/';
-    }
-    function one(ms) {
-      return fetch(dayUrl(ms)).then(function (res) { return res.ok ? res.text() : ''; }).then(function (html) {
-        var times = [];
-        var re = /MLB_N0B_(\d{12})\.png/g;
-        var match;
-        while ((match = re.exec(html))) times.push(stampToMs(match[1]));
-        return times;
-      }).catch(function () { return []; });
-    }
-    return Promise.all([one(Date.now()), one(Date.now() - 86400000)]).then(function (lists) {
-      return lists[0].concat(lists[1]);
-    });
-  }
-  function nearestSite(ms, times) {
-    var best = 0;
-    var bestDiff = 8 * 60 * 1000 + 1;
-    times.forEach(function (t) {
-      var diff = Math.abs(t - ms);
-      if (diff < bestDiff) { bestDiff = diff; best = t; }
-    });
-    return bestDiff <= 8 * 60 * 1000 ? iemStamp(best) : '';
   }
   function hrrrTile(run, lead) {
     return 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/hrrr::REFD-F' + pad4(lead) + '-' + run + '/6/17/26.png';
@@ -373,37 +330,42 @@
     });
     return rel + ' · ' + when;
   }
+  function nextGood(from, dir) {
+    if (!frames.length) return 0;
+    var step = dir < 0 ? -1 : 1;
+    for (var n = 0; n < frames.length; n++) {
+      var i = (from + step * n + frames.length * 4) % frames.length;
+      if (frames[i].ok !== false) return i;
+    }
+    return (from + frames.length) % frames.length;
+  }
   function showFrame(index) {
     if (!frames.length) return;
-    var previous = frameLayers[frameIndex];
-    frameIndex = (index + frames.length) % frames.length;
+    frameIndex = nextGood(index, index >= frameIndex ? 1 : -1);
     var next = frameLayers[frameIndex];
     if (rainOn && next) {
       if (!map.hasLayer(next)) next.addTo(map);
       next.setOpacity(opacity);
-      if (previous && previous !== next && map.hasLayer(previous)) {
-        next.once('load', function () {
-          if (frameLayers[frameIndex] !== next) return;
-          if (map.hasLayer(previous)) map.removeLayer(previous);
-        });
-        setTimeout(function () {
-          if (frameLayers[frameIndex] === next && previous !== next && map.hasLayer(previous)) map.removeLayer(previous);
-        }, 1200);
-      }
+      if (next.bringToFront) next.bringToFront();
     }
     frameLayers.forEach(function (layer, i) {
-      if (i !== frameIndex && layer !== previous && map.hasLayer(layer)) map.removeLayer(layer);
+      if (i !== frameIndex && map.hasLayer(layer)) map.removeLayer(layer);
     });
     var frame = frames[frameIndex];
     var caption = frameCaption(frame);
+    var forecast = frame.kind === 'forecast';
     var badge = document.querySelector('.wx-live');
     var crt = document.querySelector('.wx-crt');
+    var track = $('wxTrack');
     if (badge) {
-      var forecast = frame.kind === 'forecast';
-      badge.textContent = forecast ? 'FORECAST (HRRR model)' : 'LIVE';
+      badge.textContent = forecast ? 'FORECAST' : 'LIVE';
       badge.classList.toggle('is-forecast', forecast);
     }
-    if (crt) crt.classList.toggle('is-forecast', frame.kind === 'forecast');
+    if (crt) crt.classList.toggle('is-forecast', forecast);
+    if (track) {
+      track.classList.toggle('is-forecast', forecast);
+      track.classList.toggle('is-obs', !forecast);
+    }
     var stamp = $('wxStamp');
     if (stamp) stamp.textContent = caption + ' · ' + (frameIndex + 1) + '/' + frames.length;
     var read = $('wxScrubRead');
@@ -431,20 +393,56 @@
       pane: 'radar',
       opacity: opacity,
       maxZoom: 14,
-      maxNativeZoom: frame.kind === 'forecast' ? 9 : 11,
-      detectRetina: true,
+      maxNativeZoom: 8,
       attribution: frame.kind === 'forecast' ? 'NOAA HRRR via Iowa Environmental Mesonet' : 'NEXRAD via Iowa Environmental Mesonet'
+    });
+  }
+  function sampleUrl(frame) {
+    var z = 6;
+    var x = 17;
+    var y = 26;
+    if (map) {
+      z = Math.max(4, Math.min(map.getZoom(), 7));
+      var point = map.project(map.getCenter(), z).divideBy(256).floor();
+      x = point.x;
+      y = point.y;
+    }
+    return tileUrl(frame, z, x, y);
+  }
+  function keepGoodFrames(list) {
+    var queue = list.slice();
+    var workers = 0;
+    return new Promise(function (resolve) {
+      if (!queue.length) { resolve([]); return; }
+      function pump() {
+        if (!queue.length && workers === 0) {
+          var good = list.filter(function (frame) { return frame.ok; });
+          resolve(good.length ? good : list.slice());
+          return;
+        }
+        while (workers < 4 && queue.length) {
+          workers += 1;
+          (function (frame) {
+            probeUrl(sampleUrl(frame)).then(function (ok) {
+              frame.ok = ok;
+              workers -= 1;
+              pump();
+            });
+          })(queue.shift());
+        }
+      }
+      pump();
     });
   }
   function preloadFrames() {
     if (!map || !frames.length) return;
     var z = Math.min(Math.max(map.getZoom(), 4), 8);
-    var bounds = map.getBounds().pad(0.15);
+    var bounds = map.getBounds().pad(0.2);
     var nw = map.project(bounds.getNorthWest(), z).divideBy(256).floor();
     var se = map.project(bounds.getSouthEast(), z).divideBy(256).floor();
     var coords = [];
-    for (var x = nw.x; x <= se.x && coords.length < 6; x++) {
-      for (var y = nw.y; y <= se.y && coords.length < 6; y++) coords.push([x, y]);
+    for (var x = nw.x; x <= se.x && coords.length < 12; x++) {
+      for (var y = nw.y; y <= se.y && coords.length < 12; y++) coords.push([x, y]);
     }
     frames.forEach(function (frame) {
       coords.forEach(function (c) {
@@ -456,16 +454,12 @@
   }
   function applyRadar(cache) {
     var wasPlaying = playing;
+    var token = ++radarToken;
     var latest = cache.latest;
-    var step = 15 * 60 * 1000;
+    var step = 10 * 60 * 1000;
     var built = [];
     for (var t = latest - 6 * 60 * 60 * 1000; t <= latest; t += step) {
-      built.push({
-        kind: 'obs',
-        time: t,
-        comp: iemStamp(t),
-        site: nearestSite(t, cache.sites)
-      });
+      built.push({ kind: 'obs', time: t, comp: iemStamp(t), ok: true });
     }
     var forecastCount = 0;
     if (futureOn && cache.hrrr) {
@@ -480,25 +474,30 @@
           lead: pad4(lead),
           run: cache.hrrr.run,
           comp: '',
-          site: ''
+          ok: true
         });
         forecastCount += 1;
       }
     }
-    clearLoop();
-    frames = built;
-    frameLayers = frames.map(makeLayer);
-    var nowIndex = 0;
-    frames.forEach(function (frame, i) { if (frame.kind !== 'forecast') nowIndex = i; });
-    showFrame(nowIndex);
-    preloadFrames();
-    if (wasPlaying) play();
-    var reach = forecastCount ? relLabel(frames[frames.length - 1].time, obsAnchor()) : 'Now';
-    note(futureOn
-      ? 'Observed MLB N0B on the Space Coast and USCOMP N0Q zoomed out, then HRRR forecast through ' + reach + '. Orange frames are model output, not observed radar.'
-      : 'Observed loop only, from -6h to Now. Turn on Past + future for the HRRR forecast.');
-    var track = $('wxTrack');
-    if (track) track.parentNode.classList.toggle('is-past', !futureOn || !forecastCount);
+    keepGoodFrames(built).then(function (good) {
+      if (token !== radarToken || !map) return;
+      clearLoop();
+      frames = good;
+      forecastCount = frames.filter(function (frame) { return frame.kind === 'forecast'; }).length;
+      frameLayers = frames.map(makeLayer);
+      var nowIndex = 0;
+      frames.forEach(function (frame, i) { if (frame.kind !== 'forecast') nowIndex = i; });
+      var crt = document.querySelector('.wx-crt');
+      if (crt) crt.classList.toggle('is-past', !futureOn || !forecastCount);
+      syncLiveUnderlay();
+      showFrame(nowIndex);
+      preloadFrames();
+      if (wasPlaying) play();
+      var reach = forecastCount ? relLabel(frames[frames.length - 1].time, obsAnchor()) : 'Now';
+      note(futureOn
+        ? 'US composite through Now, then the HRRR forecast through ' + reach + '. The orange tag marks model frames, not observed radar.'
+        : 'Observed US composite only, from -6h to Now. Turn on Past + future for the HRRR forecast.');
+    });
   }
   function loadRadar() {
     var first = frames.length === 0;
@@ -507,8 +506,8 @@
       return;
     }
     if ($('wxStamp')) $('wxStamp').textContent = 'Loading radar and the HRRR forecast…';
-    Promise.all([findLatest(), fetchSiteTimes(), findHrrr()]).then(function (triple) {
-      radarCache = { at: Date.now(), latest: triple[0], sites: triple[1], hrrr: triple[2] };
+    Promise.all([findLatest(), findHrrr()]).then(function (pair) {
+      radarCache = { at: Date.now(), latest: pair[0], hrrr: pair[1] };
       applyRadar(radarCache);
     }).catch(function () {
       if (first) {
@@ -521,28 +520,41 @@
   function play() {
     if (playing || frames.length < 2) return;
     playing = true;
+    var playBtn = $('wxPlay');
+    if (playBtn) playBtn.setAttribute('aria-pressed', 'true');
     if (frameIndex >= frames.length - 1) showFrame(0);
-    playTimer = setInterval(function () {
+    function tick() {
+      if (!playing) return;
       showFrame(frameIndex + 1);
-    }, speedMs);
+      playTimer = setTimeout(tick, speedMs);
+    }
+    playTimer = setTimeout(tick, speedMs);
   }
   function pause() {
     playing = false;
-    if (playTimer) clearInterval(playTimer);
+    if (playTimer) clearTimeout(playTimer);
     playTimer = 0;
+    var playBtn = $('wxPlay');
+    if (playBtn) playBtn.setAttribute('aria-pressed', 'false');
+  }
+  function syncLiveUnderlay() {
+    if (!map || !nexradLayer) return;
+    var showLive = nexradOn && !rainOn;
+    if (showLive && !map.hasLayer(nexradLayer)) nexradLayer.addTo(map);
+    if (!showLive && map.hasLayer(nexradLayer)) map.removeLayer(nexradLayer);
   }
   function setRain(on) {
     rainOn = on;
     $('wxRain').checked = on;
     if (!on) frameLayers.forEach(function (layer) { map.removeLayer(layer); });
     else showFrame(frameIndex);
+    syncLiveUnderlay();
     save();
   }
   function setNexrad(on) {
     nexradOn = on;
     $('wxNexrad').checked = on;
-    if (on && !map.hasLayer(nexradLayer)) nexradLayer.addTo(map);
-    if (!on && map.hasLayer(nexradLayer)) map.removeLayer(nexradLayer);
+    syncLiveUnderlay();
     save();
   }
   function loadShips() {
