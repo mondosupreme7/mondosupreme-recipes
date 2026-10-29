@@ -688,10 +688,18 @@
     var input = $('q');
     if (input && input.value !== q) input.value = q;
     if (q.length < 2) {
+      document.body.classList.remove('is-asking');
       $('askStatus').textContent = 'Ask at least two characters.';
       return;
     }
     var mine = ++ticket;
+    var waiting = mode === 'site' ? 1 : 2;
+    document.body.classList.add('is-asking');
+    function finishAsk() {
+      if (mine !== ticket) return;
+      waiting -= 1;
+      if (waiting <= 0) document.body.classList.remove('is-asking');
+    }
     rememberUrl(q);
     $('askStatus').textContent = 'Mondo Jeeves is asking the wires…';
     postAsk(q);
@@ -710,7 +718,8 @@
       $('askStatus').textContent = outside
         ? 'Ground truth is in. The cyber-butler line fills in when it answers.'
         : 'Search Inside Mondosupreme is ready.';
-    });
+      finishAsk();
+    }).catch(function () { finishAsk(); });
     aiJob.then(function (text) {
       if (mine !== ticket || mode === 'site') return;
       var parsed = parseModel(text || '');
@@ -720,6 +729,8 @@
       }
       renderAi(parsed, localChips);
       $('askStatus').textContent = 'Ask Mondo Cyber-Butler answered, with sources underneath.';
+    }).catch(function () { /* The brief stays on the sources already on the page. */ }).then(function () {
+      if (mode !== 'site') finishAsk();
     });
   }
   function paintWire(val) {
