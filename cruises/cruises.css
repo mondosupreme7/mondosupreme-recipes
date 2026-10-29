@@ -20,14 +20,12 @@ html[data-theme] .live-pill{color:var(--ink,#111827)}
 .freshness-row .cruise-note{margin:0;flex:1 1 220px}
 .freshness-row .btn{flex:0 0 auto;min-height:44px}
 .cruise-note{background:#ffffcc;color:#111827;border:3px ridge #dfdfdf;padding:10px 12px;margin:0 0 14px}
-.radar-kicker{margin:0;font:700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.08em;color:#003399;text-transform:uppercase}
-.radar-frame{margin:0 0 16px;padding:10px;background:#111;border:4px ridge #6a6a6a;border-radius:16px}
-.radar-bezel{position:relative;overflow:hidden;border-radius:8px}
-.radar-caption{color:#86efac;font:700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.12em;text-align:center;margin:0 0 6px}
-#map{height:min(62dvh,560px);min-height:300px;border:3px solid #0a0;overflow:hidden;box-shadow:inset 0 0 24px rgba(0,255,80,.25);margin:0;background:#04140a;position:relative;z-index:0;border-radius:8px}
-.radar-sweep{pointer-events:none;position:absolute;left:0;right:0;bottom:0;top:24px;border-radius:8px;z-index:400;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 22px,rgba(0,255,80,.12) 22px 23px)}
-.radar-sweep::after{content:"";position:absolute;left:12%;right:12%;top:8%;bottom:8%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 80%,rgba(0,255,80,.45) 100%);animation:radar-sweep 4.5s linear infinite}
-@keyframes radar-sweep{to{transform:rotate(360deg)}}
+.radar-kicker{margin:0;font:600 13px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.04em;color:var(--muted,#334155);text-transform:uppercase}
+.ship-map{margin:0 0 16px;padding:12px;background:var(--paper,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:16px;box-shadow:0 8px 24px -12px rgba(15,23,42,.35)}
+.ship-map h2{margin:0 0 10px;font:600 1.15rem Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+#map{height:min(62dvh,560px);min-height:300px;border:0;overflow:hidden;margin:0;background:var(--chip,#f1f5f9);position:relative;z-index:0;border-radius:12px}
+html[data-theme] .ship-map{background:var(--paper);color:var(--ink);border-color:var(--line)}
+html[data-theme] .ship-map h2{background:transparent;color:var(--ink)}
 .leaflet-control-attribution{font-size:11px;max-width:72%}
 .toolbar input,.toolbar select{font-size:16px}
 .toolbar .btn{min-height:44px}

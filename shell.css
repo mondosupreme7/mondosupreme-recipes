@@ -96,7 +96,7 @@ html[data-scan="1"]::before{
 #starTrail{position:fixed;inset:0;pointer-events:none;z-index:75}
 .star-bit{position:fixed;pointer-events:none;z-index:75;color:#ff0;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-shadow:0 0 2px #f60;animation:star-fade .55s linear forwards}
 @keyframes star-fade{to{opacity:0;transform:translateY(-8px) scale(.4)}}
-html[data-shell-paused="1"] .star-bit,html[data-shell-paused="1"] .radar-sweep::after{animation-play-state:paused!important}
+html[data-shell-paused="1"] .star-bit{animation-play-state:paused!important}
 body.chat-page,body.board-page,body.fps-live{padding:var(--nav-h) 0 0!important;height:calc(100dvh - var(--nav-h));min-height:0}
 body.fps-page.fps-live main.wrap{height:calc(100dvh - var(--nav-h))!important}
 body.is-playing{padding-top:var(--nav-h)!important;padding-bottom:0!important}

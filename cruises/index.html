@@ -26,10 +26,6 @@
 <link rel="stylesheet" href="/readable.css">
 </head>
 <body>
-<div class="ticker"><div class="ticker-track">
- <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Cruises ~*~ ★ Last-known position of every Royal Caribbean ship ★ Not for navigation ★</p>
- <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Cruises ~*~ ★ Last-known position of every Royal Caribbean ship ★ Not for navigation ★</p>
-</div></div>
 <header class="site-header"><div class="wrap hdr">
  <a href="/cruises/" class="brand"><span class="logo">🚢</span><span>Mondosupreme <em>Cruises</em></span></a>
  <nav class="site-nav" aria-label="Site">
@@ -86,13 +82,10 @@
       <p id="freshness" class="cruise-note">Loading ship positions…</p>
       <button id="refresh" class="btn" type="button">Refresh now</button>
     </div>
- <div class="radar-frame">
-  <div class="radar-bezel">
-   <div class="radar-caption">RADAR NAVIGATOR</div>
-   <div id="map" role="region" aria-label="Map of Royal Caribbean ships"></div>
-   <div class="radar-sweep" aria-hidden="true"></div>
-  </div>
- </div>
+ <section class="ship-map" aria-labelledby="mapTitle">
+  <h2 id="mapTitle">Live Ship Map</h2>
+  <div id="map" role="region" aria-label="Map of Royal Caribbean ships"></div>
+ </section>
  <section class="deals" id="canaveralDeals" aria-labelledby="dealsTitle">
   <p class="deals-kicker">Travel Agent · Cape Canaveral 32920</p>
   <h2 id="dealsTitle">Port Canaveral Royal Caribbean Deal Finder</h2>
