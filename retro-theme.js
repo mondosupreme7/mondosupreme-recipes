@@ -1,6 +1,6 @@
 (function () {
   var KEY = 'mondosupreme.theme.v2';
-  var NAMED = { light: 'Light', dark: 'Dark', harbor: 'Harbor', warm: 'Warm' };
+  var NAMED = { light: 'Light', dark: 'Dark', harbor: 'Harbor', warm: 'Warm', retro: 'Retro' };
 
   function systemTheme() {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -25,6 +25,7 @@
     var color = theme === 'light' || theme === 'warm' ? '#f4f3ef' : '#0b1220';
     if (theme === 'warm') color = '#f6f1e7';
     if (theme === 'harbor') color = '#071422';
+    if (theme === 'retro') color = '#008080';
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', color);
     var select = document.getElementById('themeSelect');

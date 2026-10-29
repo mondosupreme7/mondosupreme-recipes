@@ -1,13 +1,15 @@
 /* 1996–1999 page chrome. Loaded last so it beats the newer accents. */
 html{overflow-x:hidden}
-body:not(.night){
+html[data-theme="retro"] body:not(.night){
  background-color:#008080;
  background-image:linear-gradient(#006666 1px,transparent 1px),linear-gradient(90deg,#006666 1px,transparent 1px);
  background-size:18px 18px;
  background-attachment:fixed;
  color:#111827;
 }
-*,*::before,*::after{border-radius:0!important;backdrop-filter:none!important}
+html[data-theme="retro"] *,
+html[data-theme="retro"] *::before,
+html[data-theme="retro"] *::after{border-radius:0!important;backdrop-filter:none!important}
 .egg{border-radius:48% 48% 42% 42%/36% 36% 48% 48%!important}
 .ring,.rubber,.ship-marker{border-radius:50%!important}
 .board-tools .size i,.dot-3,.dot-8,.dot-16{border-radius:50%!important}

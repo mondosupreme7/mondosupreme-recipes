@@ -232,7 +232,7 @@
     var kicker = $('wordKicker');
     if (state.mode === 'daily') kicker.textContent = 'Daily · ' + today + ' · MondoWord #' + number + ' · flips at midnight Eastern';
     else if (state.mode === 'free') kicker.textContent = 'Free Play · unlimited random 5-letter words';
-    else kicker.textContent = 'Bonus · 90s culture, the harbor, and the kitchen';
+    else kicker.textContent = 'Bonus · the harbor, the kitchen, and classic culture';
     $('modeDaily').setAttribute('aria-pressed', state.mode === 'daily' ? 'true' : 'false');
     $('modeFree').setAttribute('aria-pressed', state.mode === 'free' ? 'true' : 'false');
     $('modeTheme').setAttribute('aria-pressed', state.mode === 'theme' ? 'true' : 'false');

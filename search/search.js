@@ -6,7 +6,7 @@
     all: 'All Web & AI',
     cook: 'Cooking & Recipes',
     cruise: 'Cruises & Travel',
-    retro: '90s Retro',
+    retro: 'Classics',
     tech: 'Tech & Finance',
     site: 'Search Inside Mondosupreme'
   };

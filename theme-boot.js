@@ -6,7 +6,7 @@
     }
   }
   var KEY = 'mondosupreme.theme.v2';
-  var named = { light: 1, dark: 1, harbor: 1, warm: 1 };
+  var named = { light: 1, dark: 1, harbor: 1, warm: 1, retro: 1 };
   var mode = 'system';
   try {
     var saved = localStorage.getItem(KEY);

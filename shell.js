@@ -434,7 +434,7 @@
     { title: 'MondoWiki', href: '/wiki/', icon: 'book' },
     { title: 'MondoPaint', href: '/board/', icon: 'paint' },
     { title: 'MondoChat', href: '/chat/', icon: 'aim' },
-    { title: '90s Arcade', href: '/arcade/', icon: 'joy' },
+    { title: 'Arcade', href: '/arcade/', icon: 'joy' },
     { title: 'MondoGotchi Pet', href: '/pet/', icon: 'egg' },
     { title: "MondoFM Radio", href: '/radio/', icon: 'radio' },
     { title: 'Bulletin Forum', href: '/forum/', icon: 'note' },
@@ -673,7 +673,7 @@
       ['Space Coast & Travel', ['Cruises', 'MondoWeather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
       ['Finance & Search', ['MondoQuote', 'Ask Mondo', 'MondoWiki']],
       ['Community', ['Bulletin Forum', 'MondoChat', 'MondoPaint', 'MondoBay', 'MondoFM Radio']],
-      ['Game Studio', ['90s Arcade', 'MondoGotchi Pet', 'MondoWord', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'World of MondoCraft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
+      ['Game Studio', ['Arcade', 'MondoGotchi Pet', 'MondoWord', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'World of MondoCraft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
     ];
     groups.forEach(function (group) {
       var block = document.createElement('section');

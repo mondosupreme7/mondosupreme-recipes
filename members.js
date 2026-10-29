@@ -502,11 +502,11 @@
     joinForm.append(
       field('Email', jEmail),
       field('Password', jPass),
-      field('90s Screen Name / Handle', jHandle),
+      field('Display name', jHandle),
       field('Status / Away Message (optional)', jStatus)
     );
     var legend = document.createElement('p');
-    legend.textContent = '90s Pixel Avatar';
+    legend.textContent = 'Avatar';
     joinForm.append(legend, picker, joinErr, joinBtn);
     function show(which) {
       var signing = which === 'sign';
@@ -626,7 +626,7 @@
     out.className = 'shell-tool';
     out.textContent = 'Sign Out';
     row.append(save, out);
-    form.append(field('90s Screen Name / Handle', handle), field('Status / Away Message', status), picker, err, row);
+    form.append(field('Display name', handle), field('Status', status), picker, err, row);
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       err.hidden = true;

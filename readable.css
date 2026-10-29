@@ -198,7 +198,8 @@ html, body { background: var(--studio-bg) !important; color: var(--studio-ink); 
 .ticker, .era-top, .era-foot, .era-toys, .wordart, .wordart-row, .rainbow-rule, .torch,
 .construct, .construction, .winamp, .webring, .webring-table, .microbanners, .geo-badge,
 .theme-sky, .btnbar, .toybox, .hazard, .guestbook.atspin, .site-header, .aim-chrome,
-.pixel-btn, .sparkle, .network, .mail-banner {
+.pixel-btn, .sparkle, .network, .mail-banner,
+.counter, .counter-label {
   display: none !important;
 }
 .site-footer { background: transparent !important; color: var(--studio-muted); border: 0; text-align: center; padding: 28px 16px 12px; }
@@ -603,4 +604,84 @@ html[data-theme="harbor"] .gb-stamps,
 html[data-theme="harbor"] .gb-stamps label {
   background: var(--paper) !important;
   color: var(--ink) !important;
+}
+
+/* Opt-in 90s skin. Decorative strips stay hidden until this theme is chosen. */
+html[data-theme="retro"] {
+  color-scheme: light;
+  --bg: #008080;
+  --paper: #d4d0c8;
+  --ink: #111827;
+  --muted: #1f2937;
+  --line: #404040;
+  --link: #000080;
+  --nav: #c0c0c0;
+  --accent: #000080;
+  --accent-ink: #ffffff;
+  --chip: #ffffcc;
+  --studio-bg: #008080;
+  --studio-paper: #d4d0c8;
+  --studio-ink: #111827;
+  --studio-muted: #1f2937;
+  --studio-line: #404040;
+  --studio-radius: 0px;
+  --studio-shadow: none;
+}
+html[data-theme="retro"] body {
+  background-color: #008080 !important;
+  background-image: linear-gradient(#006666 1px, transparent 1px), linear-gradient(90deg, #006666 1px, transparent 1px) !important;
+  background-size: 18px 18px !important;
+  color: #111827 !important;
+}
+html[data-theme="retro"] main.wrap {
+  background: #d4d0c8 !important;
+  color: #111827 !important;
+  border: 3px ridge #ffffff !important;
+}
+html[data-theme="retro"] .ticker,
+html[data-theme="retro"] .era-top,
+html[data-theme="retro"] .construct,
+html[data-theme="retro"] .construction,
+html[data-theme="retro"] .rainbow-rule {
+  display: block !important;
+  max-width: 100%;
+  overflow: hidden;
+}
+html[data-theme="retro"] .wordart-row,
+html[data-theme="retro"] .ticker-track {
+  display: flex !important;
+}
+html[data-theme="retro"] .wordart,
+html[data-theme="retro"] .torch,
+html[data-theme="retro"] .counter-label {
+  display: block !important;
+}
+html[data-theme="retro"] .counter { display: inline-flex !important; }
+html[data-theme="retro"] .ticker {
+  background: #000 !important;
+  color: #86efac !important;
+  font-size: 13px !important;
+  line-height: 1.35;
+}
+html[data-theme="retro"] .studio-nav,
+html[data-theme="retro"] .studio-dock {
+  background: #c0c0c0 !important;
+  color: #111827 !important;
+  border-color: #404040 !important;
+}
+html[data-theme="retro"] .studio-brand,
+html[data-theme="retro"] .studio-dock a,
+html[data-theme="retro"] .studio-dock button {
+  color: #111827 !important;
+}
+html[data-theme="retro"] h1,
+html[data-theme="retro"] h2,
+html[data-theme="retro"] h3,
+html[data-theme="retro"] p,
+html[data-theme="retro"] li {
+  color: #111827;
+}
+html[data-theme="retro"] .event-card h3,
+html[data-theme="retro"] .chat-head h1 {
+  color: #111827 !important;
 }
