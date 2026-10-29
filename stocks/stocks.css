@@ -45,6 +45,21 @@
 .watch-list li{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 0;border-top:1px dotted #CBD5E1}
 .watch-list button{min-height:44px}
 .quote-disclaimer{font-size:.9rem;color:#374151;background:#fff;border:2px solid #000;padding:8px}
+.rules-card{margin:0 0 12px;background:#F1F5F9;color:#0F172A;border:1px solid #E2E8F0;border-radius:14px;padding:0 12px 10px}
+.rules-card summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;margin:0 -12px;padding:8px 12px 8px 14px;background:#F1F5F9;color:#0F172A;border-left:3px solid #2563EB;border-radius:14px 14px 0 0;font:600 18px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.rules-card summary::-webkit-details-marker{display:none}
+.rules-card summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);flex:0 0 auto}
+.rules-card[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.rules-list{margin:10px 0 8px;padding-left:1.3rem}
+.rules-list li{margin:0 0 6px;scroll-margin-top:84px}
+.rules-foot{margin:0;font-size:.9rem;color:#334155}
+a.rule-chip{text-decoration:none;color:#111827}
+@media(min-width:960px){
+ .quote-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;column-gap:16px;align-items:start}
+ .quote-hero{grid-column:1;grid-row:1}
+ .rules-card{grid-column:2;grid-row:1 / span 2;position:sticky;top:72px;max-height:calc(100vh - 88px);overflow:auto;margin:0}
+ .quote-main{grid-column:1;grid-row:2;min-width:0}
+}
 @media(max-width:768px){
  .quote-tools label,.pin-form label{flex:1 1 140px}
  .quote-hero h1{font-size:1.45rem}
@@ -172,3 +187,27 @@ html[data-theme="harbor"] .quote-table th{border-bottom:2px solid #7DD3FC!import
 html[data-theme="light"] .quote-table th:first-child{border-left:3px solid #2563EB!important}
 html[data-theme="dark"] .quote-table th:first-child{border-left:3px solid #93C5FD!important}
 html[data-theme="harbor"] .quote-table th:first-child{border-left:3px solid #7DD3FC!important}
+html[data-theme="light"] .rules-card,
+html[data-theme="light"] .rules-card summary{background:#F1F5F9!important;color:#0F172A!important}
+html[data-theme="light"] .rules-card summary{border-left:3px solid #2563EB!important;font-weight:600!important}
+html[data-theme="light"] .rules-card,
+html[data-theme="light"] .rules-list{color:#0F172A!important}
+html[data-theme="light"] .rules-foot{color:#334155!important}
+html[data-theme="warm"] .rules-card,
+html[data-theme="warm"] .rules-card summary{background:#FFF7ED!important;color:#1C1917!important}
+html[data-theme="warm"] .rules-card summary{border-left:3px solid #2563EB!important;font-weight:600!important}
+html[data-theme="warm"] .rules-card,
+html[data-theme="warm"] .rules-list{color:#1C1917!important}
+html[data-theme="warm"] .rules-foot{color:#44403C!important}
+html[data-theme="dark"] .rules-card,
+html[data-theme="dark"] .rules-card summary{background:#1E293B!important;color:#F8FAFC!important}
+html[data-theme="dark"] .rules-card summary{border-left:3px solid #93C5FD!important;font-weight:600!important}
+html[data-theme="dark"] .rules-card,
+html[data-theme="dark"] .rules-list{color:#F8FAFC!important}
+html[data-theme="dark"] .rules-foot{color:#E2E8F0!important}
+html[data-theme="harbor"] .rules-card,
+html[data-theme="harbor"] .rules-card summary{background:#16324C!important;color:#F8FAFC!important}
+html[data-theme="harbor"] .rules-card summary{border-left:3px solid #7DD3FC!important;font-weight:600!important}
+html[data-theme="harbor"] .rules-card,
+html[data-theme="harbor"] .rules-list{color:#F8FAFC!important}
+html[data-theme="harbor"] .rules-foot{color:#E2E8F0!important}

@@ -215,13 +215,41 @@
       });
       if (chips.childNodes.length) box.appendChild(chips);
     }
-    if (row.flags && row.flags.length) {
+    var notes = ruleNotes(row);
+    if (notes.length) {
       var flags = el('div', null, 'why-flags');
-      row.flags.forEach(function (flag) {
-        flags.appendChild(el('span', flag, 'qbadge is-caution'));
+      notes.forEach(function (note) {
+        if (!note.href) {
+          flags.appendChild(el('span', note.text, 'qbadge is-caution'));
+          return;
+        }
+        var link = document.createElement('a');
+        link.className = 'qbadge is-caution rule-chip';
+        link.href = note.href;
+        link.textContent = note.text;
+        flags.appendChild(link);
       });
       box.appendChild(flags);
     }
+  }
+
+  function ruleNotes(row) {
+    var notes = [];
+    var flags = row.flags || [];
+    if (row.above200 === false || flags.indexOf('Below the 200-day') !== -1) {
+      notes.push({ href: '#rule-1', text: 'Below the 200-day · Rule 1' });
+    }
+    if (flags.indexOf('Earnings within 7 days') !== -1) {
+      notes.push({ href: '#rule-3', text: 'Earnings within 7 days · Rule 3' });
+    }
+    if (typeof row.rewardRisk === 'number' && row.rewardRisk < 2) {
+      notes.push({ href: '#rule-5', text: 'Reward:risk under 2:1 · Rule 5' });
+    }
+    flags.forEach(function (flag) {
+      if (flag === 'Below the 200-day' || flag === 'Earnings within 7 days') return;
+      notes.push({ href: '', text: flag });
+    });
+    return notes;
   }
 
   function why(row) {
@@ -513,6 +541,19 @@
       document.getElementById('fresh').textContent = 'The saved screener could not be loaded. The last good snapshot stays on the server when a fetch fails.';
     });
   }
+
+  var rulesCard = document.getElementById('swingRules');
+  var rulesWide = window.matchMedia('(min-width: 960px)');
+  function openRulesOnDesktop() {
+    if (rulesWide.matches && rulesCard) rulesCard.open = true;
+  }
+  openRulesOnDesktop();
+  if (rulesWide.addEventListener) rulesWide.addEventListener('change', openRulesOnDesktop);
+  document.getElementById('detailWhy').addEventListener('click', function (event) {
+    var link = event.target.closest ? event.target.closest('a.rule-chip') : null;
+    if (!link || !rulesCard) return;
+    rulesCard.open = true;
+  });
 
   document.getElementById('screen').addEventListener('change', renderTable);
   document.getElementById('sort').addEventListener('change', renderTable);
