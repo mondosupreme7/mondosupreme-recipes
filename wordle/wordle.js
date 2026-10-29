@@ -595,7 +595,10 @@
       $('wordName').value = state.name === 'Guest' ? '' : state.name;
       save();
     });
+    $('wordInfo').addEventListener('click', function () { $('wordInfoDialog').showModal(); });
+    $('wordInfoClose').addEventListener('click', function () { $('wordInfoDialog').close(); });
     document.addEventListener('keydown', function (event) {
+      if ($('wordInfoDialog').open) return;
       var tag = event.target && event.target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       var key = event.key;
