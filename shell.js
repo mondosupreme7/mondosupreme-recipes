@@ -629,7 +629,8 @@
     var brand = document.createElement('a');
     brand.className = 'studio-brand';
     brand.href = '/';
-    brand.textContent = 'Mondosupreme';
+    brand.setAttribute('aria-label', 'Mondosupreme');
+    brand.innerHTML = '<span class="studio-mark" aria-hidden="true">M</span><span class="studio-word studio-short" aria-hidden="true">Mondo</span><span class="studio-word studio-full">Mondosupreme</span>';
     var links = document.createElement('nav');
     links.className = 'studio-links';
     links.setAttribute('aria-label', 'Primary');
@@ -660,7 +661,8 @@
     start.id = 'shellStart';
     start.setAttribute('aria-haspopup', 'true');
     start.setAttribute('aria-expanded', 'false');
-    start.innerHTML = 'All Apps <kbd>⌘K</kbd>';
+    start.setAttribute('aria-label', 'All Apps');
+    start.innerHTML = '<svg class="nav-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1 1h6v6H1V1zm8 0h6v6H9V1zM1 9h6v6H1V9zm8 0h6v6H9V9z"/></svg><span class="nav-label">All Apps</span><kbd>⌘K</kbd>';
     var menu = document.createElement('div');
     menu.className = 'studio-drawer';
     menu.id = 'shellMenu';
@@ -704,12 +706,14 @@
     findBtn.type = 'button';
     findBtn.className = 'studio-ghost';
     findBtn.id = 'shellFindBtn';
-    findBtn.textContent = 'Find';
+    findBtn.setAttribute('aria-label', 'Find');
+    findBtn.innerHTML = '<svg class="nav-ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="nav-label">Find</span>';
     var ownerBtn = document.createElement('button');
     ownerBtn.type = 'button';
     ownerBtn.className = 'studio-account';
     ownerBtn.id = 'shellOwner';
-    ownerBtn.textContent = 'Sign In';
+    ownerBtn.setAttribute('aria-label', 'Sign in');
+    ownerBtn.innerHTML = '<span class="nav-avatar" aria-hidden="true">S</span><span class="nav-label">Sign In</span>';
     var muteBtn = document.createElement('button');
     muteBtn.type = 'button';
     muteBtn.className = 'studio-ghost';
@@ -813,9 +817,22 @@
       });
     });
 
+    function paintAccount(btn, label) {
+      var face = btn.querySelector('.nav-label');
+      var chip = btn.querySelector('.nav-avatar');
+      if (face) {
+        face.textContent = label;
+        if (chip) {
+          var letter = String(label || '').replace(/[^A-Za-z0-9]/g, '').charAt(0);
+          chip.textContent = (letter || 'S').toUpperCase();
+        }
+      } else btn.textContent = label;
+      btn.setAttribute('aria-label', label === 'Sign In' ? 'Sign in' : label);
+    }
     function paintOwner() {
       var on = isOwnerUser();
-      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Webmaster' : 'Sign In');
+      var label = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Webmaster' : 'Sign In');
+      paintAccount(ownerBtn, label);
       ownerBtn.classList.toggle('is-owner', on);
       ownerBtn.setAttribute('aria-pressed', window.MONDO_MEMBER && window.MONDO_MEMBER.isMember() ? 'true' : (on ? 'true' : 'false'));
     }

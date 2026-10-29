@@ -103,7 +103,16 @@
     ['shellOwner', 'ownerBtn', 'owner'].forEach(function (id) {
       var btn = document.getElementById(id);
       if (!btn) return;
-      btn.textContent = label;
+      var face = btn.querySelector('.nav-label');
+      var chip = btn.querySelector('.nav-avatar');
+      if (face) {
+        face.textContent = label;
+        if (chip) {
+          var letter = String(label || '').replace(/[^A-Za-z0-9]/g, '').charAt(0);
+          chip.textContent = (letter || 'S').toUpperCase();
+        }
+      } else btn.textContent = label;
+      btn.setAttribute('aria-label', label === 'Sign In' ? 'Sign in' : label);
       btn.setAttribute('aria-pressed', isMemberUser(user) ? 'true' : 'false');
     });
   }
