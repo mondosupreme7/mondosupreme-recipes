@@ -13,3 +13,5 @@
 }
 .rules-fallback{min-height:240px}
 .rules-note{margin-top:12px}
+.rules-uid{margin:8px 0;padding:12px;background:#111827;color:#f8fafc;word-break:break-all;font:15px/1.4 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace}
+html[data-theme] .rules-copy{background:#ffcc00!important;color:#111827!important}

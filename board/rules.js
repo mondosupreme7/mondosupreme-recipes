@@ -62,4 +62,31 @@
   }
 
   load();
+
+  var uidBox = document.getElementById('uidBox');
+  var uidValue = document.getElementById('uidValue');
+  var uidStatus = document.getElementById('uidStatus');
+  var copyUid = document.getElementById('copyUid');
+
+  function paintUid(user) {
+    var signedIn = !!(user && user.uid && !user.isAnonymous);
+    if (uidBox) uidBox.hidden = false;
+    if (uidValue) uidValue.textContent = signedIn ? user.uid : 'Sign in to reveal this user id.';
+    if (copyUid) copyUid.hidden = !signedIn;
+  }
+  function watchUid() {
+    if (!window.firebase || !firebase.auth || !firebase.apps || !firebase.apps.length) return;
+    firebase.auth().onAuthStateChanged(paintUid);
+  }
+  if (copyUid) {
+    copyUid.addEventListener('click', function () {
+      var value = uidValue ? uidValue.textContent : '';
+      if (!value) return;
+      var done = function () { if (uidStatus) uidStatus.textContent = 'Copied the user id.'; };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value).then(done).catch(done);
+      else done();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchUid);
+  else watchUid();
 })();

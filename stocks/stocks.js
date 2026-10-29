@@ -3,7 +3,6 @@
 
   var KEY = 'mondosupreme.stocks.v1';
   var TICKER = /^[A-Z]{1,5}(?:-[A-Z])?$/;
-  var OWNER = 'cbrooks_911@yahoo.com';
   var rows = [];
   var fetchedAt = '';
   var watch = {};
@@ -61,9 +60,9 @@
     return new Date(time).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
   }
 
-  function ownerEmail() {
-    return String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
-  }
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
 
   function bootFirebase() {
     if (!window.firebase || !window.MONDO_BOARD_CONFIG) return false;
@@ -439,7 +438,8 @@
       uid = user ? user.uid : '';
       var lead = document.getElementById('watchLead');
       if (member) {
-        var who = String(user.email).toLowerCase() === ownerEmail() ? 'Webmaster pins sync with the owner account.' : 'Signed-in pins sync to this account.';
+        var who = isAdminNow() ? 'Webmaster pins sync with this account.' : 'Signed-in pins sync to this account.';
+        if (!watchAuth.ownerListen) { watchAuth.ownerListen = true; document.addEventListener('mondo-owner', function () { if (member && lead) lead.textContent = isAdminNow() ? 'Webmaster pins sync with this account.' : 'Signed-in pins sync to this account.'; }); }
         lead.textContent = who;
         firebase.database().ref('stocks/watchlist/' + uid).once('value').then(function (snap) {
           applyCloud(snap.val());

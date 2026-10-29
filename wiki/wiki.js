@@ -76,15 +76,9 @@ function safeHref(raw) {
   if (!trimmed || trimmed.length > 2000 || /[\u0000-\u001f\u007f\s"'<>\\`]/.test(trimmed)) return '';
   let url;
   try { url = new URL(trimmed); } catch { return ''; }
-  if (url.protocol === 'http:' || url.protocol === 'https:') {
-    if (!url.hostname || url.username || url.password) return '';
-    return url.href;
-  }
-  if (url.protocol === 'mailto:') {
-    if (!/^[^@\s]+@[^@\s]+$/.test(url.pathname)) return '';
-    return url.href;
-  }
-  return '';
+  if (url.protocol !== 'https:') return '';
+  if (!url.hostname || url.username || url.password) return '';
+  return url.href;
 }
 function safeImage(raw) {
   if (typeof raw !== 'string') return '';
@@ -558,7 +552,7 @@ function isStock(p) {
   return b === WELCOME || b.includes('Pages in this wiki stay in this browser') || b.includes('## Saved on this device');
 }
 function canMutate() { return !serverLive || !!isOwner; }
-function ownerEmail() { return String((typeof window !== 'undefined' && window.MONDO_BOARD_OWNER) || 'cbrooks_911@yahoo.com').toLowerCase(); }
+function isAdminNow() { return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner()); }
 function showRulesBanner() {
   rulesBlocked = true;
   serverLive = false;
@@ -828,7 +822,8 @@ function connectWiki() {
       return;
     }
     myUid = user.uid;
-    isOwner = !!(user.email && user.email.toLowerCase() === ownerEmail());
+    isOwner = isAdminNow();
+    if (!connectWiki.ownerListen) { connectWiki.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); if (on === isOwner) return; isOwner = on; updateOwnerButton(); refreshViews(); }); }
     quotaLoaded = false;
     updateOwnerButton();
     listenItems();
@@ -1492,11 +1487,10 @@ function init() {
   if (ownerBtn) ownerBtn.onclick = () => {
     if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
     const user = firebase.auth().currentUser;
-    if (user && user.email && user.email.toLowerCase() === ownerEmail()) { signOutOwner(); return; }
+    if (isAdminNow()) { signOutOwner(); return; }
     $('#ownerError').hidden = true;
     $('#ownerPass').value = '';
-    $('#ownerEmail').value = ownerEmail();
-    $('#ownerDialog').showModal();
+        $('#ownerDialog').showModal();
   };
   $('#ownerCancel').onclick = () => $('#ownerDialog').close();
   $('#ownerForm').addEventListener('submit', async e => {

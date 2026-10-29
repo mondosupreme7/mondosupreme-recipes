@@ -1,36 +1,191 @@
 {
   "rules": {
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "root.child('admins').child(auth.uid).val() === true",
+        ".validate": "newData.val() === true"
+      }
+    },
+    "profiles": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        "handle": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z][A-Za-z0-9_]{1,19}$/)" },
+        "avatar": { ".validate": "newData.isString() && newData.val().length <= 24" },
+        "status": { ".validate": "newData.isString() && newData.val().length <= 80" },
+        "member": { ".validate": "newData.isBoolean()" },
+        "webmaster": { ".validate": "newData.isBoolean() && (!newData.val() || root.child('admins').child($uid).val() === true)" },
+        "updatedAt": { ".validate": "newData.isNumber()" },
+        "email": { ".validate": false },
+        "$other": { ".validate": false }
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        "email": { ".validate": false },
+        "handle": { ".validate": "newData.isString() && newData.val().length <= 32" },
+        "avatar": { ".validate": "newData.isString() && newData.val().length <= 24" },
+        "status": { ".validate": "newData.isString() && newData.val().length <= 80" },
+        "member": { ".validate": "newData.isBoolean()" },
+        "webmaster": { ".validate": "newData.isBoolean()" },
+        "updatedAt": { ".validate": "newData.isNumber()" },
+        "grocery": { ".validate": "newData.isString() ? newData.val().length <= 40000 : newData.hasChild('items')" },
+        "favs": { ".validate": "newData.isString() && newData.val().length <= 20000" },
+        "countdown": { ".validate": "newData.isString() && newData.val().length <= 4000" },
+        "pet": { ".validate": "newData.isString() && newData.val().length <= 80000" },
+        "mmo": { ".validate": "newData.isString() && newData.val().length <= 80000" },
+        "fps": { ".validate": "newData.isString() && newData.val().length <= 40000" },
+        "arcade": { ".validate": "newData.isString() && newData.val().length <= 40000" },
+        "stocks": { ".validate": "newData.isString() && newData.val().length <= 20000" },
+        "weather": { ".validate": "newData.isString() && newData.val().length <= 4000" },
+        "wordle": { ".validate": "newData.isString() && newData.val().length <= 20000" },
+        "planner": { ".validate": "newData.isString() && newData.val().length <= 40000" },
+        "packing": { ".validate": "newData.isString() && newData.val().length <= 20000" },
+        "$other": { ".validate": false }
+      }
+    },
     "board": {
       ".read": true,
-      ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null",
-      "s": { ".indexOn": ["t"] }
+      "s": {
+        ".indexOn": ["t"],
+        "$id": {
+          ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)",
+          ".validate": "newData.child('author').val() === auth.uid && newData.child('points').isString() && newData.child('points').val().length <= 8000 && newData.child('tool').isString() && newData.child('tool').val().length <= 16 && newData.child('color').isString() && newData.child('color').val().length <= 16 && newData.child('t').isNumber()"
+        }
+      },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('n').val() <= 80 && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } },
+      "presence": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('t').isNumber()" } },
+      "meta": { "clearedAt": { ".write": "root.child('admins').child(auth.uid).val() === true", ".validate": "newData.isNumber()" } }
     },
     "chat": {
       ".read": true,
-      ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null",
-      "m": { ".indexOn": ["t"] }
+      "m": {
+        ".indexOn": ["t"],
+        "$id": {
+          ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)",
+          ".validate": "newData.child('author').val() === auth.uid && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 500 && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('t').isNumber()"
+        }
+      },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('n').val() <= 80 && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 400 || root.child('admins').child(auth.uid).val() === true)" } },
+      "bans": { "$uid": { ".write": "root.child('admins').child(auth.uid).val() === true", ".validate": "newData.val() === true" } },
+      "presence": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('t').isNumber()" } },
+      "meta": { "clearedAt": { ".write": "root.child('admins').child(auth.uid).val() === true", ".validate": "newData.isNumber()" } }
     },
-    "recipes": { ".read": true, "items": { "$id": { ".write": "auth != null && (!data.exists() || auth.token.email == 'cbrooks_911@yahoo.com')" } } },
-    "wiki": { ".read": true, "items": { "$id": { ".write": "auth != null && (!data.exists() || auth.token.email == 'cbrooks_911@yahoo.com')" } } },
-    "hits": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "arcade": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "pet": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "forum": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "mmo": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "fps": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "countdown": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "guestbook": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "market": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "eightball": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "stocks": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "dailyRecipe": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "quotes": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "wordle": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "launches": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "crossword": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "search": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "puzzles": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "local": { ".read": true, ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" },
-    "users": { ".read": "auth != null", ".write": "auth.token.email == 'cbrooks_911@yahoo.com' || auth != null" }
+    "recipes": {
+      ".read": true,
+      "items": { "$id": { ".write": "auth != null && (!data.exists() || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 160" } },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    },
+    "wiki": {
+      ".read": true,
+      "items": { "$id": { ".write": "auth != null && (!data.exists() || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 160" } },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    },
+    "forum": {
+      ".read": true,
+      "threads": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 120 && newData.child('body').isString() && newData.child('body').val().length <= 5000 && newData.child('name').isString() && newData.child('name').val().length <= 24 && (newData.child('author').val() === auth.uid || newData.child('author').val() === data.child('author').val() || root.child('admins').child(auth.uid).val() === true)" } },
+      "replies": { "$tid": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('body').isString() && newData.child('body').val().length > 0 && newData.child('body').val().length <= 2000 && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('author').val() === auth.uid" } } },
+      "views": { "$id": { ".write": "auth != null", ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000" } },
+      "bans": { "$uid": { ".write": "root.child('admins').child(auth.uid).val() === true", ".validate": "newData.val() === true" } },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('n').val() <= 40 && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 1500 || root.child('admins').child(auth.uid).val() === true)" } },
+      "vrate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    },
+    "market": {
+      ".read": true,
+      "items": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 80 && newData.child('description').isString() && newData.child('description').val().length <= 2000 && newData.child('seller').isString() && newData.child('seller').val().length <= 24 && newData.child('contact').isString() && newData.child('contact').val().length <= 160 && (newData.child('author').val() === auth.uid || newData.child('author').val() === data.child('author').val() || root.child('admins').child(auth.uid).val() === true)" } },
+      "offers": { "$lid": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('body').isString() && newData.child('body').val().length <= 400 && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('author').val() === auth.uid" } } },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 1500 || root.child('admins').child(auth.uid).val() === true)" } }
+    },
+    "guestbook": {
+      ".read": true,
+      "entries": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('note').isString() && newData.child('note').val().length > 0 && newData.child('note').val().length <= 280 && newData.child('author').val() === auth.uid && (!newData.child('homepage').exists() || newData.child('homepage').val() === '' || newData.child('homepage').val().matches(/^https:\\/\\/[^\\s]{1,180}$/))" } },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 1500)" } }
+    },
+    "quotes": {
+      ".read": true,
+      "custom": { "$id": { ".write": "root.child('admins').child(auth.uid).val() === true || (auth != null && data.child('uid').val() === auth.uid && !newData.exists())", ".validate": "newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 240 && newData.child('author').isString() && newData.child('author').val().length <= 80" } }
+    },
+    "search": {
+      ".read": true,
+      "asks": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('q').isString() && newData.child('q').val().length > 0 && newData.child('q').val().length <= 180 && newData.child('uid').val() === auth.uid" } }
+    },
+    "local": {
+      ".read": true,
+      "tips": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 240 && newData.child('place').isString() && newData.child('place').val().length <= 80 && newData.child('rating').isNumber() && newData.child('uid').val() === auth.uid" } }
+    },
+    "eightball": {
+      ".read": true,
+      "asks": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('answer').isString() && newData.child('answer').val().length <= 280 && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('author').val() === auth.uid" } },
+      "customs": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 180 && newData.child('author').val() === auth.uid" } },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 800 || root.child('admins').child(auth.uid).val() === true)" } }
+    },
+    "hits": {
+      ".read": true,
+      "total": { ".write": "auth != null", ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000" },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    },
+    "wordle": {
+      ".read": true,
+      "scores": { "$date": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('guesses').isNumber() && newData.child('won').isBoolean()" } } }
+    },
+    "puzzles": {
+      ".read": true,
+      "connections": { "$date": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 32 && newData.child('t').isNumber()" } } },
+      "sudoku": { "$size": { "$date": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 32 && newData.child('t').isNumber()" } } } }
+    },
+    "crossword": {
+      ".read": true,
+      "scores": { "$day": { "$id": { ".write": "auth != null && ($id.beginsWith(auth.uid) || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 16 && newData.child('score').isNumber()" } } }
+    },
+    "launches": {
+      ".read": true,
+      "sightings": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 16 && newData.child('note').isString() && newData.child('note').val().length <= 180 && newData.child('author').val() === auth.uid" } }
+    },
+    "countdown": {
+      ".read": true,
+      "next": { ".write": "root.child('admins').child(auth.uid).val() === true", ".validate": "newData.child('mmsi').isString() && newData.child('mmsi').val().matches(/^\\d{9}$/) && newData.child('date').isString() && newData.child('date').val().length <= 20 && newData.child('name').isString() && newData.child('name').val().length <= 80" }
+    },
+    "dailyRecipe": { ".read": true, ".write": "root.child('admins').child(auth.uid).val() === true" },
+    "stocks": {
+      "watchlist": { "$uid": { ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", "$symbol": { ".validate": "newData.hasChildren() && (!newData.child('note').exists() || (newData.child('note').isString() && newData.child('note').val().length <= 140))" } } }
+    },
+    "pet": {
+      ".read": true,
+      "park": { "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24" } },
+      "pings": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('from').val() === auth.uid) || data.child('from').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('from').val() === auth.uid" } },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    },
+    "mmo": {
+      "players": { ".read": true, "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", "name": { ".validate": "newData.isString() && newData.val().length <= 24" }, "bubble": { ".validate": "newData.isString() && newData.val().length <= 80" }, "$other": { ".validate": "newData.isNumber() || newData.isBoolean() || (newData.isString() && newData.val().length <= 24)" } } },
+      "saves": { "$uid": { ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)" } },
+      "leaderboard": { ".read": true, "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24" } },
+      "chat": { ".read": true, "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('text').isString() && newData.child('text').val().length <= 80 && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('author').val() === auth.uid" } },
+      "crate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 800)" } },
+      "srate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } },
+      "raid": { ".read": true, "boss": { ".write": "auth != null" } }
+    },
+    "fps": {
+      "players": { ".read": true, "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", "name": { ".validate": "newData.isString() && newData.val().length <= 24" }, "$other": { ".validate": "newData.isNumber() || newData.isBoolean() || (newData.isString() && newData.val().length <= 24)" } } },
+      "leaderboard": { ".read": true, "$uid": { ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24" } },
+      "inbox": { "$uid": { ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)", "$id": { ".write": "auth != null && ((!data.exists() && newData.child('from').val() === auth.uid) || !newData.exists() || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('from').val() === auth.uid && newData.child('dmg').isNumber() && newData.child('dmg').val() >= 1 && newData.child('dmg').val() <= 120" } } },
+      "srate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } },
+      "hrate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    },
+    "arcade": {
+      ".read": true,
+      "scores": { "$cart": { "$id": { ".write": "auth != null", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 16 && newData.child('score').isNumber()" } } },
+      "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
+      "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    }
   }
 }

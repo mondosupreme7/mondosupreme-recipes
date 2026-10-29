@@ -1172,7 +1172,7 @@ function hideBanner() { rulesBlocked = false; syncBanner(); }
 function isDenied(err) {
   return /PERMISSION_DENIED|permission[-_ ]denied/i.test(String((err && err.code) || '') + ' ' + String((err && err.message) || ''));
 }
-function ownerEmail() { return String(window.MONDO_BOARD_OWNER || 'cbrooks_911@yahoo.com').toLowerCase(); }
+function isAdminNow() { return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner()); }
 function syncVisitors() {
   const rows = Object.keys(remote).map(id => Object.assign({ id }, remote[id])).filter(r => r && r.name && r.id !== myUid);
   visitors = rows.slice(0, 4).map((r, i) => {
@@ -1282,7 +1282,8 @@ function connectPet() {
       return;
     }
     myUid = user.uid;
-    isOwner = !!(user.email && user.email.toLowerCase() === ownerEmail());
+    isOwner = isAdminNow();
+    if (!connectPet.ownerListen) { connectPet.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); if (on === isOwner) return; isOwner = on; if (!window.MONDO_MEMBER) $('#ownerBtn').textContent = isOwner ? 'Sign out' : 'Owner sign in'; renderPark(); }); }
     if (!window.MONDO_MEMBER) $('#ownerBtn').textContent = isOwner ? 'Sign out' : 'Owner sign in';
     listenPark();
     renderPark();
@@ -1422,11 +1423,10 @@ function init() {
   $('#ownerBtn').onclick = () => {
     if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
     const user = firebase.auth().currentUser;
-    if (user && user.email && user.email.toLowerCase() === ownerEmail()) { firebase.auth().signOut(); return; }
+    if (isAdminNow()) { firebase.auth().signOut(); return; }
     $('#ownerError').hidden = true;
     $('#ownerPass').value = '';
-    $('#ownerEmail').value = ownerEmail();
-    $('#ownerDialog').showModal();
+        $('#ownerDialog').showModal();
   };
   $('#ownerCancel').onclick = () => $('#ownerDialog').close();
   $('#ownerForm').addEventListener('submit', async e => {

@@ -295,10 +295,12 @@
       setStatus('Quotes need Firebase before they can be saved.');
       return;
     }
+    var quoteUser = firebase.auth && firebase.auth().currentUser;
     database.ref('quotes/custom').push({
       text: text,
       author: author,
       pinned: pinned,
+      uid: quoteUser ? quoteUser.uid : '',
       createdAt: firebase.database.ServerValue.TIMESTAMP
     }).then(function () {
       setStatus('Added to the shared pool.');

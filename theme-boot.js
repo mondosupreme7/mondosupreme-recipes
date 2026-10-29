@@ -1,4 +1,10 @@
 (function () {
+  if (window.top !== window.self) {
+    try { window.top.location.replace(window.location.href); }
+    catch (e1) {
+      try { window.location.replace('about:blank'); } catch (e2) {}
+    }
+  }
   var KEY = 'mondosupreme.theme.v2';
   var named = { light: 1, dark: 1, harbor: 1, warm: 1 };
   var mode = 'system';

@@ -2,7 +2,6 @@
   'use strict';
 
   var SAVE_KEY = 'mondosupreme.fps.v1';
-  var OWNER = (window.MONDO_BOARD_OWNER || 'cbrooks_911@yahoo.com');
 
   var GUNS = {
     crowbar: { name: 'Crowbar', melee: 1, dmg: 28, range: 1.35, cd: 0.42 },
@@ -2039,6 +2038,9 @@
     watchInbox();
   }
 
+  function isAdminNow() {
+    return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+  }
   function bootNet() {
     try {
       if (typeof firebase === 'undefined' || !window.MONDO_BOARD_CONFIG) { realmDown(); return; }
@@ -2046,7 +2048,8 @@
       firebase.auth().onAuthStateChanged(function (user) {
         net.user = user;
         net.uid = user ? user.uid : null;
-        var owner = !!(user && user.email === OWNER);
+        var owner = isAdminNow();
+        if (!bootNet.ownerListen) { bootNet.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); $('ownerTools').hidden = !on; if (!window.MONDO_MEMBER) $('ownerBtn').textContent = on ? 'Sign out' : 'Owner sign in'; }); }
         $('ownerTools').hidden = !owner;
         if (!window.MONDO_MEMBER) $('ownerBtn').textContent = owner ? 'Sign out' : 'Owner sign in';
         if (!user) firebase.auth().signInAnonymously().catch(function () { realmDown(); });

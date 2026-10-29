@@ -11,4 +11,3 @@ window.MONDO_BOARD_CONFIG = {
   messagingSenderId: "380782508759",
   appId: "1:380782508759:web:a31c5da21c779e1f810e92"
 };
-window.MONDO_BOARD_OWNER = 'cbrooks_911@yahoo.com';

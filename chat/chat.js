@@ -48,7 +48,7 @@ function linkify(parent, text) {
     let safe = null;
     try {
       const url = new URL(raw);
-      if (url.protocol === 'http:' || url.protocol === 'https:') safe = url.href;
+      if (url.protocol === 'https:') safe = url.href;
     } catch { safe = null; }
     if (safe) {
       const a = document.createElement('a');
@@ -89,8 +89,8 @@ function configured() {
   const c = window.MONDO_BOARD_CONFIG;
   return !!(c && c.apiKey && c.authDomain && c.databaseURL && c.projectId && c.appId);
 }
-function ownerEmail() {
-  return String(window.MONDO_BOARD_OWNER || '').toLowerCase();
+function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
 }
 function setStatus(text) {
   const el = $('#status');
@@ -429,7 +429,8 @@ function armHeart() {
 }
 function updateOwnerUi(user) {
   const email = user && user.email ? user.email.toLowerCase() : '';
-  isOwner = !!(email && email === ownerEmail());
+  isOwner = isAdminNow();
+  if (!updateOwnerUi.ownerListen) { updateOwnerUi.ownerListen = true; document.addEventListener('mondo-owner', function () { if (firebase.auth) updateOwnerUi(firebase.auth().currentUser); }); }
   document.body.classList.toggle('is-owner', isOwner);
   $('#clear').hidden = !isOwner;
   $('#owner').hidden = !live;
@@ -540,11 +541,10 @@ function init() {
   $('#clear').onclick = clearRoom;
   $('#owner').onclick = () => {
     const user = firebase.auth().currentUser;
-    if (user && user.email && user.email.toLowerCase() === ownerEmail()) { signOutOwner(); return; }
+    if (isAdminNow()) { signOutOwner(); return; }
     $('#ownerError').hidden = true;
     $('#ownerPass').value = '';
-    $('#ownerEmail').value = ownerEmail();
-    $('#ownerDialog').showModal();
+        $('#ownerDialog').showModal();
   };
   $('#ownerCancel').onclick = () => $('#ownerDialog').close();
   $('#ownerForm').addEventListener('submit', async e => {

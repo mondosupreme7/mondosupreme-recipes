@@ -795,7 +795,7 @@ function listenScores() {
     });
   });
 }
-function ownerEmail() { return String((window.MONDO_BOARD_OWNER) || 'cbrooks_911@yahoo.com').toLowerCase(); }
+function isAdminNow() { return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner()); }
 function updateOwner() {
   if (!window.MONDO_MEMBER) $('#ownerBtn').textContent = isOwner ? 'Sign out' : 'Owner sign in';
   $('#btnClear').hidden = !isOwner;
@@ -813,7 +813,8 @@ function connectArcade() {
       return;
     }
     myUid = user.uid;
-    isOwner = !!(user.email && user.email.toLowerCase() === ownerEmail());
+    isOwner = isAdminNow();
+    if (!connectArcade.ownerListen) { connectArcade.ownerListen = true; document.addEventListener('mondo-owner', function () { isOwner = isAdminNow(); updateOwner(); }); }
     quotaLoaded = false;
     updateOwner();
     listenScores();
@@ -907,15 +908,14 @@ function init() {
   $('#ownerBtn').onclick = () => {
     if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
     const user = firebase.auth().currentUser;
-    if (user && user.email && user.email.toLowerCase() === ownerEmail()) {
+    if (isAdminNow()) {
       isOwner = false;
       firebase.auth().signOut();
       return;
     }
     $('#ownerError').hidden = true;
     $('#ownerPass').value = '';
-    $('#ownerEmail').value = ownerEmail();
-    $('#ownerDialog').showModal();
+        $('#ownerDialog').showModal();
   };
   $('#ownerCancel').onclick = () => $('#ownerDialog').close();
   $('#ownerForm').addEventListener('submit', async e => {

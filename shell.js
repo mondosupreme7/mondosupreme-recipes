@@ -1,7 +1,6 @@
 /* Shared Start menu, Find, and owner chip. One cached file for every section. */
 (function () {
   'use strict';
-  var OWNER = 'cbrooks_911@yahoo.com';
   var FIND_KEY = 'mondosupreme.find.v1';
   var FIND_TTL = 5 * 60 * 1000;
   var remote = [];
@@ -15,11 +14,8 @@
     try { return JSON.parse(localStorage.getItem(key)); }
     catch (e) { return null; }
   }
-  function ownerEmail() {
-    return String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
-  }
-  function isOwnerUser(user) {
-    return !!(user && user.email && String(user.email).toLowerCase() === ownerEmail());
+  function isOwnerUser() {
+    return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
   }
   function appsReady() {
     return !!(window.firebase && firebase.apps && firebase.apps.length && firebase.auth);
@@ -56,7 +52,8 @@
     { group: 'Play', title: 'Radio', href: '/radio/', text: 'mondofm radio soundboard winamp somafm synth' },
     { group: 'Play', title: 'MMO', href: '/mmo/', text: 'world of mondocraft' },
     { group: 'Play', title: 'FPS', href: '/fps/', text: 'half-strike fortress' },
-    { group: 'Play', title: 'Locked Room', href: '/escape/', text: 'escape door ???' }
+    { group: 'Play', title: 'Locked Room', href: '/escape/', text: 'escape door ???' },
+    { group: 'Home', title: 'Privacy', href: '/privacy/', text: 'privacy delete my data account' }
   ];
   var games = [
     { kind: 'Game', title: 'High Seas Cruiser', href: '/arcade/', text: 'arcade seas cruise cart' },
@@ -366,7 +363,7 @@
     var title = document.createElement('h2');
     title.textContent = 'Owner sign-in';
     var copy = document.createElement('p');
-    copy.textContent = 'Sign in once with the owner email. Owner Mode stays on across the site. The password is checked by Firebase and is not stored here.';
+    copy.textContent = 'Sign in with your email and password. Webmaster tools turn on when this account is listed under admins. The password is checked by Firebase and is not stored here.';
     var form = document.createElement('form');
     var emailLabel = document.createElement('label');
     emailLabel.textContent = 'Email';
@@ -374,7 +371,6 @@
     email.type = 'email';
     email.autocomplete = 'username';
     email.required = true;
-    email.value = ownerEmail();
     emailLabel.appendChild(email);
     var passLabel = document.createElement('label');
     passLabel.textContent = 'Password';
@@ -602,6 +598,23 @@
     else if (path.indexOf('/arcade') === 0 || path.indexOf('/pet') === 0 || path.indexOf('/mmo') === 0 || path.indexOf('/fps') === 0 || path.indexOf('/wordle') === 0 || path.indexOf('/crossword') === 0 || path.indexOf('/8ball') === 0 || path.indexOf('/escape') === 0) section = 'studio-game';
     document.body.classList.add(section);
   }
+  function linkPrivacy() {
+    var foot = document.querySelector('footer.site-footer .wrap');
+    if (!foot) {
+      var footer = document.createElement('footer');
+      footer.className = 'site-footer';
+      foot = document.createElement('div');
+      foot.className = 'wrap';
+      footer.appendChild(foot);
+      document.body.appendChild(footer);
+    }
+    if (foot.querySelector('a[href="/privacy/"]')) return;
+    foot.appendChild(document.createTextNode(' · '));
+    var link = document.createElement('a');
+    link.href = '/privacy/';
+    link.textContent = 'Privacy';
+    foot.appendChild(link);
+  }
   function boot() {
     writeFx({ scan: 0, stars: 0 });
     document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
@@ -679,6 +692,7 @@
     });
     var home = menuLink({ title: 'Home', href: '/', icon: 'note' });
     menu.insertBefore(home, menu.firstChild);
+    menu.insertBefore(menuLink({ title: 'Privacy', href: '/privacy/', icon: 'note' }), home.nextSibling);
     var closeMenu = document.createElement('button');
     closeMenu.type = 'button';
     closeMenu.className = 'studio-close';
@@ -799,13 +813,15 @@
       });
     });
 
-    function paintOwner(user) {
-      var on = isOwnerUser(user);
-      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Owner' : 'Sign In');
+    function paintOwner() {
+      var on = isOwnerUser();
+      ownerBtn.textContent = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Webmaster' : 'Sign In');
       ownerBtn.classList.toggle('is-owner', on);
       ownerBtn.setAttribute('aria-pressed', window.MONDO_MEMBER && window.MONDO_MEMBER.isMember() ? 'true' : (on ? 'true' : 'false'));
-      document.dispatchEvent(new CustomEvent('mondo-owner', {detail: {on: on}}));
     }
+    document.addEventListener('mondo-owner', paintOwner);
+    document.addEventListener('mondo-member', paintOwner);
+    linkPrivacy();
     function attachChip() {
       if (!appsReady() || attachChip.done) return;
       attachChip.done = true;
@@ -827,7 +843,7 @@
       if (!bootFirebase()) return;
       attachChip();
       var user = firebase.auth().currentUser;
-      if (isOwnerUser(user)) {
+      if (isOwnerUser()) {
         firebase.auth().signOut().catch(function () {});
         return;
       }

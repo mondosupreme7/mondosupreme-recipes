@@ -54,7 +54,7 @@
         if (m) {
           const href = safeHttps(m[2]);
           html += href
-            ? '<a href="' + esc(href) + '" rel="noopener nofollow ugc">' + esc(m[1]) + '</a>'
+            ? '<a href="' + esc(href) + '" rel="noopener noreferrer nofollow ugc">' + esc(m[1]) + '</a>'
             : esc(m[0]);
           i += m[0].length;
           continue;
@@ -65,7 +65,7 @@
         const raw = um[0].replace(/[.,);]+$/, '');
         const href = safeHttps(raw);
         html += href
-          ? '<a href="' + esc(href) + '" rel="noopener nofollow ugc">' + esc(raw) + '</a>'
+          ? '<a href="' + esc(href) + '" rel="noopener noreferrer nofollow ugc">' + esc(raw) + '</a>'
           : esc(raw);
         i += raw.length;
         continue;
@@ -95,9 +95,9 @@
   function denied(err) {
     return /PERMISSION_DENIED|permission[-_ ]denied/i.test(String(err && (err.code || err.message) || ''));
   }
-  function ownerEmail() {
-    return String((typeof window !== 'undefined' && window.MONDO_BOARD_OWNER) || 'cbrooks_911@yahoo.com').toLowerCase();
-  }
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
 
   const api = { renderBody, safeHttps, cleanName, cleanTitle, esc };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -995,7 +995,8 @@
         return;
       }
       user = u;
-      isOwner = !!(u.email && u.email.toLowerCase() === ownerEmail());
+      isOwner = isAdminNow();
+      if (!connect.ownerListen) { connect.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); if (on === isOwner) return; isOwner = on; render(); }); }
       listening = false;
       listen();
       render();
@@ -1019,14 +1020,13 @@
     $('#ownerBtn').onclick = () => {
       if (typeof firebase === 'undefined' || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
       const current = firebase.auth().currentUser;
-      if (current && current.email && current.email.toLowerCase() === ownerEmail()) {
+      if (isAdminNow()) {
         firebase.auth().signOut();
         return;
       }
       $('#ownerError').hidden = true;
       $('#ownerPass').value = '';
-      $('#ownerEmail').value = ownerEmail();
-      $('#ownerDialog').showModal();
+            $('#ownerDialog').showModal();
     };
     $('#ownerCancel').onclick = () => $('#ownerDialog').close();
     $('#ownerForm').addEventListener('submit', async e => {

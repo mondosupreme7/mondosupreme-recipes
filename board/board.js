@@ -67,8 +67,8 @@ function configured() {
   const c = window.MONDO_BOARD_CONFIG;
   return !!(c && c.apiKey && c.authDomain && c.databaseURL && c.projectId && c.appId);
 }
-function ownerEmail() {
-  return String(window.MONDO_BOARD_OWNER || '').toLowerCase();
+function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
 }
 function setStatus(text) {
   const el = $('#status');
@@ -410,7 +410,8 @@ function armHeart() {
 }
 function updateOwnerUi(user) {
   const email = user && user.email ? user.email.toLowerCase() : '';
-  const isOwner = email && email === ownerEmail();
+  const isOwner = isAdminNow();
+  if (!updateOwnerUi.ownerListen) { updateOwnerUi.ownerListen = true; document.addEventListener('mondo-owner', function () { if (window.firebase && firebase.auth) updateOwnerUi(firebase.auth().currentUser); }); }
   $('#clear').hidden = !isOwner;
   $('#owner').hidden = !live;
   if (!window.MONDO_MEMBER) $('#owner').textContent = isOwner ? 'Sign out' : 'Owner';
@@ -485,11 +486,10 @@ function init() {
   $('#clear').onclick = clearBoard;
   $('#owner').onclick = () => {
     const user = firebase.auth().currentUser;
-    if (user && user.email && user.email.toLowerCase() === ownerEmail()) { signOutOwner(); return; }
+    if (isAdminNow()) { signOutOwner(); return; }
     $('#ownerError').hidden = true;
     $('#ownerPass').value = '';
-    $('#ownerEmail').value = ownerEmail();
-    $('#ownerDialog').showModal();
+        $('#ownerDialog').showModal();
   };
   $('#ownerCancel').onclick = () => $('#ownerDialog').close();
   $('#ownerForm').addEventListener('submit', async e => {

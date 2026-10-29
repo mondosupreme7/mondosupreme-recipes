@@ -1,7 +1,6 @@
 /* Mystic 8-Ball. Public log uses Firebase; this browser keeps a copy. */
 (function () {
   'use strict';
-  var OWNER = 'cbrooks_911@yahoo.com';
   var RATE_MS = 4000;
   var DAILY = 40;
   var NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}$/;
@@ -21,9 +20,9 @@
   var logSig = '';
 
   function $(id) { return document.getElementById(id); }
-  function ownerEmail() {
-    return String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
-  }
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
   function dayStamp() { return oracle.dayStamp(Date.now()); }
   function status(text) {
     var node = $('ballStatus');
@@ -727,7 +726,8 @@
       }
       clearTimeout(anonTimer);
       user = next;
-      isOwner = !!(next.email && next.email.toLowerCase() === ownerEmail());
+      isOwner = isAdminNow();
+      if (!connect.ownerListen) { connect.ownerListen = true; document.addEventListener('mondo-owner', function () { isOwner = isAdminNow(); paintOwner(); }); }
       listen();
       paintOwner();
     });
@@ -765,14 +765,13 @@
     $('ownerBtn').addEventListener('click', function () {
       if (!bootFirebase()) { status('Shared sign-in is not available yet.'); return; }
       var current = firebase.auth().currentUser;
-      if (current && current.email && current.email.toLowerCase() === ownerEmail()) {
+      if (isAdminNow()) {
         firebase.auth().signOut();
         return;
       }
       $('ownerError').hidden = true;
       $('ownerPass').value = '';
-      $('ownerEmail').value = ownerEmail();
-      $('ownerDialog').showModal();
+            $('ownerDialog').showModal();
     });
     $('ownerCancel').addEventListener('click', function () { $('ownerDialog').close(); });
     $('ownerForm').addEventListener('submit', function (event) {

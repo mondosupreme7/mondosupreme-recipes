@@ -2,7 +2,6 @@
 (function () {
   'use strict';
   var PREF_KEY = 'mondosupreme.search.v1';
-  var OWNER = 'cbrooks_911@yahoo.com';
   var MODES = {
     all: 'All Web & AI',
     cook: 'Cooking & Recipes',
@@ -572,7 +571,7 @@
       var href = safeUrl(hit.url || hit.href);
       var img = hit.thumb && allowImg(hit.thumb) ? '<img alt="" src="' + esc(hit.thumb) + '">' : '<img alt="" src="/favicon.ico">';
       var ext = hit.external || (href && href.indexOf(location.host) === -1);
-      var attrs = ext ? ' target="_blank" rel="noopener"' : '';
+      var attrs = ext ? ' target="_blank" rel="noopener noreferrer"' : '';
       return '<li class="hit">' + img + '<div><p class="hit-kind">' + esc(hit.kind || 'Web') + '</p><p class="hit-title"><a href="' + esc(href) + '"' + attrs + '>' + esc(hit.title) + '</a></p><p>' + esc(hit.snippet || hit.text || '') + '</p></div></li>';
     }).join('') + '</ul>';
   }
@@ -586,7 +585,7 @@
     ];
     $('deepWin').hidden = false;
     row.innerHTML = links.map(function (link) {
-      return '<a target="_blank" rel="noopener" href="' + esc(link[1] + encodeURIComponent(q)) + '">' + esc(link[0]) + '</a>';
+      return '<a target="_blank" rel="noopener noreferrer" href="' + esc(link[1] + encodeURIComponent(q)) + '">' + esc(link[0]) + '</a>';
     }).join('');
   }
   function renderLocal(q, pack) {
@@ -622,7 +621,7 @@
     if (cites.length) html += '<ul class="cite-list">' + cites.map(function (c) {
       var href = safeUrl(c.url);
       var ext = href.indexOf(location.host) === -1;
-      return '<li><a href="' + esc(href) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' + esc(c.title) + '</a></li>';
+      return '<li><a href="' + esc(href) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + esc(c.title) + '</a></li>';
     }).join('') + '</ul>';
     html += '</div>';
     $('briefBody').innerHTML = html;
@@ -680,6 +679,7 @@
     firebase.database().ref('search/asks').push({
       q: q,
       mode: mode,
+      uid: authUser.uid,
       at: firebase.database.ServerValue.TIMESTAMP
     }).catch(function () { /* The public wire waits until the rules are published. */ });
   }
@@ -767,12 +767,15 @@
       ? 'Public questions join What Visitors Are Asking. Private questions stay on this computer.'
       : 'Private is on. This question stays on this computer and skips the visitor wire.';
   }
+  function isAdminNow() {
+    return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+  }
   function bootAuth() {
     if (!window.firebase || !firebase.auth || !firebase.apps || !firebase.apps.length) return;
     firebase.auth().onAuthStateChanged(function (user) {
       authUser = user || null;
-      var email = user && user.email ? String(user.email).toLowerCase() : '';
-      isOwner = email === String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
+      isOwner = isAdminNow();
+      if (!bootAuth.ownerListen) { bootAuth.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); if (on === isOwner) return; isOwner = on; }); }
       absorbCloud();
       if (user && pendingAsk) postAsk(pendingAsk);
     });

@@ -1,7 +1,6 @@
 /* MondoTV. Today's show is a function of the viewer's calendar date. */
 (function () {
   'use strict';
-  var OWNER = 'cbrooks_911@yahoo.com';
   var RECIPE_KEY = 'mondosupreme.recipes.v1';
   var GROCERY_KEY = 'mondosupreme.grocery.v1';
   var ID_RE = /(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
@@ -16,9 +15,9 @@
   var fetchedAt = '';
 
   function $(id) { return document.getElementById(id); }
-  function ownerEmail() {
-    return String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
-  }
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
   function pad(n) { return n < 10 ? '0' + n : String(n); }
   function localISO(date) {
     return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate());
@@ -283,7 +282,8 @@
     if (!bootFirebase()) return;
     firebase.auth().onAuthStateChanged(function (user) {
       var box = $('ownerBox');
-      var isOwner = !!(user && user.email && user.email.toLowerCase() === ownerEmail());
+      var isOwner = isAdminNow();
+      if (!watchCloud.ownerListen) { watchCloud.ownerListen = true; document.addEventListener('mondo-owner', function () { var box = $('ownerBox'); if (box) box.hidden = !isAdminNow(); }); }
       if (box) box.hidden = !isOwner;
     });
     firebase.database().ref('dailyRecipe').on('value', function (snap) {

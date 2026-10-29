@@ -37,7 +37,7 @@ function save(){saveCache();saveFavs()}
 function isSample(r){
   return !!(r&&(r.sample||r.id==='sample-1'||r.id==='sample-2'||r.id==='sample-3'||/^Sample:/.test(r.title||'')));
 }
-function ownerEmail(){return String((typeof window!=='undefined'&&window.MONDO_BOARD_OWNER)||'cbrooks_911@yahoo.com').toLowerCase()}
+function isAdminNow(){return !!(window.MONDO_MEMBER&&window.MONDO_MEMBER.isOwner&&window.MONDO_MEMBER.isOwner())}
 function canMutate(){return !serverLive||!!isOwner}
 function showRulesBanner(){
   rulesBlocked=true; serverLive=false;
@@ -298,7 +298,8 @@ function connectRecipes(){
       return;
     }
     myUid=user.uid;
-    isOwner=!!(user.email&&user.email.toLowerCase()===ownerEmail());
+    isOwner=isAdminNow();
+    if(!connectRecipes.ownerListen){connectRecipes.ownerListen=true;document.addEventListener('mondo-owner',function(){var on=isAdminNow();if(on===isOwner)return;isOwner=on;updateOwnerButton();refreshViews();});}
     quotaLoaded=false;
     updateOwnerButton();
     listenItems();
@@ -1907,11 +1908,10 @@ function init(){
   if(ownerBtn)ownerBtn.onclick=()=>{
     if(typeof firebase==='undefined'||!firebase.apps||!firebase.apps.length){toast('Shared sign-in is not available yet');return}
     const user=firebase.auth().currentUser;
-    if(user&&user.email&&user.email.toLowerCase()===ownerEmail()){signOutOwner();return}
+    if(isAdminNow()){signOutOwner();return}
     $('#ownerError').hidden=true;
     $('#ownerPass').value='';
-    $('#ownerEmail').value=ownerEmail();
-    $('#ownerDialog').showModal();
+        $('#ownerDialog').showModal();
   };
   const ownerCancel=$('#ownerCancel');
   if(ownerCancel)ownerCancel.onclick=()=>$('#ownerDialog').close();

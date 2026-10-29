@@ -1,7 +1,6 @@
 /* Full site backup. Anyone can export and restore this browser. Firebase writes stay with the owner. */
 (function () {
   'use strict';
-  var OWNER = 'cbrooks_911@yahoo.com';
   var LOCAL_KEYS = [
     'mondosupreme.recipes.v1',
     'mondosupreme.favs.v1',
@@ -53,12 +52,13 @@
     ['countdown', 'countdown/next']
   ];
 
-  function ownerEmail() {
-    return String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
+  function isOwner() {
+    return isAdminNow();
   }
-  function isOwner(user) {
-    return !!(user && user.email && String(user.email).toLowerCase() === ownerEmail());
-  }
+
   function bootFirebase() {
     if (!window.firebase || !firebase.initializeApp || !window.MONDO_BOARD_CONFIG) return false;
     if (!firebase.apps.length) {

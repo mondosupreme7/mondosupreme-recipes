@@ -1,7 +1,6 @@
 /* Shared member accounts. Email/password on Firebase, guests stay anonymous. */
 (function () {
   'use strict';
-  var OWNER = 'cbrooks_911@yahoo.com';
   var HANDLE_RE = /^[A-Za-z][A-Za-z0-9_]{1,19}$/;
   var AVATARS = ['alien', 'cat', 'captain', 'chef', 'wizard', 'skater', 'smiley', 'flame'];
   var AVATAR_LABELS = { alien: 'Alien', cat: 'Cyber Cat', captain: 'Cruise Captain', chef: 'Chef', wizard: 'Wizard', skater: 'Skater', smiley: 'Smiley', flame: 'Flame' };
@@ -33,6 +32,9 @@
   var user = null;
   var profile = null;
   var directory = {};
+  var admin = false;
+  var adminUid = '';
+  var adminRef = null;
   var pushed = '';
   var listening = false;
   var authDialog = null;
@@ -40,11 +42,17 @@
   var anonTimer = 0;
   var saving = false;
 
-  function ownerEmail() {
-    return String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
-  }
   function isOwnerUser(next) {
-    return !!(next && next.email && String(next.email).toLowerCase() === ownerEmail());
+    return !!(admin && next && next.uid && next.uid === adminUid);
+  }
+  function publicOnly(row) {
+    return {
+      handle: row && row.handle || '',
+      avatar: row && row.avatar || '',
+      status: row && row.status || '',
+      member: !!(row && row.member),
+      webmaster: !!(row && row.webmaster)
+    };
   }
   function isMemberUser(next) {
     return !!(next && next.email);
@@ -87,7 +95,7 @@
     return '';
   }
   function buttonLabel() {
-    if (isOwnerUser(user)) return 'Cody';
+    if (isOwnerUser(user)) return (profile && profile.handle) || 'Webmaster';
     if (isMemberUser(user)) return (profile && profile.handle) || 'Member';
     return 'Sign In';
   }
@@ -297,7 +305,8 @@
       };
       directory[current.uid] = profile;
       announce();
-      await firebase.database().ref('users/' + current.uid).update(payload);
+      await firebase.database().ref('profiles/' + current.uid).update(payload);
+      try { await firebase.database().ref('users/' + current.uid).update(payload); } catch (e) { /* private node follows the published rules */ }
     } finally {
       saving = false;
     }
@@ -305,11 +314,25 @@
   function listenDirectory() {
     if (listening || !bootFirebase() || !firebase.auth().currentUser) return;
     listening = true;
+    firebase.database().ref('profiles').on('value', function (snap) {
+      var next = {};
+      var raw = snap.val() || {};
+      Object.keys(raw).forEach(function (uid) { next[uid] = publicOnly(raw[uid]); });
+      if (Object.keys(next).length) {
+        directory = next;
+        if (user && directory[user.uid] && directory[user.uid].handle) profile = directory[user.uid];
+        announce();
+      }
+    }, function () { /* profiles publish with the new rules */ });
     firebase.database().ref('users').on('value', function (snap) {
-      directory = snap.val() || {};
-      if (user && directory[user.uid]) profile = directory[user.uid];
+      if (directory && Object.keys(directory).length) return;
+      var next = {};
+      var raw = snap.val() || {};
+      Object.keys(raw).forEach(function (uid) { next[uid] = publicOnly(raw[uid]); });
+      directory = next;
+      if (user && directory[user.uid] && directory[user.uid].handle) profile = directory[user.uid];
       announce();
-    }, function () { /* readable after rules are published */ });
+    }, function () { /* the private user node is not a public directory */ });
   }
   async function loadOwn(next) {
     await waitSaving();
@@ -319,30 +342,38 @@
       return;
     }
     try {
-      var snap = await firebase.database().ref('users/' + next.uid).once('value');
+      var profSnap = await firebase.database().ref('profiles/' + next.uid).once('value');
+      var userSnap = await firebase.database().ref('users/' + next.uid).once('value');
       await waitSaving();
       if (!user || user.uid !== next.uid) return;
-      var data = snap.val();
-      if (profile && profile.handle && (!data || !data.handle)) {
+      var data = profSnap.val();
+      var legacy = userSnap.val() || {};
+      if (profile && profile.handle && (!data || !data.handle) && !legacy.handle) {
         announce();
         return;
       }
       if (!data || !data.handle) {
-        var handle = isOwnerUser(next) ? 'Cody' : suggestHandle(next.email);
-        await firebase.database().ref('users/' + next.uid).update(profilePayload({
+        var handle = cleanHandle(legacy.handle) || suggestHandle(next.email);
+        var payload = profilePayload({
           handle: handle,
-          avatar: isOwnerUser(next) ? 'captain' : 'smiley',
-          status: isOwnerUser(next) ? 'Webmaster online' : ''
-        }));
-        profile = { handle: handle, avatar: isOwnerUser(next) ? 'captain' : 'smiley', status: '', member: true, webmaster: isOwnerUser(next) };
+          avatar: legacy.avatar || 'smiley',
+          status: legacy.status || ''
+        });
+        profile = { handle: payload.handle, avatar: payload.avatar, status: payload.status, member: true, webmaster: !!admin };
+        try { await firebase.database().ref('profiles/' + next.uid).update(payload); } catch (err) {}
+        try { await firebase.database().ref('users/' + next.uid).update(payload); } catch (err) {}
       } else {
-        profile = data;
-        await pullSync(data);
+        profile = publicOnly(data);
+        profile.webmaster = !!admin;
+        if (!!data.webmaster !== !!admin) {
+          try { await firebase.database().ref('profiles/' + next.uid + '/webmaster').set(!!admin); } catch (err) {}
+        }
       }
       directory[next.uid] = profile;
+      await pullSync(legacy);
     } catch (e) {
       if (!profile || !profile.handle) {
-        profile = { handle: isOwnerUser(next) ? 'Cody' : 'Member', avatar: 'smiley', member: true, webmaster: isOwnerUser(next) };
+        profile = { handle: 'Member', avatar: 'smiley', member: true, webmaster: !!admin };
       }
     }
     announce();
@@ -352,7 +383,7 @@
     var stem = String(email || '').split('@')[0].replace(/[^A-Za-z0-9_]/g, '');
     if (!/^[A-Za-z]/.test(stem)) stem = 'M' + stem;
     stem = stem.slice(0, 16) || 'Member';
-    return HANDLE_RE.test(stem) ? stem : 'Member98';
+    return HANDLE_RE.test(stem) ? stem : 'Member';
   }
   function ensureGuest() {
     if (!bootFirebase()) return;
@@ -607,7 +638,7 @@
     dlg.append(title, form);
     dlg.addEventListener('close', function () {});
     dlg.showProfile = function () {
-      title.textContent = isOwnerUser(user) ? 'Webmaster: Cody' : ((profile && profile.handle) || 'Member');
+      title.textContent = isOwnerUser(user) ? ('Webmaster' + (profile && profile.handle ? ': ' + profile.handle : '')) : ((profile && profile.handle) || 'Member');
       handle.value = (profile && profile.handle) || '';
       status.value = (profile && profile.status) || '';
       chosen = profile && AVATARS.indexOf(profile.avatar) >= 0 ? profile.avatar : 'smiley';
@@ -639,29 +670,53 @@
     firebase.auth().signOut().then(function () {
       profile = null;
       user = null;
+      admin = false;
+      adminUid = '';
+      if (adminRef) { adminRef.off(); adminRef = null; }
       announce();
       return firebase.auth().signInAnonymously();
     }).catch(function () {});
+  }
+  function watchAdmin(next) {
+    if (adminRef) { adminRef.off(); adminRef = null; }
+    admin = false;
+    adminUid = next && next.uid || '';
+    if (!next || !bootFirebase()) return Promise.resolve(false);
+    adminRef = firebase.database().ref('admins/' + next.uid);
+    return new Promise(function (resolve) {
+      var first = true;
+      function finish(on) {
+        if (!user || user.uid !== next.uid) return;
+        admin = on;
+        adminUid = next.uid;
+        announce();
+        if (first) { first = false; resolve(on); }
+      }
+      adminRef.on('value', function (snap) { finish(snap.val() === true); }, function () { finish(false); });
+    });
   }
   function connect() {
     if (!bootFirebase()) return;
     firebase.auth().onAuthStateChanged(function (next) {
       clearTimeout(anonTimer);
       user = next;
-      if (!next) {
-        profile = null;
-        announce();
-        ensureGuest();
-        return;
-      }
-      if (!isMemberUser(next)) {
-        profile = null;
+      watchAdmin(next).then(function () {
+        if (user !== next) return;
+        if (!next) {
+          profile = null;
+          announce();
+          ensureGuest();
+          return;
+        }
+        if (!isMemberUser(next)) {
+          profile = null;
+          listenDirectory();
+          announce();
+          return;
+        }
         listenDirectory();
-        announce();
-        return;
-      }
-      listenDirectory();
-      loadOwn(next);
+        loadOwn(next);
+      });
     });
     ensureGuest();
   }

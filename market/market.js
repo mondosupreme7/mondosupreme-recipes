@@ -43,9 +43,9 @@
   var gotItems = false;
   var gotOffers = false;
 
-  function ownerEmail() {
-    return String((window.MONDO_BOARD_OWNER) || 'cbrooks_911@yahoo.com').toLowerCase();
-  }
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
   function denied(err) {
     return /PERMISSION_DENIED|permission[-_ ]denied/i.test(String(err && (err.code || err.message) || ''));
   }
@@ -275,7 +275,7 @@
       if (href) {
         var link = document.createElement('a');
         link.href = href;
-        link.rel = 'noopener nofollow ugc';
+        link.rel = 'noopener noreferrer nofollow ugc';
         link.textContent = raw;
         el.appendChild(link);
         if (match[0].length > raw.length) el.appendChild(document.createTextNode(match[0].slice(raw.length)));
@@ -1209,7 +1209,8 @@
       }
       clearTimeout(anonTimer);
       user = next;
-      isOwner = !!(next.email && next.email.toLowerCase() === ownerEmail());
+      isOwner = isAdminNow();
+      if (!connect.ownerListen) { connect.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); if (on === isOwner) return; isOwner = on; render(); }); }
       listen();
       render();
     });
@@ -1269,14 +1270,13 @@
     $('#ownerBtn').addEventListener('click', function () {
       if (typeof firebase === 'undefined' || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
       var current = firebase.auth().currentUser;
-      if (current && current.email && current.email.toLowerCase() === ownerEmail()) {
+      if (isAdminNow()) {
         firebase.auth().signOut();
         return;
       }
       $('#ownerError').hidden = true;
       $('#ownerPass').value = '';
-      $('#ownerEmail').value = ownerEmail();
-      $('#ownerDialog').showModal();
+            $('#ownerDialog').showModal();
     });
     $('#ownerCancel').addEventListener('click', function () { $('#ownerDialog').close(); });
     $('#ownerForm').addEventListener('submit', function (event) {

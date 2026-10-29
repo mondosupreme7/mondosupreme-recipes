@@ -175,9 +175,9 @@
       fire: { s: 'a', n: 0 }
     };
   }
-  function ownerEmail() {
-    return String((window.MONDO_BOARD_OWNER) || 'cbrooks_911@yahoo.com').toLowerCase();
-  }
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
   function isDenied(err) {
     var code = String((err && err.code) || '') + ' ' + String((err && err.message) || '');
     return /PERMISSION_DENIED|permission[-_ ]denied/i.test(code);
@@ -1397,7 +1397,8 @@
       }
       myUser = user;
       myUid = user.uid;
-      var owner = !!(user.email && user.email.toLowerCase() === ownerEmail());
+      var owner = isAdminNow();
+      if (!bootAuth.ownerListen) { bootAuth.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isAdminNow(); $('ownerTools').hidden = !on; if (!window.MONDO_MEMBER) $('ownerBtn').textContent = on ? 'Owner sign out' : 'Owner sign in'; }); }
       $('ownerTools').hidden = !owner;
       if (!window.MONDO_MEMBER) $('ownerBtn').textContent = owner ? 'Owner sign out' : 'Owner sign in';
       listenRealm();
@@ -1466,7 +1467,7 @@
     }, function () { /* local boss still fights */ });
   }
   async function ownerMutate(path) {
-    if (!myUser || !myUser.email || myUser.email.toLowerCase() !== ownerEmail()) return;
+    if (!isAdminNow()) return;
     var snap = await firebase.database().ref(path).once('value');
     var updates = {};
     snap.forEach(function (ch) { updates[path + '/' + ch.key] = null; });
@@ -1590,14 +1591,13 @@
     $('ownerBtn').addEventListener('click', function () {
       if (typeof firebase === 'undefined' || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
       var current = firebase.auth().currentUser;
-      if (current && current.email && current.email.toLowerCase() === ownerEmail()) {
+      if (isAdminNow()) {
         firebase.auth().signOut();
         return;
       }
       $('ownerError').hidden = true;
       $('ownerPass').value = '';
-      $('ownerEmail').value = ownerEmail();
-      $('ownerDialog').showModal();
+            $('ownerDialog').showModal();
     });
     $('ownerCancel').addEventListener('click', function () { $('ownerDialog').close(); });
     $('ownerForm').addEventListener('submit', function (e) {

@@ -710,11 +710,16 @@
       paintCount();
     }, function () { /* rules may not be published yet */ });
     if (firebase.auth) {
-      firebase.auth().onAuthStateChanged(function (user) {
-        var owner = user && user.email && String(user.email).toLowerCase() === String(window.MONDO_BOARD_OWNER || 'cbrooks_911@yahoo.com').toLowerCase();
+      function paintCountOwner() {
+        var owner = !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
         var button = document.getElementById('countDefault');
         if (button) button.hidden = !owner;
-      });
+      }
+      if (!watchCountDefault.ownerListen) {
+        watchCountDefault.ownerListen = true;
+        document.addEventListener('mondo-owner', paintCountOwner);
+      }
+      firebase.auth().onAuthStateChanged(paintCountOwner);
     }
   }
 
@@ -736,7 +741,7 @@
     writeCount(null);
     if (!hadLocal && countDefault && countDb()) {
       var user = firebase.auth && firebase.auth().currentUser;
-      var owner = user && user.email && String(user.email).toLowerCase() === String(window.MONDO_BOARD_OWNER || 'cbrooks_911@yahoo.com').toLowerCase();
+      var owner = (window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
       if (owner) countDb().ref('countdown/next').remove().catch(function () {});
     }
     document.getElementById('countDate').value = '';

@@ -105,14 +105,15 @@
       var text = $('tipText').value.replace(/\s+/g, ' ').trim().slice(0, 240);
       if (!text) return;
       var tip = { place: $('tipPlace').value, text: text, rating: Number($('tipRating').value) || 5, t: Date.now() };
+      var user = window.firebase && firebase.auth && firebase.auth().currentUser;
+      if (user && !user.isAnonymous) tip.uid = user.uid;
       var list = tips();
       list.push(tip);
       saveTips(list);
       $('tipText').value = '';
       paint();
       try {
-        var user = window.firebase && firebase.auth && firebase.auth().currentUser;
-        if (user) firebase.database().ref('local/tips').push(tip).catch(function () {});
+        if (user && tip.uid) firebase.database().ref('local/tips').push(tip).catch(function () {});
       } catch (e) {}
       $('tipStatus').textContent = 'Tip saved on this device.';
     });

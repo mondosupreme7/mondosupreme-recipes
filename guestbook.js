@@ -3,18 +3,18 @@
   'use strict';
   var KEY = 'mondosupreme.guestbook.v1';
   var STAMPS = ['sun', 'alien', 'ship', 'chef', 'flame', 'cat'];
-  var OWNER = 'cbrooks_911@yahoo.com';
   var entries = [];
   var cloudOn = false;
   var owner = false;
 
   function $(id) { return document.getElementById(id); }
-  function ownerEmail() {
-    return String(window.MONDO_BOARD_OWNER || OWNER).toLowerCase();
+  function isAdminNow() {
+  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
+}
+  function isOwner() {
+    return isAdminNow();
   }
-  function isOwner(user) {
-    return !!(user && user.email && String(user.email).toLowerCase() === ownerEmail());
-  }
+
   function readLocal() {
     try {
       var data = JSON.parse(localStorage.getItem(KEY) || '[]');
@@ -261,7 +261,8 @@
     merge([]);
     if (window.firebase && firebase.auth) {
       firebase.auth().onAuthStateChanged(function (user) {
-        owner = isOwner(user);
+        owner = isOwner();
+        if (!boot.ownerListen) { boot.ownerListen = true; document.addEventListener('mondo-owner', function () { var on = isOwner(); if (on === owner) return; owner = on; paint(); }); }
         if (user) watch();
         else merge([]);
         paint();
