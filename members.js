@@ -26,7 +26,6 @@
     ['stocks', 'mondosupreme.stocks.v1', 20000],
     ['weather', 'mondosupreme.weather.v1', 4000],
     ['wordle', 'mondosupreme.wordle.v1', 20000],
-    ['planner', 'mondosupreme.planner.v1', 40000],
     ['packing', 'mondosupreme.packing.v1', 20000]
   ];
   var user = null;

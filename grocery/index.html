@@ -10,39 +10,53 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://securetoken.google.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<title>Grocery List — Mondosupreme</title>
-<meta name="description" content="A mobile grocery list by aisle, with imports from your recipes and meal plan.">
+<title>MondoRecipe Grocery List — Mondosupreme</title>
+<meta name="description" content="MondoRecipe Grocery List. Search Mondosupreme recipes, set servings, and shop one combined list grouped by aisle.">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/shell.css">
 <link rel="stylesheet" href="/coast.css">
+<link rel="stylesheet" href="grocery.css">
 <link rel="stylesheet" href="/readable.css">
 </head>
 <body>
 <header class="site-header"><div class="wrap hdr">
- <a href="/grocery/" class="brand">Grocery</a>
- <nav class="site-nav" aria-label="Site"><a href="/">Home</a><a href="/grocery/" aria-current="page">Grocery</a></nav>
+ <a href="/grocery/" class="brand">MondoRecipe Grocery List</a>
+ <nav class="site-nav" aria-label="Site"><a href="/">Home</a><a href="/recipes/">Recipes</a><a href="/grocery/" aria-current="page">Grocery List</a></nav>
 </div></header>
-<main class="wrap">
+<main class="wrap grocery-page">
  <header class="coast-hero">
-  <h1>Grocery list</h1>
-  <p class="coast-lead">Check items off by aisle. The list stays on this device and syncs to your account when you are signed in.</p>
+  <h1>MondoRecipe Grocery List</h1>
+  <p class="coast-lead">Search the recipe notebook, set servings, and shop one combined list. Matching ingredients add together when the units match. The list stays on this device and syncs when you are signed in.</p>
  </header>
- <form id="gForm" class="row-actions">
-  <label>Add an item <input id="gText" maxlength="120" required placeholder="Bananas"></label>
-  <label>Aisle <select id="gAisle"></select></label>
-  <button class="btn primary" type="submit">Add</button>
- </form>
- <div class="row-actions">
-  <button class="btn" id="gRecipes" type="button">Import recipes</button>
-  <button class="btn" id="gPlan" type="button">Import meal plan</button>
-  <button class="btn" id="gClear" type="button">Clear completed</button>
-  <button class="btn" id="gCopy" type="button">Copy list</button>
+ <div class="grocery-layout">
+  <section class="coast-panel" aria-labelledby="pickTitle">
+   <h2 id="pickTitle">Recipes</h2>
+   <label class="grocery-search">Search
+    <input id="recipeSearch" type="search" placeholder="Pasta, basil, breakfast" autocomplete="off" enterkeyhint="search">
+   </label>
+   <div id="recipeHits" class="recipe-hits"></div>
+   <h2 id="chosenTitle">On this list</h2>
+   <div id="picks" class="pick-list"></div>
+  </section>
+  <section aria-labelledby="listTitle">
+   <h2 id="listTitle">Combined list</h2>
+   <form id="gForm" class="g-form">
+    <label>Add an item <input id="gText" maxlength="120" required placeholder="Bananas"></label>
+    <label class="g-aisle">Aisle <select id="gAisle"></select></label>
+    <button class="btn primary" type="submit">Add</button>
+   </form>
+   <div class="row-actions">
+    <button class="btn" id="gClear" type="button">Clear checked</button>
+    <button class="btn" id="gCopy" type="button">Copy</button>
+    <button class="btn" id="gShare" type="button">Share</button>
+   </div>
+   <p id="gStatus" class="coast-note" role="status">The list is empty.</p>
+   <div id="aisles"></div>
+  </section>
  </div>
- <p id="gStatus" class="coast-note" role="status">The list is empty.</p>
- <div id="aisles"></div>
 </main>
-<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme</div></footer>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme · <a href="/recipes/">Recipes</a></div></footer>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>

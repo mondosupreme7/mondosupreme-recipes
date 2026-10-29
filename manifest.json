@@ -7,6 +7,21 @@
   "display": "standalone",
   "background_color": "#008080",
   "theme_color": "#000080",
+  "shortcuts": [
+    {
+      "name": "MondoRecipe Grocery List",
+      "short_name": "Grocery List",
+      "description": "Build a grocery list from Mondosupreme recipes",
+      "url": "/grocery/",
+      "icons": [
+        {
+          "src": "/apple-touch-icon.png",
+          "sizes": "180x180",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
   "icons": [
     {
       "src": "/apple-touch-icon.png",

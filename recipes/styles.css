@@ -37,7 +37,8 @@ a.btn{text-decoration:none;color:#111827}
 .card:hover{outline:2px solid #000080}
 .thumb{height:92px;background:#fff8e8 center/cover;display:flex;align-items:center;justify-content:center}
 .clip{width:72px;height:54px}
-.card-body{padding:8px 12px 14px}.card h3{margin:4px 0 6px;font-size:1.15rem;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.card-body{padding:8px 12px 14px;display:flex;flex-direction:column;flex:1}.card h3{margin:4px 0 6px;font-size:1.15rem;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.card .grocery-add{margin-top:auto;align-self:flex-start;position:relative;z-index:2}
 .meta{color:var(--muted);font-size:.9rem;display:flex;gap:12px;flex-wrap:wrap}
 .card .cat{display:inline-flex;align-items:center;gap:4px;background:#ffcc66;color:#111827;border:2px solid #000;padding:2px 8px;margin-top:-16px;position:relative;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
 .card .cat .clip{width:28px;height:22px}

@@ -364,7 +364,8 @@ function renderList(){
     <div class="thumb">${clipArt(r.category)}</div>
     <div class="card-body"><div class="cat"><span class="clip-slot">${clipArt(r.category)}</span><span>${esc(r.category||'Uncategorized')}</span></div><h3>${esc(r.title)}</h3>
     <div class="meta">${total(r)?`<span>⏱ ${total(r)} min</span>`:''}${r.servings?`<span>🍽 ${esc(r.servings)} servings</span>`:''}</div>
-    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div></div></article>`).join('');
+    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
+    <a class="btn grocery-add" href="/grocery/?add=${esc(r.id)}">Add to grocery list</a></div></article>`).join('');
   $('#grid').querySelectorAll('.thumb').forEach((el,i)=>paintPhoto(el,list[i].photo));
   $('#empty').hidden=list.length>0;
 }
@@ -509,7 +510,7 @@ function renderDetail(id){
    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
    <div class="cols"><section><h2>Ingredients</h2>
    <div class="scale-bar" role="group" aria-label="Serving scale">${factors.map(([n,label])=>`<button type="button" class="btn ghost scale-btn" data-scale="${n}" aria-pressed="${detailScale===n?'true':'false'}">${label}</button>`).join('')}
-   <button type="button" class="btn primary" id="addGrocery">Add to Grocery List</button></div>
+   <button type="button" class="btn primary" id="addGrocery">Add to grocery list</button></div>
    <ul>${lines.map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
    <section><h2>Steps</h2><ol>${(r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section></div>
    ${r.notes?`<div class="notes"><strong>Notes:</strong> ${esc(r.notes)}</div>`:''}</div></article>`;
@@ -2033,9 +2034,13 @@ function init(){
   });
   $('#grid').addEventListener('click',e=>{
     const fb=e.target.closest('[data-fav]'); if(fb){e.stopPropagation();toggleFav(fb.dataset.fav);renderList();return}
+    if(e.target.closest('a'))return;
     const c=e.target.closest('.card'); if(c)location.hash='#/recipe/'+encodeURIComponent(c.dataset.id);
   });
-  $('#grid').addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.key==='Enter')location.hash='#/recipe/'+encodeURIComponent(c.dataset.id)});
+  $('#grid').addEventListener('keydown',e=>{
+    if(e.target.closest('a,button'))return;
+    const c=e.target.closest('.card');if(c&&e.key==='Enter')location.hash='#/recipe/'+encodeURIComponent(c.dataset.id);
+  });
   window.addEventListener('hashchange',route); route();
   connectRecipes();
 }

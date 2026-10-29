@@ -33,7 +33,7 @@
     { group: 'Home', title: 'Home', href: '/', text: 'landing mondosupreme' },
     { group: 'Home', title: 'AI Search', href: '/search/', text: 'ask mondo jeeves search engine cyber butler altavista yahoo' },
     { group: 'Kitchen', title: 'Recipes', href: '/recipes/', text: 'kitchen cookbook food' },
-    { group: 'Kitchen', title: 'Meal Planner', href: '/planner/', text: 'mondomeal weekly grocery calendar breakfast lunch dinner' },
+    { group: 'Kitchen', title: 'MondoRecipe Grocery List', href: '/grocery/', text: 'mondorecipe grocery list recipes servings aisle shopping' },
     { group: 'Kitchen', title: 'MondoTV', href: '/daily-recipe/', text: 'daily recipe youtube mondotv realplayer chef' },
     { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
     { group: 'Harbor', title: 'Weather', href: '/weather/', text: 'weather radar doppler forecast cocoa port canaveral local on the 8s' },
@@ -419,13 +419,12 @@
   var programs = [
     { title: "Ask Mondo", href: '/search/', icon: 'search' },
     { title: 'Recipes', href: '/recipes/', icon: 'pot' },
-    { title: "MondoMeal Planner", href: '/planner/', icon: 'meal' },
+    { title: 'MondoRecipe Grocery List', href: '/grocery/', icon: 'meal' },
     { title: "MondoTV", href: '/daily-recipe/', icon: 'tv' },
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
     { title: "MondoWeather", href: '/weather/', icon: 'radar' },
     { title: "Launch Control", href: '/launches/', icon: 'rocket' },
     { title: 'Tide & Surf', href: '/tides/', icon: 'radar' },
-    { title: 'Grocery List', href: '/grocery/', icon: 'pot' },
     { title: 'Connections', href: '/connections/', icon: 'word' },
     { title: 'Local Guide', href: '/local/', icon: 'note' },
     { title: 'Tropics', href: '/tropics/', icon: 'ship' },
@@ -590,7 +589,7 @@
   function tagSection() {
     var path = location.pathname;
     var section = 'studio-portal';
-    if (path.indexOf('/recipes') === 0 || path.indexOf('/daily-recipe') === 0 || path.indexOf('/planner') === 0) section = 'studio-kitchen';
+    if (path.indexOf('/recipes') === 0 || path.indexOf('/daily-recipe') === 0 || path.indexOf('/grocery') === 0 || path.indexOf('/planner') === 0) section = 'studio-kitchen';
     else if (path.indexOf('/cruises') === 0 || path.indexOf('/weather') === 0 || path.indexOf('/launches') === 0) section = 'studio-telemetry';
     else if (path.indexOf('/stocks') === 0) section = 'studio-finance';
     else if (path.indexOf('/search') === 0 || path.indexOf('/wiki') === 0) section = 'studio-editorial';
@@ -640,7 +639,7 @@
       ['Weather', '/weather/'],
       ['Tides', '/tides/'],
       ['Launches', '/launches/'],
-      ['Grocery', '/grocery/'],
+      ['Grocery List', '/grocery/'],
       ['Puzzles', '/connections/'],
       ['Local', '/local/'],
       ['Tropics', '/tropics/'],
@@ -668,7 +667,7 @@
     menu.hidden = true;
     menu.setAttribute('role', 'menu');
     var groups = [
-      ['Kitchen & Food', ['Recipes', 'MondoMeal Planner', 'MondoTV', 'Grocery List']],
+      ['Kitchen & Food', ['Recipes', 'MondoRecipe Grocery List', 'MondoTV']],
       ['Space Coast & Travel', ['Cruises', 'MondoWeather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
       ['Finance & Search', ['MondoQuote', 'Ask Mondo', 'MondoWiki']],
       ['Community', ['Bulletin Forum', 'MondoChat', 'MondoPaint', 'MondoBay', 'MondoFM Radio']],
@@ -746,6 +745,7 @@
     [
       ['Home', '/'],
       ['Recipes', '/recipes/'],
+      ['Grocery', '/grocery/'],
       ['Weather', '/weather/'],
       ['Search', '/search/']
     ].forEach(function (pair) {
