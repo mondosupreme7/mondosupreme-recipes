@@ -17,8 +17,9 @@
 <link rel="stylesheet" href="/shell.css">
 <link rel="stylesheet" href="/coast.css">
 <link rel="stylesheet" href="/readable.css">
+<link rel="stylesheet" href="local.css">
 </head>
-<body>
+<body class="local-page">
 <header class="site-header"><div class="wrap hdr">
  <a href="/local/" class="brand">Local</a>
  <nav class="site-nav" aria-label="Site"><a href="/">Home</a><a href="/local/" aria-current="page">Local</a></nav>
@@ -31,9 +32,9 @@
  <section class="coast-panel" id="happening" aria-labelledby="eventsTitle">
   <h2 id="eventsTitle">Happening now</h2>
   <p id="eventsUpdated" class="coast-note">Loading public schedules…</p>
-  <div id="whenTabs" class="filter-row" role="tablist" aria-label="When"></div>
-  <div id="eventTowns" class="filter-row" role="group" aria-label="Event town"></div>
-  <div id="eventCats" class="filter-row" role="group" aria-label="Event category"></div>
+  <div id="whenTabs" class="when-tabs" role="tablist" aria-label="When"></div>
+  <div id="eventTowns" class="chip-scroller" role="group" aria-label="Event town"></div>
+  <div id="eventCats" class="chip-scroller" role="group" aria-label="Event category"></div>
   <p id="eventsStatus" class="coast-note" role="status"></p>
   <div id="eventList" class="event-list"></div>
   <form id="eventForm">

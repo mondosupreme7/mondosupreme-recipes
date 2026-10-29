@@ -91,6 +91,95 @@
   function overlaps(ev, range) {
     return ev.start < range[1] && ev.end > range[0];
   }
+  var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  function weekdayIndex(ms) {
+    return { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[weekday(ms)];
+  }
+  function dayAt(ms, n) {
+    var map = etParts(ms);
+    return startOfDay(Date.UTC(+map.year, +map.month - 1, +map.day + n, 12, 0, 0));
+  }
+  function parseWeekdays(text) {
+    var source = String(text || '').toLowerCase();
+    var order = { sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
+    var days = [];
+    function add(day) { if (days.indexOf(day) < 0) days.push(day); }
+    var range = source.match(/(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s*[–—-]\s*(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/);
+    if (range) {
+      var cursor = order[range[1]];
+      var stop = order[range[2]];
+      for (var guard = 0; guard < 8; guard++) {
+        add(cursor);
+        if (cursor === stop) break;
+        cursor = (cursor + 1) % 7;
+      }
+    }
+    Object.keys(order).forEach(function (name) {
+      if (new RegExp('\\b' + name + 's?\\b').test(source)) add(order[name]);
+    });
+    return days.length ? days : null;
+  }
+  function parseHours(text) {
+    var match = String(text || '').match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*[–—-]\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
+    if (!match) return null;
+    function toMin(hour, minute, ap) {
+      hour = +hour;
+      minute = +(minute || 0);
+      if (ap) {
+        ap = ap.toLowerCase();
+        if (ap === 'pm' && hour < 12) hour += 12;
+        if (ap === 'am' && hour === 12) hour = 0;
+      }
+      return hour * 60 + minute;
+    }
+    return [toMin(match[1], match[2], match[3] || match[6]), toMin(match[4], match[5], match[6])];
+  }
+  function seriesPhrase(days, endMs, selectNights) {
+    var through = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', month: 'short', day: 'numeric'
+    }).format(new Date(endMs));
+    if (selectNights) return 'Select nights · through ' + through;
+    if (!days || days.length >= 7) return 'Through ' + through;
+    if (days.length === 1) return 'Every ' + WEEKDAYS[days[0]] + ' · through ' + through;
+    if (days.length === 2 && days.indexOf(0) >= 0 && days.indexOf(6) >= 0) return 'Every Saturday and Sunday · through ' + through;
+    return 'Every ' + days.map(function (day) { return WEEKDAYS[day]; }).join(', ') + ' · through ' + through;
+  }
+  function project(ev, now, range) {
+    if (!(ev.end > ev.start)) return null;
+    if (ev.end - ev.start <= 30 * 60 * 60 * 1000) {
+      if (ev.end <= now) return null;
+      if (range && !overlaps(ev, range)) return null;
+      return ev;
+    }
+    var blob = ev.title + ' ' + ev.description;
+    var days = parseWeekdays(blob);
+    var selectNights = /select nights|each night|every night|nightly/i.test(blob);
+    if (!days) days = [0, 1, 2, 3, 4, 5, 6];
+    var hours = parseHours(ev.description) || [minutesET(ev.start), minutesET(ev.end)];
+    var open = hours[0];
+    var close = hours[1];
+    if (!(close > open)) close += 24 * 60;
+    var seriesEnd = ev.end;
+    for (var i = 0; i < 70; i++) {
+      var dayStart = dayAt(Math.max(now, ev.start), i);
+      if (dayStart > seriesEnd) break;
+      if (days.indexOf(weekdayIndex(dayStart)) < 0) continue;
+      var occStart = dayStart + open * 60000;
+      var occEnd = dayStart + close * 60000;
+      if (occStart < ev.start - 60000) continue;
+      if (occEnd > seriesEnd + 60000) continue;
+      if (occEnd <= now) continue;
+      var next = {
+        id: ev.id, title: ev.title, start: occStart, end: occEnd, town: ev.town, venue: ev.venue,
+        category: ev.category, url: ev.url, description: ev.description, source: ev.source,
+        sourceUrl: ev.sourceUrl, kind: ev.kind, uid: ev.uid, mine: ev.mine, series: true,
+        seriesLabel: seriesPhrase(selectNights ? null : days, seriesEnd, selectNights)
+      };
+      if (range && !overlaps(next, range)) continue;
+      return next;
+    }
+    return null;
+  }
   function fmt(ms) {
     return new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric',
@@ -241,11 +330,14 @@
     }).sort(function (a, b) { return a.start - b.start; });
   }
   function selected(rows) {
-    var range = windowFor(when, Date.now());
-    var list = rows.filter(function (ev) {
-      if (town !== 'All' && ev.town !== town) return false;
-      if (cat !== 'All' && ev.category !== cat) return false;
-      return overlaps(ev, range);
+    var now = Date.now();
+    var range = windowFor(when, now);
+    var list = [];
+    rows.forEach(function (ev) {
+      if (town !== 'All' && ev.town !== town) return;
+      if (cat !== 'All' && ev.category !== cat) return;
+      var next = project(ev, now, range);
+      if (next) list.push(next);
     });
     if (!list.some(function (ev) { return ev.kind === 'launch'; }) && (cat === 'All' || cat === 'Launches')) {
       var next = rows.filter(function (ev) {
@@ -265,12 +357,19 @@
   function liveNow(ev) {
     var now = Date.now();
     if (now < ev.start || now >= ev.end) return false;
-    if (ev.end - ev.start <= 18 * 60 * 60 * 1000) return true;
-    var startMin = minutesET(ev.start);
-    var endMin = minutesET(ev.end);
-    var nowMin = minutesET(now);
-    if (endMin >= startMin) return nowMin >= startMin && nowMin < endMin;
-    return nowMin >= startMin || nowMin < endMin;
+    return ymd(now) === ymd(ev.start) || ymd(now) === ymd(ev.end - 1);
+  }
+  function badgeParts(ms) {
+    var map = {};
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', month: 'short', day: 'numeric'
+    }).formatToParts(new Date(ms)).forEach(function (part) { map[part.type] = part.value; });
+    return { mon: String(map.month || '').toUpperCase(), day: map.day || '' };
+  }
+  function timeOnly(ms) {
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit'
+    }).format(new Date(ms));
   }
   function isAdmin() {
     return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
@@ -323,54 +422,98 @@
     rows.forEach(function (ev) {
       var card = document.createElement('article');
       card.className = 'coast-card event-card';
+      var row = document.createElement('div');
+      row.className = 'event-row';
+      var stamp = badgeParts(ev.start);
+      var badge = document.createElement('div');
+      badge.className = 'event-badge';
+      var mon = document.createElement('b');
+      mon.textContent = stamp.mon;
+      var day = document.createElement('span');
+      day.textContent = stamp.day;
+      badge.appendChild(mon);
+      badge.appendChild(day);
+      var main = document.createElement('div');
+      main.className = 'event-main';
       var title = document.createElement('h3');
       title.textContent = ev.title;
       if (liveNow(ev)) {
-        var badge = document.createElement('span');
-        badge.className = 'event-live';
-        badge.textContent = 'Live now';
-        title.appendChild(badge);
+        var live = document.createElement('span');
+        live.className = 'event-live';
+        live.textContent = 'Live now';
+        title.appendChild(document.createTextNode(' '));
+        title.appendChild(live);
       }
       var meta = document.createElement('p');
       meta.className = 'event-meta';
-      meta.textContent = fmt(ev.start) + ' Eastern · ' + ev.town + (ev.venue ? ' · ' + ev.venue : '') + ' · ' + ev.category;
-      card.appendChild(title);
-      card.appendChild(meta);
+      meta.textContent = timeOnly(ev.start) + ' · ' + ev.town + (ev.venue ? ' · ' + ev.venue : '');
+      main.appendChild(title);
+      main.appendChild(meta);
+      if (ev.seriesLabel) {
+        var series = document.createElement('p');
+        series.className = 'event-series';
+        series.textContent = ev.seriesLabel;
+        main.appendChild(series);
+      }
+      row.appendChild(badge);
+      row.appendChild(main);
+      card.appendChild(row);
       if (ev.kind === 'launch') {
         var count = document.createElement('p');
         count.className = 'event-count';
         count.dataset.launch = String(ev.start);
         count.textContent = clock(ev.start);
-        card.appendChild(count);
+        main.appendChild(count);
       }
       if (ev.description) {
         var desc = document.createElement('p');
         desc.className = 'event-desc';
         desc.textContent = ev.description;
-        card.appendChild(desc);
+        main.appendChild(desc);
+        if (ev.description.length > 140) {
+          var moreDesc = document.createElement('button');
+          moreDesc.type = 'button';
+          moreDesc.className = 'event-more';
+          moreDesc.textContent = 'More';
+          moreDesc.addEventListener('click', function () {
+            var open = desc.classList.toggle('is-open');
+            moreDesc.textContent = open ? 'Less' : 'More';
+          });
+          main.appendChild(moreDesc);
+        }
       }
       var actions = document.createElement('div');
-      actions.className = 'row-actions';
-      var more = document.createElement('a');
-      more.className = 'btn';
-      more.href = ev.url;
-      more.target = '_blank';
-      more.rel = 'noopener noreferrer';
-      more.textContent = 'Details';
-      actions.appendChild(more);
-      var maps = document.createElement('a');
-      maps.className = 'btn';
-      maps.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((ev.venue ? ev.venue + ', ' : '') + ev.town + ', FL');
-      maps.target = '_blank';
-      maps.rel = 'noopener noreferrer';
-      maps.textContent = 'Directions';
-      actions.appendChild(maps);
-      var cal = document.createElement('button');
-      cal.type = 'button';
-      cal.className = 'btn';
-      cal.textContent = 'Add to calendar';
-      cal.addEventListener('click', function () { downloadIcs(ev); });
-      actions.appendChild(cal);
+      actions.className = 'event-actions';
+      function act(tag, label, aria) {
+        var node = document.createElement(tag);
+        node.className = 'btn event-act';
+        if (aria) node.setAttribute('aria-label', aria);
+        var icon = document.createElement('span');
+        icon.className = 'event-ico';
+        icon.setAttribute('aria-hidden', 'true');
+        var word = document.createElement('span');
+        word.textContent = label;
+        node.appendChild(icon);
+        node.appendChild(word);
+        return { node: node, icon: icon };
+      }
+      var details = act('a', 'Details');
+      details.icon.textContent = '↗';
+      details.node.href = ev.url;
+      details.node.target = '_blank';
+      details.node.rel = 'noopener noreferrer';
+      actions.appendChild(details.node);
+      var maps = act('a', 'Directions');
+      maps.icon.textContent = '⌖';
+      maps.node.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((ev.venue ? ev.venue + ', ' : '') + ev.town + ', FL');
+      maps.node.target = '_blank';
+      maps.node.rel = 'noopener noreferrer';
+      actions.appendChild(maps.node);
+      var cal = act('button', 'Calendar', 'Add to calendar');
+      cal.icon.textContent = '+';
+      cal.node.type = 'button';
+      cal.node.addEventListener('click', function () { downloadIcs(ev); });
+      actions.appendChild(cal.node);
       if (ev.kind === 'community' && ev.id && (ev.uid === me || isAdmin())) {
         var remove = document.createElement('button');
         remove.type = 'button';
@@ -383,9 +526,9 @@
         });
         actions.appendChild(remove);
       }
-      card.appendChild(actions);
+      main.appendChild(actions);
       var source = document.createElement('p');
-      source.className = 'coast-note';
+      source.className = 'event-source';
       source.textContent = 'Source: ' + ev.source;
       if (ev.sourceUrl) {
         source.textContent = 'Source: ';
@@ -396,7 +539,7 @@
         src.textContent = ev.source;
         source.appendChild(src);
       }
-      card.appendChild(source);
+      main.appendChild(source);
       host.appendChild(card);
     });
   }

@@ -1,0 +1,155 @@
+body.local-page{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body.local-page main.wrap,
+body.local-page .coast-panel,
+body.local-page .event-list,
+body.local-page .place-list,
+body.local-page .event-card,
+body.local-page .place{
+  box-sizing:border-box;
+  max-width:100%;
+  min-width:0;
+}
+body.local-page main.wrap{overflow-x:hidden}
+#happening,#whenTabs,.chip-scroller,.event-card{scroll-margin-top:calc(var(--nav-h, 64px) + 12px)}
+body.local-page .coast-hero h1{font-size:clamp(1.45rem, 5vw, 2rem)}
+.when-tabs{
+  display:flex;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  margin:8px 0;
+  border:1px solid var(--line,#e2e8f0);
+  border-radius:12px !important;
+  overflow:hidden;
+  background:var(--paper,#fff);
+}
+.when-tabs button{
+  flex:1 1 0;
+  min-width:0;
+  min-height:36px !important;
+  height:36px;
+  padding:0 4px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:var(--ink,#0f172a) !important;
+  font-size:13px !important;
+  font-weight:700;
+  line-height:1.1;
+}
+.chip-scroller{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:8px;
+  max-width:100%;
+  min-width:0;
+  margin:8px 0;
+  overflow-x:auto;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:2px;
+}
+.chip-scroller button{
+  flex:0 0 auto;
+  scroll-snap-align:start;
+  min-height:36px !important;
+  height:36px;
+  padding:0 12px !important;
+  border-radius:999px !important;
+  font-size:14px !important;
+  font-weight:700;
+  line-height:1;
+}
+html[data-theme] body.local-page .when-tabs button[aria-pressed="true"],
+html[data-theme] body.local-page .chip-scroller button[aria-pressed="true"]{
+  background:var(--accent,#0f172a) !important;
+  color:var(--accent-ink,#fff) !important;
+}
+.event-list{display:grid;gap:10px}
+.event-card{padding:12px}
+.event-row{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.event-badge{
+  flex:none;
+  width:52px;
+  border-radius:12px !important;
+  background:var(--chip,#f1f5f9);
+  color:var(--ink,#0f172a);
+  text-align:center;
+  padding:6px 0 8px;
+}
+.event-badge b{display:block;font-size:11px;letter-spacing:.04em}
+.event-badge span{display:block;font-size:18px;font-weight:750;line-height:1.1}
+.event-main{flex:1;min-width:0}
+.event-card h3{
+  margin:0;
+  font-size:17px !important;
+  font-weight:650;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+.event-meta,.event-series,.event-desc,.event-source,.event-count{margin:3px 0;overflow-wrap:anywhere}
+.event-meta,.event-series{font-size:14px !important;color:var(--muted,#334155)}
+.event-desc{
+  font-size:15px !important;
+  line-height:1.4;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.event-desc.is-open{display:block;-webkit-line-clamp:unset}
+.event-more{
+  min-height:36px !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  color:var(--link,#1d4ed8) !important;
+  font-size:14px !important;
+  font-weight:700;
+  text-decoration:underline;
+}
+.event-source{font-size:13px !important;color:var(--muted,#334155)}
+.event-source a{font-size:13px}
+.event-live{
+  display:inline-block;
+  margin-left:6px;
+  padding:1px 7px;
+  border-radius:999px !important;
+  background:#b91c1c;
+  color:#fff !important;
+  font-size:12px !important;
+  font-weight:700;
+  letter-spacing:.02em;
+  vertical-align:middle;
+}
+.event-actions{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
+  max-width:100%;
+  margin-top:8px;
+}
+.event-actions .btn{
+  min-width:0;
+  min-height:44px;
+  padding:4px 4px !important;
+  font-size:12px !important;
+  line-height:1.15;
+  white-space:normal;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+}
+.event-ico{font-size:14px;line-height:1}
+.place{overflow-wrap:anywhere}
+@media (max-width:768px){
+  body.local-page main.wrap{padding-bottom:calc(var(--dock-h, 72px) + 16px) !important}
+}
+@media (min-width:769px){
+  body.local-page main.wrap{padding-bottom:48px !important}
+}
