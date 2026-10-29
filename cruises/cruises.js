@@ -93,12 +93,30 @@
   function agePhrase(iso) {
     var time = Date.parse(iso);
     if (!Number.isFinite(time)) return '';
-    var minutes = Math.round((Date.now() - time) / 60000);
-    if (minutes < 1) return 'just now';
-    if (minutes < 60) return minutes + ' min ago';
-    var hours = Math.round(minutes / 60);
-    if (hours < 48) return hours + ' hr ago';
+    var seconds = Math.max(0, Math.round((Date.now() - time) / 1000));
+    if (seconds < 60) return seconds + 's ago';
+    var minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return minutes + 'm ' + (seconds % 60) + 's ago';
+    var hours = Math.floor(minutes / 60);
+    if (hours < 48) return hours + 'h ' + (minutes % 60) + 'm ago';
     return Math.round(hours / 24) + ' days ago';
+  }
+
+  function displayPos(row) {
+    if (!row || typeof row.lat !== 'number' || typeof row.lon !== 'number') return null;
+    var heard = heardMs(row);
+    var sog = typeof row.sog === 'number' ? row.sog : 0;
+    var course = typeof row.cog === 'number' ? row.cog : (typeof row.heading === 'number' ? row.heading : null);
+    var age = heard ? Date.now() - heard : 0;
+    var moving = sog > 0.5 && course != null && age > 2000;
+    if (!moving) return {lat: row.lat, lon: row.lon, estimated: false};
+    var hours = Math.min(age, 15 * 60 * 1000) / 3600000;
+    var nm = sog * hours;
+    var rad = course * Math.PI / 180;
+    var dLat = (nm / 60) * Math.cos(rad);
+    var cosLat = Math.cos(row.lat * Math.PI / 180);
+    var dLon = (nm / 60) * Math.sin(rad) / (Math.abs(cosLat) < 0.2 ? 0.2 : cosLat);
+    return {lat: row.lat + dLat, lon: row.lon + dLon, estimated: true};
   }
 
   function stale(iso) {
@@ -200,8 +218,10 @@
     box.append(popupLine('Destination', portText(row)));
     var eta = etaText(row);
     if (eta) box.append(popupLine('ETA', eta));
-    if (row && row.seen) box.append(popupLine('Heard', localTime(row.seen) + ' (' + agePhrase(row.seen) + ')'));
-    else box.append(popupLine('Heard', 'No report yet'));
+    if (row && row.seen) box.append(popupLine('Last heard', localTime(row.seen) + ' (' + agePhrase(row.seen) + ')'));
+    else box.append(popupLine('Last heard', 'No report yet'));
+    var shown = displayPos(row);
+    if (shown && shown.estimated) box.append(el('div', 'Position is estimated between reports.', 'popup-note'));
     box.append(el('div', 'IMO ' + ship.imo, 'popup-note'));
     return box;
   }
@@ -247,9 +267,10 @@
       markers[key].setIcon(pinIcon(key === mmsi, key === mmsi && ship ? ship.name : ''));
     });
     renderList();
-    if (!(row && typeof row.lat === 'number' && markers[mmsi])) return;
+    var shown = row ? displayPos(row) : null;
+    if (!(shown && markers[mmsi])) return;
     var open = function () {
-      map.setView([row.lat, row.lon], Math.max(map.getZoom(), 5), {animate: !fromMap});
+      map.setView([shown.lat, shown.lon], Math.max(map.getZoom(), 5), {animate: !fromMap});
       markers[mmsi].setPopupContent(popupNode(ship, row));
       markers[mmsi].openPopup();
       tamePopup();
@@ -267,7 +288,9 @@
     fleet.forEach(function (ship) {
       var row = posOf(ship);
       if (!row || typeof row.lat !== 'number' || typeof row.lon !== 'number') return;
-      var marker = L.marker([row.lat, row.lon], {
+      var shown = displayPos(row);
+      if (!shown) return;
+      var marker = L.marker([shown.lat, shown.lon], {
         icon: pinIcon(ship.mmsi === selected, ship.mmsi === selected ? ship.name : ''),
         title: ship.name,
         alt: ship.name,
@@ -350,9 +373,11 @@
       button.append(el('span', areaText(row), 'ship-line'));
       button.append(el('span', motionText(row), 'meta'));
       var heardLine = row && row.seen
-        ? 'Heard ' + localTime(row.seen) + ' (' + agePhrase(row.seen) + ')'
+        ? 'Last heard ' + agePhrase(row.seen)
         : 'No report yet';
-      button.append(el('span', heardLine, stale(row && row.seen) ? 'meta is-stale' : 'meta'));
+      var shown = displayPos(row);
+      if (shown && shown.estimated) heardLine += ' · estimated between reports';
+      button.append(el('span', heardLine, stale(row && row.seen) ? 'meta is-stale heard-age' : 'meta heard-age'));
       if (row && row.source && row.source !== 'aisstream.io') button.append(el('span', 'Earlier stored report', 'meta'));
       button.append(el('span', portText(row), 'meta'));
       var eta = etaText(row);
@@ -401,7 +426,7 @@
     } else {
       box.append(el('span', 'No position snapshot has been published yet. '));
     }
-    box.append(el('span', 'Times below are when each ship was last heard, in your time zone. The saved snapshot is refreshed about every 5 minutes, and this page checks it every 2 minutes. Refresh now also asks Open Waters for anything newer. A quiet ship keeps its last stored position. Not for navigation.'));
+    box.append(el('span', 'Times below are when each ship was last heard. While this tab is open, Open Waters is checked about every 30 seconds and the saved snapshot every 60 seconds. A moving ship glides along its broadcast course for up to 15 minutes between reports, then snaps to the next real fix. Not for navigation.'));
     if (liveNote) box.append(el('span', ' ' + liveNote));
   }
 
@@ -410,7 +435,7 @@
     box.replaceChildren();
     box.append(el('h2', 'Sources'));
     box.append(el('p', 'The fleet list is taken from the current-fleet tables on the English Wikipedia article Royal Caribbean International. IMO and MMSI numbers come from Wikidata. Ships that have left the fleet are left out, and Hero of the Seas is left out until it enters service.'));
-    box.append(el('p', 'Live positions are sampled from aisstream.io about every 5 minutes, with Open Waters filling in ships that stay quiet. This page also reads Open Waters directly when you open it or press Refresh now, and keeps whichever report was heard later. The aisstream key stays on the server. Destination text is the port code the ship broadcast.'));
+    box.append(el('p', 'Live positions are sampled from aisstream.io about every 5 minutes, the shortest schedule GitHub Actions allows, with Open Waters filling in ships that stay quiet. While this tab is visible, the page also asks Open Waters about every 30 seconds and re-reads the saved snapshot every 60 seconds, keeping whichever report was heard later. Polling pauses when the tab is hidden. The aisstream key stays on the server. Destination text is the port code the ship broadcast.'));
     box.append(el('p', 'Port Canaveral fares come from Royal Caribbean\'s public cruise search for Royal Caribbean International ships leaving Port Canaveral. The saved sheet refreshes about once a day. A failed fetch keeps the previous prices.'));
     var lines = [];
     var attr = positions.attribution || {};
@@ -508,18 +533,188 @@
     var batches = [];
     var index;
     for (index = 0; index < ids.length; index += 10) batches.push(ids.slice(index, index + 10));
-    return Promise.all(batches.map(function (batch) {
-      return fetch('https://ais.openwaters.io/v1/vessels?mmsi=' + batch.join(','), {cache: 'no-store'}).then(function (response) {
+    var rate = false;
+    var missed = false;
+    function next(i) {
+      if (rate || i >= batches.length) return Promise.resolve(rate ? 'rate' : missed ? 'error' : 'ok');
+      return fetch('https://ais.openwaters.io/v1/vessels?mmsi=' + batches[i].join(','), {cache: 'no-store'}).then(function (response) {
+        if (response.status === 429) { rate = true; return null; }
         return response.ok ? response.json() : null;
-      }, function () { return null; });
-    })).then(function (parts) {
-      var missed = false;
-      parts.forEach(function (data) {
-        if (!data) { missed = true; return; }
-        absorbOpenWaters(data);
+      }, function () { return null; }).then(function (data) {
+        if (rate) return next(i + 1);
+        if (!data) missed = true;
+        else absorbOpenWaters(data);
+        return next(i + 1);
       });
-      return !missed;
+    }
+    return next(0);
+  }
+
+  var OW_MS = 30000;
+  var SNAP_MS = 60000;
+  var owDelay = OW_MS;
+  var nextOw = 0;
+  var nextSnap = 0;
+  var owTimer = 0;
+  var snapTimer = 0;
+  var glideTimer = 0;
+  var ageTimer = 0;
+  var loadingOw = false;
+  var loadingSnap = false;
+
+  function paintLive() {
+    var pill = document.getElementById('livePill');
+    var label = document.getElementById('liveLabel');
+    var count = document.getElementById('liveCountdown');
+    if (!pill || !label || !count) return;
+    if (document.hidden) {
+      pill.classList.add('is-paused');
+      label.textContent = 'Paused';
+      count.textContent = 'Refresh resumes when this tab is visible.';
+      return;
+    }
+    pill.classList.remove('is-paused');
+    label.textContent = 'Live';
+    var wait = Math.max(0, Math.min(nextOw || Date.now(), nextSnap || Date.now()) - Date.now());
+    var seconds = Math.max(0, Math.ceil(wait / 1000));
+    count.textContent = 'Next refresh in ' + seconds + 's';
+  }
+
+  function tickAges() {
+    paintLive();
+    document.querySelectorAll('#list .ship').forEach(function (button) {
+      var ship = fleet.filter(function (item) { return item.mmsi === button.dataset.mmsi; })[0];
+      if (!ship) return;
+      var row = posOf(ship);
+      var line = button.querySelector('.heard-age');
+      if (!line) return;
+      var text = row && row.seen ? 'Last heard ' + agePhrase(row.seen) : 'No report yet';
+      var shown = displayPos(row);
+      if (shown && shown.estimated) text += ' · estimated between reports';
+      line.textContent = text;
     });
+    if (selected && markers[selected]) {
+      var popup = markers[selected].getPopup();
+      if (popup && map.hasLayer(popup)) {
+        var ship = fleet.filter(function (item) { return item.mmsi === selected; })[0];
+        var row = ship ? posOf(ship) : null;
+        if (ship && row) markers[selected].setPopupContent(popupNode(ship, row));
+      }
+    }
+  }
+
+  function glideShips() {
+    if (document.hidden || !map) return;
+    fleet.forEach(function (ship) {
+      var marker = markers[ship.mmsi];
+      var row = posOf(ship);
+      if (!marker || !row) return;
+      var shown = displayPos(row);
+      if (!shown) return;
+      marker.setLatLng([shown.lat, shown.lon]);
+    });
+  }
+
+  function finishButton() {
+    var button = document.getElementById('refresh');
+    if (!button) return;
+    if (!loadingOw && !loadingSnap) {
+      button.disabled = false;
+      button.textContent = 'Refresh now';
+    }
+  }
+
+  function pollSnapshot() {
+    if (loadingSnap || !fleet.length) return Promise.resolve();
+    loadingSnap = true;
+    var button = document.getElementById('refresh');
+    if (button) button.disabled = true;
+    return loadSnapshot().then(function (data) {
+      if (data) mergeSnapshot(data);
+      paint(false);
+    }, function () {}).then(function () {
+      loadingSnap = false;
+      nextSnap = Date.now() + SNAP_MS;
+      finishButton();
+    });
+  }
+
+  function pollOpenWaters() {
+    if (loadingOw || !fleet.length) return Promise.resolve();
+    loadingOw = true;
+    var button = document.getElementById('refresh');
+    if (button) button.disabled = true;
+    return loadOpenWaters().then(function (status) {
+      if (status === 'ok') {
+        owDelay = OW_MS;
+        liveNote = '';
+      } else if (status === 'rate') {
+        owDelay = Math.min(Math.max(owDelay * 2, 60000), 5 * 60 * 1000);
+        liveNote = 'Open Waters asked for a slower pace. Next live check waits ' + Math.round(owDelay / 1000) + 's.';
+      } else {
+        owDelay = Math.min(Math.max(owDelay * 2, 60000), 5 * 60 * 1000);
+        liveNote = 'The live Open Waters lookup did not answer just now.';
+      }
+      paint(false);
+    }, function () {
+      owDelay = Math.min(Math.max(owDelay * 2, 60000), 5 * 60 * 1000);
+      liveNote = 'The live Open Waters lookup did not answer just now.';
+      paint(false);
+    }).then(function () {
+      loadingOw = false;
+      nextOw = Date.now() + owDelay;
+      finishButton();
+    });
+  }
+
+  function armOw() {
+    clearTimeout(owTimer);
+    if (document.hidden) return;
+    nextOw = Date.now() + owDelay;
+    owTimer = setTimeout(function () {
+      if (document.hidden) return;
+      pollOpenWaters().then(armOw);
+    }, owDelay);
+  }
+
+  function armSnap() {
+    clearTimeout(snapTimer);
+    if (document.hidden) return;
+    nextSnap = Date.now() + SNAP_MS;
+    snapTimer = setTimeout(function () {
+      if (document.hidden) return;
+      pollSnapshot().then(armSnap);
+    }, SNAP_MS);
+  }
+
+  function armLive() {
+    clearInterval(glideTimer);
+    clearInterval(ageTimer);
+    if (document.hidden) {
+      paintLive();
+      return;
+    }
+    armOw();
+    armSnap();
+    glideTimer = setInterval(glideShips, 250);
+    ageTimer = setInterval(function () {
+      if (!document.hidden) tickAges();
+    }, 1000);
+    paintLive();
+  }
+
+  function refreshAll(manual) {
+    if (!fleet.length) return;
+    owDelay = OW_MS;
+    clearTimeout(owTimer);
+    clearTimeout(snapTimer);
+    pollSnapshot();
+    pollOpenWaters();
+    armLive();
+    if (manual) {
+      var button = document.getElementById('refresh');
+      if (button) button.blur();
+    }
   }
 
   function paint(refit) {
@@ -543,46 +738,6 @@
       }
     });
     renderList();
-  }
-
-  function refreshAll(manual) {
-    if (!fleet.length || loading) return;
-    loading = true;
-    var button = document.getElementById('refresh');
-    if (button) {
-      button.disabled = true;
-      button.textContent = 'Refreshing…';
-    }
-    loadSnapshot().then(function (data) {
-      if (data) mergeSnapshot(data);
-      return loadOpenWaters();
-    }).then(function (ok) {
-      liveNote = ok ? '' : 'The live Open Waters lookup did not answer just now.';
-      paint(false);
-    }, function () {
-      liveNote = 'The live Open Waters lookup did not answer just now.';
-      paint(false);
-    }).then(function () {
-      loading = false;
-      if (button) {
-        button.disabled = false;
-        button.textContent = 'Refresh now';
-      }
-    }, function () {
-      loading = false;
-      if (button) {
-        button.disabled = false;
-        button.textContent = 'Refresh now';
-      }
-    });
-    if (manual) button && button.blur();
-  }
-
-  function armRefresh() {
-    if (refreshTimer) clearInterval(refreshTimer);
-    refreshTimer = setInterval(function () {
-      if (!document.hidden) refreshAll(false);
-    }, 120000);
   }
 
   function openHashedShip() {
@@ -785,7 +940,15 @@
 
   document.getElementById('refresh').addEventListener('click', function () { refreshAll(true); });
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) refreshAll(false);
+    if (document.hidden) {
+      clearTimeout(owTimer);
+      clearTimeout(snapTimer);
+      clearInterval(glideTimer);
+      clearInterval(ageTimer);
+      paintLive();
+      return;
+    }
+    refreshAll(false);
   });
   window.addEventListener('hashchange', openHashedShip);
 
@@ -1031,8 +1194,10 @@
       if (!positions.ships || typeof positions.ships !== 'object') positions.ships = {};
       return loadOpenWaters();
     })
-    .then(function (ok) {
-      liveNote = ok ? '' : 'The live Open Waters lookup did not answer just now.';
+    .then(function (status) {
+      liveNote = status === 'ok' ? '' : status === 'rate'
+        ? 'Open Waters asked for a slower pace. The next live check waits longer.'
+        : 'The live Open Waters lookup did not answer just now.';
       fillFreshness();
       fillCredits();
       map.invalidateSize();
@@ -1040,7 +1205,7 @@
       fitFleet();
       fitted = true;
       renderList();
-      armRefresh();
+      armLive();
       openHashedShip();
     })
     .catch(function () {

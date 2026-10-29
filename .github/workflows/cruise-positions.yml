@@ -4,7 +4,9 @@ name: Update cruise positions
 # Waters, and publishes cruises/positions.json. Once a day it also refreshes
 # cruises/canaveral-deals.json from Royal Caribbean's public Port Canaveral
 # search. The cron is every 5 minutes,
-# the shortest interval GitHub Actions allows. Set the AISSTREAM_API_KEY
+# the shortest interval GitHub Actions allows. The page itself asks Open
+# Waters about every 30 seconds and re-reads this snapshot every 60 seconds
+# while the tab is visible. Set the AISSTREAM_API_KEY
 # repository secret from an aisstream.io account key. The job never prints
 # the key. A push made with GITHUB_TOKEN does not start the Pages workflow,
 # so this job deploys the site itself when the snapshot changes.
