@@ -187,6 +187,10 @@
       "scores": { "$cart": { "$id": { ".write": "auth != null", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 16 && newData.child('score').isNumber()" } } },
       "c": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.child('n').isNumber() && newData.child('day').isNumber()" } },
       "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" } }
+    },
+    "backups": {
+      ".read": "root.child('admins').child(auth.uid).val() === true",
+      ".write": "root.child('admins').child(auth.uid).val() === true"
     }
   }
 }

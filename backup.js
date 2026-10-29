@@ -1,4 +1,4 @@
-/* Full site backup. Anyone can export and restore this browser. Firebase writes stay with the owner. */
+/* Full site backup. Buttons, export, and restore run only after admins/{uid} === true. */
 (function () {
   'use strict';
   var LOCAL_KEYS = [
@@ -52,11 +52,17 @@
     ['countdown', 'countdown/next']
   ];
 
-  function isAdminNow() {
-  return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner());
-}
-  function isOwner() {
-    return isAdminNow();
+  function currentUser() {
+    return window.firebase && firebase.auth && firebase.auth().currentUser;
+  }
+  function confirmAdmin() {
+    var user = currentUser();
+    if (!user || !bootFirebase()) return Promise.resolve(false);
+    var uid = user.uid;
+    return firebase.database().ref('admins/' + uid).once('value').then(function (snap) {
+      var still = currentUser();
+      return !!(still && still.uid === uid && snap.val() === true);
+    }, function () { return false; });
   }
 
   function bootFirebase() {
@@ -94,6 +100,12 @@
     setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
   }
   function exportBackup() {
+    confirmAdmin().then(function (ok) {
+      if (!ok) return;
+      exportBackupNow();
+    });
+  }
+  function exportBackupNow() {
     var payload = {
       kind: 'mondosupreme-backup',
       version: 1,
@@ -226,7 +238,7 @@
     var title = document.createElement('h2');
     title.textContent = 'Restore Full Backup';
     var copy = document.createElement('p');
-    copy.textContent = 'Choose a Mondosupreme backup file. Settings on this browser are replaced. Recipes, notes, posts, and scores on the server are restored only in Owner Mode.';
+    copy.textContent = 'Choose a Mondosupreme backup file. Settings on this browser are replaced, then recipes, notes, posts, and scores are written back to the server.';
     var file = document.createElement('input');
     file.type = 'file';
     file.accept = 'application/json,.json';
@@ -256,21 +268,28 @@
     });
     go.addEventListener('click', function () {
       if (!parsed) { note.textContent = 'Choose a valid backup file first.'; return; }
-      if (!confirm('Restore this backup on this browser?')) return;
-      try { restoreLocal(parsed); }
-      catch (e) { note.textContent = 'This browser blocked local storage.'; return; }
-      var user = window.firebase && firebase.auth && firebase.auth().currentUser;
-      if (!isOwner(user) || !bootFirebase()) {
-        note.textContent = 'Restored on this browser. Sign in as the owner to write the server copy.';
-        return;
-      }
-      restoreCloud(parsed).then(function (mode) {
-        note.textContent = mode === 'cloud' ? 'Restored on this browser and on the server.' : 'Restored on this browser.';
-      }).catch(function () {
-        note.textContent = 'This browser was restored. The server rejected part of the file. Publish the latest database rules and try again.';
+      if (!confirm('Restore this backup on this browser and on the server?')) return;
+      var fileData = parsed;
+      confirmAdmin().then(function (ok) {
+        if (!ok) { note.textContent = 'Only an admin can restore a backup.'; return; }
+        try { restoreLocal(fileData); }
+        catch (e) { note.textContent = 'This browser blocked local storage.'; return; }
+        restoreCloud(fileData).then(function (mode) {
+          note.textContent = mode === 'cloud' ? 'Restored on this browser and on the server.' : 'Restored on this browser.';
+        }).catch(function () {
+          note.textContent = 'This browser was restored. The server rejected part of the file. Publish the latest database rules and try again.';
+        });
       });
     });
     return dlg;
+  }
+  function unmount() {
+    ['shellBackup', 'shellRestoreBtn', 'shellRestore'].forEach(function (id) {
+      var node = document.getElementById(id);
+      if (!node) return;
+      if (node.open && node.close) node.close();
+      node.remove();
+    });
   }
   function mount(tries) {
     var bar = document.getElementById('shellMenu');
@@ -291,15 +310,36 @@
     restore.textContent = 'Restore Full Backup';
     bar.append(backup, restore);
     var dialog = null;
-    backup.addEventListener('click', exportBackup);
-    restore.addEventListener('click', function () {
-      if (!dialog) dialog = buildDialog();
-      if (typeof dialog.showModal === 'function' && !dialog.open) dialog.showModal();
+    backup.addEventListener('click', function () {
+      confirmAdmin().then(function (ok) { if (ok) exportBackup(); });
     });
-    document.addEventListener('mondo-owner', function (event) {
-      backup.textContent = event.detail && event.detail.on ? 'Full Site Backup' : 'Full Site Backup';
+    restore.addEventListener('click', function () {
+      confirmAdmin().then(function (ok) {
+        if (!ok) { unmount(); return; }
+        if (!dialog || !dialog.isConnected) dialog = buildDialog();
+        if (typeof dialog.showModal === 'function' && !dialog.open) dialog.showModal();
+      });
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
-  else mount();
+  function sync() {
+    confirmAdmin().then(function (ok) {
+      if (ok) mount();
+      else unmount();
+    });
+  }
+  document.addEventListener('mondo-owner', function (event) {
+    if (event.detail && event.detail.on) sync();
+    else unmount();
+  });
+  document.addEventListener('mondo-member', function (event) {
+    if (!event.detail || !event.detail.member) unmount();
+  });
+  function watchAuth(tries) {
+    if (!bootFirebase() || !firebase.auth) {
+      if ((tries || 0) < 40) setTimeout(function () { watchAuth((tries || 0) + 1); }, 100);
+      return;
+    }
+    firebase.auth().onAuthStateChanged(function () { sync(); });
+  }
+  watchAuth();
 })();
