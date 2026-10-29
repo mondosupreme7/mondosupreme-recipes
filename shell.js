@@ -608,7 +608,7 @@
       document.body.appendChild(footer);
     }
     if (foot.querySelector('a[href="/privacy/"]')) return;
-    foot.appendChild(document.createTextNode(' · '));
+    if (foot.textContent.trim()) foot.appendChild(document.createTextNode(' · '));
     var link = document.createElement('a');
     link.href = '/privacy/';
     link.textContent = 'Privacy';

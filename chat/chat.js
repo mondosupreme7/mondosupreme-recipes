@@ -110,8 +110,10 @@ function scrollDown() {
   const log = $('#log');
   if (log) log.scrollTop = log.scrollHeight;
 }
+let unread = false;
 function scheduleRender(stick) {
   const follow = stick || nearBottom();
+  unread = !follow;
   if (paint) cancelAnimationFrame(paint);
   paint = requestAnimationFrame(() => {
     paint = 0;
@@ -121,24 +123,33 @@ function scheduleRender(stick) {
 function render(follow) {
   const log = $('#log');
   if (!log) return;
+  const keep = log.scrollTop;
   const items = [...messages.values()].filter(Boolean).sort((a, b) => a.t - b.t || String(a.id).localeCompare(String(b.id)));
   log.replaceChildren();
   if (!items.length) {
     const empty = document.createElement('p');
     empty.className = 'chat-empty';
-    empty.textContent = 'No messages yet.';
+    empty.textContent = 'No messages yet — say hi!';
     log.appendChild(empty);
   } else items.forEach(msg => log.appendChild(renderMessage(msg)));
   renderBans();
-  if (follow) scrollDown();
+  const pill = $('#newPill');
+  if (follow) {
+    scrollDown();
+    unread = false;
+    if (pill) pill.hidden = true;
+  } else {
+    log.scrollTop = keep;
+    if (pill) pill.hidden = !unread;
+  }
 }
 function renderMessage(msg) {
   const art = document.createElement('article');
-  art.className = 'msg';
+  art.className = 'bubble' + (msg.author && msg.author === myUid ? ' is-mine' : '');
   art.dataset.id = msg.id;
   const head = document.createElement('header');
   const name = document.createElement('strong');
-  name.className = 'msg-name';
+  name.className = 'bubble-name';
   name.textContent = msg.name;
   if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(name, msg.author);
   const time = document.createElement('time');
@@ -347,21 +358,22 @@ function readAim() {
 function awayText() {
   return String(readAim().away || '').replace(/\s+/g, ' ').trim().slice(0, 80);
 }
+let roomPeople = [];
 function paintBuddies() {
   const list = $('#buddyNames');
   if (!list) return;
   list.replaceChildren();
-  const me = document.createElement('li');
-  const name = loadName() || 'You';
   const away = awayText();
-  me.textContent = name + (away ? ' — ' + away : ' — Available');
-  list.appendChild(me);
-  const others = Math.max(0, people - (live ? 1 : 0));
-  for (let i = 0; i < Math.min(others, 12); i++) {
+  const rows = roomPeople.length ? roomPeople : [{ name: loadName() || 'You', self: true }];
+  rows.forEach(row => {
     const li = document.createElement('li');
-    li.textContent = 'Buddy ' + (i + 1);
+    li.className = 'who-chip';
+    const label = document.createElement('span');
+    const note = row.self ? (away ? ' — ' + away : ' — Available') : '';
+    label.textContent = (row.name || 'Guest') + note;
+    li.appendChild(label);
     list.appendChild(li);
-  }
+  });
 }
 function armAim() {
   const saved = readAim();
@@ -396,7 +408,14 @@ function armAim() {
 function onlineCount(snap) {
   const now = Date.now();
   let n = 0;
-  snap.forEach(ch => { if (now - Number(ch.child('t').val() || 0) < 180000) n += 1; });
+  const rows = [];
+  snap.forEach(ch => {
+    if (now - Number(ch.child('t').val() || 0) >= 180000) return;
+    n += 1;
+    const raw = ch.child('name').val();
+    rows.push({ name: cleanName(typeof raw === 'string' ? raw : '') || 'Guest', self: ch.key === myUid });
+  });
+  roomPeople = rows;
   if (seenPresence && n > lastPeople) aimBeep('door');
   seenPresence = true;
   lastPeople = n;
@@ -414,13 +433,13 @@ async function setPresence(uid) {
   presenceRef = firebase.database().ref('chat/presence/' + uid);
   try {
     await presenceRef.onDisconnect().remove();
-    await presenceRef.set({ t: firebase.database.ServerValue.TIMESTAMP });
+    await presenceRef.set({ t: firebase.database.ServerValue.TIMESTAMP, name: (loadName() || 'Guest').slice(0, MAX_NAME) });
   } catch { /* presence is optional */ }
   armHeart();
 }
 function pulsePresence() {
   if (document.hidden || !presenceRef) return;
-  presenceRef.set({ t: firebase.database.ServerValue.TIMESTAMP }).catch(() => {});
+  presenceRef.set({ t: firebase.database.ServerValue.TIMESTAMP, name: (loadName() || 'Guest').slice(0, MAX_NAME) }).catch(() => {});
 }
 function armHeart() {
   if (heart) { clearInterval(heart); heart = null; }
@@ -521,23 +540,95 @@ function send(name, text) {
   postLocal(name, text);
   refreshStatus();
 }
+function paintAs() {
+  const el = $('#asName');
+  if (!el) return;
+  el.textContent = loadName() || 'Guest';
+}
+function fitChat() {
+  const app = document.querySelector('.chat-app');
+  if (!app || !window.visualViewport) return;
+  const vv = window.visualViewport;
+  const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+  if (keyboard > 80) {
+    document.body.style.paddingTop = '0px';
+    document.body.style.paddingBottom = '0px';
+    app.style.marginTop = vv.offsetTop + 'px';
+    app.style.height = vv.height + 'px';
+    if (nearBottom()) scrollDown();
+    return;
+  }
+  document.body.style.paddingTop = '';
+  document.body.style.paddingBottom = '';
+  app.style.marginTop = '';
+  app.style.height = '';
+}
 function init() {
-  const nameInput = $('#name');
-  const saved = loadName();
-  if (saved) nameInput.value = saved;
-  nameInput.addEventListener('change', () => saveName(cleanName(nameInput.value)));
+  paintAs();
+  const textInput = $('#text');
   $('#composer').addEventListener('submit', e => {
     e.preventDefault();
-    const name = cleanName(nameInput.value);
-    const text = cleanText($('#text').value);
-    if (!name) { setStatus('Add a name first.'); return; }
+    const name = cleanName(loadName()) || 'Guest';
+    const text = cleanText(textInput.value);
     if (!text) return;
     if (blocked(name) || blocked(text)) { setStatus("That message isn't allowed in this room."); return; }
     saveName(name);
-    nameInput.value = name;
-    $('#text').value = '';
+    textInput.value = '';
     send(name, text);
   });
+  textInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      $('#composer').requestSubmit();
+    }
+  });
+  textInput.addEventListener('focus', () => setTimeout(() => { fitChat(); if (nearBottom()) scrollDown(); }, 80));
+  $('#changeName').onclick = () => {
+    $('#chatNameInput').value = loadName();
+    $('#nameDialog').showModal();
+  };
+  $('#nameCancel').onclick = () => $('#nameDialog').close();
+  $('#nameForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = cleanName($('#chatNameInput').value);
+    if (!name || blocked(name)) { setStatus('Pick a different display name.'); return; }
+    saveName(name);
+    paintAs();
+    pulsePresence();
+    paintBuddies();
+    $('#nameDialog').close();
+  });
+  const who = $('#whoPanel');
+  const whoBtn = $('#whoToggle');
+  if (who && whoBtn) {
+    const wide = window.matchMedia('(min-width: 900px)').matches;
+    who.hidden = !wide;
+    whoBtn.setAttribute('aria-expanded', wide ? 'true' : 'false');
+    whoBtn.addEventListener('click', () => {
+      who.hidden = !who.hidden;
+      whoBtn.setAttribute('aria-expanded', who.hidden ? 'false' : 'true');
+    });
+  }
+  const menu = $('#roomMenu');
+  const menuBtn = $('#roomMenuBtn');
+  if (menu && menuBtn) {
+    menuBtn.addEventListener('click', () => {
+      menu.hidden = !menu.hidden;
+      menuBtn.setAttribute('aria-expanded', menu.hidden ? 'false' : 'true');
+    });
+  }
+  const pill = $('#newPill');
+  if (pill) pill.addEventListener('click', () => { unread = false; pill.hidden = true; scrollDown(); });
+  document.addEventListener('mondo-member', event => {
+    const handle = event.detail && event.detail.handle;
+    if (!loadName() && handle) saveName(cleanName(handle));
+    paintAs();
+    pulsePresence();
+  });
+  if (window.visualViewport) {
+    visualViewport.addEventListener('resize', fitChat);
+    visualViewport.addEventListener('scroll', fitChat);
+  }
   $('#clear').onclick = clearRoom;
   $('#owner').onclick = () => {
     const user = firebase.auth().currentUser;
