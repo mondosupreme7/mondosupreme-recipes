@@ -15,7 +15,7 @@
         "avatar": { ".validate": "newData.isString() && newData.val().length <= 24" },
         "status": { ".validate": "newData.isString() && newData.val().length <= 80" },
         "member": { ".validate": "newData.isBoolean()" },
-        "webmaster": { ".validate": "newData.isBoolean() && (!newData.val() || root.child('admins').child($uid).val() === true)" },
+        "webmaster": { ".validate": "newData.isBoolean() && (newData.val() === false || root.child('admins').child($uid).val() === true)" },
         "updatedAt": { ".validate": "newData.isNumber()" },
         "email": { ".validate": false },
         "$other": { ".validate": false }
@@ -107,7 +107,7 @@
     },
     "guestbook": {
       ".read": true,
-      "entries": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('note').isString() && newData.child('note').val().length > 0 && newData.child('note').val().length <= 280 && newData.child('author').val() === auth.uid && (!newData.child('homepage').exists() || newData.child('homepage').val() === '' || newData.child('homepage').val().matches(/^https:\\/\\/[^\\s]{1,180}$/))" } },
+      "entries": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || data.child('author').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('note').isString() && newData.child('note').val().length > 0 && newData.child('note').val().length <= 280 && newData.child('author').val() === auth.uid && (!newData.child('homepage').exists() || newData.child('homepage').val() === '' || newData.child('homepage').val().matches(/^https:\\/\\/[^ \\t\\r\\n]{1,180}$/))" } },
       "rate": { "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber() && (!data.exists() || newData.val() >= data.val() + 1500)" } }
     },
     "quotes": {
@@ -121,7 +121,7 @@
     "local": {
       ".read": true,
       "tips": { "$id": { ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 240 && newData.child('place').isString() && newData.child('place').val().length <= 80 && newData.child('rating').isNumber() && newData.child('uid').val() === auth.uid" } },
-      "events": { "$id": { ".write": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous' && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 120 && newData.child('start').isNumber() && newData.child('start').val() > now && newData.child('town').isString() && newData.child('town').val().matches(/^(Cocoa|Cocoa Beach|Merritt Island|Port Canaveral|Titusville|Melbourne|Viera|Rockledge)$/) && newData.child('venue').isString() && newData.child('venue').val().length > 0 && newData.child('venue').val().length <= 80 && newData.child('category').isString() && newData.child('category').val().matches(/^(Launches|Music|Food & Markets|Family|Outdoors|Arts|Sports|Cruise)$/) && newData.child('url').isString() && newData.child('url').val().matches(/^https:\\/\\/\\S{8,180}$/) && newData.child('description').isString() && newData.child('description').val().length <= 280 && newData.child('uid').val() === auth.uid" } }
+      "events": { "$id": { ".write": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous' && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 120 && newData.child('start').isNumber() && newData.child('start').val() > now && newData.child('town').isString() && newData.child('town').val().matches(/^(Cocoa|Cocoa Beach|Merritt Island|Port Canaveral|Titusville|Melbourne|Viera|Rockledge)$/) && newData.child('venue').isString() && newData.child('venue').val().length > 0 && newData.child('venue').val().length <= 80 && newData.child('category').isString() && newData.child('category').val().matches(/^(Launches|Music|Food & Markets|Family|Outdoors|Arts|Sports|Cruise)$/) && newData.child('url').isString() && newData.child('url').val().matches(/^https:\\/\\/[^ \\t\\r\\n]{8,180}$/) && newData.child('description').isString() && newData.child('description').val().length <= 280 && newData.child('uid').val() === auth.uid" } }
     },
     "eightball": {
       ".read": true,
