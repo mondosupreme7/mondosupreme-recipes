@@ -3,77 +3,73 @@
   var CURATED = [
     { text: 'The best way out is always through.', author: 'Robert Frost' },
     { text: 'Well done is better than well said.', author: 'Benjamin Franklin' },
-    { text: 'Whether you think you can, or you think you can\'t, you\'re right.', author: 'Henry Ford' },
     { text: 'Do what you can, with what you have, where you are.', author: 'Theodore Roosevelt' },
-    { text: 'I have not failed. I\'ve just found 10,000 ways that will not work.', author: 'Thomas Edison' },
+    { text: 'Genius is one percent inspiration and ninety-nine percent perspiration.', author: 'Thomas Edison' },
     { text: 'The journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
-    { text: 'What you do speaks so loudly that I cannot hear what you say.', author: 'Ralph Waldo Emerson' },
-    { text: 'Keep your face always toward the sunshine, and shadows will fall behind you.', author: 'Walt Whitman' },
-    { text: 'It is never too late to be what you might have been.', author: 'George Eliot' },
-    { text: 'Act as if what you do makes a difference. It does.', author: 'William James' },
-    { text: 'Believe you can and you\'re halfway there.', author: 'Theodore Roosevelt' },
+    { text: 'What you are stands over you the while, and thunders so that I cannot hear what you say to the contrary.', author: 'Ralph Waldo Emerson' },
     { text: 'Start where you are. Use what you have. Do what you can.', author: 'Arthur Ashe' },
-    { text: 'You are never too old to set another goal or to dream a new dream.', author: 'C. S. Lewis' },
-    { text: 'The future belongs to those who believe in the beauty of their dreams.', author: 'Eleanor Roosevelt' },
-    { text: 'It always seems impossible until it is done.', author: 'Nelson Mandela' },
-    { text: 'All our dreams can come true, if we have the courage to pursue them.', author: 'Walt Disney' },
-    { text: 'Fall seven times and stand up eight.', author: 'Japanese proverb' },
-    { text: 'A person who never made a mistake never tried anything new.', author: 'Albert Einstein' },
-    { text: 'In the middle of difficulty lies opportunity.', author: 'Albert Einstein' },
-    { text: 'Be yourself; everyone else is already taken.', author: 'Oscar Wilde' },
+    { text: 'You must do the thing you think you cannot do.', author: 'Eleanor Roosevelt' },
+    { text: 'I learned that courage was not the absence of fear, but the triumph over it.', author: 'Nelson Mandela' },
+    { text: 'Education is the most powerful weapon which you can use to change the world.', author: 'Nelson Mandela' },
+    { text: 'We are all in the gutter, but some of us are looking at the stars.', author: 'Oscar Wilde' },
     { text: 'We are what we repeatedly do. Excellence, then, is not an act, but a habit.', author: 'Will Durant' },
-    { text: 'The secret of getting ahead is getting started.', author: 'Mark Twain' },
     { text: 'Courage is resistance to fear, mastery of fear, not absence of fear.', author: 'Mark Twain' },
+    { text: 'If you tell the truth, you don\'t have to remember anything.', author: 'Mark Twain' },
     { text: 'The only limit to our realization of tomorrow will be our doubts of today.', author: 'Franklin D. Roosevelt' },
-    { text: 'What lies behind us and what lies before us are tiny matters compared to what lies within us.', author: 'Ralph Waldo Emerson' },
-    { text: 'Keep going. The next page is where it gets good.', author: 'Mondosupreme' },
-    { text: 'Your modem is slow. Your curiosity is not. Keep clicking.', author: 'Mondosupreme, 1998' },
-    { text: 'The guestbook remembers the people who were kind.', author: 'Mondosupreme' },
-    { text: 'Under construction is a promise, not an apology.', author: 'A GeoCities footer' },
-    { text: 'You have mail, and it might be exactly the note you needed.', author: 'Mondosupreme' },
-    { text: 'Best viewed with hope, at any resolution.', author: 'Mondosupreme' },
-    { text: 'The webring only works if somebody links forward.', author: 'Mondosupreme' },
-    { text: 'Dial-up taught patience. Patience still compiles.', author: 'Mondosupreme' },
-    { text: 'A blinking NEW! badge never built the page. You did.', author: 'Mondosupreme' },
-    { text: 'Save early, save often, and tell your friends you love them.', author: 'Mondosupreme' },
-    { text: 'The visitor counter started at zero. So did everything good.', author: 'Mondosupreme' },
-    { text: 'Starfield backgrounds fade. The friends in the chat room do not.', author: 'Mondosupreme' },
-    { text: 'If the page is still loading, the good part is on its way.', author: 'Mondosupreme' },
-    { text: 'Hit counters do not measure courage. Showing up does.', author: 'Mondosupreme' },
-    { text: 'Netscape crashed. The idea did not. Reopen the window.', author: 'Mondosupreme' },
-    { text: 'Guestbooks filled up one kind sentence at a time.', author: 'Mondosupreme' },
-    { text: 'You do not need a T1 line to send a good idea.', author: 'Mondosupreme' },
-    { text: 'The under-construction gif is dancing because you kept going.', author: 'Mondosupreme' },
-    { text: 'Somewhere a cursor is blinking, waiting for your next honest line.', author: 'Mondosupreme' },
-    { text: '800 by 600 was enough room for a whole world.', author: 'Mondosupreme' },
-    { text: 'The MIDI is cheesy. The welcome is sincere.', author: 'Mondosupreme' },
-    { text: 'Refresh the page. Then refresh your nerve.', author: 'Mondosupreme' },
-    { text: 'No frames were harmed, and neither were you. Continue.', author: 'Mondosupreme' },
-    { text: 'A site this handmade means somebody believed you would visit.', author: 'Mondosupreme' },
-    { text: 'The sparkle text is extra. Your effort is the point.', author: 'Mondosupreme' },
-    { text: 'Log on. Leave the place a little kinder than you found it.', author: 'Mondosupreme' },
-    { text: 'Yesterday\'s homepage is proof you can ship something.', author: 'Mondosupreme' },
-    { text: 'The 404 is a door, not a verdict. Try the next link.', author: 'Mondosupreme' },
-    { text: 'Pixel by pixel is still a picture.', author: 'Mondosupreme' },
-    { text: 'Somebody bookmarked you. Be worth the bookmark.', author: 'Mondosupreme' },
-    { text: 'You made it past the dial tone. That already counts.', author: 'Mondosupreme' },
-    { text: 'Leave a note in the guestbook of somebody\'s day.', author: 'Mondosupreme' },
-    { text: 'Progress looks like a half-built table and a second try.', author: 'Mondosupreme' },
-    { text: 'The web was built by people who refused to wait for permission.', author: 'Mondosupreme' },
-    { text: 'Turn the volume up on the good idea and down on the doubt.', author: 'Mondosupreme' },
-    { text: 'A single link can reroute a whole afternoon toward hope.', author: 'Mondosupreme' },
-    { text: 'You are the webmaster of your next hour. Publish something kind.', author: 'Mondosupreme' },
-    { text: 'The cursor blinks because the sentence is not finished.', author: 'Mondosupreme' },
-    { text: 'Even a floppy disk was a place to keep what mattered.', author: 'Mondosupreme' },
-    { text: 'Come back tomorrow. The webring saved you a seat.', author: 'Mondosupreme' },
-    { text: 'Make it sincere. Say it in plain words.', author: 'Mondosupreme' },
-    { text: 'The welcome mat is the sparkle gif. The rest is up to you.', author: 'Mondosupreme' },
-    { text: 'Small pages, kept updated, outlast the loud ones.', author: 'Mondosupreme' },
-    { text: 'If you are reading this, the connection held. So can you.', author: 'Mondosupreme' },
-    { text: 'Don\'t wait for the perfect template. Ship the page you have.', author: 'Mondosupreme' },
-    { text: 'A guest book signature is a tiny vow to come back.', author: 'Mondosupreme' },
-    { text: 'The rainbow horizontal rule was never the point. You were.', author: 'Mondosupreme' },
-    { text: 'One more honest try beats a perfect plan left offline.', author: 'Mondosupreme' }
+    { text: 'The only thing we have to fear is fear itself.', author: 'Franklin D. Roosevelt' },
+    { text: 'Injustice anywhere is a threat to justice everywhere.', author: 'Martin Luther King Jr.' },
+    { text: 'Darkness cannot drive out darkness; only light can do that. Hate cannot drive out hate; only love can do that.', author: 'Martin Luther King Jr.' },
+    { text: 'The time is always right to do what is right.', author: 'Martin Luther King Jr.' },
+    { text: 'I am the master of my fate: I am the captain of my soul.', author: 'William Ernest Henley' },
+    { text: 'Two roads diverged in a wood, and I—I took the one less traveled by.', author: 'Robert Frost' },
+    { text: 'The woods are lovely, dark and deep, but I have promises to keep, and miles to go before I sleep.', author: 'Robert Frost' },
+    { text: 'Tell me, what is it you plan to do with your one wild and precious life?', author: 'Mary Oliver' },
+    { text: 'Hope is the thing with feathers that perches in the soul.', author: 'Emily Dickinson' },
+    { text: 'I dwell in Possibility.', author: 'Emily Dickinson' },
+    { text: 'Not all those who wander are lost.', author: 'J. R. R. Tolkien' },
+    { text: 'The only way to do great work is to love what you do.', author: 'Steve Jobs' },
+    { text: 'Stay hungry. Stay foolish.', author: 'Stewart Brand' },
+    { text: 'That\'s one small step for a man, one giant leap for mankind.', author: 'Neil Armstrong' },
+    { text: 'The important thing is not to stop questioning.', author: 'Albert Einstein' },
+    { text: 'Ask not what your country can do for you—ask what you can do for your country.', author: 'John F. Kennedy' },
+    { text: 'I think, therefore I am.', author: 'René Descartes' },
+    { text: 'This above all: to thine own self be true.', author: 'William Shakespeare' },
+    { text: 'The fault, dear Brutus, is not in our stars, but in ourselves.', author: 'William Shakespeare' },
+    { text: 'We few, we happy few, we band of brothers.', author: 'William Shakespeare' },
+    { text: 'Brevity is the soul of wit.', author: 'William Shakespeare' },
+    { text: 'What does not kill me makes me stronger.', author: 'Friedrich Nietzsche' },
+    { text: 'I have nothing to offer but blood, toil, tears and sweat.', author: 'Winston Churchill' },
+    { text: 'If I have seen further it is by standing on the shoulders of giants.', author: 'Isaac Newton' },
+    { text: 'The mass of men lead lives of quiet desperation.', author: 'Henry David Thoreau' },
+    { text: 'Our life is frittered away by detail. Simplify, simplify.', author: 'Henry David Thoreau' },
+    { text: 'I am no bird; and no net ensnares me.', author: 'Charlotte Brontë' },
+    { text: 'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.', author: 'Jane Austen' },
+    { text: 'So we beat on, boats against the current, borne back ceaselessly into the past.', author: 'F. Scott Fitzgerald' },
+    { text: 'All animals are equal, but some animals are more equal than others.', author: 'George Orwell' },
+    { text: 'It was the best of times, it was the worst of times.', author: 'Charles Dickens' },
+    { text: 'I am large, I contain multitudes.', author: 'Walt Whitman' },
+    { text: 'Do I dare disturb the universe?', author: 'T. S. Eliot' },
+    { text: 'Do not go gentle into that good night.', author: 'Dylan Thomas' },
+    { text: 'If you can keep your head when all about you are losing theirs.', author: 'Rudyard Kipling' },
+    { text: 'How wonderful it is that nobody need wait a single moment before starting to improve the world.', author: 'Anne Frank' },
+    { text: 'I am not afraid of storms, for I am learning how to sail my ship.', author: 'Louisa May Alcott' },
+    { text: 'The world breaks everyone and afterward many are strong at the broken places.', author: 'Ernest Hemingway' },
+    { text: 'There is no greater agony than bearing an untold story inside you.', author: 'Maya Angelou' },
+    { text: 'You may shoot me with your words, you may cut me with your eyes, you may kill me with your hatefulness, but still, like air, I\'ll rise.', author: 'Maya Angelou' },
+    { text: 'Ships at a distance have every man\'s wish on board.', author: 'Zora Neale Hurston' },
+    { text: 'Freeing yourself was one thing, claiming ownership of that freed self was another.', author: 'Toni Morrison' },
+    { text: 'We accept the love we think we deserve.', author: 'Stephen Chbosky' },
+    { text: 'It is only with the heart that one can see rightly; what is essential is invisible to the eye.', author: 'Antoine de Saint-Exupéry' },
+    { text: 'It\'s no use going back to yesterday, because I was a different person then.', author: 'Lewis Carroll' },
+    { text: 'Why, sometimes I\'ve believed as many as six impossible things before breakfast.', author: 'Lewis Carroll' },
+    { text: 'You have brains in your head. You have feet in your shoes.', author: 'Dr. Seuss' },
+    { text: 'Unless someone like you cares a whole awful lot, nothing is going to get better. It\'s not.', author: 'Dr. Seuss' },
+    { text: 'I have always depended on the kindness of strangers.', author: 'Tennessee Williams' },
+    { text: 'After all, tomorrow is another day.', author: 'Margaret Mitchell' },
+    { text: 'The unexamined life is not worth living.', author: 'Socrates' },
+    { text: 'Float like a butterfly, sting like a bee.', author: 'Muhammad Ali' },
+    { text: 'If you want to go fast, go alone. If you want to go far, go together.', author: 'Unknown' },
+    { text: 'Fall seven times and stand up eight.', author: 'Unknown' }
   ];
   var textEl = document.getElementById('quoteText');
   var byEl = document.getElementById('quoteBy');
@@ -89,6 +85,13 @@
   var committed = false;
   var owner = false;
 
+  function displayAuthor(author) {
+    var text = String(author == null ? '' : author).replace(/^[\s\u2014\u2013\-]+/, '').trim();
+    if (!text) return '';
+    var name = text.replace(/[,.].*$/, '').trim();
+    if (/^mondo\s*supreme$/i.test(name)) return 'Unknown';
+    return text;
+  }
   function readLast() {
     try {
       var raw = localStorage.getItem(KEY);
@@ -141,7 +144,8 @@
     current = quote;
     textEl.textContent = quote.text;
     byEl.textContent = '';
-    byEl.appendChild(document.createTextNode('— ' + quote.author));
+    var shown = displayAuthor(quote.author);
+    if (shown) byEl.appendChild(document.createTextNode('— ' + shown));
     if (quote.pinned) {
       var flag = document.createElement('span');
       flag.className = 'quote-flag';
@@ -192,7 +196,7 @@
       var li = document.createElement('li');
       var label = document.createElement('span');
       label.className = 'quote-custom-text';
-      label.textContent = (quote.pinned ? '[pinned] ' : '') + quote.text + ' — ' + quote.author;
+      label.textContent = (quote.pinned ? '[pinned] ' : '') + quote.text + (displayAuthor(quote.author) ? ' — ' + displayAuthor(quote.author) : '');
       var pinBtn = document.createElement('button');
       pinBtn.type = 'button';
       pinBtn.className = 'btn';
