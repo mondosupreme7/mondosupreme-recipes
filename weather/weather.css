@@ -11,6 +11,13 @@
 .wx-crt,.wx-star{margin:0 0 12px;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
 .wx-screen-title,.wx-star-top h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000066,#0033aa);color:#fde047;font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;letter-spacing:.04em}
 .wx-live{display:inline-block;margin-right:6px;padding:0 4px;background:#ff3300;color:#fff;font:700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;animation:wx-blink 1.2s steps(2) infinite}
+.wx-live.is-forecast{background:#c2410c;animation:none}
+.wx-track{display:flex;justify-content:space-between;gap:8px;flex:1 1 240px;margin:0;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.wx-track span:first-child{color:#1e3a5f}
+.wx-track-future{color:#c2410c}
+.wx-crt.is-past .wx-track-future{display:none}
+html[data-theme] .wx-controls button[aria-pressed="true"]{background:#0f172a!important;color:#fff!important}
+html[data-theme] .wx-live.is-forecast{background:#c2410c!important;color:#fff!important}
 .wx-map-wrap{position:relative;margin:6px;background:#111;border:8px solid #2b2b2b;box-shadow:inset 0 0 0 2px #000}
 #map{height:440px;background:#001848}
 .wx-scan{position:absolute;inset:0;pointer-events:none;z-index:500;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}

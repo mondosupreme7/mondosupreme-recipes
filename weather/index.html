@@ -13,7 +13,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org https://tilecache.rainviewer.com https://mesonet.agron.iastate.edu; connect-src 'self' https://api.rainviewer.com https://tilecache.rainviewer.com https://api.open-meteo.com https://marine-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org https://basemaps.cartocdn.com https://tilecache.rainviewer.com https://mesonet.agron.iastate.edu; connect-src 'self' https://mesonet.agron.iastate.edu https://api.rainviewer.com https://tilecache.rainviewer.com https://api.open-meteo.com https://marine-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>MondoWeather — Doppler 4000 Radar</title>
 <meta name="description" content="MondoWeather, a WeatherStar 4000 style Doppler radar and local forecast. Cocoa and Port Canaveral by default, plus any ZIP or city.">
 <link rel="stylesheet" href="/recipes/styles.css">
@@ -81,16 +81,28 @@
    <button class="btn wx-btn" id="wxPause" type="button">Pause</button>
    <button class="btn wx-btn" id="wxPrev" type="button" aria-label="Previous frame">Step back</button>
    <button class="btn wx-btn" id="wxNext" type="button" aria-label="Next frame">Step forward</button>
-   <label class="wx-scrub">6-hour loop
-    <input id="wxScrub" type="range" min="0" max="24" value="24" aria-valuemin="0" aria-valuemax="24" aria-label="Radar time, six hours ago through now">
+   <label class="wx-scrub">Radar time
+    <input id="wxScrub" type="range" min="0" max="24" value="24" aria-valuemin="0" aria-valuemax="24" aria-label="Radar time, six hours ago through the forecast">
     <span id="wxScrubRead">Now</span>
    </label>
+   <p id="wxTrack" class="wx-track"><span>Past · observed radar</span><span class="wx-track-future">Forecast · HRRR model</span></p>
+   <label class="wx-slider">Speed
+    <select id="wxSpeed" aria-label="Loop speed">
+     <option value="1100">Slow</option>
+     <option value="700" selected>Normal</option>
+     <option value="350">Fast</option>
+    </select>
+   </label>
    <label class="wx-slider">Opacity <input id="wxOpacity" type="range" min="20" max="100" value="70" aria-valuemin="20" aria-valuemax="100"></label>
+   <div class="wx-presets" id="wxHorizon" role="group" aria-label="Loop window">
+    <button class="btn wx-btn" id="wxPast" type="button" aria-pressed="false">Past</button>
+    <button class="btn wx-btn" id="wxFuture" type="button" aria-pressed="true">Past + future</button>
+   </div>
    <label class="wx-check"><input id="wxRain" type="checkbox" checked> 6-hour loop</label>
    <label class="wx-check"><input id="wxNexrad" type="checkbox" checked> NEXRAD</label>
    <label class="wx-check"><input id="wxShips" type="checkbox"> Cruise ships</label>
   </div>
-  <p id="wxRadarNote" class="wx-note">Six hours of US composite radar, in 15-minute steps, from six hours ago through the latest frame. Drag the scrubber, or use play and step.</p>
+  <p id="wxRadarNote" class="wx-note">Observed radar runs from six hours ago through the latest scan. Past + future adds NOAA HRRR model frames after Now. Forecast frames are labeled and are not observed radar.</p>
  </section>
  <section class="wx-star" aria-labelledby="wxStarTitle">
   <div class="wx-star-top">
@@ -114,7 +126,7 @@
    <div class="wx-marine" id="wxMarine">Reading the seas off Port Canaveral…</div>
   </div>
  </section>
- <p class="wx-fine">Radar tiles: RainViewer and Iowa Environmental Mesonet NEXRAD. Conditions: Open-Meteo and the National Weather Service. Ship dots are last-reported positions, not for navigation. During a warning, follow weather.gov.</p>
+ <p class="wx-fine">Observed radar: Iowa Environmental Mesonet, Melbourne NEXRAD super-res base reflectivity (MLB N0B) when zoomed in on the Space Coast, and the US composite (USCOMP N0Q) when zoomed out. Forecast frames: NOAA HRRR simulated reflectivity via IEM. Labels: CARTO. Conditions: Open-Meteo and the National Weather Service. Ship dots are last-reported positions, not for navigation. During a warning, follow weather.gov.</p>
 </main>
 <footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Not a substitute for official warnings. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">AI Search</a> · <a href="/stocks/">Stocks</a> · <a href="/wiki/">Wiki</a> · <a href="/board/">Board</a> · <a href="/chat/">Chat</a> · <a href="/arcade/">Arcade</a> · <a href="/pet/">Pet</a> · <a href="/forum/">Forum</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a> · <a href="/mmo/">MMO</a> · <a href="/fps/">FPS</a> · <a href="/escape/" aria-label="The Locked Room">???</a></div></footer>
 <script src="/cruises/vendor/leaflet/leaflet.js"></script>

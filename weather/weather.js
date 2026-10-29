@@ -17,6 +17,10 @@
   var rainOn = true;
   var nexradOn = true;
   var shipsOn = false;
+  var futureOn = true;
+  var speedMs = 700;
+  var radarCache = null;
+  var SITE_ZOOM = 8;
   var map, pin, nexradLayer, shipLayer, shipLoaded = false;
   var frames = [];
   var frameLayers = [];
@@ -52,6 +56,8 @@
       rainOn = data.rainviewer !== false;
       nexradOn = data.nexrad !== false;
       shipsOn = data.ships === true;
+      futureOn = data.future !== false;
+      if (data.speed === 350 || data.speed === 700 || data.speed === 1100) speedMs = data.speed;
     } catch (e) { /* keep Cocoa */ }
   }
   function save() {
@@ -65,7 +71,9 @@
       opacity: opacity,
       rainviewer: rainOn,
       nexrad: nexradOn,
-      ships: shipsOn
+      ships: shipsOn,
+      future: futureOn,
+      speed: speedMs
     };
     try { localStorage.setItem(KEY, JSON.stringify(payload)); } catch (e) {}
   }
@@ -189,20 +197,30 @@
   }
 
   function initMap() {
-    map = L.map('map', { minZoom: 2, worldCopyJump: true });
+    map = L.map('map', { minZoom: 2, maxZoom: 14, worldCopyJump: true });
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 12,
+      maxZoom: 19,
       attribution: '&copy; OpenStreetMap'
     }).addTo(map);
     map.createPane('nexrad');
     map.getPane('nexrad').style.zIndex = 250;
     map.createPane('radar');
     map.getPane('radar').style.zIndex = 260;
-    nexradLayer = L.tileLayer('https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png', {
+    map.createPane('labels');
+    map.getPane('labels').style.zIndex = 450;
+    map.getPane('labels').style.pointerEvents = 'none';
+    L.tileLayer('https://basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+      pane: 'labels',
+      maxZoom: 19,
+      detectRetina: true,
+      attribution: '&copy; CARTO'
+    }).addTo(map);
+    nexradLayer = L.tileLayer('https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-0/{z}/{x}/{y}.png', {
       pane: 'nexrad',
-      opacity: 0.6,
-      maxNativeZoom: 8,
-      attribution: 'NEXRAD via Iowa Environmental Mesonet'
+      opacity: opacity,
+      maxNativeZoom: 9,
+      detectRetina: true,
+      attribution: 'NEXRAD composite via Iowa Environmental Mesonet'
     });
     if (nexradOn) nexradLayer.addTo(map);
     shipLayer = L.layerGroup();
@@ -211,6 +229,7 @@
   }
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function pad4(n) { return ('0000' + n).slice(-4); }
   function align5(ms) {
     var step = 5 * 60 * 1000;
     return Math.floor(ms / step) * step;
@@ -219,11 +238,32 @@
     var d = new Date(ms);
     return String(d.getUTCFullYear()) + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate()) + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes());
   }
-  function iemTemplate(ms) {
-    return 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-' + iemStamp(ms) + '/{z}/{x}/{y}.png';
+  function stampToMs(stamp) {
+    var y = Number(stamp.slice(0, 4));
+    var m = Number(stamp.slice(4, 6));
+    var d = Number(stamp.slice(6, 8));
+    var h = Number(stamp.slice(8, 10));
+    var min = Number(stamp.slice(10, 12));
+    return Date.UTC(y, m - 1, d, h, min);
   }
-  function probeTile(ms) {
-    var url = 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-' + iemStamp(ms) + '/2/1/1.png';
+  function nearMelbourne() {
+    if (!map) return true;
+    var c = map.getCenter();
+    return miles(c.lat, c.lng, 28.113, -80.654) < 190;
+  }
+  function tileUrl(frame, z, x, y) {
+    var layer;
+    if (frame.kind === 'forecast') layer = 'hrrr::REFD-F' + frame.lead + '-' + frame.run;
+    else if (z >= SITE_ZOOM && frame.site && nearMelbourne()) layer = 'ridge::MLB-N0B-' + frame.site;
+    else layer = 'ridge::USCOMP-N0Q-' + frame.comp;
+    return 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/' + layer + '/' + z + '/' + x + '/' + y + '.png';
+  }
+  var RadarTile = L.TileLayer.extend({
+    getTileUrl: function (coords) {
+      return tileUrl(this.options.frame, coords.z, coords.x, coords.y);
+    }
+  });
+  function probeUrl(url) {
     return new Promise(function (resolve) {
       var img = new Image();
       var done = false;
@@ -234,7 +274,7 @@
       }
       img.onload = function () { finish(img.naturalWidth > 0); };
       img.onerror = function () { finish(false); };
-      setTimeout(function () { finish(false); }, 5000);
+      setTimeout(function () { finish(false); }, 6000);
       img.src = url;
     });
   }
@@ -243,44 +283,127 @@
     function next(i) {
       var ms = start - i * 5 * 60 * 1000;
       if (i >= 8) return Promise.resolve(ms);
-      return probeTile(ms).then(function (ok) { return ok ? ms : next(i + 1); });
+      var url = 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-' + iemStamp(ms) + '/2/1/1.png';
+      return probeUrl(url).then(function (ok) { return ok ? ms : next(i + 1); });
     }
     return next(0);
   }
-  function relLabel(ms, newest) {
-    var mins = Math.round((ms - newest) / 60000);
-    if (mins >= -7) return 'Now';
-    var abs = -mins;
+  function fetchSiteTimes() {
+    function dayUrl(ms) {
+      var d = new Date(ms);
+      return 'https://mesonet.agron.iastate.edu/archive/data/' + d.getUTCFullYear() + '/' + pad2(d.getUTCMonth() + 1) + '/' + pad2(d.getUTCDate()) + '/GIS/ridge/MLB/N0B/';
+    }
+    function one(ms) {
+      return fetch(dayUrl(ms)).then(function (res) { return res.ok ? res.text() : ''; }).then(function (html) {
+        var times = [];
+        var re = /MLB_N0B_(\d{12})\.png/g;
+        var match;
+        while ((match = re.exec(html))) times.push(stampToMs(match[1]));
+        return times;
+      }).catch(function () { return []; });
+    }
+    return Promise.all([one(Date.now()), one(Date.now() - 86400000)]).then(function (lists) {
+      return lists[0].concat(lists[1]);
+    });
+  }
+  function nearestSite(ms, times) {
+    var best = 0;
+    var bestDiff = 8 * 60 * 1000 + 1;
+    times.forEach(function (t) {
+      var diff = Math.abs(t - ms);
+      if (diff < bestDiff) { bestDiff = diff; best = t; }
+    });
+    return bestDiff <= 8 * 60 * 1000 ? iemStamp(best) : '';
+  }
+  function hrrrTile(run, lead) {
+    return 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/hrrr::REFD-F' + pad4(lead) + '-' + run + '/6/17/26.png';
+  }
+  function findHrrr() {
+    var hour = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), new Date().getUTCHours());
+    function farthest(run, runMs, lead) {
+      if (lead < 15) return Promise.resolve(null);
+      return probeUrl(hrrrTile(run, lead)).then(function (ok) {
+        if (ok) return { run: run, runMs: runMs, maxLead: lead };
+        return farthest(run, runMs, lead - 60);
+      });
+    }
+    function runs(i) {
+      if (i > 8) return Promise.resolve(null);
+      var runMs = hour - i * 3600000;
+      var run = iemStamp(runMs);
+      return probeUrl(hrrrTile(run, 60)).then(function (ok) {
+        if (!ok) return runs(i + 1);
+        var want = Math.round((Date.now() + 6 * 3600000 - runMs) / 60000 / 15) * 15;
+        if (want > 18 * 60) want = 18 * 60;
+        if (want < 60) want = 60;
+        return farthest(run, runMs, want);
+      });
+    }
+    return runs(1);
+  }
+  function clockLabel(ms) {
+    return new Date(ms).toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+  }
+  function relLabel(ms, anchor) {
+    var mins = Math.round((ms - anchor) / 60000);
+    if (mins >= -7 && mins <= 7) return 'Now';
+    var sign = mins < 0 ? '-' : '+';
+    var abs = Math.abs(mins);
     var h = Math.floor(abs / 60);
     var m = abs % 60;
-    if (!h) return '-' + m + 'm';
-    if (!m) return '-' + h + 'h';
-    return '-' + h + 'h ' + m + 'm';
+    if (!h) return sign + m + 'm';
+    if (!m) return sign + h + 'h';
+    return sign + h + 'h ' + m + 'm';
   }
-  function frameWhen(frame) {
-    var t = frame.time;
-    return new Date(t > 1e12 ? t : t * 1000);
+  function obsAnchor() {
+    var last = 0;
+    frames.forEach(function (frame) { if (frame.kind !== 'forecast') last = frame.time; });
+    return last || Date.now();
   }
   function frameCaption(frame) {
-    var newest = frames.length ? frames[frames.length - 1].time : frame.time;
-    var when = frameWhen(frame).toLocaleString(undefined, {
+    var rel = relLabel(frame.time, obsAnchor());
+    if (frame.kind === 'forecast') return rel + ' · ' + clockLabel(frame.time);
+    var when = new Date(frame.time).toLocaleString('en-US', {
+      timeZone: 'America/New_York',
       weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
     });
-    return relLabel(frame.time, newest) + ' · ' + when;
+    return rel + ' · ' + when;
   }
   function showFrame(index) {
     if (!frames.length) return;
+    var previous = frameLayers[frameIndex];
     frameIndex = (index + frames.length) % frames.length;
-    frameLayers.forEach(function (layer, i) {
-      if (i === frameIndex) {
-        if (rainOn && !map.hasLayer(layer)) layer.addTo(map);
-        layer.setOpacity(opacity);
-      } else if (map.hasLayer(layer)) {
-        map.removeLayer(layer);
+    var next = frameLayers[frameIndex];
+    if (rainOn && next) {
+      if (!map.hasLayer(next)) next.addTo(map);
+      next.setOpacity(opacity);
+      if (previous && previous !== next && map.hasLayer(previous)) {
+        next.once('load', function () {
+          if (frameLayers[frameIndex] !== next) return;
+          if (map.hasLayer(previous)) map.removeLayer(previous);
+        });
+        setTimeout(function () {
+          if (frameLayers[frameIndex] === next && previous !== next && map.hasLayer(previous)) map.removeLayer(previous);
+        }, 1200);
       }
+    }
+    frameLayers.forEach(function (layer, i) {
+      if (i !== frameIndex && layer !== previous && map.hasLayer(layer)) map.removeLayer(layer);
     });
     var frame = frames[frameIndex];
     var caption = frameCaption(frame);
+    var badge = document.querySelector('.wx-live');
+    var crt = document.querySelector('.wx-crt');
+    if (badge) {
+      var forecast = frame.kind === 'forecast';
+      badge.textContent = forecast ? 'FORECAST (HRRR model)' : 'LIVE';
+      badge.classList.toggle('is-forecast', forecast);
+    }
+    if (crt) crt.classList.toggle('is-forecast', frame.kind === 'forecast');
     var stamp = $('wxStamp');
     if (stamp) stamp.textContent = caption + ' · ' + (frameIndex + 1) + '/' + frames.length;
     var read = $('wxScrubRead');
@@ -302,34 +425,97 @@
     frameLayers = [];
     frames = [];
   }
-  function loadRadar() {
-    var wasPlaying = playing;
-    var first = frames.length === 0;
-    if ($('wxStamp')) $('wxStamp').textContent = 'Loading the 6-hour loop…';
-    findLatest().then(function (latest) {
-      var step = 15 * 60 * 1000;
-      var start = latest - 6 * 60 * 60 * 1000;
-      var times = [];
-      for (var t = start; t <= latest; t += step) times.push(t);
-      clearLoop();
-      frames = times.map(function (ms) { return { time: ms }; });
-      frames.forEach(function (frame) {
-        frameLayers.push(L.tileLayer(iemTemplate(frame.time), {
-          pane: 'radar',
-          opacity: opacity,
-          maxNativeZoom: 8,
-          attribution: 'NEXRAD composite via Iowa Environmental Mesonet'
-        }));
+  function makeLayer(frame) {
+    return new RadarTile('', {
+      frame: frame,
+      pane: 'radar',
+      opacity: opacity,
+      maxZoom: 14,
+      maxNativeZoom: frame.kind === 'forecast' ? 9 : 11,
+      detectRetina: true,
+      attribution: frame.kind === 'forecast' ? 'NOAA HRRR via Iowa Environmental Mesonet' : 'NEXRAD via Iowa Environmental Mesonet'
+    });
+  }
+  function preloadFrames() {
+    if (!map || !frames.length) return;
+    var z = Math.min(Math.max(map.getZoom(), 4), 8);
+    var bounds = map.getBounds().pad(0.15);
+    var nw = map.project(bounds.getNorthWest(), z).divideBy(256).floor();
+    var se = map.project(bounds.getSouthEast(), z).divideBy(256).floor();
+    var coords = [];
+    for (var x = nw.x; x <= se.x && coords.length < 6; x++) {
+      for (var y = nw.y; y <= se.y && coords.length < 6; y++) coords.push([x, y]);
+    }
+    frames.forEach(function (frame) {
+      coords.forEach(function (c) {
+        var img = new Image();
+        img.decoding = 'async';
+        img.src = tileUrl(frame, z, c[0], c[1]);
       });
-      showFrame(frames.length - 1);
-      if (wasPlaying) play();
-      note('6-hour loop, ' + frames.length + ' frames from -6h to Now. Iowa Environmental Mesonet US composite, 15-minute steps.');
+    });
+  }
+  function applyRadar(cache) {
+    var wasPlaying = playing;
+    var latest = cache.latest;
+    var step = 15 * 60 * 1000;
+    var built = [];
+    for (var t = latest - 6 * 60 * 60 * 1000; t <= latest; t += step) {
+      built.push({
+        kind: 'obs',
+        time: t,
+        comp: iemStamp(t),
+        site: nearestSite(t, cache.sites)
+      });
+    }
+    var forecastCount = 0;
+    if (futureOn && cache.hrrr) {
+      var runMs = cache.hrrr.runMs;
+      for (var lead = 15; lead <= cache.hrrr.maxLead; lead += 15) {
+        var when = runMs + lead * 60 * 1000;
+        if (when <= latest) continue;
+        if (when > latest + 6 * 60 * 60 * 1000 + step) break;
+        built.push({
+          kind: 'forecast',
+          time: when,
+          lead: pad4(lead),
+          run: cache.hrrr.run,
+          comp: '',
+          site: ''
+        });
+        forecastCount += 1;
+      }
+    }
+    clearLoop();
+    frames = built;
+    frameLayers = frames.map(makeLayer);
+    var nowIndex = 0;
+    frames.forEach(function (frame, i) { if (frame.kind !== 'forecast') nowIndex = i; });
+    showFrame(nowIndex);
+    preloadFrames();
+    if (wasPlaying) play();
+    var reach = forecastCount ? relLabel(frames[frames.length - 1].time, obsAnchor()) : 'Now';
+    note(futureOn
+      ? 'Observed MLB N0B on the Space Coast and USCOMP N0Q zoomed out, then HRRR forecast through ' + reach + '. Orange frames are model output, not observed radar.'
+      : 'Observed loop only, from -6h to Now. Turn on Past + future for the HRRR forecast.');
+    var track = $('wxTrack');
+    if (track) track.parentNode.classList.toggle('is-past', !futureOn || !forecastCount);
+  }
+  function loadRadar() {
+    var first = frames.length === 0;
+    if (radarCache && Date.now() - radarCache.at < 8 * 60 * 1000) {
+      applyRadar(radarCache);
+      return;
+    }
+    if ($('wxStamp')) $('wxStamp').textContent = 'Loading radar and the HRRR forecast…';
+    Promise.all([findLatest(), fetchSiteTimes(), findHrrr()]).then(function (triple) {
+      radarCache = { at: Date.now(), latest: triple[0], sites: triple[1], hrrr: triple[2] };
+      applyRadar(radarCache);
     }).catch(function () {
       if (first) {
         $('wxStamp').textContent = 'Radar loop unavailable';
         if (!nexradOn) setNexrad(true);
       }
-      note('The 6-hour composite did not load. The live NEXRAD mosaic is still available.');
+      note('The radar loop did not load. The live US composite is still available.');
     });
   }
   function play() {
@@ -338,7 +524,7 @@
     if (frameIndex >= frames.length - 1) showFrame(0);
     playTimer = setInterval(function () {
       showFrame(frameIndex + 1);
-    }, 700);
+    }, speedMs);
   }
   function pause() {
     playing = false;
@@ -661,6 +847,9 @@
     readSaved();
     buildPresets();
     $('wxOpacity').value = String(Math.round(opacity * 100));
+    $('wxSpeed').value = String(speedMs);
+    $('wxPast').setAttribute('aria-pressed', futureOn ? 'false' : 'true');
+    $('wxFuture').setAttribute('aria-pressed', futureOn ? 'true' : 'false');
     $('wxRain').checked = rainOn;
     $('wxNexrad').checked = nexradOn;
     $('wxShips').checked = shipsOn;
@@ -708,8 +897,24 @@
     $('wxOpacity').addEventListener('input', function (event) {
       opacity = Number(event.target.value) / 100;
       frameLayers.forEach(function (layer) { layer.setOpacity(opacity); });
+      if (nexradLayer) nexradLayer.setOpacity(opacity);
       save();
     });
+    $('wxSpeed').addEventListener('change', function (event) {
+      speedMs = Number(event.target.value) || 700;
+      if (playing) { pause(); play(); }
+      save();
+    });
+    function setHorizon(on) {
+      futureOn = on;
+      $('wxPast').setAttribute('aria-pressed', on ? 'false' : 'true');
+      $('wxFuture').setAttribute('aria-pressed', on ? 'true' : 'false');
+      save();
+      if (radarCache) applyRadar(radarCache);
+      else loadRadar();
+    }
+    $('wxPast').addEventListener('click', function () { setHorizon(false); });
+    $('wxFuture').addEventListener('click', function () { setHorizon(true); });
     $('wxRain').addEventListener('change', function (event) { setRain(event.target.checked); });
     $('wxNexrad').addEventListener('change', function (event) { setNexrad(event.target.checked); });
     $('wxShips').addEventListener('change', function (event) { setShips(event.target.checked); });
