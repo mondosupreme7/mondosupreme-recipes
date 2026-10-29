@@ -231,7 +231,7 @@
   function addGrocery() {
     if (!current) return;
     if (!current.ingredients.length) {
-      setText('actionStatus', 'No ingredients were listed in the description, so the grocery list was left as it is.');
+      setText('actionStatus', 'No ingredients were listed in the description, so Grocery List was left as it is.');
       return;
     }
     var data = { items: [] };
@@ -258,7 +258,7 @@
       added += 1;
     });
     localStorage.setItem(GROCERY_KEY, JSON.stringify(data));
-    setText('actionStatus', added ? 'Added ' + added + ' ingredient' + (added === 1 ? '' : 's') + ' to the grocery list.' : 'Those ingredients were already on the grocery list.');
+    setText('actionStatus', added ? 'Added ' + added + ' ingredient' + (added === 1 ? '' : 's') + ' to Grocery List.' : 'Those ingredients were already on Grocery List.');
   }
   function paintFresh() {
     var when = fetchedAt ? fetchedAt.replace('T', ' ').replace('Z', ' UTC') : 'the last saved pool';

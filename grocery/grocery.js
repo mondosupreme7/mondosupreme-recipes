@@ -294,7 +294,7 @@
     var data = load();
     data.migratedPlanner = true;
     save(data);
-    if (added) status('Moved ' + added + ' saved meal' + (added === 1 ? '' : 's') + ' onto this grocery list.');
+    if (added) status('Moved ' + added + ' saved meal' + (added === 1 ? '' : 's') + ' onto Grocery List.');
   }
   function tryFinishMigration() {
     if (flagSet() || load().migratedPlanner) {
@@ -556,7 +556,7 @@
   }
   function listText() {
     var data = load();
-    var lines = ['MondoRecipe Grocery List'];
+    var lines = ['Grocery List'];
     AISLES.forEach(function (name) {
       var items = data.items.filter(function (item) { return !item.checked && aisleName(item) === name; });
       if (!items.length) return;
@@ -564,7 +564,7 @@
       lines.push(name);
       items.forEach(function (item) { lines.push('- ' + item.text); });
     });
-    return lines.length > 1 ? lines.join('\n') : 'MondoRecipe Grocery List is empty.';
+    return lines.length > 1 ? lines.join('\n') : 'Grocery List is empty.';
   }
   function copyList() {
     var text = listText();
@@ -575,7 +575,7 @@
   function shareList() {
     var text = listText();
     if (navigator.share) {
-      navigator.share({ title: 'MondoRecipe Grocery List', text: text }).then(function () {
+      navigator.share({ title: 'Grocery List', text: text }).then(function () {
         status('Share sheet opened.');
       }).catch(function (err) {
         if (err && err.name === 'AbortError') return;

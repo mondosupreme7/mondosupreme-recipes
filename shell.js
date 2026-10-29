@@ -33,7 +33,7 @@
     { group: 'Home', title: 'Home', href: '/', text: 'landing mondosupreme' },
     { group: 'Home', title: 'AI Search', href: '/search/', text: 'ask mondo jeeves search engine cyber butler altavista yahoo' },
     { group: 'Kitchen', title: 'Recipes', href: '/recipes/', text: 'kitchen cookbook food' },
-    { group: 'Kitchen', title: 'MondoRecipe Grocery List', href: '/grocery/', text: 'mondorecipe grocery list recipes servings aisle shopping' },
+    { group: 'Kitchen', title: 'Grocery List', href: '/grocery/', text: 'mondorecipe grocery list recipes servings aisle shopping' },
     { group: 'Kitchen', title: 'MondoTV', href: '/daily-recipe/', text: 'daily recipe youtube mondotv realplayer chef' },
     { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
     { group: 'Harbor', title: 'Weather', href: '/weather/', text: 'weather radar doppler forecast cocoa port canaveral local on the 8s' },
@@ -419,7 +419,7 @@
   var programs = [
     { title: "Ask Mondo", href: '/search/', icon: 'search' },
     { title: 'Recipes', href: '/recipes/', icon: 'pot' },
-    { title: 'MondoRecipe Grocery List', href: '/grocery/', icon: 'meal' },
+    { title: 'Grocery List', href: '/grocery/', icon: 'meal' },
     { title: "MondoTV", href: '/daily-recipe/', icon: 'tv' },
     { title: 'Cruises', href: '/cruises/', icon: 'ship' },
     { title: "MondoWeather", href: '/weather/', icon: 'radar' },
@@ -669,7 +669,7 @@
     menu.hidden = true;
     menu.setAttribute('role', 'menu');
     var groups = [
-      ['Kitchen & Food', ['Recipes', 'MondoRecipe Grocery List', 'MondoTV']],
+      ['Kitchen & Food', ['Recipes', 'Grocery List', 'MondoTV']],
       ['Space Coast & Travel', ['Cruises', 'MondoWeather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
       ['Finance & Search', ['MondoQuote', 'Ask Mondo', 'MondoWiki']],
       ['Community', ['Bulletin Forum', 'MondoChat', 'MondoPaint', 'MondoBay', 'MondoFM Radio']],
@@ -749,7 +749,7 @@
     [
       ['Home', '/'],
       ['Recipes', '/recipes/'],
-      ['Grocery', '/grocery/'],
+      ['Grocery List', '/grocery/'],
       ['Weather', '/weather/'],
       ['Search', '/search/']
     ].forEach(function (pair) {

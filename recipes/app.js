@@ -365,7 +365,7 @@ function renderList(){
     <div class="card-body"><div class="cat"><span class="clip-slot">${clipArt(r.category)}</span><span>${esc(r.category||'Uncategorized')}</span></div><h3>${esc(r.title)}</h3>
     <div class="meta">${total(r)?`<span>⏱ ${total(r)} min</span>`:''}${r.servings?`<span>🍽 ${esc(r.servings)} servings</span>`:''}</div>
     <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
-    <a class="btn grocery-add" href="/grocery/?add=${esc(r.id)}">Add to grocery list</a></div></article>`).join('');
+    <a class="btn grocery-add" href="/grocery/?add=${esc(r.id)}">Add to Grocery List</a></div></article>`).join('');
   $('#grid').querySelectorAll('.thumb').forEach((el,i)=>paintPhoto(el,list[i].photo));
   $('#empty').hidden=list.length>0;
 }
@@ -436,7 +436,7 @@ function loadGrocery(){
   try{const data=JSON.parse(localStorage.getItem(GKEY));if(data&&Array.isArray(data.items))return data;}catch(e){}
   return {items:[]};
 }
-function saveGrocery(data){try{localStorage.setItem(GKEY,JSON.stringify(data));}catch(e){toast('Could not save the grocery list')}}
+function saveGrocery(data){try{localStorage.setItem(GKEY,JSON.stringify(data));}catch(e){toast('Could not save Grocery List')}}
 function groceryCount(){return loadGrocery().items.length}
 function paintGroceryButton(){
   const btn=$('#btnGrocery');
@@ -510,7 +510,7 @@ function renderDetail(id){
    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
    <div class="cols"><section><h2>Ingredients</h2>
    <div class="scale-bar" role="group" aria-label="Serving scale">${factors.map(([n,label])=>`<button type="button" class="btn ghost scale-btn" data-scale="${n}" aria-pressed="${detailScale===n?'true':'false'}">${label}</button>`).join('')}
-   <button type="button" class="btn primary" id="addGrocery">Add to grocery list</button></div>
+   <button type="button" class="btn primary" id="addGrocery">Add to Grocery List</button></div>
    <ul>${lines.map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
    <section><h2>Steps</h2><ol>${(r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section></div>
    ${r.notes?`<div class="notes"><strong>Notes:</strong> ${esc(r.notes)}</div>`:''}</div></article>`;
@@ -518,7 +518,7 @@ function renderDetail(id){
   v.querySelectorAll('.scale-btn').forEach(btn=>{
     btn.onclick=()=>{detailScale=Number(btn.dataset.scale)||1;renderDetail(r.id);};
   });
-  $('#addGrocery').onclick=()=>{addGroceryLines(lines,r);toast('Added to the grocery list');openGrocery();};
+  $('#addGrocery').onclick=()=>{addGroceryLines(lines,r);toast('Added to Grocery List');openGrocery();};
   $('#dFav').onclick=()=>{toggleFav(r.id);renderDetail(r.id)};
   $('#dPrint').onclick=()=>window.print();
   if($('#dEdit'))$('#dEdit').onclick=()=>openEditor(r);
@@ -2023,7 +2023,7 @@ function init(){
       try{ok=document.execCommand('copy');}catch(err){ok=false}
       area.remove();
     }
-    toast(ok?'Grocery list copied':'Could not copy the grocery list');
+    toast(ok?'Grocery List copied':'Could not copy Grocery List');
   };
   const fileTabs=$('#fileTabs');
   if(fileTabs)fileTabs.addEventListener('click',e=>{
