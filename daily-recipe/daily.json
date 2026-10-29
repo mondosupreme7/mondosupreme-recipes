@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-10-28T13:03:46Z",
+ "fetchedAt": "2026-10-29T13:05:32Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -12,8 +12,50 @@
   "NYT Cooking",
   "Not Another Cooking Show"
  ],
- "count": 90,
+ "count": 93,
  "videos": [
+  {
+   "videoId": "txah3KZc_R8",
+   "title": "Slow-Cooker Black Magic Pot Roast Will Put a Spell on You | Food Wishes",
+   "channel": "Food Wishes",
+   "handle": "foodwishes",
+   "published": "2026-10-28",
+   "thumbnail": "https://i.ytimg.com/vi/txah3KZc_R8/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=txah3KZc_R8",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "This slow cooker black magic pot roast uses black beer, black pepper, black garlic, black vinegar, and other dark and delicious ingredients to create the best pot roast this side of the Mississippi. Serve it shredded over mashed potatoes, ladled with its dark, complex, and delicious looking sauce, and this tender braised beef will put a spell on you and your guests. Enjoy! For the fully formatted, printable, written recipe, follow this link:  To become a Member of Food Wishes, and read Chef John’s post about Slow-Cooker Black Magic Pot Roast, follow this link:  You can also find more of Chef J"
+  },
+  {
+   "videoId": "cr5DFnCkbhk",
+   "title": "Lumpy Batter Makes Better Pancakes",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-10-28",
+   "thumbnail": "https://i.ytimg.com/vi/cr5DFnCkbhk/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=cr5DFnCkbhk",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Lumpy batter makes better pancakes. It might look undermixed, but those lumps are exactly what you want. Here's why, and what happens when you overmix. Subscribe to America's Test Kitchen:  ​ Watch full episodes of America's Test Kitchen and Cook's Country for free on our new YouTube channel:  Watch More! ​ In The Test Kitchen:  ​ The Taste Test:  ​ Techniquely With Lan Lam:  ​ Most Popular:  Follow America's Test Kitchen: ​ Instagram:  ​ Pinterest:  ​ TikTok:  ​ Facebook:  ​ Twitter:  ​ At America’s Test Kitchen, we investigate every aspect of cooking—recipes, equipment, ingredients, and tech"
+  },
+  {
+   "videoId": "JPWsv_cVQvE",
+   "title": "How to Easily Make Poached Eggs (New Orleans Style) | America's Test Kitchen",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-10-28",
+   "thumbnail": "https://i.ytimg.com/vi/JPWsv_cVQvE/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=JPWsv_cVQvE",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Eggs Sardou is an iconic New Orleans brunch classic, but juggling poached eggs, creamed spinach, artichoke bottoms, and hollandaise often feels overwhelming. Today, Morgan Bolling shows Toni Tipton-Martin how to streamline the entire recipe into an easy, one-skillet showstopper. Skillet Eggs Sardou Recipe:  Discover more recipes through the America’s Test Kitchen App:  Get exclusive access to every recipe, review, and more via our homepage:  Buy The Complete Cook's Country TV Show Cookbook, Season 18:  Get more weeknight cooking inspiration from our newsletter Dinner Tonight:  Discover the lat"
+  },
   {
    "videoId": "mOPdSQraEqQ",
    "title": "The Cheap Dinner I Wish I’d Started Making Years Ago",
