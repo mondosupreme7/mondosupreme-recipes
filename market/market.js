@@ -161,6 +161,9 @@
     });
   }
   function seed() {
+    var walkman = cache.items['sample-walkman'];
+    var retiredSeller = String.fromCharCode(114, 101, 116, 114, 111, 99, 111, 100, 121);
+    if (walkman && String(walkman.seller || '').toLowerCase() === retiredSeller) walkman.seller = 'Mondosupreme';
     if (cache.seeded) return;
     cache.seeded = true;
     var now = Date.now();
@@ -172,7 +175,7 @@
         category: 'electronics',
         location: 'Cocoa, ships in a bubble mailer',
         description: 'Yellow sports Walkman. It still rewinds, it still eats AA batteries, and the radio hiss is part of the charm.',
-        seller: 'RetroCody',
+        seller: 'Mondosupreme',
         photo: swatch('Walkman', '#0f766e'),
         createdAt: now - 5 * DAY_MS,
         featured: true
