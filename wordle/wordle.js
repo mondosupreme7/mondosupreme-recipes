@@ -571,6 +571,25 @@
     });
   }
 
+  function visibleHeight() {
+    var view = window.visualViewport;
+    var height = view && view.height ? view.height : window.innerHeight;
+    return height > 0 ? Math.round(height) : 0;
+  }
+  function fitPlay() {
+    var height = visibleHeight();
+    if (height) document.documentElement.style.setProperty('--app-h', height + 'px');
+  }
+  function watchViewport() {
+    fitPlay();
+    window.addEventListener('resize', fitPlay);
+    window.addEventListener('orientationchange', fitPlay);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', fitPlay);
+      window.visualViewport.addEventListener('scroll', fitPlay);
+    }
+  }
+
   function boot() {
     var year = $('yr');
     if (year) year.textContent = String(new Date().getFullYear());
@@ -617,6 +636,7 @@
       if (state.daily.status !== 'play' && !state.daily.posted) postScore();
     });
     if (window.MONDO_MEMBER && MONDO_MEMBER.isOwner && MONDO_MEMBER.isOwner()) owner = true;
+    watchViewport();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

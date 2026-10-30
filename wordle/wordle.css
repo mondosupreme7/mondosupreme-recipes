@@ -1,19 +1,32 @@
-.wordle-page{overflow-x:hidden;margin:0!important;padding-bottom:0!important;touch-action:manipulation}
+html{height:var(--app-h, 100dvh);overflow:hidden}
+.wordle-page{overflow:hidden;margin:0!important;touch-action:manipulation}
 .wordle-page .site-footer{display:none!important}
-body.wordle-page{--dock-h:0px;--key:clamp(40px,6svh,54px)}
+body.wordle-page{
+  --dock-h:0px;
+  --key:clamp(36px, calc((var(--app-h, 100dvh) - var(--nav-h) - env(safe-area-inset-bottom)) * .09), 48px);
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  height:var(--app-h, 100dvh);
+  max-height:var(--app-h, 100dvh);
+  overflow:hidden;
+  padding-bottom:env(safe-area-inset-bottom) !important
+}
 body.wordle-page main.word-main{
   --word-dock:0px;
   box-sizing:border-box;
+  flex:1 1 auto;
   max-width:520px;
+  width:100%;
   margin:0 auto!important;
-  padding:2px 8px 4px!important;
-  height:calc(100svh - var(--nav-h));
+  padding:2px 8px 0!important;
+  height:auto;
   min-height:0;
   display:flex;
   flex-direction:column;
-  overflow:clip
+  overflow:hidden
 }
-.word-play{flex:1 1 auto;min-height:0;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);width:100%;touch-action:manipulation}
+.word-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;width:100%;touch-action:manipulation}
 .word-bar{flex:0 0 auto;display:flex;align-items:center;gap:4px;min-height:44px}
 .word-bar h1{margin:0;flex:0 1 auto;font-size:1.05rem!important;line-height:1.1;white-space:nowrap}
 .word-modes{display:flex;flex:1 1 auto;flex-wrap:nowrap;gap:4px;margin:0;min-width:0}
@@ -22,19 +35,20 @@ body.wordle-page main.word-main{
 .wordle-page [hidden]{display:none!important}
 .word-modes .word-btn{flex:1 1 0;min-width:0;padding:0 4px;font-size:12px}
 .word-modes .btn[aria-pressed="true"]{outline:2px solid #2563eb;background:#eef4ff}
-.word-msg{flex:0 0 auto;min-height:2lh;margin:2px 0;overflow:hidden;white-space:normal;text-wrap:balance;font:600 var(--text-sm, .875rem)/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.word-stage{flex:0 0 auto;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding-top:4px}
+.word-msg{flex:0 0 auto;min-height:2lh;max-height:2.7em;margin:2px 0;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;text-wrap:balance;font:600 var(--text-sm, .875rem)/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.word-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;container-type:size;padding:2px 0}
 .word-grid{
-  --gap:6px;
-  --tile:min(calc((100vw - 2 * var(--space-4, 16px) - 4 * 6px) / 5), calc((100svh - var(--nav-h) - var(--dock-h) - 3 * var(--key) - 12px - 96px) / 6), 60px);
+  --gap:4px;
+  --cell:min(calc((100cqw - 4 * var(--gap)) / 5), calc((100cqh - 5 * var(--gap)) / 6), 62px);
   display:grid;
-  grid-template-columns:repeat(5,var(--tile));
-  grid-auto-rows:var(--tile);
+  grid-template-columns:repeat(5,var(--cell));
+  grid-template-rows:repeat(6,var(--cell));
   gap:var(--gap);
-  width:calc(5 * var(--tile) + 4 * var(--gap));
+  width:calc(5 * var(--cell) + 4 * var(--gap));
+  height:calc(6 * var(--cell) + 5 * var(--gap));
   margin:0 auto
 }
-.tile{position:relative;width:var(--tile);height:var(--tile);aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--surface,#fff);color:var(--ink,#0f172a);border:2px solid #7c8799;border-radius:8px;font:700 calc(var(--tile) * .46) Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;box-shadow:none;box-sizing:border-box}
+.tile{position:relative;width:100%;height:100%;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;background:var(--surface,#fff);color:var(--ink,#0f172a);border:2px solid #7c8799;border-radius:8px;font:700 calc(var(--cell) * .46) Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;box-shadow:none;box-sizing:border-box}
 .tile.is-filled{border-top-color:#404040;border-left-color:#404040;border-right-color:#fff;border-bottom-color:#fff}
 .tile[data-state="correct"]{background:#3d7a38;color:#fff;border:3px solid #214d1e}
 .tile[data-state="present"]{background:#c9b458;color:#111;border:3px dashed #6a5610}
@@ -51,10 +65,7 @@ body.wordle-page main.word-main{
 .leg.correct{color:#214d1e}
 .leg.present{color:#6a5610}
 .leg.absent{color:#3a3a3a}
-.word-keys{flex:0 0 auto;width:100%;max-width:100%;margin:0;padding-bottom:max(2px,env(safe-area-inset-bottom))}
-@media (max-width:768px){
-  .word-keys{padding-bottom:2px}
-}
+.word-keys{flex:0 0 auto;width:100%;max-width:100%;margin:0;padding-bottom:max(2px, env(safe-area-inset-bottom))}
 .kb-row{display:flex;gap:4px;width:100%;margin:0 0 4px}
 .kb-row:last-child{margin-bottom:0}
 .key{flex:1 1 0;min-width:0;box-sizing:border-box;height:var(--key,44px);min-height:0;padding:0 1px;background:var(--surface,#fff);color:var(--ink,#0f172a);border:1px solid var(--line-strong,#7c8799);border-radius:8px;box-shadow:none;font:700 13px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;touch-action:manipulation;-webkit-user-select:none;user-select:none}
