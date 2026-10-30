@@ -895,14 +895,14 @@
     taskbar.appendChild(clock);
     document.body.appendChild(taskbar);
     document.body.appendChild(menu);
-    var dockNames = { Home: 'home', Recipes: 'pot', 'Grocery List': 'meal', Weather: 'radar', Search: 'search' };
+    var dockNames = { Home: 'home', Recipes: 'pot', Stocks: 'chart', Weather: 'radar', Search: 'search' };
     var dock = document.createElement('nav');
     dock.className = 'studio-dock';
     dock.setAttribute('aria-label', 'Shortcuts');
     [
       ['Home', '/', 'Home'],
       ['Recipes', '/recipes/', 'Recipes'],
-      ['Grocery', '/grocery/', 'Grocery List'],
+      ['Stocks', '/stocks/', 'Stocks'],
       ['Weather', '/weather/', 'Weather'],
       ['Search', '/search/', 'Search']
     ].forEach(function (pair) {
