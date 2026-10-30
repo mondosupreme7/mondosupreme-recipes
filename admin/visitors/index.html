@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="/theme-boot.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-title" content="Mondosupreme">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Visitors</title>
+<meta name="description" content="Admin-only log of anonymous visits to Mondosupreme.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/shell.css?v=7">
+<link rel="stylesheet" href="/coast.css">
+<link rel="stylesheet" href="/readable.css?v=7">
+<link rel="stylesheet" href="visitors.css?v=1">
+</head>
+<body>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/admin/visitors/" class="brand"><span>Visitors</span></a>
+ <nav class="site-nav" aria-label="Site"><a href="/">Home</a><a href="/admin/visitors/" aria-current="page">Visitors</a></nav>
+</div></header>
+<main class="wrap">
+ <header class="coast-hero">
+  <h1>Visitors</h1>
+  <p class="coast-lead">Anonymous page views. No IP addresses, emails, or precise coordinates.</p>
+ </header>
+ <p id="visitGate" class="visit-gate" role="status">Checking access…</p>
+ <div id="visitApp" hidden>
+  <div class="visit-chips">
+   <div class="visit-chip" id="chipToday"></div>
+   <div class="visit-chip" id="chipWeek"></div>
+   <div class="visit-chip" id="chipMonth"></div>
+  </div>
+  <div class="visit-filter">
+   <label>From<input id="visitFrom" type="date"></label>
+   <label>To<input id="visitTo" type="date"></label>
+   <button class="btn" id="visitApply" type="button">Apply</button>
+  </div>
+  <div class="visit-split">
+   <section class="coast-card visit-card"><h2>Top pages</h2><ul id="topPages" class="visit-rank"></ul></section>
+   <section class="coast-card visit-card"><h2>Top referrers</h2><ul id="topRefs" class="visit-rank"></ul></section>
+   <section class="coast-card visit-card"><h2>Top locations</h2><ul id="topPlaces" class="visit-rank"></ul></section>
+   <section class="coast-card visit-card"><h2>Devices and browsers</h2><ul id="topDevices" class="visit-rank"></ul></section>
+  </div>
+  <section class="coast-card visit-card">
+   <h2>Recent visits</h2>
+   <div id="visitRows"></div>
+   <div class="visit-tools">
+    <button class="btn" id="visitMore" type="button" hidden>Show more</button>
+    <button class="btn" id="visitClear" type="button">Clear logs older than 90 days</button>
+   </div>
+   <p id="visitStatus" class="visit-note" role="status"></p>
+  </section>
+ </div>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme · <a href="/privacy/">Privacy</a></div></footer>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/members.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/shell.js?v=7"></script>
+<script src="/backup.js"></script>
+<script src="visitors.js?v=1"></script>
+</body>
+</html>

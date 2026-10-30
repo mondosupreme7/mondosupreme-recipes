@@ -288,7 +288,7 @@
     return dlg;
   }
   function unmount() {
-    ['shellBackup', 'shellRestoreBtn', 'shellRestore'].forEach(function (id) {
+    ['shellBackup', 'shellRestoreBtn', 'shellRestore', 'shellVisitors'].forEach(function (id) {
       var node = document.getElementById(id);
       if (!node) return;
       if (node.open && node.close) node.close();
@@ -312,7 +312,12 @@
     restore.className = 'studio-ghost';
     restore.id = 'shellRestoreBtn';
     restore.textContent = 'Restore Full Backup';
-    bar.append(backup, restore);
+    var visitors = document.createElement('a');
+    visitors.className = 'studio-ghost';
+    visitors.id = 'shellVisitors';
+    visitors.href = '/admin/visitors/';
+    visitors.textContent = 'Visitors';
+    bar.append(backup, restore, visitors);
     var dialog = null;
     backup.addEventListener('click', function () {
       confirmAdmin().then(function (ok) { if (ok) exportBackup(); });

@@ -1,0 +1,21 @@
+.visit-gate{margin:24px 0;font:600 1.15rem/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.visit-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.visit-chip{min-height:64px;padding:8px 10px;border:1px solid var(--line,#e2e8f0);border-radius:14px;background:var(--paper,#fff);color:var(--ink,#0f172a)}
+.visit-chip b{display:block;font:600 12px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink-muted,#334155)}
+.visit-chip strong{display:block;margin-top:4px;font:700 1.15rem/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.visit-chip span{display:block;margin-top:2px;font:500 12px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink-muted,#334155)}
+.visit-filter{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:0 0 14px}
+.visit-filter label{display:flex;flex-direction:column;gap:4px;flex:1 1 140px;font:600 13px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.visit-filter input{min-height:44px;font-size:16px;padding:6px 10px;border:1px solid var(--line-strong,#64748b);border-radius:12px;background:var(--paper,#fff);color:var(--ink,#0f172a)}
+.visit-filter .btn,.visit-tools .btn{min-height:44px}
+.visit-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.visit-split{display:grid;gap:12px;grid-template-columns:1fr}
+.visit-card h2{margin:0 0 8px;font:600 1rem/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.visit-rank{list-style:none;margin:0;padding:0}
+.visit-rank li{display:flex;justify-content:space-between;gap:8px;min-height:32px;align-items:center;border-top:1px solid var(--line,#e2e8f0);font:500 14px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.visit-rank li span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.visit-row{display:block;min-height:44px;padding:10px 0;border-top:1px solid var(--line,#e2e8f0);font:500 13px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.visit-note{margin:8px 0;color:var(--ink,#0f172a)}
+@media(min-width:800px){
+  .visit-split{grid-template-columns:1fr 1fr}
+}

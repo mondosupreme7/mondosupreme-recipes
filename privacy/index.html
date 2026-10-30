@@ -11,7 +11,7 @@
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Privacy — Mondosupreme</title>
 <meta name="description" content="What Mondosupreme stores, what stays on this device, and how to delete your records.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +39,7 @@
   <p>Public posts you choose to share can include a forum topic, wiki page, market listing, chat line, drawing stroke, guestbook note, recipe, local tip, 8-ball fortune, quote, puzzle score, or a game name. Those records store your account id and the display name, not your email.</p>
   <p>A signed-in member can keep a private copy of favorites, the grocery list, and a few game saves under their own user id. Other visitors cannot read that private node. The public profile is only a handle, an avatar, a short status, and whether the account is a member.</p>
   <p>This browser also keeps localStorage keys that start with mondosupreme, such as the theme, grocery list, meal plan, and puzzle progress. Those stay on the device until you clear them or use Delete my data.</p>
+  <p>Anonymous visit stats are collected for site administration: the page, a rough city and region, the browser family, the screen size, and a random id stored in this browser so return visits can be counted. A signed-in display name may be included. IP addresses, email addresses, and precise coordinates are not stored. The Visitors page is visible only to an admin.</p>
  </section>
  <section class="coast-card">
   <h2>Delete my data</h2>
@@ -55,7 +56,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js"></script>
-<script src="/shell.js?v=6"></script>
+<script src="/shell.js?v=7"></script>
 <script src="privacy.js"></script>
 </body>
 </html>

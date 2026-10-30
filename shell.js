@@ -1063,6 +1063,130 @@
       document.documentElement.setAttribute('data-shell-paused', document.hidden ? '1' : '0');
       if (!document.hidden) document.documentElement.removeAttribute('data-shell-paused');
     });
+    logVisit();
+  }
+
+  function isBot() {
+    var ua = navigator.userAgent || '';
+    if (!ua || ua.length < 20) return true;
+    if (navigator.webdriver) return true;
+    return /bot|spider|crawl|slurp|headless|phantom|wget|curl|bytespider|gptbot|bingpreview/i.test(ua);
+  }
+  function clientFamily() {
+    var ua = navigator.userAgent || '';
+    var os = 'Unknown';
+    if (/iPhone|iPad|iPod/.test(ua)) os = 'iOS';
+    else if (/Android/.test(ua)) os = 'Android';
+    else if (/Windows/.test(ua)) os = 'Windows';
+    else if (/Mac OS X/.test(ua)) os = 'macOS';
+    else if (/CrOS/.test(ua)) os = 'ChromeOS';
+    else if (/Linux/.test(ua)) os = 'Linux';
+    var browser = 'Browser';
+    if (/FxiOS|Firefox\//.test(ua)) browser = 'Firefox';
+    else if (/EdgiOS|Edg\//.test(ua)) browser = 'Edge';
+    else if (/CriOS|Chrome\//.test(ua)) browser = 'Chrome';
+    else if (/Safari\//.test(ua)) browser = 'Safari';
+    return (browser + ' ' + os).replace(/[^A-Za-z0-9 .+-]/g, '').slice(0, 40);
+  }
+  function deviceType() {
+    var ua = navigator.userAgent || '';
+    var w = Math.min(screen.width || 0, screen.height || 0);
+    if (/iPad|Tablet/i.test(ua)) return 'tablet';
+    if (/Mobi|iPhone|Android/i.test(ua) || (w && w < 768)) return 'phone';
+    return 'desktop';
+  }
+  function visitorId() {
+    var key = 'mondosupreme.visitor.v1';
+    try {
+      var current = localStorage.getItem(key) || '';
+      if (/^[a-f0-9]{16}$/.test(current)) return current;
+      var bytes = new Uint8Array(16);
+      if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(bytes);
+      else for (var i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+      var hex = '0123456789abcdef';
+      var id = '';
+      for (var j = 0; j < 16; j++) id += hex.charAt(bytes[j] & 15);
+      localStorage.setItem(key, id);
+      return id;
+    } catch (e) { return ''; }
+  }
+  function referrerDomain() {
+    try {
+      if (!document.referrer) return '';
+      var host = new URL(document.referrer).hostname.replace(/^www\./i, '').toLowerCase();
+      if (!host || host === location.hostname) return '';
+      return host.replace(/[^a-z0-9.-]/g, '').slice(0, 80);
+    } catch (e) { return ''; }
+  }
+  function cleanPlace(city, region, country) {
+    function bit(value) {
+      return String(value || '').replace(/[^A-Za-z0-9 .'-]/g, '').replace(/\s+/g, ' ').trim().slice(0, 28);
+    }
+    return [bit(city), bit(region), bit(country)].filter(Boolean).join(', ').slice(0, 80);
+  }
+  function geoPlace() {
+    var key = 'mondosupreme.geo.v1';
+    try {
+      var cached = sessionStorage.getItem(key);
+      if (cached != null) return Promise.resolve(cached === '-' ? '' : cached);
+    } catch (e) {}
+    return fetch('https://ipapi.co/json/', { cache: 'no-store' }).then(function (response) {
+      if (!response.ok) throw new Error('geo');
+      return response.json();
+    }).then(function (data) {
+      var place = cleanPlace(data && data.city, data && data.region, data && (data.country_name || data.country));
+      try { sessionStorage.setItem(key, place || '-'); } catch (e) {}
+      return place;
+    }, function () {
+      try { sessionStorage.setItem(key, '-'); } catch (e) {}
+      return '';
+    });
+  }
+  function signedName() {
+    try {
+      if (!window.MONDO_MEMBER || !window.MONDO_MEMBER.isMember || !window.MONDO_MEMBER.isMember()) return '';
+      var name = window.MONDO_MEMBER.handle() || '';
+      return /^[A-Za-z][A-Za-z0-9_]{1,19}$/.test(name) ? name : '';
+    } catch (e) { return ''; }
+  }
+  function writeVisit(place) {
+    if (!bootFirebase() || !firebase.database) return;
+    var id = visitorId();
+    if (!id) return;
+    var width = Math.max(0, Math.round(screen.width || 0));
+    var height = Math.max(0, Math.round(screen.height || 0));
+    var path = String(location.pathname || '/').split('?')[0].split('#')[0];
+    if (!path || path.charAt(0) !== '/') path = '/' + path;
+    var row = {
+      t: Date.now(),
+      path: path.slice(0, 120),
+      visitor: id,
+      device: deviceType(),
+      ref: referrerDomain(),
+      client: clientFamily(),
+      screen: width + 'x' + height,
+      lang: String(navigator.language || '').replace(/[^A-Za-z-]/g, '').slice(0, 16),
+      place: place || ''
+    };
+    var name = signedName();
+    if (name) row.name = name;
+    firebase.database().ref('visits').push(row).catch(function () {});
+  }
+  function logVisit() {
+    if (logVisit.sent) return;
+    var path = location.pathname || '/';
+    if (path.indexOf('/admin/') === 0 || isBot()) return;
+    logVisit.sent = true;
+    var wrote = false;
+    function once() {
+      if (wrote) return;
+      wrote = true;
+      clearTimeout(timer);
+      document.removeEventListener('mondo-member', once);
+      geoPlace().then(writeVisit);
+    }
+    var timer = setTimeout(once, 1200);
+    document.addEventListener('mondo-member', once);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
