@@ -50,14 +50,22 @@ a.btn{text-decoration:none;color:#111827}
 .cuisine-chips{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:4px}
 .cuisine-chips .file-tab{scroll-snap-align:start}
 .cuisine-chips .file-tab span{font-weight:500;opacity:.8}
-.cuisine-group{margin:0 0 12px;border:1px solid var(--line,#e2e8f0);border-radius:16px;background:var(--surface,#fff);padding:0 12px 8px}
+.cuisine-group{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin:0 0 12px;border:1px solid var(--line,#e2e8f0);border-radius:16px;background:var(--surface,#fff);padding:0 12px 12px}
 .cuisine-group summary{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:650;cursor:pointer;list-style:none}
 .cuisine-group summary::-webkit-details-marker{display:none}
 .cuisine-count{color:var(--ink-muted,#334155);font-size:.875rem;font-weight:600}
-.cuisine-cards{margin-top:8px}
+.cuisine-cards{display:grid;width:100%;margin-top:8px;gap:12px;grid-template-columns:minmax(0,1fr)}
 .cuisine-line{margin:0 0 6px;color:var(--ink-muted,#334155);font-size:.875rem}
+#grid.is-grouped{display:flex;flex-direction:column;width:100%;max-width:100%;gap:12px}
+.cuisine-cards .card{width:100%;min-width:0;max-width:none}
+.cuisine-cards .card h3{font-size:1rem;line-height:1.3;overflow-wrap:break-word}
+.cuisine-cards .thumb{display:block;width:100%;aspect-ratio:16/9;overflow:hidden;position:relative}
+.cuisine-cards .thumb img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;position:absolute;inset:0}
+@media(min-width:700px){
+  .cuisine-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 .source-chips .file-tab{min-height:44px}
-.list-count{margin:0 0 8px;font:700 .95rem/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#334155}
+.list-count{margin:0 0 8px;font:700 .95rem/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
 .list-more{display:block;margin:12px auto 4px;min-height:44px;min-width:160px}
 .card-chef .thumb{padding:0;height:140px}
 .card-chef .thumb img{width:100%;height:140px;object-fit:cover;display:block;background:#e7e5e4}

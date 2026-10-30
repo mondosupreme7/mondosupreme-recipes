@@ -338,15 +338,35 @@ function paintPhoto(el,url){
   if(safe)el.textContent='';
 }
 const total=r=>(+r.prep||0)+(+r.cook||0);
+const CHEF_REV='2';
+function chefUrl(file){return '/recipes/collections/'+file+'?v='+CHEF_REV}
+function dropStaleChefCache(){
+  if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations){
+    navigator.serviceWorker.getRegistrations().then(list=>list.forEach(reg=>reg.unregister())).catch(()=>{});
+  }
+  if(window.caches&&caches.keys){
+    caches.keys().then(keys=>Promise.all(keys.map(key=>caches.delete(key)))).catch(()=>{});
+  }
+}
+dropStaleChefCache();
 
 function isChefId(id){return typeof id==='string'&&id.indexOf('bbc-')===0}
 function userRecipeCount(){return recipes.filter(r=>!isSample(r)).length}
 function loadChefIndex(){
   if(chef)return Promise.resolve(chef);
   if(chefPromise)return chefPromise;
-  chefPromise=fetch('/recipes/collections/backyard-chef-index.json',{cache:'force-cache'}).then(res=>{
+  chefPromise=fetch(chefUrl('backyard-chef-index.json'),{cache:'default'}).then(res=>{
     if(!res.ok)throw new Error('index');
     return res.json();
+  }).then(data=>{
+    const rows=data.items||[];
+    if(rows[0]&&rows[0].length<9){
+      return fetch(chefUrl('backyard-chef-index.json')+'&r='+Date.now(),{cache:'reload'}).then(res=>{
+        if(!res.ok)throw new Error('index');
+        return res.json();
+      });
+    }
+    return data;
   }).then(data=>{
     const byId=new Map();
     (data.items||[]).forEach(row=>{
@@ -378,7 +398,7 @@ function loadChefRecipe(id){
     return ready.full;
   };
   if(chefParts[part])return Promise.resolve(finish());
-  return fetch('/recipes/collections/backyard-chef-'+(part+1)+'.json',{cache:'force-cache'}).then(res=>{
+  return fetch(chefUrl('backyard-chef-'+(part+1)+'.json'),{cache:'default'}).then(res=>{
     if(!res.ok)throw new Error('part');
     return res.json();
   }).then(data=>{chefParts[part]=data.recipes||[];return finish()});
@@ -538,6 +558,7 @@ function renderList(){
   const countEl=$('#listCount');
   const more=$('#listMore');
   if(state.source==='backyard'&&!chef){
+    $('#grid').classList.remove('is-grouped');
     $('#grid').innerHTML='';
     if(countEl){countEl.hidden=false;countEl.textContent='Loading Backyard Chef recipes…';}
     if(more)more.hidden=true;
@@ -546,6 +567,7 @@ function renderList(){
   }
   const grouped=state.source==='backyard'&&chef&&!q&&!state.cuisine;
   if(grouped){
+    $('#grid').classList.add('is-grouped');
     renderCuisineGroups(chefList);
     if(countEl){
       countEl.hidden=false;
@@ -555,6 +577,7 @@ function renderList(){
     $('#empty').hidden=chefList.length>0;
     return;
   }
+  $('#grid').classList.remove('is-grouped');
   shownChef.forEach((r,i)=>{r._eager=i===0&&state.source==='backyard';});
   $('#grid').innerHTML=mine.map(mineCard).join('')+shownChef.map(chefCard).join('');
   $('#grid').querySelectorAll('.card:not(.card-chef) .thumb').forEach((el,i)=>paintPhoto(el,mine[i]&&mine[i].photo));

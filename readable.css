@@ -1045,6 +1045,38 @@ html:not([data-theme="retro"]) .grid{
   grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr)) !important;
   background:transparent !important;border:0 !important;padding:0 !important
 }
+html:not([data-theme="retro"]) #grid.is-grouped{
+  display:flex !important;flex-direction:column;width:100%;max-width:100%;gap:12px
+}
+html:not([data-theme="retro"]) .cuisine-group{width:100%;max-width:100%;box-sizing:border-box}
+html:not([data-theme="retro"]) .cuisine-cards.grid{
+  width:100%;
+  grid-template-columns:minmax(0,1fr) !important
+}
+@media(min-width:700px){
+  html:not([data-theme="retro"]) .cuisine-cards.grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+html:not([data-theme="retro"]) .cuisine-cards .thumb{
+  display:block !important;width:100% !important;height:auto !important;aspect-ratio:16/9;overflow:hidden;position:relative
+}
+html:not([data-theme="retro"]) .cuisine-cards .thumb img{
+  position:absolute;inset:0;width:100% !important;height:100% !important;max-width:none !important;object-fit:cover;aspect-ratio:auto
+}
+html:not([data-theme="retro"]) .cuisine-cards .card,
+html:not([data-theme="retro"]) .card.card-chef{width:100%;min-width:0;padding:0 !important;overflow:hidden}
+html:not([data-theme="retro"]) .cuisine-cards .card-body,
+html:not([data-theme="retro"]) .card.card-chef .card-body{padding:12px 12px 14px}
+html:not([data-theme="retro"]) .cuisine-cards .card h3{font-size:1rem !important;line-height:1.3 !important}
+html:not([data-theme="retro"]) .list-count{color:var(--ink) !important}
+html:not([data-theme="retro"]) .file-tabs,
+html:not([data-theme="retro"]) .cuisine-chips{
+  display:flex !important;flex-wrap:nowrap !important;overflow-x:auto !important;max-width:100%;
+  gap:8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch
+}
+html:not([data-theme="retro"]) .file-tabs .file-tab,
+html:not([data-theme="retro"]) .cuisine-chips .file-tab{
+  flex:0 0 auto;scroll-snap-align:start;min-height:44px;white-space:nowrap;border-radius:999px !important
+}
 html:not([data-theme="retro"]) .card-chef .thumb{height:auto;aspect-ratio:16/9;background:var(--surface-2)}
 html:not([data-theme="retro"]) .card-chef .thumb img{width:100%;height:100%;aspect-ratio:16/9;object-fit:cover}
 html:not([data-theme="retro"]) .grid > .card:nth-child(n+9){content-visibility:auto;contain-intrinsic-size:auto 260px}
