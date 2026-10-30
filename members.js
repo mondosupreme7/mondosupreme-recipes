@@ -465,7 +465,7 @@
     var jHandle = makeInput('text', 'nickname');
     jHandle.maxLength = 20;
     jHandle.required = true;
-    jHandle.placeholder = 'xX_CyberChef98_Xx';
+    jHandle.placeholder = 'e.g. chef_mike';
     var jStatus = makeInput('text', 'off');
     jStatus.required = false;
     jStatus.maxLength = 80;
@@ -569,14 +569,19 @@
     return dlg;
   }
   function armClose(dlg) {
-    if (dlg.querySelector('.shell-x')) return;
+    if (dlg.querySelector('.member-close')) return;
     var btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'shell-x';
-    btn.textContent = 'X Close';
+    btn.className = 'member-close';
     btn.setAttribute('aria-label', 'Close');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
     btn.addEventListener('click', function () { if (typeof dlg.close === 'function') dlg.close(); });
-    dlg.insertBefore(btn, dlg.firstChild);
+    var title = dlg.querySelector('h2');
+    var head = document.createElement('div');
+    head.className = 'member-head';
+    if (title && title.parentNode === dlg) head.appendChild(title);
+    head.appendChild(btn);
+    dlg.insertBefore(head, dlg.firstChild);
   }
   function buildProfile() {
     var dlg = document.createElement('dialog');

@@ -990,9 +990,46 @@ html:not([data-theme="retro"]) .cell.active,
 html:not([data-theme="retro"]) .cell.is-active{background:color-mix(in srgb, var(--link) 22%, var(--surface)) !important}
 html:not([data-theme="retro"]) .board{border-color:var(--ink)}
 html:not([data-theme="retro"]) .mode-btn[aria-pressed="true"],
-html:not([data-theme="retro"]) .cruise-tabs .btn[aria-selected="true"],
-html:not([data-theme="retro"]) .member-tabs button[aria-pressed="true"]{
+html:not([data-theme="retro"]) .cruise-tabs .btn[aria-selected="true"]{
   background:var(--surface) !important;color:var(--ink) !important;border-color:var(--line) !important;box-shadow:var(--shadow-1)
+}
+html:not([data-theme="retro"]) .member-dialog{
+  box-sizing:border-box;
+  overflow:auto;
+  max-height:calc(100svh - var(--nav-h, 56px) - var(--dock-h, 0px) - 16px)
+}
+html:not([data-theme="retro"]) .member-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin:0 0 8px;padding:12px 12px 0
+}
+html:not([data-theme="retro"]) .member-head h2{margin:0 !important;min-width:0}
+html:not([data-theme="retro"]) .member-dialog .member-close{
+  flex:0 0 44px;width:44px !important;height:44px !important;min-height:44px !important;max-width:44px;
+  margin:0;padding:0 !important;float:none !important;position:static !important;
+  display:inline-flex !important;align-items:center;justify-content:center;
+  border:1px solid var(--line-strong,#64748b) !important;border-radius:12px !important;
+  background:var(--surface,#fff) !important;color:var(--ink,#0f172a) !important;
+  box-shadow:none !important
+}
+html:not([data-theme="retro"]) .member-dialog .member-close svg{display:block;width:20px;height:20px}
+html:not([data-theme="retro"]) .member-dialog form[hidden]{display:none !important}
+html:not([data-theme="retro"]) .member-tabs{display:flex;gap:8px;margin:0 12px 12px}
+html:not([data-theme="retro"]) .member-tabs button{
+  flex:1;min-height:44px;border:1px solid var(--line-strong,#64748b) !important;border-radius:12px !important;
+  background:var(--surface,#fff) !important;color:var(--ink,#0f172a) !important;
+  font:650 15px/1 var(--font-ui, Inter, sans-serif) !important;box-shadow:none !important
+}
+html:not([data-theme="retro"]) .member-tabs button[aria-pressed="true"]{
+  background:var(--ink,#0f172a) !important;color:var(--surface,#fff) !important;border-color:var(--ink,#0f172a) !important
+}
+html:not([data-theme="retro"]) .member-dialog input::placeholder{color:var(--ink-muted,#64748b);opacity:1}
+@media (max-width:768px){
+  html:not([data-theme="retro"]) dialog.member-dialog{
+    max-height:calc(100svh - var(--nav-h, 56px) - var(--dock-h, 72px) - 12px) !important;
+    margin-top:calc(var(--nav-h, 56px) + 8px) !important;
+    margin-bottom:calc(var(--dock-h, 72px) + 8px) !important;
+    overflow:auto !important
+  }
 }
 html:not([data-theme="retro"]) :is(.word-modes,.cruise-tabs,.mode-row){
   background:var(--surface-2);border-radius:var(--radius-md);padding:4px
