@@ -34,6 +34,14 @@ html[data-theme] .live-pill{color:var(--ink,#111827)}
 .hero h1,#mapTitle{scroll-margin-top:calc(var(--nav-h, 64px) + 10px)}
 .ship-map h2{margin:0 0 10px;font:600 1.15rem Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
 #map{height:min(62dvh,560px);min-height:300px;border:0;overflow:hidden;margin:0;background:var(--chip,#f1f5f9);position:relative;z-index:0;border-radius:12px}
+#map .leaflet-tile,
+#map img.leaflet-tile{
+  mix-blend-mode:normal !important;
+  box-sizing:content-box !important;
+  border:0 !important;
+  outline:0 !important;
+  padding:0 !important
+}
 html[data-theme] .ship-map{background:var(--paper);color:var(--ink);border-color:var(--line)}
 html[data-theme] .ship-map h2{background:transparent;color:var(--ink)}
 .leaflet-control-attribution{font-size:11px;max-width:58%;margin-bottom:2px !important}
@@ -76,6 +84,8 @@ html[data-theme="dark"] .popup-pick,html[data-theme="harbor"] .popup-pick{backgr
 .countdown{background:#061806;color:#86efac;border:3px ridge #39ff14;padding:12px;margin:0 0 14px}
 .countdown h2{margin:0 0 8px;color:#ffcc33;font:700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .count-lcd{font:700 28px/1.2 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.08em;background:#020;color:#86efac;border:2px inset #0a0;padding:10px 8px;text-align:center;text-shadow:0 0 8px #39ff14}
+.countdown.is-empty .count-lcd{display:none}
+.countdown.is-empty #countCaption{margin:0 0 10px;font:600 16px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d7ff9a}
 .count-form{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:8px}
 .count-form label{display:flex;flex-direction:column;gap:4px;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#d7ff9a}
 .count-form input,.count-form select{background:#fff;color:#111827;min-height:44px;font-size:16px;padding:6px}

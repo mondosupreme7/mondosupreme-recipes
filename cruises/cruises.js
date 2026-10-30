@@ -1023,10 +1023,15 @@
     var readout = document.getElementById('countReadout');
     var caption = document.getElementById('countCaption');
     if (!readout || !caption) return;
+    var section = document.getElementById('countdown');
     var active = activeCount();
+    function showEmpty(message) {
+      readout.hidden = true;
+      if (section) section.classList.add('is-empty');
+      caption.textContent = message;
+    }
     if (!active) {
-      readout.textContent = '000:00:00:00';
-      caption.textContent = 'Pick a ship and a sail date. Departure is 4:00 p.m. local time.';
+      showEmpty('No cruise set yet. Choose a ship and a sail date.');
       return;
     }
     var when = sailAt(active.row.date);
@@ -1034,10 +1039,11 @@
     var left = when - Date.now();
     var whose = active.source === 'default' ? 'Site default. ' : '';
     if (!Number.isFinite(when) || left <= 0) {
-      readout.textContent = '000:00:00:00';
-      caption.textContent = whose + name + ' sailed on ' + active.row.date + '. That sailing has left the pier.';
+      showEmpty(whose + name + ' sailed on ' + active.row.date + '. Pick another date to start a new countdown.');
       return;
     }
+    readout.hidden = false;
+    if (section) section.classList.remove('is-empty');
     var days = Math.floor(left / 86400000);
     var hours = Math.floor(left / 3600000) % 24;
     var minutes = Math.floor(left / 60000) % 60;
