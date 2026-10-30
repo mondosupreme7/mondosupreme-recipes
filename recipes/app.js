@@ -21,7 +21,8 @@ const SAMPLES=[
 const PUSHED='mondosupreme.recipes.pushed.v1';
 const RULES_BANNER='Server sync waiting on updated Firebase rules — using local storage until published';
 const PHOTO_MAX=200000;
-let recipes, favs, state={q:'',cat:'',tag:'',fav:false,source:''};
+let recipes, favs, state={q:'',cat:'',tag:'',fav:false,source:'',cuisine:''};
+const CUISINE_ORDER=['British & Irish','Fusion & Everyday','American & BBQ','Southeast Asian','Chinese','Italian','Indian & South Asian','French','German, Nordic & Eastern European','Mexican & Tex-Mex','Greek, Turkish & Mediterranean','Spanish & Portuguese','Middle Eastern & African','Japanese & Korean','Caribbean & Latin American'];
 let chef=null, chefPromise=null, chefParts={}, chefPage=0;
 const CHEF_PAGE=24;
 let serverLive=false, rulesBlocked=false, isOwner=false, myUid='';
@@ -353,6 +354,7 @@ function loadChefIndex(){
       const item={
         id:row[0], title:row[1], category:row[2]||'Other', video:video,
         part:row[4]||0, partial:!!row[5], q:row[6]||'',
+        cuisine:row[7]||'', cuisineDetail:row[8]||'',
         collection:'backyard',
         photo:video?('https://i.ytimg.com/vi/'+video+'/hqdefault.jpg'):'',
         watch:video?('https://www.youtube.com/watch?v='+video):''
@@ -372,7 +374,7 @@ function loadChefRecipe(id){
   const finish=()=>{
     const found=(chefParts[part]||[]).find(row=>row.id===id);
     if(!found)throw new Error('missing');
-    ready.full=Object.assign({}, found, {collection:'backyard', partial:ready.partial, watch:ready.watch||found.watch, photo:found.photo||ready.photo});
+    ready.full=Object.assign({}, found, {collection:'backyard', partial:ready.partial, watch:ready.watch||found.watch, photo:found.photo||ready.photo, cuisine:found.cuisine||ready.cuisine||'', cuisineDetail:found.cuisineDetail||ready.cuisineDetail||''});
     return ready.full;
   };
   if(chefParts[part])return Promise.resolve(finish());
@@ -387,7 +389,7 @@ function publicNotes(recipe){
 function chefMatches(){
   if(!chef)return [];
   const q=state.q.toLowerCase();
-  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && !state.tag && !state.fav &&
+  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||r.cuisine===state.cuisine) && !state.tag && !state.fav &&
     (!q||(r.q||r.title||'').toLowerCase().includes(q)));
 }
 function saveChefToMine(id){
@@ -450,6 +452,7 @@ function chefCard(r){
     ${r.partial?'<span class="partial-badge">Partial recipe, see video</span>':''}
     <div class="thumb">${r.photo?'<img alt="" src="'+esc(r.photo)+'" '+(r._eager?'loading="eager" fetchpriority="high"':'loading="lazy"')+' decoding="async" width="320" height="180">':'<span class="thumb-fallback">'+clipArt(r.category)+'</span>'}</div>
     <div class="card-body"><div class="cat"><span>${esc(r.category||'Other')}</span></div><h3>${esc(r.title)}</h3>
+    ${r.cuisineDetail?`<p class="cuisine-line">${esc(r.cuisineDetail)}</p>`:''}
     <p class="credit">From Backyard Chef on YouTube</p>
     ${r.watch?'<a class="btn yt-link" href="'+esc(r.watch)+'" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>':''}
     <button type="button" class="btn ghost save-chef" data-save="${esc(r.id)}">Save to my recipes</button>
@@ -460,9 +463,65 @@ function paintSource(){
     btn.setAttribute('aria-pressed', (btn.dataset.source||'')===state.source ? 'true' : 'false');
   });
 }
+function cuisineName(r){return r.cuisine||'Fusion & Everyday'}
+function orderedCuisines(names){
+  const list=CUISINE_ORDER.filter(name=>names.has(name));
+  names.forEach(name=>{if(!list.includes(name))list.push(name)});
+  return list;
+}
+function paintCuisineChips(){
+  const host=$('#cuisineChips');
+  if(!host)return;
+  const show=state.source==='backyard'&&!!chef;
+  host.hidden=!show;
+  if(!show){host.innerHTML='';return}
+  const pool=chef.items.filter(r=>!state.cat||r.category===state.cat);
+  const counts=new Map();
+  pool.forEach(r=>{const name=cuisineName(r);counts.set(name,(counts.get(name)||0)+1)});
+  const names=orderedCuisines(new Set(counts.keys()));
+  const total=[...counts.values()].reduce((sum,n)=>sum+n,0);
+  host.innerHTML=`<button type="button" class="file-tab" data-cuisine="" aria-pressed="${state.cuisine?'false':'true'}">All <span>${total.toLocaleString('en-US')}</span></button>`+
+    names.map(name=>`<button type="button" class="file-tab" data-cuisine="${esc(name)}" aria-pressed="${state.cuisine===name?'true':'false'}">${esc(name)} <span>${(counts.get(name)||0).toLocaleString('en-US')}</span></button>`).join('');
+}
+function fillCuisine(details, reset){
+  const box=details.querySelector('.cuisine-cards');
+  const more=details.querySelector('.cuisine-more');
+  if(!box)return;
+  const items=chefMatches().filter(r=>cuisineName(r)===details.dataset.cuisine);
+  let shown=reset?0:(+box.dataset.shown||0);
+  if(reset)box.innerHTML='';
+  items.slice(shown, shown+CHEF_PAGE).forEach((recipe,index)=>{
+    if(shown===0&&index===0)recipe._eager=true;
+    box.insertAdjacentHTML('beforeend', chefCard(recipe));
+  });
+  shown=Math.min(items.length, shown+CHEF_PAGE);
+  box.dataset.shown=String(shown);
+  if(more){
+    more.hidden=shown>=items.length;
+    more.textContent='Show more ('+shown+' of '+items.length+')';
+  }
+}
+function renderCuisineGroups(list){
+  const by=new Map();
+  list.forEach(r=>{
+    const name=cuisineName(r);
+    if(!by.has(name))by.set(name, []);
+    by.get(name).push(r);
+  });
+  const names=orderedCuisines(new Set(by.keys()));
+  const open=new Set([...document.querySelectorAll('details.cuisine-group[open]')].map(node=>node.dataset.cuisine));
+  if(!open.size&&names[0])open.add(names[0]);
+  $('#grid').innerHTML=names.map(name=>`<details class="cuisine-group" data-cuisine="${esc(name)}"${open.has(name)?' open':''}>
+    <summary><span>${esc(name)}</span><span class="cuisine-count">${by.get(name).length.toLocaleString('en-US')}</span></summary>
+    <div class="grid cuisine-cards" data-shown="0"></div>
+    <button type="button" class="btn list-more cuisine-more" hidden>Show more</button>
+  </details>`).join('');
+  document.querySelectorAll('details.cuisine-group[open]').forEach(node=>fillCuisine(node, true));
+}
 function renderList(){
   fillFilters();
   paintSource();
+  paintCuisineChips();
   const cats=[...new Set((state.source==='backyard'&&chef?chef.items:recipes).map(r=>r.category).filter(Boolean))].sort();
   const tabs=$('#fileTabs');
   if(tabs){
@@ -485,6 +544,17 @@ function renderList(){
     $('#empty').hidden=true;
     return;
   }
+  const grouped=state.source==='backyard'&&chef&&!q&&!state.cuisine;
+  if(grouped){
+    renderCuisineGroups(chefList);
+    if(countEl){
+      countEl.hidden=false;
+      countEl.textContent=chefList.length.toLocaleString('en-US')+' Backyard Chef recipe'+(chefList.length===1?'':'s');
+    }
+    if(more)more.hidden=true;
+    $('#empty').hidden=chefList.length>0;
+    return;
+  }
   shownChef.forEach((r,i)=>{r._eager=i===0&&state.source==='backyard';});
   $('#grid').innerHTML=mine.map(mineCard).join('')+shownChef.map(chefCard).join('');
   $('#grid').querySelectorAll('.card:not(.card-chef) .thumb').forEach((el,i)=>paintPhoto(el,mine[i]&&mine[i].photo));
@@ -492,7 +562,7 @@ function renderList(){
   if(countEl){
     if(state.source==='backyard'&&chef){
       countEl.hidden=false;
-      const shownCount=state.cat||state.q?chefList.length:chef.count;
+      const shownCount=state.cat||state.q||state.cuisine?chefList.length:chef.count;
       countEl.textContent=shownCount.toLocaleString('en-US')+' Backyard Chef recipe'+(shownCount===1?'':'s');
     }else if(q&&chef){
       countEl.hidden=false;
@@ -657,6 +727,7 @@ function paintDetail(r, readonly){
    <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}${readonly?' · Backyard Chef':''}</div>
    ${partial?'<p class="partial-badge" style="position:static;display:inline-block;margin:0 0 8px">Partial recipe, see video</p>':''}
    <h1>${esc(r.title)}</h1>
+   ${readonly&&r.cuisine?`<p class="cuisine-line">${esc(r.cuisine)}${r.cuisineDetail&&r.cuisineDetail!==r.cuisine?' · '+esc(r.cuisineDetail):''}</p>`:''}
    ${readonly?'<p class="credit">From Backyard Chef on YouTube</p>'+(r.watch?'<p><a class="btn" href="'+esc(r.watch)+'" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></p>':''):''}
    ${readonly?'<p><button type="button" class="btn primary" id="saveMine">Save to my recipes</button></p>':''}
    <div class="stats"><div class="stat"><b>${+r.prep||0} min</b><span>Prep</span></div><div class="stat"><b>${+r.cook||0} min</b><span>Cook</span></div>
@@ -2203,7 +2274,7 @@ function init(){
     const btn=e.target.closest('[data-source]');
     if(!btn)return;
     state.source=btn.dataset.source||'';
-    state.cat=''; state.tag=''; chefPage=0;
+    state.cat=''; state.tag=''; state.cuisine=''; chefPage=0;
     if(state.source==='backyard'){
       renderList();
       loadChefIndex().then(()=>renderList()).catch(()=>toast('Backyard Chef recipes did not load'));
@@ -2211,7 +2282,23 @@ function init(){
   });
   const listMore=$('#listMore');
   if(listMore)listMore.addEventListener('click',()=>{chefPage+=1;renderList()});
+  const cuisineChips=$('#cuisineChips');
+  if(cuisineChips)cuisineChips.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-cuisine]');
+    if(!btn)return;
+    state.cuisine=btn.dataset.cuisine||'';
+    chefPage=0;
+    renderList();
+  });
+  $('#grid').addEventListener('toggle',e=>{
+    const group=e.target.closest('details.cuisine-group');
+    if(!group||!group.open)return;
+    const box=group.querySelector('.cuisine-cards');
+    if(box&&!box.childElementCount)fillCuisine(group, true);
+  }, true);
   $('#grid').addEventListener('click',e=>{
+    const groupMore=e.target.closest('.cuisine-more');
+    if(groupMore){e.preventDefault();e.stopPropagation();fillCuisine(groupMore.closest('details'), false);return}
     const save=e.target.closest('[data-save]');
     if(save){e.preventDefault();e.stopPropagation();saveChefToMine(save.dataset.save);return}
     const groc=e.target.closest('[data-groc]');
