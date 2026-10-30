@@ -864,8 +864,12 @@
     ownerBtn.type = 'button';
     ownerBtn.className = 'studio-account';
     ownerBtn.id = 'shellOwner';
-    ownerBtn.setAttribute('aria-label', 'Sign in');
-    ownerBtn.innerHTML = '<span class="nav-avatar" aria-hidden="true">S</span><span class="nav-label">Sign In</span>';
+    var cachedName = document.documentElement.getAttribute('data-auth-name') || '';
+    if (!/^[A-Za-z][A-Za-z0-9_]{1,19}$/.test(cachedName)) cachedName = '';
+    var initialLabel = cachedName || 'Sign In';
+    var initialLetter = (initialLabel.replace(/[^A-Za-z0-9]/g, '').charAt(0) || 'S').toUpperCase();
+    ownerBtn.setAttribute('aria-label', cachedName ? cachedName : 'Sign in');
+    ownerBtn.innerHTML = '<span class="nav-avatar" aria-hidden="true">' + initialLetter + '</span><span class="nav-label">' + initialLabel + '</span>';
     var muteBtn = document.createElement('button');
     muteBtn.type = 'button';
     muteBtn.className = 'studio-ghost';
@@ -1017,6 +1021,11 @@
       btn.setAttribute('aria-label', label === 'Sign In' ? 'Sign in' : label);
     }
     function paintOwner() {
+      if (window.MONDO_MEMBER && typeof window.MONDO_MEMBER.ready === 'function' && !window.MONDO_MEMBER.ready()) {
+        var pendingName = document.documentElement.getAttribute('data-auth-name') || '';
+        if (/^[A-Za-z][A-Za-z0-9_]{1,19}$/.test(pendingName)) paintAccount(ownerBtn, pendingName);
+        return;
+      }
       var on = isOwnerUser();
       var label = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Webmaster' : 'Sign In');
       paintAccount(ownerBtn, label);

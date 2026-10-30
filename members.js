@@ -40,6 +40,12 @@
   var profileDialog = null;
   var anonTimer = 0;
   var saving = false;
+  var authReady = false;
+  var stayBoxes = [];
+  var persistenceGate = Promise.resolve();
+  var idbBlocked = false;
+  var STAY_KEY = 'mondosupreme.auth.stay.v1';
+  var HANDLE_KEY = 'mondosupreme.auth.handle.v1';
 
   function isOwnerUser(next) {
     return !!(admin && next && next.uid && next.uid === adminUid);
@@ -93,12 +99,23 @@
     if (row.member) return "[Member]";
     return '';
   }
+  function stayOn() {
+    return readLocal(STAY_KEY) !== '0';
+  }
+  function cachedHandle() {
+    if (!stayOn()) return '';
+    var name = readLocal(HANDLE_KEY);
+    return HANDLE_RE.test(name) ? name : '';
+  }
   function buttonLabel() {
-    if (isOwnerUser(user)) return (profile && profile.handle) || 'Webmaster';
-    if (isMemberUser(user)) return (profile && profile.handle) || 'Member';
+    var handle = (profile && profile.handle) || '';
+    if (!authReady) return handle || cachedHandle();
+    if (isOwnerUser(user)) return handle || cachedHandle() || 'Webmaster';
+    if (isMemberUser(user)) return handle || cachedHandle() || 'Member';
     return 'Sign In';
   }
   function paintButtons() {
+    if (!authReady && !buttonLabel()) return;
     var label = buttonLabel();
     ['shellOwner', 'ownerBtn', 'owner'].forEach(function (id) {
       var btn = document.getElementById(id);
@@ -122,6 +139,18 @@
     });
   }
   function announce() {
+    authReady = true;
+    if (isMemberUser(user)) {
+      var name = (profile && profile.handle) || '';
+      if (HANDLE_RE.test(name) && stayOn()) {
+        writeLocal(HANDLE_KEY, name);
+        document.documentElement.setAttribute('data-auth-name', name);
+      }
+    } else {
+      writeLocal(HANDLE_KEY, '');
+      document.documentElement.removeAttribute('data-auth-name');
+    }
+    document.documentElement.setAttribute('data-auth', 'ready');
     paintButtons();
     applyNames();
     refreshMarks();
@@ -241,6 +270,162 @@
       else localStorage.removeItem(key);
       return true;
     } catch (e) { return false; }
+  }
+  function storageWorks() {
+    try {
+      localStorage.setItem('__mondo_ps', '1');
+      localStorage.removeItem('__mondo_ps');
+      return true;
+    } catch (e) { return false; }
+  }
+  function webkitMayEvictIndexedDb() {
+    var ua = navigator.userAgent || '';
+    if (/FxiOS/i.test(ua)) return true;
+    if (/iPhone|iPad|iPod/i.test(ua)) return true;
+    return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+  }
+  function setStay(on) {
+    writeLocal(STAY_KEY, on ? '1' : '0');
+    stayBoxes.forEach(function (box) { box.checked = !!on; });
+  }
+  function failIndexedDbOpen() {
+    var listeners = {};
+    var req = {
+      error: null,
+      result: null,
+      readyState: 'pending',
+      onsuccess: null,
+      onerror: null,
+      onupgradeneeded: null,
+      addEventListener: function (type, fn) { (listeners[type] || (listeners[type] = [])).push(fn); },
+      removeEventListener: function () {}
+    };
+    function fail() {
+      req.readyState = 'done';
+      req.error = new DOMException('IndexedDB persistence is unavailable', 'UnknownError');
+      (listeners.error || []).forEach(function (fn) { try { fn.call(req); } catch (e) {} });
+      if (typeof req.onerror === 'function') { try { req.onerror.call(req); } catch (e) {} }
+    }
+    return { req: req, fail: fail };
+  }
+  function copyAuthToLocalStorage(realOpen) {
+    return new Promise(function (resolve) {
+      var finished = false;
+      function done() {
+        if (finished) return;
+        finished = true;
+        resolve();
+      }
+      var timer = setTimeout(done, 1500);
+      try {
+        var openReq = realOpen('firebaseLocalStorageDb');
+        openReq.addEventListener('error', function () { clearTimeout(timer); done(); });
+        openReq.addEventListener('success', function () {
+          var db = openReq.result;
+          try {
+            if (!db.objectStoreNames.contains('firebaseLocalStorage')) {
+              db.close();
+              clearTimeout(timer);
+              done();
+              return;
+            }
+            var getAll = db.transaction(['firebaseLocalStorage'], 'readonly').objectStore('firebaseLocalStorage').getAll();
+            getAll.addEventListener('success', function () {
+              (getAll.result || []).forEach(function (row) {
+                if (!row || typeof row.fbase_key !== 'string' || row.fbase_key.indexOf('authUser') < 0 || row.value == null) return;
+                try {
+                  if (!localStorage.getItem(row.fbase_key)) localStorage.setItem(row.fbase_key, JSON.stringify(row.value));
+                } catch (e) {}
+              });
+              try { db.close(); } catch (e) {}
+              clearTimeout(timer);
+              done();
+            });
+            getAll.addEventListener('error', function () {
+              try { db.close(); } catch (e) {}
+              clearTimeout(timer);
+              done();
+            });
+          } catch (e) {
+            try { db.close(); } catch (e2) {}
+            clearTimeout(timer);
+            done();
+          }
+        });
+      } catch (e) {
+        clearTimeout(timer);
+        done();
+      }
+    });
+  }
+  function clearFirebaseIndexedDb() {
+    try {
+      if (typeof indexedDB === 'undefined' || !indexedDB.deleteDatabase) return;
+      indexedDB.deleteDatabase('firebaseLocalStorageDb');
+    } catch (e) {}
+  }
+  function blockFirebaseIndexedDb() {
+    if (idbBlocked || typeof indexedDB === 'undefined' || !indexedDB.open || !storageWorks()) return;
+    var realOpen = indexedDB.open.bind(indexedDB);
+    idbBlocked = true;
+    persistenceGate = copyAuthToLocalStorage(realOpen).then(function () {
+      clearFirebaseIndexedDb();
+    });
+    indexedDB.open = function (name, version) {
+      if (name !== 'firebaseLocalStorageDb') return realOpen(name, version);
+      var held = failIndexedDbOpen();
+      persistenceGate.then(held.fail);
+      return held.req;
+    };
+  }
+  function BrowserLocalPersistence() {
+    this.type = 'LOCAL';
+    this._shouldAllowMigration = true;
+  }
+  BrowserLocalPersistence.prototype._isAvailable = function () { return Promise.resolve(storageWorks()); };
+  BrowserLocalPersistence.prototype._set = function (key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+    return Promise.resolve();
+  };
+  BrowserLocalPersistence.prototype._get = function (key) {
+    try {
+      var raw = localStorage.getItem(key);
+      return Promise.resolve(raw ? JSON.parse(raw) : null);
+    } catch (e) { return Promise.resolve(null); }
+  };
+  BrowserLocalPersistence.prototype._remove = function (key) {
+    localStorage.removeItem(key);
+    return Promise.resolve();
+  };
+  BrowserLocalPersistence.prototype._addListener = function () {};
+  BrowserLocalPersistence.prototype._removeListener = function () {};
+  function persistenceIsIndexedDb(auth) {
+    try {
+      var stored = auth._delegate.persistenceManager.persistence;
+      return !!(stored && stored.type === 'LOCAL' && typeof stored.pendingWrites === 'number' && !stored.storageRetriever);
+    } catch (e) { return false; }
+  }
+  function forceBrowserLocal(auth) {
+    var delegate = auth && auth._delegate;
+    if (delegate && typeof delegate.setPersistence === 'function') return delegate.setPersistence(BrowserLocalPersistence);
+    return Promise.resolve();
+  }
+  function applyPersistence(stay) {
+    if (stay && storageWorks()) blockFirebaseIndexedDb();
+    return persistenceGate.then(function () {
+      if (!bootFirebase()) return Promise.reject(new Error('auth'));
+      var auth = firebase.auth();
+      var modes = firebase.auth.Auth && firebase.auth.Auth.Persistence;
+      if (!modes) return Promise.resolve();
+      if (!stay) return auth.setPersistence(modes.SESSION);
+      // browserLocalPersistence (localStorage). IndexedDB is evicted on Firefox for iOS / WebKit.
+      return auth.setPersistence(modes.LOCAL).then(function () {
+        if (!persistenceIsIndexedDb(auth) && !webkitMayEvictIndexedDb()) return;
+        return forceBrowserLocal(auth).catch(function (err) {
+          if (persistenceIsIndexedDb(auth)) throw err;
+        });
+      }).catch(function () { return forceBrowserLocal(auth); });
+    });
   }
   function syncSnapshot() {
     var bag = {};
@@ -424,6 +609,19 @@
     input.required = type !== 'text' || autocomplete === 'nickname';
     return input;
   }
+  function stayControl() {
+    var label = document.createElement('label');
+    label.className = 'member-stay';
+    var box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = stayOn();
+    box.addEventListener('change', function () { setStay(box.checked); });
+    var text = document.createElement('span');
+    text.textContent = 'Stay signed in';
+    label.append(box, text);
+    stayBoxes.push(box);
+    return { label: label, box: box };
+  }
   function buildAuth() {
     var dlg = document.createElement('dialog');
     dlg.id = 'memberAuth';
@@ -440,8 +638,13 @@
     joinTab.textContent = 'Create Account';
     tabs.append(signTab, joinTab);
     var signForm = document.createElement('form');
-    var email = makeInput('email', 'username');
+    var email = makeInput('email', 'email');
+    email.name = 'email';
+    email.inputMode = 'email';
+    email.autocapitalize = 'none';
+    email.spellcheck = false;
     var pass = makeInput('password', 'current-password');
+    pass.name = 'password';
     var signErr = document.createElement('p');
     signErr.className = 'member-err';
     signErr.hidden = true;
@@ -456,11 +659,17 @@
     forgot.className = 'shell-tool';
     forgot.textContent = 'Forgot password?';
     signRow.append(signBtn, forgot);
-    signForm.append(field('Email', email), field('Password', pass), signErr, signRow);
+    var signStay = stayControl();
+    signForm.append(field('Email', email), field('Password', pass), signStay.label, signErr, signRow);
     var joinForm = document.createElement('form');
     joinForm.hidden = true;
-    var jEmail = makeInput('email', 'username');
+    var jEmail = makeInput('email', 'email');
+    jEmail.name = 'email';
+    jEmail.inputMode = 'email';
+    jEmail.autocapitalize = 'none';
+    jEmail.spellcheck = false;
     var jPass = makeInput('password', 'new-password');
+    jPass.name = 'new-password';
     jPass.minLength = 6;
     var jHandle = makeInput('text', 'nickname');
     jHandle.maxLength = 20;
@@ -499,6 +708,7 @@
     joinBtn.type = 'submit';
     joinBtn.className = 'shell-tool';
     joinBtn.textContent = "Create Account";
+    var joinStay = stayControl();
     joinForm.append(
       field('Email', jEmail),
       field('Password', jPass),
@@ -507,7 +717,7 @@
     );
     var legend = document.createElement('p');
     legend.textContent = 'Avatar';
-    joinForm.append(legend, picker, joinErr, joinBtn);
+    joinForm.append(legend, picker, joinStay.label, joinErr, joinBtn);
     function show(which) {
       var signing = which === 'sign';
       signForm.hidden = !signing;
@@ -522,14 +732,17 @@
       event.preventDefault();
       signErr.hidden = true;
       if (!bootFirebase()) { signErr.textContent = 'Sign-in is not available on this page.'; signErr.hidden = false; return; }
-      firebase.auth().signInWithEmailAndPassword(email.value.trim(), pass.value).then(function () {
+      signBtn.disabled = true;
+      applyPersistence(signStay.box.checked).then(function () {
+        return firebase.auth().signInWithEmailAndPassword(email.value.trim(), pass.value);
+      }).then(function () {
         pass.value = '';
         dlg.close();
-      }).catch(function (err) {
+      }, function (err) {
         pass.value = '';
         signErr.textContent = authError(err);
         signErr.hidden = false;
-      });
+      }).then(function () { signBtn.disabled = false; });
     });
     forgot.addEventListener('click', function () {
       signErr.hidden = true;
@@ -551,17 +764,20 @@
       if (!handle) { joinErr.textContent = 'Use a handle of 2 to 20 letters, numbers, and underscores. Start with a letter.'; joinErr.hidden = false; return; }
       if (!bootFirebase()) { joinErr.textContent = 'Accounts are not available on this page.'; joinErr.hidden = false; return; }
       saving = true;
-      firebase.auth().createUserWithEmailAndPassword(jEmail.value.trim(), jPass.value).then(function () {
+      joinBtn.disabled = true;
+      applyPersistence(joinStay.box.checked).then(function () {
+        return firebase.auth().createUserWithEmailAndPassword(jEmail.value.trim(), jPass.value);
+      }).then(function () {
         jPass.value = '';
         return saveProfile({ handle: handle, avatar: chosen, status: jStatus.value });
       }).then(function () {
         dlg.close();
-      }).catch(function (err) {
+      }, function (err) {
         saving = false;
         jPass.value = '';
         joinErr.textContent = authError(err);
         joinErr.hidden = false;
-      });
+      }).then(function () { joinBtn.disabled = false; });
     });
     dlg.append(title, tabs, signForm, joinForm);
     document.body.appendChild(dlg);
@@ -680,6 +896,9 @@
   }
   function signOut() {
     if (!bootFirebase()) return;
+    writeLocal(HANDLE_KEY, '');
+    document.documentElement.removeAttribute('data-auth-name');
+    clearFirebaseIndexedDb();
     firebase.auth().signOut().then(function () {
       profile = null;
       user = null;
@@ -752,8 +971,20 @@
     avatar: function () { return profile && profile.avatar || ''; },
     uid: function () { return user && user.uid || ''; },
     open: onButton,
-    signOut: signOut
+    signOut: signOut,
+    ready: function () { return authReady; }
   };
+  function preparePersistence() {
+    var early = cachedHandle();
+    if (early) {
+      document.documentElement.setAttribute('data-auth', 'cached');
+      document.documentElement.setAttribute('data-auth-name', early);
+    } else {
+      document.documentElement.setAttribute('data-auth', 'pending');
+    }
+    if (stayOn() && storageWorks()) blockFirebaseIndexedDb();
+  }
+  preparePersistence();
   function boot() {
     paintButtons();
     connect();
