@@ -72,7 +72,7 @@
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
-  map.setView([25, -40], 2);
+  map.fitBounds([[23.0, -84.5], [31.0, -73.5]], {padding: [12, 12], animate: false});
   map.on('zoomend', function () { syncLabels(); });
   var resizeTimer = 0;
   window.addEventListener('resize', function () {
@@ -261,6 +261,11 @@
     closeButton: true
   };
 
+  var HOME_BOUNDS = L.latLngBounds([23.0, -84.5], [31.0, -73.5]);
+  function showHome() {
+    if (!map) return;
+    map.fitBounds(HOME_BOUNDS, {padding: [12, 12], animate: false});
+  }
   function fitFleet() {
     var bounds = L.latLngBounds([]);
     fleet.forEach(function (ship) {
@@ -694,22 +699,32 @@
   var loadingOw = false;
   var loadingSnap = false;
 
+  function shortAge(iso) {
+    var time = Date.parse(iso);
+    if (!Number.isFinite(time)) return '';
+    var minutes = Math.max(0, Math.round((Date.now() - time) / 60000));
+    if (minutes < 1) return 'just now';
+    if (minutes === 1) return '1 min ago';
+    if (minutes < 60) return minutes + ' min ago';
+    var hours = Math.floor(minutes / 60);
+    var rem = minutes % 60;
+    if (hours < 48) return rem ? hours + 'h ' + rem + 'm ago' : hours + 'h ago';
+    return Math.round(hours / 24) + ' days ago';
+  }
   function paintLive() {
     var pill = document.getElementById('livePill');
-    var label = document.getElementById('liveLabel');
-    var count = document.getElementById('liveCountdown');
-    if (!pill || !label || !count) return;
+    var status = document.getElementById('liveStatus');
+    if (!pill || !status) return;
     if (document.hidden) {
       pill.classList.add('is-paused');
-      label.textContent = 'Paused';
-      count.textContent = 'Refresh resumes when this tab is visible.';
+      status.textContent = 'Paused · refresh resumes when this tab is visible';
       return;
     }
     pill.classList.remove('is-paused');
-    label.textContent = 'Live';
     var wait = Math.max(0, Math.min(nextOw || Date.now(), nextSnap || Date.now()) - Date.now());
     var seconds = Math.max(0, Math.ceil(wait / 1000));
-    count.textContent = 'Next refresh in ' + seconds + 's';
+    var updated = positions.updated ? 'updated ' + shortAge(positions.updated) : 'waiting for a snapshot';
+    status.textContent = 'Live · ' + updated + ' · next in ' + seconds + 's';
   }
 
   function tickAges() {
@@ -751,10 +766,8 @@
   function finishButton() {
     var button = document.getElementById('refresh');
     if (!button) return;
-    if (!loadingOw && !loadingSnap) {
-      button.disabled = false;
-      button.textContent = 'Refresh now';
-    }
+    button.disabled = !!(loadingOw || loadingSnap);
+    button.setAttribute('aria-label', button.disabled ? 'Refreshing positions' : 'Refresh now');
   }
 
   function pollSnapshot() {
@@ -1178,14 +1191,17 @@
     document.getElementById('countdown').scrollIntoView({behavior: 'smooth', block: 'start'});
   }
 
+  var dealShown = 10;
   function renderDeals() {
     var body = document.getElementById('dealsBody');
     var empty = document.getElementById('dealsEmpty');
     var count = document.getElementById('dealsCount');
+    var more = document.getElementById('dealsMore');
     if (!body) return;
     var rows = sortDeals(dealRows.filter(dealVisible));
+    var shown = rows.slice(0, dealShown);
     body.replaceChildren();
-    rows.forEach(function (deal) {
+    shown.forEach(function (deal) {
       var tr = document.createElement('tr');
       if (deal.bestValue) tr.className = 'is-value';
       var shipCell = document.createElement('td');
@@ -1248,9 +1264,8 @@
       body.append(tr);
     });
     empty.hidden = rows.length !== 0;
-    count.textContent = rows.length === dealRows.length
-      ? dealRows.length + ' Port Canaveral sailings'
-      : 'Showing ' + rows.length + ' of ' + dealRows.length + ' Port Canaveral sailings';
+    if (count) count.textContent = rows.length ? 'Showing ' + shown.length + ' of ' + rows.length : '';
+    if (more) more.hidden = shown.length >= rows.length;
   }
 
   function fillDealsNote(browseUrl) {
@@ -1298,10 +1313,12 @@
 
   ['dealSort', 'dealShip', 'dealLength'].forEach(function (id) {
     var node = document.getElementById(id);
-    if (node) node.addEventListener('change', renderDeals);
+    if (node) node.addEventListener('change', function () { dealShown = 10; renderDeals(); });
   });
   var budgetInput = document.getElementById('dealBudget');
-  if (budgetInput) budgetInput.addEventListener('input', renderDeals);
+  if (budgetInput) budgetInput.addEventListener('input', function () { dealShown = 10; renderDeals(); });
+  var dealsMore = document.getElementById('dealsMore');
+  if (dealsMore) dealsMore.addEventListener('click', function () { dealShown += 10; renderDeals(); });
   loadDeals();
 
   window.addEventListener('mondo-fleet-show', function () {
@@ -1334,7 +1351,7 @@
       fillCredits();
       map.invalidateSize();
       drawMarkers();
-      fitFleet();
+      showHome();
       fitted = true;
       renderList();
       armLive();

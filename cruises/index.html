@@ -69,6 +69,18 @@
   <button id="tabPack" class="btn" type="button" aria-selected="false">Port Canaveral Guide &amp; Packing</button>
  </div>
  <div id="fleetPane">
+ <div class="fleet-status">
+  <p id="livePill" class="live-pill"><span class="live-dot" aria-hidden="true"></span><span id="liveStatus">Live · checking ships…</span></p>
+  <button id="refresh" class="btn refresh-icon" type="button" aria-label="Refresh now"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.75 10h-2.1A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>
+ </div>
+ <section class="ship-map" aria-labelledby="mapTitle">
+  <h2 id="mapTitle">Live Ship Map</h2>
+  <div id="map" role="region" aria-label="Map of Royal Caribbean ships"></div>
+ </section>
+ <details class="about-data">
+  <summary>About this data</summary>
+  <div id="freshness" class="cruise-note">Loading ship positions…</div>
+ </details>
  <section class="countdown" id="countdown" aria-labelledby="countTitle">
   <h2 id="countTitle">My Next Cruise Countdown</h2>
   <p id="countReadout" class="count-lcd" aria-live="polite">000:00:00:00</p>
@@ -81,15 +93,6 @@
    <button id="countDefault" class="btn ghost" type="button" hidden>Save as site default</button>
   </div>
  </section>
-    <div class="freshness-row">
-      <p id="livePill" class="live-pill"><span class="live-dot" aria-hidden="true"></span><span id="liveLabel">Live</span><span id="liveCountdown">Checking ships…</span></p>
-      <p id="freshness" class="cruise-note">Loading ship positions…</p>
-      <button id="refresh" class="btn" type="button">Refresh now</button>
-    </div>
- <section class="ship-map" aria-labelledby="mapTitle">
-  <h2 id="mapTitle">Live Ship Map</h2>
-  <div id="map" role="region" aria-label="Map of Royal Caribbean ships"></div>
- </section>
  <section class="deals" id="canaveralDeals" aria-labelledby="dealsTitle">
   <p class="deals-kicker">Travel Agent · Cape Canaveral 32920</p>
   <h2 id="dealsTitle">Port Canaveral Royal Caribbean Deal Finder</h2>
@@ -98,9 +101,9 @@
   <div class="deals-filters">
    <label>Sort
     <select id="dealSort" aria-label="Sort Port Canaveral deals">
+     <option value="date" selected>Soonest Sail Date</option>
      <option value="night">Best Deal ($/Night)</option>
      <option value="price">Lowest Total Price</option>
-     <option value="date">Soonest Sail Date</option>
     </select>
    </label>
    <label>Ship
@@ -135,6 +138,7 @@
    </table>
   </div>
   <p id="dealsEmpty" class="empty" hidden>No Port Canaveral sailings match those filters.</p>
+  <button id="dealsMore" class="btn deals-more" type="button" hidden>Show 10 more</button>
   <p id="dealsNote" class="deals-note"></p>
  </section>
  <div class="toolbar">
@@ -145,7 +149,7 @@
    <option value="heard">Sort by last heard</option>
    <option value="speed">Sort by speed</option>
   </select>
-  <button id="fit" class="btn ghost" type="button">Whole fleet</button>
+  <button id="fit" class="btn ghost" type="button">Show all ships</button>
   <button id="wakes" class="btn ghost" type="button" aria-pressed="true">Wake trails</button>
  </div>
  <p id="count" class="result-count"></p>

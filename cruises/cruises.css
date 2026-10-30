@@ -10,7 +10,15 @@
 .site-header{padding-top:env(safe-area-inset-top)}
 .site-footer{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
 .site-footer a{color:var(--accent)}
-.live-pill{display:flex;align-items:center;gap:8px;flex:1 1 100%;min-height:44px;margin:0;color:#111827;font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.fleet-status{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;scroll-margin-top:calc(var(--nav-h, 56px) + 10px)}
+.fleet-status .live-pill{flex:1 1 auto;min-width:0}
+.fleet-status #liveStatus{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.refresh-icon{flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.refresh-icon svg{width:22px;height:22px;display:block}
+.about-data{width:100%;margin:0 0 16px;border:1px solid var(--line,#e2e8f0);border-radius:12px;background:var(--paper,#fff);color:var(--ink,#0f172a)}
+.about-data summary{min-height:44px;display:flex;align-items:center;padding:0 12px;font:650 15px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}
+.about-data .cruise-note{margin:0;border:0;border-radius:0 0 12px 12px;background:transparent;color:var(--ink,#0f172a)}
+.live-pill{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-height:44px;margin:0;color:var(--ink,#111827);font:700 15px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .live-dot{width:12px;height:12px;border-radius:50%;background:#15803d;box-shadow:0 0 0 0 rgba(21,128,61,.7);animation:live-pulse 1.4s ease-out infinite;flex:none}
 .live-pill.is-paused .live-dot{background:#a16207;animation:none}
 html[data-theme] .live-pill{color:var(--ink,#111827)}
@@ -84,7 +92,9 @@ html[data-theme] .ship-map h2{background:transparent;color:var(--ink)}
 .deal-price{font:700 16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;color:#111827}
 .deal-actions{display:flex;flex-direction:column;gap:6px;min-width:168px}
 .deal-actions .btn,.deal-actions a.btn{min-height:44px;text-align:center;text-decoration:none}
-.deals-note a{color:#111827}
+.deals-note a{color:var(--link,#1d4ed8)}
+.deals-more{display:block;width:100%;min-height:44px;margin:10px 0 0}
+.deals-count{color:var(--ink,#0f172a);font-weight:650}
 @media(max-width:768px){
  .deals h2{font-size:18px}
  .deals-filters label{flex:1 1 140px}
@@ -100,5 +110,5 @@ html[data-theme] .ship-map h2{background:transparent;color:var(--ink)}
 @media(max-width:720px){
  .hero,.ship-map{scroll-margin-top:calc(var(--nav-h, 64px) + 8px)}
  .hero{padding:28px 0 12px}
- #map{height:min(52svh,480px);min-height:220px}
+ #map{height:min(36svh,340px);min-height:240px}
 }

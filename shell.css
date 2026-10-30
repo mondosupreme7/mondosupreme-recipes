@@ -20,8 +20,7 @@ body{padding-top:var(--nav-h);padding-bottom:28px}
   position:fixed;top:0;left:0;right:0;z-index:80;box-sizing:border-box;
   display:flex;flex-wrap:nowrap;align-items:center;gap:6px;height:var(--nav-h);
   padding:0 max(8px, env(safe-area-inset-right)) 0 max(8px, env(safe-area-inset-left));
-  background:color-mix(in srgb, var(--surface, #fff) 88%, transparent);
-  -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+  background:var(--surface, #fff);
   border-bottom:1px solid var(--line, #e2e8f0);color:var(--ink, #0f172a);overflow:hidden;box-shadow:none
 }
 .studio-brand{display:inline-flex;align-items:center;gap:6px;min-width:0;flex:0 1 auto;font-weight:700;letter-spacing:-.03em;color:#0f172a;text-decoration:none;font-size:clamp(.92rem,2.8vw,1.15rem);white-space:nowrap}

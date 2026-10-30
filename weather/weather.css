@@ -13,7 +13,7 @@ html[data-theme="retro"] .wx-retro-title,html[data-theme="retro"] .wx-retro-bran
 .wx-presets{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
 .wx-presets .btn[aria-pressed="true"]{outline:2px solid #000080;background:#ffffcc}
 .wx-crt,.wx-star{margin:0 0 12px;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
-.wx-screen-title,.wx-star-top h2{margin:0;padding:4px 8px;background:linear-gradient(90deg,#000066,#0033aa);color:#fde047;font:700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;letter-spacing:.04em}
+.wx-screen-title,.wx-star-top h2{margin:0;padding:8px 10px;background:transparent;color:var(--ink,#0f172a);font:650 1rem/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wx-live{display:inline-block;margin-right:6px;padding:0 4px;background:#ff3300;color:#fff;font:700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;animation:wx-blink 1.2s steps(2) infinite}
 .wx-live.is-forecast{background:#c2410c;animation:none}
 .wx-track{display:flex;justify-content:space-between;gap:8px;flex:1 1 240px;margin:0;font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
@@ -32,7 +32,12 @@ html[data-theme] .wx-live.is-forecast{background:#c2410c!important;color:#fff!im
 #map{height:440px;background:#001848}
 .wx-scan{display:none;position:absolute;inset:0;pointer-events:none;z-index:500;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
 html[data-theme="retro"] .wx-scan{display:block}
-.wx-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px}
+.wx-controls{display:flex;flex-direction:column;gap:8px;align-items:stretch;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+.wx-transport{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;width:100%;min-width:0}
+.wx-icon{flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.wx-icon svg{width:22px;height:22px;display:block}
+.wx-speed{display:flex;align-items:center;gap:6px;flex:1 1 auto;min-width:0;font:600 14px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.wx-speed select{flex:1 1 auto;min-width:0;min-height:44px;font-size:16px}
 .wx-scrub{flex:1 1 240px;min-width:min(100%,220px);display:flex;flex-direction:column;gap:2px;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 .wx-scrub input{width:100%;min-height:44px}
 .wx-scrub span{font:700 13px "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;color:#111827}
@@ -66,15 +71,19 @@ html[data-theme="retro"] .wx-scan{display:block}
 .wx-marine{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
 .wx-sea{padding:6px;background:#002080;border:2px solid #7fdfff}
 .wx-sea b{color:#7fdfff}
-.wx-ship{background:transparent;border:0}
-.wx-ship span{font-size:18px;line-height:24px}
+html[data-theme="dark"] .leaflet-bar a,
+html[data-theme="harbor"] .leaflet-bar a{background:var(--surface,#151c2c);color:var(--ink,#f8fafc);border-color:var(--line-strong,#64748b)}
+html[data-theme="dark"] .leaflet-control-attribution,
+html[data-theme="harbor"] .leaflet-control-attribution{background:rgba(11,18,32,.92);color:var(--ink,#f8fafc)}
+html[data-theme="dark"] .leaflet-control-attribution a,
+html[data-theme="harbor"] .leaflet-control-attribution a{color:var(--link,#93c5fd)}
 .leaflet-container{font:12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
 @media(max-width:768px){
- #map{height:300px}
+ #map{height:min(48svh,360px)}
  .wx-temp{font-size:3.2rem}
- .wx-controls{padding-bottom:8px}
- .wx-slider,.wx-scrub,.wx-controls{scroll-margin-bottom:calc(var(--dock-h, 72px) + 20px)}
- body.wx-page{padding-bottom:calc(var(--dock-h, 72px) + 28px)}
+ .wx-hero{scroll-margin-top:calc(var(--nav-h, 56px) + 8px)}
+ .wx-controls{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+ body.wx-page main.wrap{padding-bottom:calc(var(--dock-h, 72px) + 28px)}
 }
 @media(prefers-reduced-motion:reduce){
  .wx-live{animation:none}

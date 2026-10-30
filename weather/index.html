@@ -82,20 +82,21 @@
    <div class="wx-scan" aria-hidden="true"></div>
   </div>
   <div class="wx-controls">
-   <button class="btn wx-btn" id="wxPlay" type="button">Play</button>
-   <button class="btn wx-btn" id="wxPause" type="button">Pause</button>
-   <button class="btn wx-btn" id="wxPrev" type="button" aria-label="Previous frame">Step back</button>
-   <button class="btn wx-btn" id="wxNext" type="button" aria-label="Next frame">Step forward</button>
-   <label class="wx-slider">Speed
-    <select id="wxSpeed" aria-label="Loop speed">
-     <option value="1100">Slow</option>
-     <option value="700" selected>Normal</option>
-     <option value="350">Fast</option>
-    </select>
-   </label>
+   <div class="wx-transport" role="group" aria-label="Radar playback">
+    <button class="btn wx-btn wx-icon" id="wxPlay" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+    <button class="btn wx-btn wx-icon" id="wxPrev" type="button" aria-label="Step back"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+    <button class="btn wx-btn wx-icon" id="wxNext" type="button" aria-label="Step forward"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+    <label class="wx-speed">Speed
+     <select id="wxSpeed" aria-label="Loop speed">
+      <option value="1100">Slow</option>
+      <option value="700" selected>Normal</option>
+      <option value="350">Fast</option>
+     </select>
+    </label>
+   </div>
    <label class="wx-slider">Opacity <input id="wxOpacity" type="range" min="20" max="100" value="70" aria-valuemin="20" aria-valuemax="100"></label>
    <label class="wx-scrub">Radar time
-    <input id="wxScrub" type="range" min="0" max="24" value="24" aria-valuemin="0" aria-valuemax="24" aria-label="Radar time, six hours ago through the forecast">
+    <input id="wxScrub" type="range" min="0" max="24" value="24" aria-valuemin="0" aria-valuemax="24" aria-label="Radar time">
     <span id="wxScrubRead">Now</span>
    </label>
    <p id="wxTrack" class="wx-track is-obs"><span>Past · observed radar</span><span class="wx-track-future">Forecast · HRRR model</span></p>
@@ -103,11 +104,11 @@
     <button class="btn wx-btn" id="wxPast" type="button" aria-pressed="false">Past</button>
     <button class="btn wx-btn" id="wxFuture" type="button" aria-pressed="true">Past + future</button>
    </div>
-   <label class="wx-check"><input id="wxRain" type="checkbox" checked> 6-hour loop</label>
+   <label class="wx-check"><input id="wxRain" type="checkbox" checked> 2-hour loop</label>
    <label class="wx-check"><input id="wxNexrad" type="checkbox" checked> NEXRAD</label>
    <label class="wx-check"><input id="wxShips" type="checkbox"> Cruise ships</label>
   </div>
-  <p id="wxRadarNote" class="wx-note">Observed radar runs from six hours ago through the latest scan. Past + future adds NOAA HRRR model frames after Now. Forecast frames are labeled and are not observed radar.</p>
+  <p id="wxRadarNote" class="wx-note">The loop is the latest two hours of observed radar and opens on the newest scan. Past + future adds a short model look ahead. Forecast frames are not observed radar.</p>
  </section>
  <section class="wx-star" aria-labelledby="wxStarTitle">
   <div class="wx-star-top">
@@ -131,7 +132,7 @@
    <div class="wx-marine" id="wxMarine">Reading the seas off Port Canaveral…</div>
   </div>
  </section>
- <p class="wx-fine">Observed radar: Iowa Environmental Mesonet US composite (N0Q), from six hours ago through the latest scan. Forecast frames: NOAA HRRR simulated reflectivity via IEM. Place names: Esri. Conditions: Open-Meteo and the National Weather Service. Ship dots are last-reported positions, not for navigation. During a warning, follow weather.gov.</p>
+ <p class="wx-fine">Observed radar: Iowa Environmental Mesonet US composite (N0Q), the latest two hours. Forecast frames: NOAA HRRR via IEM. Place names: OpenStreetMap. Conditions: Open-Meteo and the National Weather Service. Ship dots are last-reported positions, not for navigation. During a warning, follow weather.gov.</p>
 </main>
 <footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Not a substitute for official warnings. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">AI Search</a> · <a href="/stocks/">Stocks</a> · <a href="/wiki/">Wiki</a> · <a href="/board/">Board</a> · <a href="/chat/">Chat</a> · <a href="/arcade/">Arcade</a> · <a href="/pet/">Pet</a> · <a href="/forum/">Forum</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a> · <a href="/mmo/">MMO</a> · <a href="/fps/">FPS</a> · <a href="/escape/" aria-label="The Locked Room">???</a></div></footer>
 <script src="/cruises/vendor/leaflet/leaflet.js"></script>

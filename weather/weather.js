@@ -207,14 +207,6 @@
     map.getPane('nexrad').style.zIndex = 250;
     map.createPane('radar');
     map.getPane('radar').style.zIndex = 260;
-    map.createPane('labels');
-    map.getPane('labels').style.zIndex = 450;
-    map.getPane('labels').style.pointerEvents = 'none';
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-      pane: 'labels',
-      maxZoom: 16,
-      attribution: '&copy; Esri'
-    }).addTo(map);
     nexradLayer = L.tileLayer('https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::USCOMP-N0Q-0/{z}/{x}/{y}.png', {
       pane: 'nexrad',
       opacity: opacity,
@@ -323,13 +315,10 @@
     return last || Date.now();
   }
   function frameCaption(frame) {
-    var rel = relLabel(frame.time, obsAnchor());
+    var rel = relLabel(frame.time, Date.now());
+    if (rel === 'Now') return 'Now · ' + clockLabel(frame.time);
     if (frame.kind === 'forecast') return rel + ' · ' + clockLabel(frame.time);
-    var when = new Date(frame.time).toLocaleString('en-US', {
-      timeZone: 'America/New_York',
-      weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
-    });
-    return rel + ' · ' + when;
+    return rel;
   }
   function nextGood(from, dir) {
     if (!frames.length) return 0;
@@ -358,7 +347,7 @@
       track.classList.toggle('is-obs', !forecast);
     }
     var stamp = $('wxStamp');
-    if (stamp) stamp.textContent = caption + ' · ' + (frameIndex + 1) + '/' + frames.length;
+    if (stamp) stamp.textContent = caption;
     var read = $('wxScrubRead');
     if (read) read.textContent = caption;
     var scrub = $('wxScrub');
@@ -509,10 +498,12 @@
     var wasPlaying = playing;
     var token = ++radarToken;
     var latest = cache.latest;
-    var step = 10 * 60 * 1000;
-    var built = [];
-    for (var t = latest - 6 * 60 * 60 * 1000; t <= latest; t += step) {
-      built.push({ kind: 'obs', time: t, comp: iemStamp(t), ok: true });
+    var step = 5 * 60 * 1000;
+    var built = Array.isArray(cache.scans) && cache.scans.length ? cache.scans.slice() : [];
+    if (!built.length) {
+      for (var t = latest - 2 * 60 * 60 * 1000; t <= latest; t += step) {
+        built.push({ kind: 'obs', time: t, comp: iemStamp(t), ok: true });
+      }
     }
     var forecastCount = 0;
     if (futureOn && cache.hrrr) {
@@ -520,7 +511,7 @@
       for (var lead = 15; lead <= cache.hrrr.maxLead; lead += 15) {
         var when = runMs + lead * 60 * 1000;
         if (when <= latest) continue;
-        if (when > latest + 6 * 60 * 60 * 1000 + step) break;
+        if (when > latest + 60 * 60 * 1000) break;
         built.push({
           kind: 'forecast',
           time: when,
@@ -538,8 +529,10 @@
       frames = good;
       forecastCount = frames.filter(function (frame) { return frame.kind === 'forecast'; }).length;
       frameLayers = frames.map(makeLayer);
-      var nowIndex = 0;
-      frames.forEach(function (frame, i) { if (frame.kind !== 'forecast') nowIndex = i; });
+      var nowIndex = Math.max(0, frames.length - 1);
+      for (var n = frames.length - 1; n >= 0; n--) {
+        if (frames[n].kind !== 'forecast' && frames[n].ok !== false) { nowIndex = n; break; }
+      }
       var crt = document.querySelector('.wx-crt');
       if (crt) crt.classList.toggle('is-past', !futureOn || !forecastCount);
       syncLiveUnderlay();
@@ -548,8 +541,24 @@
       if (wasPlaying) play();
       var reach = forecastCount ? relLabel(frames[frames.length - 1].time, obsAnchor()) : 'Now';
       note(futureOn
-        ? 'US composite through Now, then the HRRR forecast through ' + reach + '. The orange tag marks model frames, not observed radar.'
-        : 'Observed US composite only, from -6h to Now. Turn on Past + future for the HRRR forecast.');
+        ? 'Latest two hours of observed radar, then a short HRRR look ahead to ' + reach + '.'
+        : 'Latest two hours of observed US composite, ending on the newest scan.');
+    });
+  }
+  function loadRecentScans() {
+    var end = new Date();
+    var start = new Date(end.getTime() - 2 * 60 * 60 * 1000);
+    function stamp(date) { return date.toISOString().replace(/\.\d{3}Z$/, 'Z'); }
+    var url = 'https://mesonet.agron.iastate.edu/json/radar?operation=list&radar=USCOMP&product=N0Q&start='
+      + encodeURIComponent(stamp(start)) + '&end=' + encodeURIComponent(stamp(end));
+    return fetch(url).then(function (res) {
+      if (!res.ok) throw new Error('scans');
+      return res.json();
+    }).then(function (data) {
+      return ((data && data.scans) || []).map(function (scan) {
+        var ms = Date.parse(scan.ts);
+        return { kind: 'obs', time: ms, comp: iemStamp(ms), ok: true };
+      }).filter(function (frame) { return Number.isFinite(frame.time); });
     });
   }
   function loadRadar() {
@@ -558,9 +567,9 @@
       applyRadar(radarCache);
       return;
     }
-    if ($('wxStamp')) $('wxStamp').textContent = 'Loading radar and the HRRR forecast…';
-    Promise.all([findLatest(), findHrrr()]).then(function (pair) {
-      radarCache = { at: Date.now(), latest: pair[0], hrrr: pair[1] };
+    if ($('wxStamp')) $('wxStamp').textContent = 'Loading the latest radar…';
+    Promise.all([loadRecentScans().catch(function () { return null; }), findLatest(), findHrrr()]).then(function (pair) {
+      radarCache = { at: Date.now(), scans: pair[0], latest: pair[1], hrrr: pair[2] };
       applyRadar(radarCache);
     }).catch(function () {
       if (first) {
@@ -574,7 +583,12 @@
     if (playing || frames.length < 2) return;
     playing = true;
     var playBtn = $('wxPlay');
-    if (playBtn) playBtn.setAttribute('aria-pressed', 'true');
+    if (playBtn) {
+      playBtn.setAttribute('aria-pressed', 'true');
+      playBtn.setAttribute('aria-label', 'Pause');
+      var playPath = playBtn.querySelector('path');
+      if (playPath) playPath.setAttribute('d', 'M6 5h4v14H6zm8 0h4v14h-4z');
+    }
     if (frameIndex >= frames.length - 1) frameIndex = 0;
     function tick() {
       if (!playing) return;
@@ -593,7 +607,12 @@
     if (playTimer) clearTimeout(playTimer);
     playTimer = 0;
     var playBtn = $('wxPlay');
-    if (playBtn) playBtn.setAttribute('aria-pressed', 'false');
+    if (playBtn) {
+      playBtn.setAttribute('aria-pressed', 'false');
+      playBtn.setAttribute('aria-label', 'Play');
+      var playPath = playBtn.querySelector('path');
+      if (playPath) playPath.setAttribute('d', 'M8 5v14l11-7z');
+    }
   }
   function syncLiveUnderlay() {
     if (!map || !nexradLayer) return;
@@ -630,8 +649,12 @@
         var row = rows[ship.mmsi];
         if (!row || typeof row.lat !== 'number' || typeof row.lon !== 'number') return;
         count += 1;
-        var marker = L.marker([row.lat, row.lon], {
-          icon: L.divIcon({ className: 'wx-ship', html: '<span aria-hidden="true">🚢</span>', iconSize: [24, 24], iconAnchor: [12, 12] })
+        var marker = L.circleMarker([row.lat, row.lon], {
+          radius: 6,
+          weight: 2,
+          color: '#ffffff',
+          fillColor: '#1d4ed8',
+          fillOpacity: 1
         });
         var node = document.createElement('div');
         var title = document.createElement('strong');
@@ -644,8 +667,7 @@
         body.textContent = bits.join(' · ') || 'Last reported position';
         node.appendChild(title);
         node.appendChild(body);
-        marker.bindPopup(node);
-        marker.bindTooltip(names[ship.mmsi] || ship.name, { direction: 'top', opacity: 1 });
+        marker.bindPopup(node, { className: 'ship-callout', maxWidth: 220, autoPanPadding: [16, 16] });
         marker.addTo(shipLayer);
       });
       shipLoaded = true;
@@ -956,8 +978,7 @@
         note('The place lookup did not answer.');
       });
     });
-    $('wxPlay').addEventListener('click', play);
-    $('wxPause').addEventListener('click', pause);
+    $('wxPlay').addEventListener('click', function () { if (playing) pause(); else play(); });
     $('wxPrev').addEventListener('click', function () { pause(); showFrame(frameIndex - 1); });
     $('wxNext').addEventListener('click', function () { pause(); showFrame(frameIndex + 1); });
     $('wxScrub').addEventListener('input', function (event) {
