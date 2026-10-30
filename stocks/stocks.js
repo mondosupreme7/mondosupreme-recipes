@@ -12,6 +12,8 @@
   var uid = '';
   var member = false;
   var pendingPrice = Object.create(null);
+  var stockShown = 10;
+  var watchShown = 10;
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
@@ -176,8 +178,10 @@
   function renderTable() {
     var body = document.getElementById('rows');
     var list = visibleRows();
+    var shown = list.slice(0, stockShown);
+    var more = document.getElementById('stocksMore');
     body.replaceChildren();
-    list.forEach(function (row) {
+    shown.forEach(function (row) {
       var tr = document.createElement('tr');
       tr.tabIndex = 0;
       if (row.symbol === selected) tr.className = 'is-open';
@@ -226,10 +230,8 @@
       body.appendChild(tr);
     });
     document.getElementById('empty').hidden = list.length !== 0;
-    var scanned = rows.length;
-    document.getElementById('count').textContent = list.length === scanned && document.getElementById('screen').value === 'all'
-      ? scanned + ' stocks scanned'
-      : 'Showing ' + list.length + ' of ' + scanned + ' scanned stocks';
+    document.getElementById('count').textContent = list.length ? 'Showing ' + shown.length + ' of ' + list.length : '';
+    if (more) more.hidden = shown.length >= list.length;
   }
 
   function fillWhy(row) {
@@ -430,8 +432,10 @@
   function renderWatch() {
     var list = document.getElementById('watchList');
     var symbols = Object.keys(watch).sort();
+    var page = symbols.length > 10 ? symbols.slice(0, watchShown) : symbols;
+    var more = document.getElementById('watchMore');
     list.replaceChildren();
-    symbols.forEach(function (symbol) {
+    page.forEach(function (symbol) {
       var pin = watch[symbol];
       var item = document.createElement('li');
       var button = el('button', symbol, 'btn');
@@ -465,6 +469,7 @@
       list.appendChild(item);
     });
     if (!symbols.length) list.appendChild(el('li', 'No pins yet.'));
+    if (more) more.hidden = symbols.length <= 10 || page.length >= symbols.length;
   }
 
   function paintTape() {
@@ -658,8 +663,10 @@
     rulesCard.open = true;
   });
 
-  document.getElementById('screen').addEventListener('change', renderTable);
-  document.getElementById('sort').addEventListener('change', renderTable);
+  document.getElementById('screen').addEventListener('change', function () { stockShown = 10; renderTable(); });
+  document.getElementById('sort').addEventListener('change', function () { stockShown = 10; renderTable(); });
+  document.getElementById('stocksMore').addEventListener('click', function () { stockShown += 10; renderTable(); });
+  document.getElementById('watchMore').addEventListener('click', function () { watchShown += 10; renderWatch(); });
   document.getElementById('detailClose').addEventListener('click', function () {
     selected = '';
     document.getElementById('detail').hidden = true;
