@@ -458,9 +458,13 @@ html[data-theme] .studio-nav {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
-html[data-theme] .studio-dock,
-html[data-theme] .studio-drawer {
+html[data-theme] .studio-dock {
   background: var(--nav) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme] .studio-drawer {
+  background: var(--surface) !important;
   color: var(--ink) !important;
   border-color: var(--line) !important;
 }
@@ -470,8 +474,7 @@ html[data-theme] .studio-dock a,
 html[data-theme] .studio-dock button,
 html[data-theme] .studio-clock { color: var(--ink) !important; }
 html[data-theme] .studio-links a[aria-current="page"],
-html[data-theme] .studio-links a:hover,
-html[data-theme] .studio-dock a[aria-current="page"] { background: var(--chip) !important; }
+html[data-theme] .studio-links a:hover { background: var(--chip) !important; }
 html[data-theme] .studio-apps,
 html[data-theme] .studio-ghost,
 html[data-theme] .studio-close,
@@ -615,8 +618,8 @@ html[data-theme="harbor"] .site-footer a,
 html[data-theme="harbor"] .site-footer span {
   color: var(--muted) !important;
 }
-html[data-theme="dark"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.ship-callout a),
-html[data-theme="harbor"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.ship-callout a) { color: var(--link) !important; }
+html[data-theme="dark"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.ship-callout a),
+html[data-theme="harbor"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.ship-callout a) { color: var(--link) !important; }
 html[data-theme="dark"] a.qbadge,
 html[data-theme="dark"] a.rule-chip,
 html[data-theme="harbor"] a.qbadge,
@@ -1171,3 +1174,29 @@ html:not([data-theme="retro"]) .deals{
   border:0 !important;background:transparent !important;box-shadow:none !important;min-width:0 !important;color:var(--ink-muted) !important
 }
 .studio-dock [aria-current="page"]{color:var(--link) !important;background:transparent !important}
+html[data-theme] .studio-dock a[aria-current="page"],
+html[data-theme] .studio-dock button[aria-expanded="true"]{
+  color:var(--link) !important;background:transparent !important
+}
+html[data-theme] .app-tile{
+  background:var(--app-bg,#e2e8f0) !important;
+  color:var(--app-ink,#0f172a) !important
+}
+html[data-theme] a.studio-app,
+html[data-theme] a.studio-app .app-label{color:var(--ink) !important}
+html[data-theme="retro"] .studio-apps-grid{
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:6px
+}
+html[data-theme="retro"] .studio-app{
+  flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;
+  min-height:44px;padding:6px 8px;border-radius:0;text-align:left;font-size:16px
+}
+html[data-theme="retro"] .app-modern{display:none !important}
+html[data-theme="retro"] .app-pixel{display:grid !important;place-items:center}
+html[data-theme="retro"] .app-pixel svg{width:16px;height:16px;image-rendering:pixelated}
+html[data-theme="retro"] .studio-dock .app-pixel svg{width:22px;height:22px}
+html[data-theme="retro"] .app-label{
+  min-height:0;font-size:16px;line-height:1.2;text-align:left;-webkit-line-clamp:1
+}
+html[data-theme="retro"] .studio-app[aria-current="page"]{background:#ffffcc !important;color:#111827 !important}
+html[data-theme="retro"] .studio-app[aria-current="page"] .app-label{color:#111827 !important}
