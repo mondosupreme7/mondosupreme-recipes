@@ -1,14 +1,23 @@
-html{height:var(--app-h, 100dvh);overflow:hidden}
+html{
+  height:100svh;
+  height:min(100dvh, 100svh);
+  height:var(--app-h, min(100dvh, 100svh));
+  overflow:hidden
+}
 .wordle-page{overflow:hidden;margin:0!important;touch-action:manipulation}
 .wordle-page .site-footer{display:none!important}
 body.wordle-page{
   --dock-h:0px;
-  --key:clamp(36px, calc((var(--app-h, 100dvh) - var(--nav-h) - env(safe-area-inset-bottom)) * .09), 48px);
+  --key:clamp(40px, calc((var(--app-h, min(100dvh, 100svh)) - var(--nav-h) - env(safe-area-inset-bottom)) * .085), 46px);
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
-  height:var(--app-h, 100dvh);
-  max-height:var(--app-h, 100dvh);
+  height:100svh;
+  height:min(100dvh, 100svh);
+  height:var(--app-h, min(100dvh, 100svh));
+  max-height:100svh;
+  max-height:min(100dvh, 100svh);
+  max-height:var(--app-h, min(100dvh, 100svh));
   overflow:hidden;
   padding-bottom:env(safe-area-inset-bottom) !important
 }
@@ -68,7 +77,7 @@ body.wordle-page main.word-main{
 .word-keys{flex:0 0 auto;width:100%;max-width:100%;margin:0;padding-bottom:max(2px, env(safe-area-inset-bottom))}
 .kb-row{display:flex;gap:4px;width:100%;margin:0 0 4px}
 .kb-row:last-child{margin-bottom:0}
-.key{flex:1 1 0;min-width:0;box-sizing:border-box;height:var(--key,44px);min-height:0;padding:0 1px;background:var(--surface,#fff);color:var(--ink,#0f172a);border:1px solid var(--line-strong,#7c8799);border-radius:8px;box-shadow:none;font:700 13px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.key{flex:1 1 0;min-width:0;box-sizing:border-box;height:var(--key,44px);min-height:40px;padding:0 1px;background:var(--surface,#fff);color:var(--ink,#0f172a);border:1px solid var(--line-strong,#7c8799);border-radius:8px;box-shadow:none;font:700 13px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .key.wide{flex:1.45 1 0;font-size:11px}
 .key[data-state="correct"]{background:#538d4e;color:#fff}
 .key[data-state="present"]{background:#c9b458;color:#111}

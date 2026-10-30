@@ -571,10 +571,29 @@
     });
   }
 
+  function unitHeight(unit) {
+    var probe = document.getElementById('wordViewportProbe');
+    if (!probe) {
+      probe = document.createElement('div');
+      probe.id = 'wordViewportProbe';
+      probe.setAttribute('aria-hidden', 'true');
+      probe.style.cssText = 'position:fixed;left:0;top:0;width:0;pointer-events:none;visibility:hidden';
+      document.documentElement.appendChild(probe);
+    }
+    probe.style.height = unit;
+    return Math.round(probe.getBoundingClientRect().height);
+  }
   function visibleHeight() {
+    var svh = unitHeight('100svh');
+    var dvh = unitHeight('100dvh');
+    var inner = Math.round(window.innerHeight || 0);
     var view = window.visualViewport;
-    var height = view && view.height ? view.height : window.innerHeight;
-    return height > 0 ? Math.round(height) : 0;
+    var seen = view && view.height ? Math.round(view.offsetTop + view.height) : 0;
+    var height = dvh || svh || inner || seen;
+    [svh, inner, seen].forEach(function (value) {
+      if (value > 0) height = Math.min(height, value);
+    });
+    return height > 0 ? height : 0;
   }
   function fitPlay() {
     var height = visibleHeight();
