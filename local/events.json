@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-30T03:25:41Z",
+ "updated": "2026-10-30T04:27:15Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 14
+   "count": 16
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 32
+   "count": 34
   },
   {
    "name": "Launch Library 2",
@@ -96,34 +96,6 @@
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
-  },
-  {
-   "id": "79a7e892deab6cb9",
-   "title": "Norwegian Getaway in port",
-   "start": "2026-10-28T21:00:00Z",
-   "end": "2026-10-29T20:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "2d97ae88ea96e100",
-   "title": "Harmony of the Seas in port",
-   "start": "2026-10-29T10:00:00Z",
-   "end": "2026-10-29T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "71cde7d739cde067",
@@ -877,6 +849,90 @@
    "category": "Food & Markets",
    "url": "https://www.visitspacecoast.com/event/jazzoo/",
    "description": "Get ready for our annual music and food extravaganza, where every moment is a celebration! Music Galore: Enjoy an eclectic mix of genres across 7 stages, ensuring there\u2019s something for every musical taste. Culinary Delights: Savor a wide variety of cuisines from 30 local restaurants, caterers, and food trucks, all served with sustainable serviceware. Unlimited Drinks: Relish the full open bars, se",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "b52a9ea2aaf05eaa",
+   "title": "Star of the Seas in port",
+   "start": "2026-11-08T11:00:00Z",
+   "end": "2026-11-08T21:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "8c8c9de4e41a02b1",
+   "title": "Carnival Venezia in port",
+   "start": "2026-11-08T11:00:00Z",
+   "end": "2026-11-08T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "88ab4d035d46bd44",
+   "title": "Carnival Vista in port",
+   "start": "2026-11-08T12:00:00Z",
+   "end": "2026-11-08T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "9da2b95650a6b57a",
+   "title": "Norwegian Prima in port",
+   "start": "2026-11-08T12:00:00Z",
+   "end": "2026-11-08T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "79db6dd440da693c",
+   "title": "Jazz Concert by the Jon Oxford Trio",
+   "start": "2026-11-08T14:00:00Z",
+   "end": "2026-11-08T16:00:00Z",
+   "town": "Merritt Island",
+   "venue": "Brevard Veterans Memorial Center, 400 S Sykes Creek Pkwy, Merritt Island, FL, 32952, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/jazz-concert-by-the-jon-oxford-trio/",
+   "description": "Jon Oxford brings over two decades of diverse musical experience to his roles as an educator and performer. He holds a Master of Music in Jazz Performance & Composition from the University of South Florida and a Bachelor of Music in Jazz Performance and Composition from the University of Central Florida, complemented by an Associate in Arts from Eastern Florida State College and an Associate of Ap",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "ee5abfd013f690c3",
+   "title": "Fay Lake FestiFALL & Chili Cook-Off",
+   "start": "2026-11-08T18:00:00Z",
+   "end": "2026-11-08T22:00:00Z",
+   "town": "Cocoa",
+   "venue": "Fay Lake Wilderness Park, 6300 Fay Blvd, Cocoa, FL, 32927, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/fay-lake-festifall-chili-cook-off/",
+   "description": "Join the Port St. John Community Foundation and enjoy some cooler weather and hot chili as we host the 8th Annual Fay Lake Festifall & Chili Cook-Off with Food Trucks, Craft/Cottage & Business Vendors, Non-Profits, Bounce Houses, Hay Ride, Petting Zoo, Photo Ops, Chili Cook-Off and FALL FAMILY FUN!",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
