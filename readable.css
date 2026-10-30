@@ -189,7 +189,7 @@ body:not(.chat-page):not(.board-page):not(.night) main.wrap,
   color: #374151;
 }
 
-main a:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook):not(.status-card):not(.cat-card):not(.shell-hit):not(.studio-dock a):not(.ship-callout a),
+main a:not(.btn):not(.choice):not(.brand):not(.wiki-row):not(.topic):not(.guestbook):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.ship-callout a),
 .site-footer a, .choice, .choice-title, .webring a, .wiki-row, .wiki-row-title,
 .hit-title, .hit-title a, .guestbook {
   color: #0b3d91;
@@ -549,7 +549,7 @@ html[data-theme] button.conn-tile[data-tier="1"]{background:#a0c35a!important;co
 html[data-theme] button.conn-tile[data-tier="2"]{background:#b0c4ef!important;color:#1c1917!important}
 html[data-theme] button.conn-tile[data-tier="3"]{background:#ba81c5!important;color:#1c1917!important}
 html[data-theme] .sudo-cell.is-bad{color:#c62828!important}
-html[data-theme] main a:not(.btn):not(.choice):not(.brand):not(.status-card):not(.cat-card):not(.shell-hit):not(.studio-dock a) { color: var(--link); }
+html[data-theme] main a:not(.btn):not(.choice):not(.brand):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a) { color: var(--link); }
 .studio-hero h1, .studio-hero p, .counter-label, .hero h1, .hero p, .mc-brand { color: var(--ink, #0f172a); }
 .studio-nav #shellBackup, .studio-nav #shellRestoreBtn { display: none !important; }
 .quote-body { background: #fff !important; border: 0 !important; }
@@ -609,8 +609,8 @@ html[data-theme="harbor"] .site-footer a,
 html[data-theme="harbor"] .site-footer span {
   color: var(--muted) !important;
 }
-html[data-theme="dark"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.studio-dock a):not(.ship-callout a),
-html[data-theme="harbor"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.studio-dock a):not(.ship-callout a) { color: var(--link) !important; }
+html[data-theme="dark"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.ship-callout a),
+html[data-theme="harbor"] a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.ship-callout a) { color: var(--link) !important; }
 html[data-theme="dark"] a.qbadge,
 html[data-theme="dark"] a.rule-chip,
 html[data-theme="harbor"] a.qbadge,
@@ -1041,20 +1041,24 @@ a.status-card:active,a.cat-card:active{background:var(--surface-2)}
 html:not([data-theme="retro"]) .filebox{
   background:transparent !important;border:0 !important;box-shadow:none !important;padding:0 !important
 }
-html:not([data-theme="retro"]) .grid{
+html:not([data-theme="retro"]) .grid:not([data-recipe-layout]){
   grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr)) !important;
   background:transparent !important;border:0 !important;padding:0 !important
 }
 html:not([data-theme="retro"]) #grid.is-grouped{
-  display:flex !important;flex-direction:column;width:100%;max-width:100%;gap:12px
+  display:flex !important;flex-direction:column !important;width:100%;max-width:100%;gap:12px;
+  grid-template-columns:none !important
 }
 html:not([data-theme="retro"]) .cuisine-group{width:100%;max-width:100%;box-sizing:border-box}
-html:not([data-theme="retro"]) .cuisine-cards.grid{
-  width:100%;
-  grid-template-columns:minmax(0,1fr) !important
+html:not([data-theme="retro"]) [data-recipe-layout="list"]{
+  display:flex !important;flex-direction:column !important;gap:0 !important;width:100%;
+  grid-template-columns:none !important
 }
-@media(min-width:700px){
-  html:not([data-theme="retro"]) .cuisine-cards.grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+html:not([data-theme="retro"]) [data-recipe-layout="grid"]{
+  display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important;width:100%
+}
+html:not([data-theme="retro"]) [data-recipe-layout="cards"]{
+  display:grid !important;grid-template-columns:minmax(0,1fr) !important;gap:12px !important;width:100%
 }
 html:not([data-theme="retro"]) .cuisine-cards .thumb{
   display:block !important;width:100% !important;height:auto !important;aspect-ratio:16/9;overflow:hidden;position:relative
@@ -1077,6 +1081,18 @@ html:not([data-theme="retro"]) .file-tabs .file-tab,
 html:not([data-theme="retro"]) .cuisine-chips .file-tab{
   flex:0 0 auto;scroll-snap-align:start;min-height:44px;white-space:nowrap;border-radius:999px !important
 }
+html:not([data-theme="retro"]) .layout-switch{background:var(--surface-2) !important;border:1px solid var(--line-strong) !important}
+html:not([data-theme="retro"]) .layout-switch button{background:transparent !important;color:var(--ink) !important;border:0 !important;box-shadow:none !important}
+html:not([data-theme="retro"]) .layout-switch button[aria-pressed="true"]{background:var(--ink) !important;color:var(--bg) !important}
+html:not([data-theme="retro"]) a.recipe-row,
+html:not([data-theme="retro"]) a.recipe-tile{color:var(--ink) !important;text-decoration:none !important}
+html:not([data-theme="retro"]) .recipe-row-meta,
+html:not([data-theme="retro"]) .recipe-tile-title{color:var(--ink) !important}
+html:not([data-theme="retro"]) .recipe-row-meta{color:var(--ink-muted) !important}
+html:not([data-theme="retro"]) .cat-pill{background:var(--surface-2) !important;color:var(--ink) !important;border:0 !important}
+html:not([data-theme="retro"]) .card:hover{outline:none !important}
+html:not([data-theme="retro"]) .recipe-actions{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+html:not([data-theme="retro"]) .recipe-actions .btn{width:auto !important;min-height:44px}
 html:not([data-theme="retro"]) .card-chef .thumb{height:auto;aspect-ratio:16/9;background:var(--surface-2)}
 html:not([data-theme="retro"]) .card-chef .thumb img{width:100%;height:100%;aspect-ratio:16/9;object-fit:cover}
 html:not([data-theme="retro"]) .grid > .card:nth-child(n+9){content-visibility:auto;contain-intrinsic-size:auto 260px}

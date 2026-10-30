@@ -19,11 +19,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css">
-<link rel="stylesheet" href="/readable.css">
+<link rel="stylesheet" href="/readable.css?v=3">
 </head>
 <body>
 <div class="ticker"><div class="ticker-track">
@@ -83,6 +83,11 @@
    <select id="tagFilter" aria-label="Tag"><option value="">All tags</option></select>
    <button id="favFilter" class="btn ghost" aria-pressed="false">♡ Favorites</button>
    <button id="btnGrocery" class="btn ghost" type="button">Grocery List (0)</button>
+  </div>
+  <div id="layoutSwitch" class="layout-switch" role="radiogroup" aria-label="How to list recipes">
+   <button type="button" data-layout-choice="list" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg><span>List</span></button>
+   <button type="button" data-layout-choice="grid" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg><span>Grid</span></button>
+   <button type="button" data-layout-choice="cards" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v4H3V6a1 1 0 0 1 1-1zm-1 7h18v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5z"/></svg><span>Cards</span></button>
   </div>
   <div class="filebox">
    <div id="fileTabs" class="file-tabs" role="tablist" aria-label="Recipe card tabs"></div>
@@ -215,7 +220,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js"></script>

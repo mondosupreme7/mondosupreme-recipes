@@ -338,7 +338,8 @@ function paintPhoto(el,url){
   if(safe)el.textContent='';
 }
 const total=r=>(+r.prep||0)+(+r.cook||0);
-const CHEF_REV='2';
+const CHEF_REV='3';
+const LAYOUT_KEY='mondosupreme.recipes.layout.v1';
 function chefUrl(file){return '/recipes/collections/'+file+'?v='+CHEF_REV}
 function dropStaleChefCache(){
   if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations){
@@ -456,28 +457,67 @@ function clipArt(category){
   if(/drink|bev|smoothie/.test(c))return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><path d="M18 8h28l-4 26H22z" fill="#7fdfff" stroke="#000"/><rect x="29" y="34" width="6" height="8" fill="#ccc" stroke="#000"/><path d="M22 42h20" stroke="#000" stroke-width="2"/><rect x="30" y="2" width="3" height="8" fill="#c4553d"/></svg>';
   return '<svg class="clip" viewBox="0 0 64 48" aria-hidden="true"><path d="M16 18h28l4 16H14z" fill="#c0c0c0" stroke="#000"/><path d="M20 18c0-8 24-8 24 0" fill="none" stroke="#000" stroke-width="2"/><circle cx="24" cy="28" r="3" fill="#c4553d"/><circle cx="34" cy="26" r="3" fill="#2f6f4e"/><circle cx="40" cy="31" r="3" fill="#f28f3b"/></svg>';
 }
-function mineCard(r){
-  return `<article class="card" data-id="${esc(r.id)}" tabindex="0">
-    ${r.sample?'<span class="sample">SAMPLE</span>':''}
-    <button class="fav" data-fav="${esc(r.id)}" aria-label="Toggle favorite">${favs.has(r.id)?'♥':'♡'}</button>
-    <div class="thumb">${clipArt(r.category)}</div>
-    <div class="card-body"><div class="cat"><span class="clip-slot">${clipArt(r.category)}</span><span>${esc(r.category||'Uncategorized')}</span></div><h3>${esc(r.title)}</h3>
-    <div class="meta">${total(r)?`<span>⏱ ${total(r)} min</span>`:''}${r.servings?`<span>🍽 ${esc(r.servings)} servings</span>`:''}</div>
-    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
-    <a class="btn grocery-add" href="/grocery/?add=${esc(r.id)}">Add to Grocery List</a></div></article>`;
+function readLayout(){
+  try{
+    const saved=localStorage.getItem(LAYOUT_KEY);
+    if(saved==='list'||saved==='grid'||saved==='cards')return saved;
+  }catch(e){}
+  return window.matchMedia&&window.matchMedia('(max-width:700px)').matches?'list':'cards';
 }
-function chefCard(r){
-  return `<article class="card card-chef" data-id="${esc(r.id)}" data-chef="1" tabindex="0">
-    <span class="source-chip">Backyard Chef</span>
-    ${r.partial?'<span class="partial-badge">Partial recipe, see video</span>':''}
-    <div class="thumb">${r.photo?'<img alt="" src="'+esc(r.photo)+'" '+(r._eager?'loading="eager" fetchpriority="high"':'loading="lazy"')+' decoding="async" width="320" height="180">':'<span class="thumb-fallback">'+clipArt(r.category)+'</span>'}</div>
-    <div class="card-body"><div class="cat"><span>${esc(r.category||'Other')}</span></div><h3>${esc(r.title)}</h3>
-    ${r.cuisineDetail?`<p class="cuisine-line">${esc(r.cuisineDetail)}</p>`:''}
-    <p class="credit">From Backyard Chef on YouTube</p>
-    ${r.watch?'<a class="btn yt-link" href="'+esc(r.watch)+'" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>':''}
-    <button type="button" class="btn ghost save-chef" data-save="${esc(r.id)}">Save to my recipes</button>
-    <button type="button" class="btn grocery-add" data-groc="${esc(r.id)}">Add to Grocery List</button></div></article>`;
+let recipeLayout=readLayout();
+function paintLayoutSwitch(){
+  document.querySelectorAll('#layoutSwitch [data-layout-choice]').forEach(btn=>{
+    btn.setAttribute('aria-pressed', btn.dataset.layoutChoice===recipeLayout?'true':'false');
+  });
 }
+function recipePhoto(r){
+  if(r.photo)return `<img alt="" src="${esc(r.photo)}" ${r._eager?'loading="eager" fetchpriority="high"':'loading="lazy"'} decoding="async" width="320" height="320">`;
+  return `<span class="thumb-fallback">${clipArt(r.category)}</span>`;
+}
+function recipeMeta(r){
+  const bits=[];
+  if(r.cuisineDetail)bits.push(r.cuisineDetail);
+  else if(r.cuisine)bits.push(r.cuisine);
+  if(r.category)bits.push(r.category);
+  return bits.join(' · ');
+}
+function recipeActions(r){
+  const chef=isChefId(r.id);
+  return `<div class="recipe-actions">
+    ${r.watch?`<a class="btn" href="${esc(r.watch)}" target="_blank" rel="noopener noreferrer" aria-label="Watch on YouTube">Watch</a>`:''}
+    ${chef?`<button type="button" class="btn ghost save-chef" data-save="${esc(r.id)}" aria-label="Save to my recipes">Save</button>`:`<a class="btn" href="/grocery/?add=${esc(r.id)}">Grocery</a>`}
+    ${chef?`<button type="button" class="btn grocery-add" data-groc="${esc(r.id)}" aria-label="Add to Grocery List">Grocery</button>`:''}
+  </div>`;
+}
+function recipeItem(r){
+  const href='#/recipe/'+encodeURIComponent(r.id);
+  const meta=recipeMeta(r);
+  if(recipeLayout==='list'){
+    return `<a class="recipe-row" href="${href}">
+      <span class="recipe-row-thumb">${recipePhoto(r)}</span>
+      <span class="recipe-row-copy"><span class="recipe-row-title">${esc(r.title)}</span>${meta?`<span class="recipe-row-meta">${esc(meta)}</span>`:''}</span>
+      <svg class="recipe-chevron" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 6l6 6-6 6"/></svg>
+    </a>`;
+  }
+  if(recipeLayout==='grid'){
+    return `<a class="recipe-tile" href="${href}">
+      <span class="recipe-tile-photo">${recipePhoto(r)}</span>
+      <span class="recipe-tile-title">${esc(r.title)}</span>
+    </a>`;
+  }
+  const chef=isChefId(r.id);
+  return `<article class="card${chef?' card-chef':''} recipe-card" data-id="${esc(r.id)}" ${chef?'data-chef="1" ':''}tabindex="0">
+    <div class="thumb">${recipePhoto(r)}</div>
+    <div class="card-body">
+      ${r.category?`<p class="cat-pill">${esc(r.category)}</p>`:''}
+      <h3>${esc(r.title)}</h3>
+      ${r.cuisineDetail?`<p class="cuisine-line">${esc(r.cuisineDetail)}</p>`:(r.cuisine?`<p class="cuisine-line">${esc(r.cuisine)}</p>`:'')}
+      ${recipeActions(r)}
+    </div>
+  </article>`;
+}
+function mineCard(r){return recipeItem(r)}
+function chefCard(r){return recipeItem(r)}
 function paintSource(){
   document.querySelectorAll('#sourceChips [data-source]').forEach(btn=>{
     btn.setAttribute('aria-pressed', (btn.dataset.source||'')===state.source ? 'true' : 'false');
@@ -533,7 +573,7 @@ function renderCuisineGroups(list){
   if(!open.size&&names[0])open.add(names[0]);
   $('#grid').innerHTML=names.map(name=>`<details class="cuisine-group" data-cuisine="${esc(name)}"${open.has(name)?' open':''}>
     <summary><span>${esc(name)}</span><span class="cuisine-count">${by.get(name).length.toLocaleString('en-US')}</span></summary>
-    <div class="grid cuisine-cards" data-shown="0"></div>
+    <div class="cuisine-cards" data-recipe-layout="${recipeLayout}" data-shown="0"></div>
     <button type="button" class="btn list-more cuisine-more" hidden>Show more</button>
   </details>`).join('');
   document.querySelectorAll('details.cuisine-group[open]').forEach(node=>fillCuisine(node, true));
@@ -557,8 +597,10 @@ function renderList(){
   const shownChef=chefList.slice(0, pageEnd);
   const countEl=$('#listCount');
   const more=$('#listMore');
+  paintLayoutSwitch();
   if(state.source==='backyard'&&!chef){
     $('#grid').classList.remove('is-grouped');
+    $('#grid').setAttribute('data-recipe-layout', recipeLayout);
     $('#grid').innerHTML='';
     if(countEl){countEl.hidden=false;countEl.textContent='Loading Backyard Chef recipes…';}
     if(more)more.hidden=true;
@@ -568,6 +610,7 @@ function renderList(){
   const grouped=state.source==='backyard'&&chef&&!q&&!state.cuisine;
   if(grouped){
     $('#grid').classList.add('is-grouped');
+    $('#grid').removeAttribute('data-recipe-layout');
     renderCuisineGroups(chefList);
     if(countEl){
       countEl.hidden=false;
@@ -578,6 +621,7 @@ function renderList(){
     return;
   }
   $('#grid').classList.remove('is-grouped');
+  $('#grid').setAttribute('data-recipe-layout', recipeLayout);
   shownChef.forEach((r,i)=>{r._eager=i===0&&state.source==='backyard';});
   $('#grid').innerHTML=mine.map(mineCard).join('')+shownChef.map(chefCard).join('');
   $('#grid').querySelectorAll('.card:not(.card-chef) .thumb').forEach((el,i)=>paintPhoto(el,mine[i]&&mine[i].photo));
@@ -2305,6 +2349,15 @@ function init(){
   });
   const listMore=$('#listMore');
   if(listMore)listMore.addEventListener('click',()=>{chefPage+=1;renderList()});
+  const layoutSwitch=$('#layoutSwitch');
+  if(layoutSwitch)layoutSwitch.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-layout-choice]');
+    if(!btn)return;
+    recipeLayout=btn.dataset.layoutChoice;
+    try{localStorage.setItem(LAYOUT_KEY, recipeLayout);}catch(err){}
+    renderList();
+  });
+  paintLayoutSwitch();
   const cuisineChips=$('#cuisineChips');
   if(cuisineChips)cuisineChips.addEventListener('click',e=>{
     const btn=e.target.closest('[data-cuisine]');
