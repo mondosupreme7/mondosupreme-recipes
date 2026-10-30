@@ -66,14 +66,15 @@
     worldCopyJump: true,
     minZoom: 2,
     fadeAnimation: false,
-    zoomAnimation: true
+    zoomAnimation: true,
+    zoomControl: false
   });
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
+  L.control.zoom({position: 'bottomright'}).addTo(map);
   map.fitBounds([[23.0, -84.5], [31.0, -73.5]], {padding: [12, 12], animate: false});
-  map.on('zoomend', function () { syncLabels(); });
   var resizeTimer = 0;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
@@ -117,6 +118,11 @@
 
   var FRESH_MS = 2 * 60 * 60 * 1000;
   var STALE_MS = 6 * 60 * 60 * 1000;
+  var QUIET_MS = 24 * 60 * 60 * 1000;
+  var WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+  var TRACK_GAP_H = 6;
+  var TRACK_SPEED = 30;
+  var HIT_PX = 22;
   var DR_CAP_MS = 15 * 60 * 1000;
   function fixAge(row) {
     var heard = heardMs(row);
@@ -220,8 +226,10 @@
 
   function popupNode(ship, row) {
     var box = el('div', null, 'ship-popup');
-    var staleFix = !row || fixAge(row) > STALE_MS;
+    var age = row ? fixAge(row) : Infinity;
+    var staleFix = !row || age > STALE_MS;
     box.append(el('strong', ship.name, 'popup-title'));
+    if (age > WEEK_MS) box.append(el('div', 'Not seen in over 7 days.', 'popup-note'));
     box.append(popupLine('Status', staleFix ? ('Last seen ' + (row && row.seen ? agePhrase(row.seen) : 'a while ago')) : (NAV[row.navStatus] || 'Reported')));
     if (!staleFix) box.append(popupLine('Speed', motionText(row)));
     if (row && row.seen) box.append(popupLine('Last seen', localTime(row.seen) + ' (' + agePhrase(row.seen) + ')'));
@@ -256,8 +264,8 @@
     minWidth: 180,
     autoPan: true,
     keepInView: true,
-    autoPanPaddingTopLeft: [54, 54],
-    autoPanPaddingBottomRight: [16, 16],
+    autoPanPaddingTopLeft: [12, 12],
+    autoPanPaddingBottomRight: [12, 84],
     closeButton: true
   };
 
@@ -292,6 +300,7 @@
     selected = mmsi;
     var ship = fleet.filter(function (item) { return item.mmsi === mmsi; })[0];
     var row = ship ? posOf(ship) : null;
+    drawMarkers();
     Object.keys(markers).forEach(function (key) { paintDot(markers[key], key === mmsi); });
     renderList();
     var shown = row ? displayPos(row) : null;
@@ -299,6 +308,8 @@
     var open = function () {
       map.setView([shown.lat, shown.lon], Math.max(map.getZoom(), 5), {animate: !fromMap});
       markers[mmsi].hit.setPopupContent(popupNode(ship, row));
+      var opened = markers[mmsi].hit.getPopup();
+      if (opened) opened._mondoCluster = false;
       markers[mmsi].hit.openPopup();
       tamePopup();
     };
@@ -315,36 +326,64 @@
   function paintDot(entry, active) {
     if (!entry || !entry.dot) return;
     var row = posOf(entry.ship);
-    var shown = row ? displayPos(row) : null;
+    var quiet = !row || fixAge(row) > QUIET_MS;
+    if (quiet) {
+      entry.dot.setStyle({
+        radius: 5,
+        weight: 2,
+        color: active ? '#1d4ed8' : '#64748b',
+        fillColor: '#64748b',
+        fillOpacity: 0,
+        opacity: 1
+      });
+      return;
+    }
     entry.dot.setStyle({
-      radius: 6,
+      radius: 5,
       weight: 2,
       color: '#ffffff',
-      fillColor: dotColor(active, shown && shown.stale),
-      fillOpacity: 1
+      fillColor: dotColor(active, false),
+      fillOpacity: 1,
+      opacity: 1
     });
   }
 
-  function labelText(ship, row) {
-    if (row && fixAge(row) > STALE_MS) return ship.name + ' · Last seen ' + agePhrase(row.seen);
-    return ship.name;
-  }
-
-  function syncLabels() {
-    if (!map) return;
-    var show = map.getZoom() >= 6;
+  function nearbyEntries(latlng) {
+    if (!map || !latlng) return [];
+    var here = map.latLngToContainerPoint(latlng);
+    var found = [];
     Object.keys(markers).forEach(function (key) {
       var entry = markers[key];
-      var row = posOf(entry.ship);
-      if (!show) {
-        if (entry.hit.getTooltip()) entry.hit.unbindTooltip();
-        return;
-      }
-      var text = labelText(entry.ship, row);
-      if (!entry.hit.getTooltip()) {
-        entry.hit.bindTooltip(text, {permanent: true, direction: 'top', offset: [0, -8], className: 'ship-tip', opacity: 1});
-      } else entry.hit.setTooltipContent(text);
+      if (!entry || !entry.hit || !map.hasLayer(entry.hit)) return;
+      var there = entry.hit.getLatLng();
+      var point = map.latLngToContainerPoint(there);
+      var dx = point.x - here.x;
+      var dy = point.y - here.y;
+      if (dx * dx + dy * dy > HIT_PX * HIT_PX) return;
+      var origin = {lat: latlng.lat, lon: latlng.lng != null ? latlng.lng : latlng.lon};
+      if (nmBetween(origin, {lat: there.lat, lon: there.lng}) > 3) return;
+      found.push(entry);
     });
+    found.sort(function (a, b) { return a.ship.name.localeCompare(b.ship.name); });
+    return found;
+  }
+
+  function clusterNode(entries) {
+    var box = el('div', null, 'ship-popup');
+    box.append(el('strong', 'Ships here', 'popup-title'));
+    entries.forEach(function (entry) {
+      var row = posOf(entry.ship);
+      var quiet = row && fixAge(row) > QUIET_MS;
+      var button = el('button', entry.ship.name + (quiet ? ' · quiet' : ''), 'popup-pick');
+      button.type = 'button';
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        selectShip(entry.ship.mmsi, true);
+      });
+      box.append(button);
+    });
+    return box;
   }
 
   function moveEntry(entry, lat, lon) {
@@ -358,7 +397,7 @@
     var renderer = map.options.renderer;
     var hit = L.circleMarker([shown.lat, shown.lon], {
       renderer: renderer,
-      radius: 24,
+      radius: HIT_PX,
       stroke: false,
       fillOpacity: 0,
       interactive: true,
@@ -366,21 +405,35 @@
     });
     var dot = L.circleMarker([shown.lat, shown.lon], {
       renderer: renderer,
-      radius: 6,
+      radius: 5,
       weight: 2,
       color: '#ffffff',
-      fillColor: dotColor(ship.mmsi === selected, shown.stale),
+      fillColor: '#c8553d',
       fillOpacity: 1,
       interactive: false
     });
     hit.bindPopup(popupNode(ship, row), POPUP_OPTIONS);
     hit.on('click', function (event) {
       if (event.originalEvent) L.DomEvent.stop(event.originalEvent);
+      var near = nearbyEntries(event.latlng || hit.getLatLng());
+      if (near.length > 1) {
+        holdScroll(function () {
+          map.closePopup();
+          hit.setPopupContent(clusterNode(near));
+          var opened = hit.getPopup();
+          if (opened) opened._mondoCluster = true;
+          hit.openPopup();
+          tamePopup();
+        });
+        return;
+      }
       selectShip(ship.mmsi, true);
     });
     dot.addTo(map);
     hit.addTo(map);
-    return {hit: hit, dot: dot, ship: ship};
+    var entry = {hit: hit, dot: dot, ship: ship};
+    paintDot(entry, ship.mmsi === selected);
+    return entry;
   }
 
   function drawMarkers() {
@@ -388,6 +441,7 @@
     fleet.forEach(function (ship) {
       var row = posOf(ship);
       if (!row || typeof row.lat !== 'number' || typeof row.lon !== 'number') return;
+      if (fixAge(row) > WEEK_MS && ship.mmsi !== selected) return;
       var shown = displayPos(row);
       if (!shown) return;
       seen[ship.mmsi] = true;
@@ -398,7 +452,10 @@
       } else {
         moveEntry(entry, shown.lat, shown.lon);
         paintDot(entry, ship.mmsi === selected);
-        if (entry.hit.getPopup()) entry.hit.setPopupContent(popupNode(ship, row));
+        if (entry.hit.getTooltip()) entry.hit.unbindTooltip();
+        if (entry.hit.getPopup() && !(entry.hit.isPopupOpen && entry.hit.isPopupOpen())) {
+          entry.hit.setPopupContent(popupNode(ship, row));
+        }
       }
     });
     Object.keys(markers).forEach(function (key) {
@@ -407,7 +464,6 @@
       map.removeLayer(markers[key].dot);
       delete markers[key];
     });
-    syncLabels();
     drawWakes();
   }
 
@@ -420,27 +476,59 @@
     wakes = Object.create(null);
   }
 
+  function syntheticMask(points) {
+    var mask = [];
+    var i;
+    for (i = 0; i < points.length; i++) mask.push(false);
+    i = 0;
+    while (i < points.length) {
+      var j = i;
+      while (j + 1 < points.length) {
+        var dt = points[j + 1].t - points[j].t;
+        if (!(points[j].t && points[j + 1].t) || Math.abs(dt - 1800000) > 2500) break;
+        if (j > i) {
+          var dLat = points[j + 1].lat - points[j].lat;
+          var dLon = points[j + 1].lon - points[j].lon;
+          var pLat = points[j].lat - points[j - 1].lat;
+          var pLon = points[j].lon - points[j - 1].lon;
+          if (Math.abs(dLat - pLat) > 0.015 || Math.abs(dLon - pLon) > 0.015) break;
+        }
+        j += 1;
+      }
+      if (j - i + 1 >= 4) {
+        var k;
+        for (k = i; k <= j; k++) mask[k] = true;
+        i = j + 1;
+      } else i += 1;
+    }
+    return mask;
+  }
+
   function trackSegments(row) {
+    if (!row || typeof row.lat !== 'number' || typeof row.lon !== 'number') return [];
+    if (fixAge(row) > QUIET_MS) return [];
     var points = [];
     (Array.isArray(row.trail) ? row.trail : []).forEach(function (point) {
       var time = Date.parse(point && point.seen || '');
-      if (point && typeof point.lat === 'number' && typeof point.lon === 'number') {
-        points.push({lat: point.lat, lon: point.lon, t: Number.isFinite(time) ? time : 0});
+      if (point && typeof point.lat === 'number' && typeof point.lon === 'number' && Number.isFinite(time)) {
+        points.push({lat: point.lat, lon: point.lon, t: time});
       }
     });
     var heard = heardMs(row);
-    points.push({lat: row.lat, lon: row.lon, t: heard || 0});
+    if (heard) points.push({lat: row.lat, lon: row.lon, t: heard});
     points.sort(function (a, b) { return a.t - b.t; });
+    var mask = syntheticMask(points);
+    points = points.filter(function (point, index) { return !mask[index]; });
     var segments = [];
     var run = [];
     points.forEach(function (point) {
       if (!run.length) { run.push(point); return; }
       var prev = run[run.length - 1];
       if (Math.abs(prev.lat - point.lat) < 0.00001 && Math.abs(prev.lon - point.lon) < 0.00001) return;
-      var gap = point.t && prev.t ? (point.t - prev.t) / 3600000 : 99;
+      var gap = (point.t - prev.t) / 3600000;
       var miles = nmBetween(prev, point);
       var speed = gap > 0.02 ? miles / gap : (miles > 1 ? 99 : 0);
-      if (gap > 2 || miles > 45 || speed > 28) {
+      if (gap > TRACK_GAP_H || speed > TRACK_SPEED) {
         if (run.length > 1) segments.push(run);
         run = [point];
         return;
@@ -463,8 +551,8 @@
         var line = L.polyline(segment.map(function (point) { return [point.lat, point.lon]; }), {
           renderer: renderer,
           color: '#1d4ed8',
-          weight: 2,
-          opacity: 0.85,
+          weight: 1.5,
+          opacity: 0.8,
           interactive: false,
           smoothFactor: 1
         });
@@ -743,7 +831,7 @@
     });
     if (selected && markers[selected]) {
       var popup = markers[selected].hit.getPopup();
-      if (popup && map.hasLayer(popup)) {
+      if (popup && !popup._mondoCluster && map.hasLayer(popup)) {
         var ship = fleet.filter(function (item) { return item.mmsi === selected; })[0];
         var row = ship ? posOf(ship) : null;
         if (ship && row) markers[selected].hit.setPopupContent(popupNode(ship, row));

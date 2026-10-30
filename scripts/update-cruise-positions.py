@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import math
 import os
 import re
 import urllib.error
@@ -231,7 +230,7 @@ def parse_seen(value):
 
 
 def extend_trail(rec, moment):
-    """Keep about 24 hours of points. Seed one wake only when a moving ship has none."""
+    """Keep about 24 hours of reported points. Never invent a straight-line wake."""
     if not isinstance(rec, dict):
         return False
     lat = rec.get("lat")
@@ -258,33 +257,6 @@ def extend_trail(rec, moment):
             if when < cutoff:
                 continue
             points.append({"lat": round(float(plat), 5), "lon": round(float(plon), 5), "seen": stamp(when)})
-    sog = rec.get("sog")
-    moving = isinstance(sog, (int, float)) and not isinstance(sog, bool) and float(sog) >= 0.5
-    if not points and moving:
-        cog = rec.get("cog")
-        if isinstance(cog, bool) or not isinstance(cog, (int, float)):
-            heading = rec.get("heading")
-            cog = heading if isinstance(heading, (int, float)) and not isinstance(heading, bool) else None
-        if isinstance(cog, (int, float)):
-            anchor = seen_dt if seen_dt >= cutoff else moment
-            back = (float(cog) + 180.0) % 360.0
-            rad = math.radians(back)
-            lat_f = float(lat)
-            lon_f = float(lon)
-            coslat = max(0.2, math.cos(math.radians(lat_f)))
-            for index in range(48, 0, -1):
-                hours = index * 0.5
-                when = anchor - timedelta(hours=hours)
-                if when < cutoff:
-                    continue
-                miles = float(sog) * hours
-                nlat = max(-90.0, min(90.0, lat_f + (miles / 60.0) * math.cos(rad)))
-                nlon = lon_f + (miles / 60.0) * math.sin(rad) / coslat
-                while nlon > 180.0:
-                    nlon -= 360.0
-                while nlon < -180.0:
-                    nlon += 360.0
-                points.append({"lat": round(nlat, 5), "lon": round(nlon, 5), "seen": stamp(when)})
     anchor = seen_dt if seen_dt >= cutoff else moment
     current = {"lat": round(float(lat), 5), "lon": round(float(lon), 5), "seen": stamp(anchor)}
     if not points:
