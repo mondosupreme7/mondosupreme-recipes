@@ -64,7 +64,7 @@ body{padding-top:var(--nav-h);padding-bottom:28px}
   color:var(--ink,#0f172a);text-decoration:none;font-weight:600;text-align:center
 }
 .app-modern{display:flex}
-.app-pixel{display:none}
+html:not([data-theme="retro"]) .app-pixel{display:none !important}
 .app-tile{
   width:56px;height:56px;border-radius:16px;display:grid;place-items:center;flex:none;
   background:var(--app-bg,#e2e8f0);color:var(--app-ink,#0f172a);
@@ -154,7 +154,10 @@ body.is-playing .crt{height:calc(100dvh - var(--nav-h) - 168px)}
     font:500 12px/1.1 var(--font-ui, Inter, sans-serif);
     text-decoration:none;border-radius:var(--radius-md, 12px);text-align:center;padding:2px 1px 0
   }
-  .studio-dock span{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .studio-dock a > span:last-child,
+  .studio-dock button > span:last-child{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .studio-dock .dock-glyph{display:grid}
+  .studio-dock .app-modern{display:flex}
   .studio-dock svg{width:24px;height:24px;display:block}
   .studio-dock [aria-current="page"]{color:var(--link,#1d4ed8);background:none}
   .studio-dock [aria-current="page"] .dock-glyph{color:var(--link,#1d4ed8)}

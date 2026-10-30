@@ -1210,6 +1210,7 @@ html[data-theme="retro"] .studio-app{
   flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;
   min-height:44px;padding:6px 8px;border-radius:0;text-align:left;font-size:16px
 }
+html:not([data-theme="retro"]) .app-pixel{display:none !important}
 html[data-theme="retro"] .app-modern{display:none !important}
 html[data-theme="retro"] .app-pixel{display:grid !important;place-items:center}
 html[data-theme="retro"] .app-pixel svg{width:16px;height:16px;image-rendering:pixelated}
