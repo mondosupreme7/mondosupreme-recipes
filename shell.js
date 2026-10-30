@@ -761,7 +761,9 @@
     var link = document.createElement('a');
     link.href = '/privacy/';
     link.textContent = 'Privacy';
-    foot.appendChild(link);
+    var visits = foot.querySelector('.home-visits');
+    if (visits) foot.insertBefore(link, visits);
+    else foot.appendChild(link);
   }
   function boot() {
     writeFx({ scan: 0, stars: 0 });
@@ -1065,4 +1067,12 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
+  window.MONDO_GLYPH = {
+    line: lineSvg,
+    pixel: pixelIcon,
+    accent: function (name) {
+      var colors = ACCENT[name] || ACCENT.note;
+      return [colors[0], colors[1]];
+    }
+  };
 })();

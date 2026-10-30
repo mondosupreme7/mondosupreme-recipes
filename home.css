@@ -1,0 +1,171 @@
+/* Home. Compact first screen, then a short list, then the quote. */
+body.home-page main.wrap{
+  padding-top:8px;
+  padding-bottom:16px
+}
+.home-now{margin:0 0 16px}
+.home-now h2{
+  margin:0 0 4px;
+  font:600 1.375rem/1.15 var(--font-ui);
+  letter-spacing:-.02em;
+  color:var(--ink);
+  text-wrap:balance
+}
+.home-line{
+  margin:0;
+  max-width:40rem;
+  font:500 0.9375rem/1.35 var(--font-ui);
+  color:var(--ink)
+}
+.home-chips{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin:0 0 16px
+}
+a.home-chip,a.home-row,a.home-app,
+a.home-chip strong,a.home-row b,a.home-app .home-label{
+  color:var(--ink) !important;
+  text-decoration:none !important
+}
+a.home-chip .home-chip-copy > span,
+a.home-row .home-row-detail{
+  color:var(--ink-muted) !important;
+  text-decoration:none !important
+}
+.home-chip,.home-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:64px;
+  padding:8px;
+  border-radius:14px;
+  background:var(--surface);
+  box-shadow:0 1px 2px rgb(15 23 42 / .06), 0 1px 1px rgb(15 23 42 / .04)
+}
+.home-chip:active,.home-row:active,.home-app:active,.home-quote:active{background:var(--surface-2)}
+.home-chip-copy,.home-row-copy{min-width:0;flex:1}
+.home-chip strong,.home-row b{
+  display:block;
+  font:650 0.9375rem/1.25 var(--font-ui);
+  color:var(--ink);
+  font-variant-numeric:tabular-nums
+}
+.home-chip span,.home-row-detail{
+  display:block;
+  margin-top:2px;
+  font:500 0.8125rem/1.3 var(--font-ui);
+  color:var(--ink-muted)
+}
+.home-apps{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px 8px;
+  margin:0 0 20px
+}
+.home-app{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  min-width:44px;
+  min-height:44px;
+  padding:2px;
+  border-radius:14px;
+  color:var(--ink);
+  text-decoration:none;
+  text-align:center
+}
+.home-label{
+  display:block;
+  width:100%;
+  font:600 12px/1.15 var(--font-ui);
+  letter-spacing:-.01em;
+  color:var(--ink)
+}
+.home-ico{display:grid;flex:none}
+.home-ico .app-modern,.home-ico .app-pixel{grid-area:1/1}
+.home-app .app-tile{width:52px;height:52px;border-radius:16px}
+.home-app .app-tile svg{width:26px;height:26px}
+.home-chip .app-tile,.home-row .app-tile{width:40px;height:40px;border-radius:12px}
+.home-chip .app-tile svg,.home-row .app-tile svg{width:22px;height:22px}
+.home-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin:0 0 8px
+}
+.home-row{min-height:56px;padding:8px 12px 8px 8px}
+.home-quote{
+  display:block;
+  width:100%;
+  margin:8px 0 16px;
+  padding:8px 2px;
+  min-height:44px;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer
+}
+.home-quote-text{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  font:500 0.9375rem/1.35 var(--font-display);
+  color:var(--ink)
+}
+.home-quote-foot{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:4px;
+  font:500 12px/1.3 var(--font-ui);
+  color:var(--ink-muted)
+}
+.home-quote .quote-flag{
+  margin-left:6px;
+  padding:0 6px;
+  border:0;
+  border-radius:999px;
+  background:var(--surface-2);
+  color:var(--ink);
+  font:600 10px/1.6 var(--font-ui)
+}
+html[data-theme] button.home-quote{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  color:var(--ink) !important
+}
+html[data-theme="dark"] .home-chip,
+html[data-theme="dark"] .home-row,
+html[data-theme="harbor"] .home-chip,
+html[data-theme="harbor"] .home-row{
+  box-shadow:0 1px 2px rgb(0 0 0 / .35)
+}
+html[data-theme="retro"] .home-chip,
+html[data-theme="retro"] .home-row,
+html[data-theme="retro"] .home-quote{
+  border-radius:0;
+  background:#fff;
+  color:#111827;
+  border:2px solid #fff;
+  border-right-color:#404040;
+  border-bottom-color:#404040;
+  box-shadow:none
+}
+html[data-theme="retro"] .home-quote{background:#ffffcc}
+html[data-theme="retro"] .home-quote-text{font-family:Tahoma,Verdana,sans-serif;color:#111827}
+html[data-theme="retro"] .home-app .app-pixel svg,
+html[data-theme="retro"] .home-chip .app-pixel svg,
+html[data-theme="retro"] .home-row .app-pixel svg{width:28px;height:28px}
+body.home-page .gb-box{margin-top:8px}
+@media (min-width:720px){
+  .home-apps{grid-template-columns:repeat(8,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){
+  .home-chip,.home-row,.home-app,.home-quote{transition:none}
+}
