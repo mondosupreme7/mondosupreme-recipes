@@ -70,7 +70,8 @@ a.btn{text-decoration:none;color:#111827}
 .cols ol{padding-left:0;counter-reset:s;list-style:none}.cols ol li{counter-increment:s;padding-left:44px;position:relative;border:0;margin-bottom:10px}
 .cols ol li::before{content:counter(s);position:absolute;left:0;top:4px;width:32px;height:32px;border-radius:0;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
 .notes{background:#ffffcc;color:#111827;border:2px solid #000;border-left:8px solid var(--accent);padding:12px 14px;border-radius:0;margin-top:20px}
-dialog{border-radius:0;padding:2px;width:min(640px,94vw);max-height:92vh;max-height:92dvh;overflow:auto;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}dialog::backdrop{background:#000080}
+dialog{border-radius:0;padding:2px;width:min(640px,94vw);max-height:92vh;max-height:92dvh;overflow:auto;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
+html[data-theme="retro"] dialog::backdrop{background:#000080}
 #groceryDialog{margin:0 0 0 auto;height:100dvh;max-height:100dvh;width:min(420px,100vw)}
 #groceryDialog[open]{animation:grocery-in .18s ease-out}
 @keyframes grocery-in{from{transform:translateX(28px)}to{transform:none}}
@@ -80,7 +81,7 @@ dialog{border-radius:0;padding:2px;width:min(640px,94vw);max-height:92vh;max-hei
 .scale-bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
 .scale-bar .btn{min-height:44px}
 dialog h2{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;margin:-2px -2px 8px;padding:4px 6px;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-shadow:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
-dialog h2::after{content:"[ _ ]  [ □ ]  [ X ]";font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;white-space:nowrap}
+html[data-theme="retro"] dialog h2::after{content:"[ _ ]  [ □ ]  [ X ]";font:700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;white-space:nowrap}
 dialog .btn.ghost{background:var(--chrome);color:#111827}
 .scan-dialog{padding:12px}
 .scan-dialog h2{margin:0 0 6px}.scan-dialog p{color:#222;margin:0 0 14px}

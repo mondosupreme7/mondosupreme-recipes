@@ -14,6 +14,9 @@
   } catch (e) {}
   var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   var theme = mode === 'system' ? (dark ? 'dark' : 'light') : mode;
+  var colors = { light: '#f4f3ef', dark: '#0b1220', harbor: '#0c1a1d', warm: '#f6f1e7', retro: '#008080' };
   document.documentElement.setAttribute('data-theme', theme);
   document.documentElement.setAttribute('data-theme-mode', mode);
+  document.documentElement.style.colorScheme = (theme === 'dark' || theme === 'harbor') ? 'dark' : 'light';
+  document.documentElement.dataset.themeColor = colors[theme] || colors.light;
 })();

@@ -51,7 +51,9 @@
     if (!box) return;
     var text = String(n);
     if (text.length < 6) text = ('000000' + text).slice(-6);
-    box.setAttribute('aria-label', String(n) + ' site-wide visits');
+    box.setAttribute('aria-hidden', 'true');
+    var spoken = document.getElementById('visitsText');
+    if (spoken) spoken.textContent = Number(n).toLocaleString('en-US');
     box.setAttribute('title', 'Live site-wide visitor count');
     box.replaceChildren();
     for (var i = 0; i < text.length; i++) box.appendChild(digit(text.charAt(i)));

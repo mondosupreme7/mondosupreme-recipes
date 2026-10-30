@@ -8,8 +8,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mondosupreme">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="theme-color" content="#000080">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -17,6 +19,9 @@
 <script src="/landing.js"></script>
 <title>Mondosupreme</title>
 <meta name="description" content="Mondosupreme — recipes, a daily YouTube recipe show, cruise ship positions, a live Doppler weather radar, a daily word puzzle, an AI cyber-butler search, an oversold stock scanner, a personal wiki, a shared drawing board, a public chat room, an arcade, a virtual pet, a bulletin board, Marketplace classifieds, Craft, and a door with no name.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/landing.css">
 <link rel="stylesheet" href="/retro.css">
@@ -64,9 +69,9 @@
   <div class="quote-body">
    <div class="quote-bulb" aria-hidden="true">💡</div>
    <div class="quote-copy">
-    <p class="quote-kicker">Quote of the Visit</p>
     <blockquote id="quoteText" aria-live="polite">Loading a thought for this visit…</blockquote>
     <p class="quote-by" id="quoteBy"></p>
+    <p class="quote-meta" id="quoteMeta"></p>
     <button class="btn quote-next" id="quoteNext" type="button">Next quote</button>
    </div>
   </div>
@@ -93,11 +98,11 @@
   <a class="status-card" href="/tropics/"><b>Tropics</b><span>Atlantic storms and a Brevard prep list.</span></a>
  </div>
  <div class="cat-grid">
-  <a class="cat-card" href="/recipes/"><h2>Kitchen &amp; Food</h2><p>Recipe cards, today’s show, and the Grocery List.</p><ul><li>Recipes</li><li>Recipe TV</li><li>Grocery List</li></ul></a>
-  <a class="cat-card" href="/tides/"><h2>Space Coast &amp; Travel</h2><p>Tides, ships, weather, local spots, and the tropics.</p><ul><li>Tides</li><li>Local guide</li><li>Tropics</li></ul></a>
-  <a class="cat-card" href="/stocks/"><h2>Finance &amp; Search</h2><p>An oversold scanner, Ask the Butler, and the wiki.</p><ul><li>Markets</li><li>Search</li><li>Wiki</li></ul></a>
-  <a class="cat-card" href="/forum/"><h2>Community</h2><p>Forum, chat, the drawing board, and classifieds.</p><ul><li>Forum</li><li>Chat</li><li>Marketplace</li></ul></a>
-  <a class="cat-card" href="/connections/"><h2>Game Studio</h2><p>Daily connections, sudoku, arcade, and the locked room.</p><ul><li>Connections &amp; Sudoku</li><li>Word Game</li><li>Arcade</li></ul></a>
+  <a class="cat-card" href="/recipes/"><h2>Kitchen &amp; Food</h2><p>Recipe cards, today’s show, and the Grocery List.</p><p class="cat-apps">Recipes, Recipe TV, Grocery List</p></a>
+  <a class="cat-card" href="/tides/"><h2>Space Coast &amp; Travel</h2><p>Tides, ships, weather, local spots, and the tropics.</p><p class="cat-apps">Tides, Local guide, Tropics</p></a>
+  <a class="cat-card" href="/stocks/"><h2>Finance &amp; Search</h2><p>An oversold scanner, Ask the Butler, and the wiki.</p><p class="cat-apps">Markets, Search, Wiki</p></a>
+  <a class="cat-card" href="/forum/"><h2>Community</h2><p>Forum, chat, the drawing board, and classifieds.</p><p class="cat-apps">Forum, Chat, Marketplace</p></a>
+  <a class="cat-card" href="/connections/"><h2>Game Studio</h2><p>Daily connections, sudoku, arcade, and the locked room.</p><p class="cat-apps">Connections &amp; Sudoku, Word Game, Arcade</p></a>
  </div>
   <section class="gb-box" id="guestbook" aria-labelledby="gbTitle">
    <h2 id="gbTitle">Guestbook</h2>
@@ -125,11 +130,8 @@
   </section>
 </main>
 <footer class="site-footer"><div class="wrap">
- <div class="home-visits">
-  <p class="counter-label">Visitors</p>
-  <div class="counter" id="counter" role="img" aria-label="Site-wide visitor counter"></div>
- </div>
  <p class="studio-footer">© <span id="yr"></span> Mondosupreme</p>
+ <p class="home-visits"><span class="visually-hidden">Visitors: </span><span class="count-lcd counter" id="counter" aria-hidden="true"></span><span class="visually-hidden" id="visitsText"></span></p>
 </div></footer>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>

@@ -8,8 +8,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mondosupreme">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="theme-color" content="#000080">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -17,6 +19,9 @@
 <title>Mondosupreme Cruises</title>
 <meta name="description" content="Last-known position of every Royal Caribbean International ship, plus Port Canaveral cruise deals.">
 <link rel="preconnect" href="https://tile.openstreetmap.org">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="cruises.css">
@@ -56,7 +61,6 @@
 </div></header>
 <main class="wrap">
  <div class="hero">
-  <p class="radar-kicker">Where in the World · Radar Navigator</p>
   <h1>Where the fleet is.</h1>
   <p>Last-known position of every Royal Caribbean International ship in service.</p>
  </div>

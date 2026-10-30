@@ -136,8 +136,8 @@
   function numCell(value, digits, suffix, color) {
     var text = value == null || !isFinite(value) ? '—' : value.toFixed(digits) + (suffix || '');
     var node = el('td', text);
-    if (color && typeof value === 'number' && value < 0) node.className = 'num-down';
-    else if (color && typeof value === 'number' && value > 0) node.className = 'num-up';
+    if (color && typeof value === 'number' && value < 0) { node.className = 'num-down'; node.textContent = '▼ ' + text; }
+    else if (color && typeof value === 'number' && value > 0) { node.className = 'num-up'; node.textContent = '▲ ' + text; }
     return node;
   }
 

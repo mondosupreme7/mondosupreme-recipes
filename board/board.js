@@ -694,6 +694,19 @@ function init() {
   if (configured()) connect();
   else setStatus('On this device only.');
   refreshChrome();
+  var dock = document.querySelector('.paint-dock');
+  if (dock && 'IntersectionObserver' in window) {
+    var sentinel = document.createElement('span');
+    sentinel.setAttribute('aria-hidden', 'true');
+    sentinel.style.cssText = 'flex:0 0 1px;width:1px;align-self:stretch';
+    dock.appendChild(sentinel);
+    var watch = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        dock.classList.toggle('is-scrolled-end', entry.isIntersecting);
+      });
+    }, { root: dock, threshold: 0.9 });
+    watch.observe(sentinel);
+  }
 }
 if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', init);
 if (typeof module !== 'undefined' && module.exports) {

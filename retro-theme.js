@@ -20,14 +20,19 @@
   }
   function apply(mode) {
     var theme = resolve(mode);
+    var colors = { light: '#f4f3ef', dark: '#0b1220', harbor: '#0c1a1d', warm: '#f6f1e7', retro: '#008080' };
+    var color = colors[theme] || colors.light;
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('data-theme-mode', mode);
-    var color = theme === 'light' || theme === 'warm' ? '#f4f3ef' : '#0b1220';
-    if (theme === 'warm') color = '#f6f1e7';
-    if (theme === 'harbor') color = '#071422';
-    if (theme === 'retro') color = '#008080';
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', color);
+    document.documentElement.style.colorScheme = (theme === 'dark' || theme === 'harbor') ? 'dark' : 'light';
+    document.documentElement.dataset.themeColor = color;
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function (node) {
+      node.parentNode.removeChild(node);
+    });
+    var meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    meta.setAttribute('content', color);
+    document.head.appendChild(meta);
     var select = document.getElementById('themeSelect');
     if (select && select.value !== mode) select.value = mode;
   }

@@ -100,5 +100,5 @@ html[data-theme] .ship-map h2{background:transparent;color:var(--ink)}
 @media(max-width:720px){
  .hero,.ship-map{scroll-margin-top:calc(var(--nav-h, 64px) + 8px)}
  .hero{padding:28px 0 12px}
- #map{height:52dvh;min-height:260px}
+ #map{height:min(52svh,480px);min-height:220px}
 }

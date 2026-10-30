@@ -296,6 +296,7 @@
       return;
     }
     items.forEach(function (item) {
+      var li = document.createElement('li');
       var link = document.createElement('a');
       link.className = 'shell-hit';
       link.href = item.href;
@@ -306,22 +307,43 @@
       title.textContent = item.title;
       link.appendChild(kind);
       link.appendChild(title);
-      root.appendChild(link);
+      li.appendChild(link);
+      root.appendChild(li);
     });
   }
 
+  function hasOwnClose(dlg) {
+    if (dlg.querySelector('.shell-x,[data-close],[value="cancel"],.close')) return true;
+    var buttons = dlg.querySelectorAll('button');
+    for (var i = 0; i < buttons.length; i++) {
+      var label = (buttons[i].getAttribute('aria-label') || buttons[i].textContent || '').replace(/\s+/g, ' ').trim();
+      if (/^(close|cancel|x|x close)$/i.test(label)) return true;
+    }
+    return false;
+  }
   function armDialogs(scope) {
     (scope || document).querySelectorAll('dialog').forEach(function (dlg) {
-      if (dlg.querySelector('.shell-x')) return;
+      if (hasOwnClose(dlg)) return;
+      var heading = dlg.querySelector('h2');
+      if (heading && !dlg.getAttribute('aria-labelledby')) {
+        if (!heading.id) heading.id = (dlg.id || 'dlg') + 'Title';
+        dlg.setAttribute('aria-labelledby', heading.id);
+      }
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'shell-x';
-      btn.textContent = 'X Close';
+      btn.textContent = '\u00d7';
       btn.setAttribute('aria-label', 'Close');
       btn.addEventListener('click', function () {
         if (typeof dlg.close === 'function') dlg.close();
       });
-      dlg.insertBefore(btn, dlg.firstChild);
+      var header = dlg.querySelector(':scope > header');
+      if (!header) {
+        header = document.createElement('header');
+        if (heading && heading.parentNode === dlg) header.appendChild(heading);
+        dlg.insertBefore(header, dlg.firstChild);
+      }
+      header.appendChild(btn);
     });
   }
   window.MONDO_SHELL_ARM = armDialogs;
@@ -330,6 +352,7 @@
     var dlg = document.createElement('dialog');
     dlg.id = 'shellFind';
     dlg.className = 'shell-find';
+    dlg.setAttribute('aria-labelledby', 'shellFindTitle');
     var title = document.createElement('h2');
     title.id = 'shellFindTitle';
     title.textContent = 'Find';
@@ -339,13 +362,16 @@
     input.id = 'shellFindInput';
     input.type = 'search';
     input.autocomplete = 'off';
+    input.enterKeyHint = 'search';
+    input.spellcheck = false;
+    input.setAttribute('autocapitalize', 'off');
+    input.setAttribute('autocorrect', 'off');
     input.placeholder = 'Try pasta, Oasis, fortress, or 8-ball';
     input.setAttribute('aria-label', 'Search the site');
     label.appendChild(input);
-    var results = document.createElement('div');
+    var results = document.createElement('ul');
     results.id = 'shellFindResults';
     results.className = 'shell-results';
-    results.setAttribute('role', 'listbox');
     dlg.appendChild(title);
     dlg.appendChild(label);
     dlg.appendChild(results);
@@ -533,7 +559,7 @@
     var link = document.createElement('a');
     link.className = 'studio-app';
     link.href = item.href;
-    link.setAttribute('role', 'menuitem');
+    link.removeAttribute('role');
     link.appendChild(pixelIcon(item.icon));
     var label = document.createElement('span');
     label.textContent = item.title;
@@ -630,7 +656,7 @@
     brand.className = 'studio-brand';
     brand.href = '/';
     brand.setAttribute('aria-label', 'Mondosupreme');
-    brand.innerHTML = '<span class="studio-mark" aria-hidden="true">M</span><span class="studio-word studio-short" aria-hidden="true">Mondo</span><span class="studio-word studio-full">Mondosupreme</span>';
+    brand.innerHTML = '<span class="studio-mark" aria-hidden="true">M</span><span class="studio-word" aria-hidden="true">Mondosupreme</span>';
     var links = document.createElement('nav');
     links.className = 'studio-links';
     links.setAttribute('aria-label', 'Primary');
@@ -661,13 +687,18 @@
     start.id = 'shellStart';
     start.setAttribute('aria-haspopup', 'true');
     start.setAttribute('aria-expanded', 'false');
+    start.setAttribute('aria-controls', 'shellMenu');
     start.setAttribute('aria-label', 'All Apps');
     start.innerHTML = '<svg class="nav-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1 1h6v6H1V1zm8 0h6v6H9V1zM1 9h6v6H1V9zm8 0h6v6H9V9z"/></svg><span class="nav-label">All Apps</span><kbd>⌘K</kbd>';
-    var menu = document.createElement('div');
+    var menu = document.createElement('nav');
     menu.className = 'studio-drawer';
     menu.id = 'shellMenu';
-    menu.hidden = true;
-    menu.setAttribute('role', 'menu');
+    menu.setAttribute('aria-label', 'All apps');
+    var popoverOk = typeof menu.showPopover === 'function';
+    if (popoverOk) {
+      menu.setAttribute('popover', 'auto');
+      start.setAttribute('popovertarget', 'shellMenu');
+    } else menu.hidden = true;
     var groups = [
       ['Kitchen & Food', ['Recipes', 'Grocery List', 'Recipe TV']],
       ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
@@ -694,12 +725,6 @@
     var home = menuLink({ title: 'Home', href: '/', icon: 'note' });
     menu.insertBefore(home, menu.firstChild);
     menu.insertBefore(menuLink({ title: 'Privacy', href: '/privacy/', icon: 'note' }), home.nextSibling);
-    var closeMenu = document.createElement('button');
-    closeMenu.type = 'button';
-    closeMenu.className = 'studio-close';
-    closeMenu.textContent = 'Close';
-    menu.appendChild(closeMenu);
-
     var actions = document.createElement('div');
     actions.className = 'studio-actions shell-bar';
     var findBtn = document.createElement('button');
@@ -743,25 +768,40 @@
     taskbar.appendChild(clock);
     document.body.appendChild(taskbar);
     document.body.appendChild(menu);
+    var dockIcons = {
+      Home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2 3 11h2v9h5v-6h4v6h5v-9h2L12 3.2z"/></svg>',
+      Recipes: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 3h2v8a3 3 0 0 1-2 2.8V21H4v-7.2A3 3 0 0 1 6 11V3zm6 0h2v7h3V3h2v7a4 4 0 0 1-3 3.9V21h-2v-7.1A4 4 0 0 1 12 10V3z"/></svg>',
+      Grocery: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 6h13l-1.4 8.2a2 2 0 0 1-2 1.6H9.2a2 2 0 0 1-2-1.7L5.2 4H3V2h3.2L7 6zm2.2 12a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2zm7.6 0a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z"/></svg>',
+      Weather: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 16a5 5 0 0 1-.5-10 6 6 0 0 1 11.4 1.6A4 4 0 0 1 17 16H7z"/></svg>',
+      Search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.2 15.2 20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+      More: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>'
+    };
     var dock = document.createElement('nav');
     dock.className = 'studio-dock';
     dock.setAttribute('aria-label', 'Shortcuts');
     [
-      ['Home', '/'],
-      ['Recipes', '/recipes/'],
-      ['Grocery List', '/grocery/'],
-      ['Weather', '/weather/'],
-      ['Search', '/search/']
+      ['Home', '/', 'Home'],
+      ['Recipes', '/recipes/', 'Recipes'],
+      ['Grocery', '/grocery/', 'Grocery List'],
+      ['Weather', '/weather/', 'Weather'],
+      ['Search', '/search/', 'Search']
     ].forEach(function (pair) {
       var a = document.createElement('a');
       a.href = pair[1];
-      a.textContent = pair[0];
+      a.innerHTML = dockIcons[pair[2]] || dockIcons[pair[0]];
+      var label = document.createElement('span');
+      label.textContent = pair[0];
+      a.appendChild(label);
+      if (pair[0] !== pair[2]) a.setAttribute('aria-label', pair[2]);
       if (pair[1] === '/' ? location.pathname === '/' : location.pathname.indexOf(pair[1]) === 0) a.setAttribute('aria-current', 'page');
       dock.appendChild(a);
     });
     var more = document.createElement('button');
     more.type = 'button';
-    more.textContent = 'More';
+    more.innerHTML = dockIcons.More;
+    var moreLabel = document.createElement('span');
+    moreLabel.textContent = 'More';
+    more.appendChild(moreLabel);
     more.setAttribute('aria-label', 'All apps');
     more.addEventListener('click', function (event) {
       event.stopPropagation();
@@ -772,34 +812,60 @@
     var tray = menu;
     function parkTheme() {
       var theme = document.querySelector('.theme-switch');
-      if (theme && theme.parentNode !== menu) menu.appendChild(theme);
+      if (!theme) return;
+      if (menu.firstChild !== theme) menu.insertBefore(theme, menu.firstChild);
     }
     parkTheme();
     setTimeout(parkTheme, 0);
-    setInterval(function () { paintClock(clock); }, 1000);
-
-    function setMenu(open) {
-      menu.hidden = !open;
-      start.setAttribute('aria-expanded', open ? 'true' : 'false');
-      document.body.classList.toggle('apps-open', !!open);
+    var clockQuery = window.matchMedia('(min-width:901px)');
+    var clockTimer = 0;
+    function syncClock() {
+      if (clockQuery.matches && !document.hidden) {
+        paintClock(clock);
+        if (!clockTimer) clockTimer = setInterval(function () { paintClock(clock); }, 1000);
+      } else if (clockTimer) {
+        clearInterval(clockTimer);
+        clockTimer = 0;
+      }
     }
-    start.addEventListener('click', function (event) {
-      event.stopPropagation();
-      setMenu(menu.hidden);
-    });
-    closeMenu.addEventListener('click', function () { setMenu(false); });
+    syncClock();
+    if (clockQuery.addEventListener) clockQuery.addEventListener('change', syncClock);
+    else if (clockQuery.addListener) clockQuery.addListener(syncClock);
+
+    function menuOpen() {
+      return popoverOk ? menu.matches(':popover-open') : !menu.hidden;
+    }
+    function setMenu(open) {
+      if (popoverOk) {
+        if (open && !menuOpen()) menu.showPopover();
+        if (!open && menuOpen()) menu.hidePopover();
+      } else {
+        menu.hidden = !open;
+        start.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+    }
+    if (popoverOk) {
+      menu.addEventListener('toggle', function (event) {
+        start.setAttribute('aria-expanded', event.newState === 'open' ? 'true' : 'false');
+      });
+    } else {
+      start.addEventListener('click', function (event) {
+        event.stopPropagation();
+        setMenu(menu.hidden);
+      });
+      document.addEventListener('click', function (event) {
+        if (!menu.hidden && !menu.contains(event.target) && event.target !== start) setMenu(false);
+      });
+    }
     menu.addEventListener('click', function (event) {
       if (event.target.closest('a')) setMenu(false);
-    });
-    document.addEventListener('click', function (event) {
-      if (!menu.hidden && !menu.contains(event.target)) setMenu(false);
     });
     document.addEventListener('keydown', function (event) {
       if ((event.metaKey || event.ctrlKey) && (event.key === 'k' || event.key === 'K')) {
         event.preventDefault();
-        setMenu(menu.hidden);
+        setMenu(!menuOpen());
       }
-      if (event.key === 'Escape') setMenu(false);
+      if (event.key === 'Escape' && !popoverOk) setMenu(false);
     });
 
     var find = buildFind();

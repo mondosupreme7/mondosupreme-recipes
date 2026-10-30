@@ -8,14 +8,19 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mondosupreme">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="theme-color" content="#000080">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Stocks — Oversold Stock Scanner</title>
 <meta name="description" content="Stocks, a swing screen for S&amp;P 500, Nasdaq-100, and MidCap names. Each card explains the setup from fetched prices and fundamentals. Informational only, not financial advice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
@@ -56,8 +61,8 @@
 <main class="wrap">
  <div class="quote-layout">
  <div class="hero quote-hero">
-  <p class="quote-kicker">Stocks Desk · Swing Screen</p>
-  <h1>Stocks — Oversold Stock Scanner</h1>
+  <h1>Stocks</h1>
+  <p class="hero-sub">Oversold swing scanner</p>
   <p>Each name screens as a swing candidate from the latest daily bars and, when Yahoo returns them, a fundamentals sheet. The note on a card uses only those fetched numbers. Informational only, not financial advice.</p>
  </div>
  <details class="rules-card" id="swingRules">

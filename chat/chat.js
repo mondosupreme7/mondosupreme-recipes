@@ -550,6 +550,7 @@ function fitChat() {
   if (!app || !window.visualViewport) return;
   const vv = window.visualViewport;
   const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+  document.body.classList.toggle('chat-keyboard', keyboard > 80);
   if (keyboard > 80) {
     document.body.style.paddingTop = '0px';
     document.body.style.paddingBottom = '0px';

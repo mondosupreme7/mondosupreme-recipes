@@ -448,7 +448,7 @@ function chefCard(r){
   return `<article class="card card-chef" data-id="${esc(r.id)}" data-chef="1" tabindex="0">
     <span class="source-chip">Backyard Chef</span>
     ${r.partial?'<span class="partial-badge">Partial recipe, see video</span>':''}
-    <div class="thumb">${r.photo?'<img alt="" src="'+esc(r.photo)+'" loading="lazy" decoding="async" width="320" height="180">':clipArt(r.category)}</div>
+    <div class="thumb">${r.photo?'<img alt="" src="'+esc(r.photo)+'" '+(r._eager?'loading="eager" fetchpriority="high"':'loading="lazy"')+' decoding="async" width="320" height="180">':'<span class="thumb-fallback">'+clipArt(r.category)+'</span>'}</div>
     <div class="card-body"><div class="cat"><span>${esc(r.category||'Other')}</span></div><h3>${esc(r.title)}</h3>
     <p class="credit">From Backyard Chef on YouTube</p>
     ${r.watch?'<a class="btn yt-link" href="'+esc(r.watch)+'" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>':''}
@@ -485,6 +485,7 @@ function renderList(){
     $('#empty').hidden=true;
     return;
   }
+  shownChef.forEach((r,i)=>{r._eager=i===0&&state.source==='backyard';});
   $('#grid').innerHTML=mine.map(mineCard).join('')+shownChef.map(chefCard).join('');
   $('#grid').querySelectorAll('.card:not(.card-chef) .thumb').forEach((el,i)=>paintPhoto(el,mine[i]&&mine[i].photo));
   const totalShown=mine.length+chefList.length;

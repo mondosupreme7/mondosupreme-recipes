@@ -74,7 +74,7 @@
   var textEl = document.getElementById('quoteText');
   var byEl = document.getElementById('quoteBy');
   var nextBtn = document.getElementById('quoteNext');
-  var kicker = document.querySelector('.quote-kicker');
+  var kicker = document.getElementById('quoteMeta');
   var form = document.getElementById('quoteOwner');
   var statusEl = document.getElementById('quoteStatus');
   var customList = document.getElementById('quoteCustom');
@@ -152,7 +152,7 @@
       flag.textContent = 'PINNED';
       byEl.appendChild(flag);
     }
-    if (kicker) kicker.textContent = 'Quote of the Visit · ' + (index + 1) + ' of ' + total;
+    if (kicker) kicker.textContent = (index + 1) + ' of ' + total;
   }
   function choice() {
     var list = pool();

@@ -148,7 +148,7 @@ body.is-owner .bubble .msg-actions{display:inline-flex}
 }
 .chat-compose{
   flex:none;
-  padding:8px 12px calc(10px + env(safe-area-inset-bottom));
+  padding:8px 12px 8px;
   border-top:1px solid var(--line,#e2e8f0);
   background:var(--paper,#fff);
 }

@@ -8,14 +8,19 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mondosupreme">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="theme-color" content="#000080">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Word Game — Daily 5-Letter Cyber Puzzle</title>
 <meta name="description" content="Word Game, a daily 5-letter word puzzle in a game-show grid, plus free play and a 90s, cruise, and kitchen bonus word.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
@@ -23,7 +28,7 @@
 <link rel="stylesheet" href="wordle.css">
 <link rel="stylesheet" href="/readable.css">
 </head>
-<body class="wordle-page">
+<body class="wordle-page is-playing">
 <div class="ticker"><div class="ticker-track">
  <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Word Game ~*~ ★ Daily 5-letter cyber puzzle ★ Same word for every visitor ★</p>
  <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Word Game ~*~ ★ Daily 5-letter cyber puzzle ★ Same word for every visitor ★</p>
