@@ -1,4 +1,4 @@
-/* Home facts: greeting, Cocoa weather, next launch, ships, tides, tropics. */
+/* Home facts: greeting, Cocoa weather, next launch, ships, top stock, tides, tropics. */
 (function () {
   'use strict';
   var TZ = 'America/New_York';
@@ -260,6 +260,99 @@
       text('homeTide', 'Port Canaveral highs and lows');
     });
   }
+  function shortCompany(name) {
+    return String(name || '').replace(/\s+/g, ' ').trim()
+      .replace(/,?\s+(Inc\.?|Incorporated|Corp\.?|Corporation|Company|Co\.?|Ltd\.?|Limited|PLC|N\.V\.|S\.A\.|L\.P\.|LLC)\.?$/i, '')
+      .replace(/,\s*$/, '')
+      .trim();
+  }
+  function signedPct(value) {
+    var n = Number(value);
+    if (!isFinite(n)) return '';
+    var text = Math.abs(n).toFixed(1).replace(/\.0$/, '') + '%';
+    if (n > 0) return '+' + text;
+    if (n < 0) return '−' + text;
+    return text;
+  }
+  function etDate(iso) {
+    var time = Date.parse(iso || '');
+    if (!Number.isFinite(time)) return '';
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date(time));
+  }
+  function addDays(ymd, count) {
+    var date = new Date(ymd + 'T12:00:00Z');
+    date.setUTCDate(date.getUTCDate() + count);
+    return date.toISOString().slice(0, 10);
+  }
+  function tradingGap(iso) {
+    var start = etDate(iso);
+    var today = todayISO();
+    if (!start || start >= today) return 0;
+    var gap = 0;
+    var cursor = addDays(start, 1);
+    while (cursor <= today && gap < 12) {
+      var day = new Date(cursor + 'T12:00:00Z').getUTCDay();
+      if (day !== 0 && day !== 6) gap += 1;
+      cursor = addDays(cursor, 1);
+    }
+    return gap;
+  }
+  function shortWhen(iso) {
+    var time = Date.parse(iso || '');
+    if (!Number.isFinite(time)) return '';
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: TZ, month: 'short', day: 'numeric'
+    }).format(new Date(time));
+  }
+  function topPick(data) {
+    var list = data && Array.isArray(data.stocks) ? data.stocks.filter(function (row) {
+      return row && row.symbol && typeof row.price === 'number';
+    }) : [];
+    list.sort(function (a, b) {
+      return (b.rankScore || 0) - (a.rankScore || 0) || String(a.symbol).localeCompare(String(b.symbol));
+    });
+    return list[0] || null;
+  }
+  function paintStock(data) {
+    var line = $('homeStockLine');
+    if (!line) return;
+    var row = topPick(data);
+    var stale = !data || !data.fetchedAt || tradingGap(data.fetchedAt) > 3;
+    if (!row) {
+      line.textContent = 'Updating…';
+      return;
+    }
+    if (stale) {
+      line.textContent = 'Updating… · as of ' + (shortWhen(data && data.fetchedAt) || 'an earlier day');
+      return;
+    }
+    line.replaceChildren();
+    var company = shortCompany(row.name);
+    if (company.length > 14) company = company.split(/[\s,]+/)[0];
+    var name = document.createElement('span');
+    name.className = 'home-stock-name';
+    name.textContent = row.symbol + (company ? ' ' + company : '') + ' · ';
+    var facts = document.createElement('span');
+    facts.className = 'home-stock-facts';
+    facts.appendChild(document.createTextNode('$' + row.price.toFixed(2) + ' '));
+    if (typeof row.dayChange === 'number') {
+      var change = document.createElement('span');
+      change.className = row.dayChange < 0 ? 'home-stock-down' : (row.dayChange > 0 ? 'home-stock-up' : '');
+      change.textContent = signedPct(row.dayChange);
+      facts.appendChild(change);
+    }
+    if (typeof row.rsi === 'number') {
+      var rsi = String(row.rsi.toFixed(1)).replace(/\.0$/, '');
+      facts.appendChild(document.createTextNode(' · RSI ' + rsi));
+    }
+    line.append(name, facts);
+  }
+  function loadStock() {
+    text('homeStockLine', 'Checking the screener');
+    getJSON('/stocks/oversold.json').then(paintStock, function () { paintStock(null); });
+  }
   function loadTropics() {
     var url = 'https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Active_Hurricanes_v1/FeatureServer/1/query?where=' +
       encodeURIComponent("BASIN='AL'") + '&outFields=STORMNAME,STORMTYPE&returnGeometry=false&f=json';
@@ -292,6 +385,7 @@
   loadWeather();
   loadLaunch();
   loadShips();
+  loadStock();
   loadTides();
   loadTropics();
 })();

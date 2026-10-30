@@ -96,6 +96,14 @@ a.home-row .home-row-detail{
   margin:0 0 8px
 }
 .home-row{min-height:56px;padding:8px 12px 8px 8px}
+.home-stock{margin:0 0 16px}
+.home-stock .home-row-detail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+a.home-row .home-stock-up{color:#166534 !important}
+a.home-row .home-stock-down{color:#991b1b !important}
+html[data-theme="dark"] a.home-row .home-stock-up,
+html[data-theme="harbor"] a.home-row .home-stock-up{color:#86efac !important}
+html[data-theme="dark"] a.home-row .home-stock-down,
+html[data-theme="harbor"] a.home-row .home-stock-down{color:#fca5a5 !important}
 .home-quote{
   display:block;
   width:100%;
