@@ -11,6 +11,7 @@
   var selected = '';
   var uid = '';
   var member = false;
+  var pendingPrice = Object.create(null);
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
@@ -38,7 +39,9 @@
       clean[symbol] = {
         note: String(pin.note || '').replace(/[\r\n]/g, ' ').slice(0, 140),
         target: typeof pin.target === 'number' && pin.target > 0 ? pin.target : null,
-        updatedAt: pin.updatedAt || Date.now()
+        updatedAt: pin.updatedAt || Date.now(),
+        addedAt: typeof pin.addedAt === 'string' ? pin.addedAt : '',
+        addedPrice: loggedPrice(pin.addedPrice)
       };
     });
     watch = clean;
@@ -48,6 +51,35 @@
   function money(value) {
     if (typeof value !== 'number' || !isFinite(value)) return '—';
     return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function loggedPrice(value) {
+    return typeof value === 'number' && isFinite(value) && value > 0 && value < 1000000
+      ? Math.round(value * 100) / 100
+      : null;
+  }
+
+  function priceNow(symbol) {
+    var row = bySymbol(symbol);
+    return loggedPrice(row && row.price);
+  }
+
+  function addedDateLabel(iso) {
+    var time = Date.parse(iso || '');
+    if (!Number.isFinite(time)) return '—';
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(new Date(time));
+  }
+
+  function deltaText(value, suffix) {
+    var abs = suffix ? Math.abs(value).toFixed(1) + suffix : money(Math.abs(value));
+    if (value > 0) return '+' + abs;
+    if (value < 0) return '−' + abs;
+    return abs;
   }
 
   function signed(value) {
@@ -406,9 +438,30 @@
       button.type = 'button';
       button.addEventListener('click', function () { openDetail(symbol); });
       item.appendChild(button);
-      var note = pin.note ? pin.note : 'No note';
-      if (pin.target) note += ' · target ' + money(pin.target);
-      item.appendChild(el('span', note));
+      var meta = el('span', null, 'watch-meta');
+      var when = el('span', null, 'watch-when');
+      var addedWhen = pin.addedAt ? addedDateLabel(pin.addedAt) : '—';
+      var addedPx = !pin.addedAt ? '—' : (pin.addedPrice == null ? 'price unavailable' : money(pin.addedPrice));
+      when.textContent = addedWhen;
+      if (pin.note) when.textContent += ' · ' + pin.note;
+      if (pin.target) when.textContent += ' · target ' + money(pin.target);
+      if (addedPx === 'price unavailable') when.textContent += ' · price unavailable';
+      var at = addedPx === 'price unavailable' ? null : el('span', addedPx, 'watch-at');
+      var now = el('span', null, 'watch-now');
+      var current = priceNow(symbol);
+      now.appendChild(document.createTextNode(current == null ? '—' : money(current) + ' '));
+      var change = el('span', '—');
+      if (typeof pin.addedPrice === 'number' && current != null) {
+        var dollars = current - pin.addedPrice;
+        var pct = pin.addedPrice ? (dollars / pin.addedPrice) * 100 : 0;
+        change.textContent = deltaText(dollars) + ' ' + deltaText(pct, '%');
+        change.className = dollars > 0 ? 'watch-up' : (dollars < 0 ? 'watch-down' : '');
+      }
+      now.appendChild(change);
+      meta.append(when);
+      if (at) meta.append(at);
+      meta.append(now);
+      item.appendChild(meta);
       list.appendChild(item);
     });
     if (!symbols.length) list.appendChild(el('li', 'No pins yet.'));
@@ -446,15 +499,52 @@
       document.getElementById('addStatus').textContent = 'The watchlist holds 40 tickers.';
       return false;
     }
+    var prior = watch[symbol];
+    var fresh = !prior;
+    var addedAt = prior && prior.addedAt ? prior.addedAt : '';
+    var addedPrice = prior ? loggedPrice(prior.addedPrice) : null;
+    if (fresh) {
+      addedAt = new Date().toISOString();
+      addedPrice = priceNow(symbol);
+      if (addedPrice == null) pendingPrice[symbol] = rows.length ? 'once' : 'wait';
+    }
     watch[symbol] = {
       note: String(note || '').replace(/[\r\n]/g, ' ').slice(0, 140),
       target: typeof target === 'number' && target > 0 && target <= 1000000 ? Math.round(target * 100) / 100 : null,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
+      addedAt: addedAt,
+      addedPrice: addedPrice
     };
     writeWatch();
     renderWatch();
     pushCloud(symbol);
     return true;
+  }
+
+  function retryPrices() {
+    var changed = false;
+    Object.keys(pendingPrice).forEach(function (symbol) {
+      var mode = pendingPrice[symbol];
+      var pin = watch[symbol];
+      if (!mode || !pin || !pin.addedAt || pin.addedPrice != null) {
+        delete pendingPrice[symbol];
+        return;
+      }
+      var price = priceNow(symbol);
+      if (price != null) {
+        pin.addedPrice = price;
+        delete pendingPrice[symbol];
+        changed = true;
+        pushCloud(symbol);
+        return;
+      }
+      if (mode === 'wait' && rows.length) pendingPrice[symbol] = 'once';
+      else if (mode === 'once' && rows.length) delete pendingPrice[symbol];
+    });
+    if (changed) {
+      writeWatch();
+      renderWatch();
+    }
   }
 
   function removePin(symbol) {
@@ -473,6 +563,8 @@
     if (!pin) return;
     var payload = { note: pin.note || '', updatedAt: firebase.database.ServerValue.TIMESTAMP };
     if (pin.target) payload.target = pin.target;
+    if (pin.addedAt) payload.addedAt = pin.addedAt;
+    if (typeof pin.addedPrice === 'number') payload.addedPrice = pin.addedPrice;
     firebase.database().ref('stocks/watchlist/' + uid + '/' + symbol).set(payload).then(function () {
       document.getElementById('pinStatus').textContent = 'Pinned and synced to your account.';
     }).catch(function () {
@@ -486,10 +578,19 @@
     Object.keys(value).forEach(function (symbol) {
       if (!TICKER.test(symbol) || !value[symbol]) return;
       var pin = value[symbol];
+      var prior = watch[symbol] || {};
+      var addedAt = '';
+      if (typeof pin.addedAt === 'string' && Number.isFinite(Date.parse(pin.addedAt))) addedAt = pin.addedAt;
+      else if (typeof pin.addedAt === 'number' && pin.addedAt > 0) addedAt = new Date(pin.addedAt).toISOString();
+      else if (prior.addedAt) addedAt = prior.addedAt;
+      var addedPrice = loggedPrice(pin.addedPrice);
+      if (addedPrice == null && prior.addedPrice != null && !pin.addedAt && !pin.addedPrice) addedPrice = loggedPrice(prior.addedPrice);
       next[symbol] = {
         note: String(pin.note || '').slice(0, 140),
         target: typeof pin.target === 'number' ? pin.target : null,
-        updatedAt: typeof pin.updatedAt === 'number' ? pin.updatedAt : 0
+        updatedAt: typeof pin.updatedAt === 'number' ? pin.updatedAt : 0,
+        addedAt: addedAt,
+        addedPrice: addedPrice
       };
     });
     if (!Object.keys(next).length && Object.keys(watch).length) return;
@@ -531,6 +632,8 @@
       pricedCount = data && data.priced || 0;
       paintFresh();
       paintTape();
+      retryPrices();
+      renderWatch();
       renderTable();
       if (selected) openDetail(selected, false);
       else if (rows.length) {
