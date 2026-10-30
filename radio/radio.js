@@ -18,7 +18,7 @@ const PADS = [
   ['blip', 'Menu Blip'], ['alarm', 'Alarm Clock'], ['splash', 'Splash'], ['boing', 'Spring Boing']
 ];
 const $ = s => document.querySelector(s);
-let audio, ac, master, analyser, synthTimer = 0, raf = 0, usingSynth = false, current = '';
+let audio, ac, master, analyser, mediaNode = null, synthTimer = 0, raf = 0, usingSynth = false, current = '';
 
 function ctx() {
   const AC = window.AudioContext || window.webkitAudioContext;
@@ -32,8 +32,37 @@ function ctx() {
     master.connect(analyser);
     analyser.connect(ac.destination);
   }
+  return ac;
+}
+function connectStream() {
+  if (!ctx() || !audio || mediaNode) return;
+  try {
+    mediaNode = ac.createMediaElementSource(audio);
+    mediaNode.connect(analyser);
+  } catch (err) { mediaNode = null; }
+}
+function paintTransport() {
+  const btn = $('#stopRadio');
+  if (!btn) return;
+  const on = usingSynth || (audio && !audio.paused && !audio.ended);
+  btn.textContent = on ? 'Stop' : 'Play';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   if (ac.state === 'suspended') ac.resume();
   return ac;
+}
+function connectStream() {
+  if (!ctx() || !audio || mediaNode) return;
+  try {
+    mediaNode = ac.createMediaElementSource(audio);
+    mediaNode.connect(analyser);
+  } catch (err) { mediaNode = null; }
+}
+function paintTransport() {
+  const btn = $('#stopRadio');
+  if (!btn) return;
+  const on = usingSynth || (audio && !audio.paused && !audio.ended);
+  btn.textContent = on ? 'Stop' : 'Play';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
 }
 function envGain(seconds, peak) {
   const audioCtx = ctx();
@@ -130,14 +159,17 @@ function drawBars() {
   c.fillStyle = '#001400';
   c.fillRect(0, 0, w, h);
   let vals = [];
-  if (analyser) {
+  const playing = usingSynth || (audio && !audio.paused && !audio.ended);
+  if (analyser && playing) {
     const bins = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(bins);
     vals = Array.from(bins);
   }
+  const energy = vals.reduce((sum, n) => sum + n, 0);
   const n = 24;
   for (let i = 0; i < n; i++) {
-    const v = vals.length ? vals[i % vals.length] / 255 : (usingSynth ? 0.2 + Math.abs(Math.sin(Date.now() / 180 + i)) * 0.6 : 0.05);
+    const live = energy > 12 ? vals[i % vals.length] / 255 : 0;
+    const v = live || (playing ? 0.22 + Math.abs(Math.sin(Date.now() / 180 + i * 0.65)) * 0.62 : 0.06);
     c.fillStyle = i % 3 ? '#39ff14' : '#ffd100';
     c.fillRect(8 + i * 18, h - 8 - v * (h - 16), 12, v * (h - 16));
   }
@@ -148,6 +180,7 @@ async function tune(station) {
   stopSynth();
   current = station.id;
   try { localStorage.setItem(KEY, JSON.stringify({ id: station.id })); } catch { /* private */ }
+  connectStream();
   $('#now').textContent = 'Tuning ' + station.name + '…';
   document.querySelectorAll('[data-station]').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.station === station.id)));
   audio.src = station.url;
@@ -157,6 +190,7 @@ async function tune(station) {
   } catch {
     startSynth();
   }
+  paintTransport();
 }
 function init() {
   const year = $('#yr');
@@ -183,11 +217,19 @@ function init() {
     pads.appendChild(btn);
   });
   $('#stopRadio').addEventListener('click', () => {
+    const on = usingSynth || (audio && !audio.paused && !audio.ended);
+    if (!on) {
+      const station = STATIONS.find(item => item.id === current) || STATIONS[0];
+      tune(station);
+      return;
+    }
     audio.pause();
     stopSynth();
     $('#now').textContent = 'Radio is stopped.';
     document.querySelectorAll('[data-station]').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
+    paintTransport();
   });
+  paintTransport();
   drawBars();
 }
 document.addEventListener('DOMContentLoaded', init);

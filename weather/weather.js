@@ -213,7 +213,7 @@
       maxNativeZoom: 8,
       attribution: 'NEXRAD composite via Iowa Environmental Mesonet'
     });
-    if (nexradOn && !rainOn) nexradLayer.addTo(map);
+    if (nexradOn) nexradLayer.addTo(map);
     shipLayer = L.layerGroup();
     movePin();
     setTimeout(function () { map.invalidateSize(); }, 200);

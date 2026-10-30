@@ -93,7 +93,8 @@ body.chat-page{display:flex;flex-direction:column;background:var(--bg,#f4f3ef);c
   padding:12px;
   -webkit-overflow-scrolling:touch;
 }
-.chat-empty{margin:auto;color:var(--muted,#334155);text-align:center}
+.chat-empty{margin:auto;color:var(--ink,#f8fafc);text-align:center;font-weight:650}
+html[data-theme="dark"] .chat-empty,html[data-theme="harbor"] .chat-empty{color:#f8fafc !important}
 .bubble{
   max-width:min(82%,440px);
   align-self:flex-start;

@@ -247,7 +247,13 @@
     const all = Object.keys(cache.threads).filter(id => cache.threads[id] && cache.threads[id].title);
     if (!list.length) {
       empty.hidden = false;
-      empty.textContent = all.length ? 'No topics match.' : 'No threads yet. Start one.';
+      empty.textContent = '';
+      empty.appendChild(document.createTextNode(all.length ? 'No topics match. ' : 'No threads yet. '));
+      var start = document.createElement('a');
+      start.className = 'btn';
+      start.href = all.length ? '#/' : '#/new';
+      start.textContent = all.length ? 'Clear the filter' : 'Start a thread';
+      empty.appendChild(start);
       return;
     }
     empty.hidden = true;

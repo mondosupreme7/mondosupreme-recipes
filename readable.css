@@ -1050,9 +1050,28 @@ a.status-card:active,a.cat-card:active{background:var(--surface-2)}
 html:not([data-theme="retro"]) .filebox{
   background:transparent !important;border:0 !important;box-shadow:none !important;padding:0 !important
 }
-html:not([data-theme="retro"]) .grid:not([data-recipe-layout]){
+html:not([data-theme="retro"]) .grid:not([data-recipe-layout]):not(.xw-grid){
   grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr)) !important;
   background:transparent !important;border:0 !important;padding:0 !important
+}
+html:not([data-theme="retro"]) .xw-grid{
+  display:grid !important;grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  width:min(100%,calc(100vw - 32px));max-width:360px;background:transparent !important;border:0 !important;padding:0 !important
+}
+html:not([data-theme="retro"]) .xw-grid .cell{
+  aspect-ratio:1;min-height:0 !important;background:var(--surface) !important;color:var(--ink) !important
+}
+html:not([data-theme="retro"]) .xw-grid .cell input{color:var(--ink) !important;background:transparent !important}
+html:not([data-theme="retro"]) .xw-grid .cell.black{background:#111827 !important;color:#f8fafc !important}
+html:not([data-theme="retro"]) .grid[data-recipe-layout],
+html:not([data-theme="retro"]) #grid.is-grouped{
+  background:transparent !important;border:0 !important;box-shadow:none !important;padding:0 !important
+}
+html[data-theme] a.recipe-row,
+html[data-theme] a.recipe-row .recipe-row-title,
+html[data-theme] a.recipe-tile,
+html[data-theme] a.recipe-tile .recipe-tile-title{
+  background:transparent !important;color:var(--ink) !important
 }
 html:not([data-theme="retro"]) #grid.is-grouped{
   display:flex !important;flex-direction:column !important;width:100%;max-width:100%;gap:12px;

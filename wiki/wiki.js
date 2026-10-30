@@ -2,6 +2,7 @@
 'use strict';
 const KEY = 'mondosupreme.wiki.v1';
 const LIMITS = { title: 200, body: 100000, tag: 40, tags: 30, id: 64, pages: 500 };
+const STOCK_EDITED = '2026-10-01T12:00:00.000Z';
 const WELCOME = [
   'This is a shared notebook. Anyone can add a page. Only the owner can edit, rename, delete, or restore an older copy. **Export** still makes a backup.',
   '',
@@ -629,8 +630,8 @@ function fromServer(id, v) {
     id, title,
     body: clipBody(v.body),
     tags: clipTags(typeof v.tags === 'string' ? v.tags : []),
-    created: new Date(createdAt || Date.now()).toISOString(),
-    updated: new Date(updatedAt || Date.now()).toISOString(),
+    created: createdAt ? new Date(createdAt).toISOString() : '',
+    updated: updatedAt ? new Date(updatedAt).toISOString() : '',
     createdAt, updatedAt,
     author: typeof v.author === 'string' ? v.author : '',
     history: history.slice(0, 5)
@@ -850,11 +851,12 @@ function load() {
   try { data = JSON.parse(localStorage.getItem(KEY)); } catch { data = null; }
   if (!Array.isArray(data)) {
     const now = new Date().toISOString();
-    pages = [{ id: 'welcome', title: 'Welcome', body: WELCOME, tags: ['start'], created: now, updated: now }];
+    pages = [{ id: 'welcome', title: 'Welcome', body: WELCOME, tags: ['start'], created: STOCK_EDITED, updated: STOCK_EDITED }];
     save();
     return;
   }
   pages = data.filter(p => p && typeof p === 'object' && !Array.isArray(p) && typeof p.id === 'string' && typeof p.title === 'string');
+  pages.forEach(p => { if (isStock(p)) { p.created = STOCK_EDITED; p.updated = STOCK_EDITED; } });
 }
 function editedLabel(iso) {
   const t = Date.parse(iso);

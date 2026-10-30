@@ -523,27 +523,63 @@ function armHeart() {
   if (document.hidden || !presenceRef) return;
   heart = setInterval(pulsePresence, 45000);
 }
+let connectTimer = 0;
+let connectGeneration = 0;
+function showConnectError(message) {
+  const el = $('#status');
+  if (!el) return;
+  el.style.pointerEvents = 'auto';
+  el.textContent = '';
+  const note = document.createElement('span');
+  note.textContent = message + ' ';
+  const retry = document.createElement('button');
+  retry.type = 'button';
+  retry.textContent = 'Retry';
+  retry.style.minHeight = '44px';
+  retry.style.minWidth = '44px';
+  retry.addEventListener('click', () => {
+    el.style.pointerEvents = 'none';
+    connect();
+  });
+  el.appendChild(note);
+  el.appendChild(retry);
+}
 function connect() {
   const config = window.MONDO_BOARD_CONFIG;
-  try { firebase.initializeApp(config); }
-  catch (err) { setStatus('On this device only.'); return; }
-  firebase.auth().onAuthStateChanged(async user => {
+  const generation = ++connectGeneration;
+  if (connectTimer) clearTimeout(connectTimer);
+  setStatus('Connecting…');
+  const status = $('#status');
+  if (status) status.style.pointerEvents = 'none';
+  connectTimer = setTimeout(() => {
+    if (generation !== connectGeneration) return;
+    if (status && /Connecting/.test(status.textContent)) showConnectError('Could not reach the shared board.');
+  }, 8000);
+  try {
+    if (typeof firebase === 'undefined') throw new Error('missing');
+    if (!firebase.apps.length) firebase.initializeApp(config);
+  } catch (err) { showConnectError('Paint is on this device only.'); return; }
+  const settle = async user => {
+    if (generation !== connectGeneration) return;
     if (!user) {
       try { await firebase.auth().signInAnonymously(); }
-      catch { setStatus('On this device only.'); }
+      catch { showConnectError('Guest sign-in failed. You can still draw on this device.'); }
       return;
     }
     myUid = user.uid;
     live = true;
     refreshChrome();
-    setStatus('Connecting…');
-    await setPresence(user.uid);
-    firebase.database().ref('board/presence').on('value', onlineCount);
+    try { await setPresence(user.uid); } catch { /* presence is optional */ }
+    firebase.database().ref('board/presence').on('value', snap => {
+      if (connectTimer) { clearTimeout(connectTimer); connectTimer = 0; }
+      onlineCount(snap);
+    }, () => showConnectError('The shared board did not load.'));
     firebase.database().ref('board/meta/clearedAt').on('value', snap => {
       clearedAt = Number(snap.val() || 0);
       listenStrokes();
-    });
-  });
+    }, () => showConnectError('The shared board did not load.'));
+  };
+  firebase.auth().onAuthStateChanged(user => { settle(user); });
 }
 async function clearMine() {
   const local = strokes.slice();

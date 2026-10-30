@@ -25,9 +25,9 @@
 <link rel="stylesheet" href="/cruises/vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
-<link rel="stylesheet" href="/shell.css?v=4">
+<link rel="stylesheet" href="/shell.css?v=6">
 <link rel="stylesheet" href="weather.css">
-<link rel="stylesheet" href="/readable.css?v=4">
+<link rel="stylesheet" href="/readable.css?v=6">
 </head>
 <body class="wx-page">
 <div class="ticker"><div class="ticker-track">
@@ -39,14 +39,14 @@
  <nav class="site-nav" aria-label="Site">
   <a href="/">Home</a>
   <a href="/recipes/">Recipes</a>
-  <a href="/daily-recipe/">Daily</a>
+  <a href="/daily-recipe/">Recipe TV</a>
   <a href="/cruises/">Cruises</a>
   <a href="/weather/" aria-current="page">Weather</a>
   <a href="/wordle/">Wordle</a>
-  <a href="/search/">AI Search</a>
+  <a href="/search/">Search</a>
   <a href="/stocks/">Stocks</a>
   <a href="/wiki/">Wiki</a>
-  <a href="/board/">Board</a>
+  <a href="/board/">Paint</a>
   <a href="/chat/">Chat</a>
   <a href="/arcade/">Arcade</a>
   <a href="/pet/">Pet</a>
@@ -59,7 +59,7 @@
   <a href="/grocery/">Grocery List</a>
   <a href="/radio/">Radio</a>
   <a href="/crossword/">Crossword</a>
-  <a href="/escape/" aria-label="The Locked Room">???</a>
+  <a href="/escape/" aria-label="ASH_HOUSE.EXE">ASH_HOUSE.EXE</a>
  </nav>
 </div></header>
 <main class="wrap">
@@ -69,10 +69,11 @@
   <p id="wxPlace">Cocoa / Cape Canaveral, FL · 32927</p>
  </div>
  <form id="wxSearch" class="wx-search">
-  <label>ZIP code or city
-   <input id="wxQuery" name="q" type="search" maxlength="80" placeholder="32927 or Cocoa" autocomplete="off" enterkeyhint="search">
-  </label>
-  <button class="btn wx-btn" type="submit">Search</button>
+  <label for="wxQuery">ZIP code or city</label>
+  <div class="wx-search-row">
+   <input id="wxQuery" name="q" type="search" maxlength="80" placeholder="32927 or Cocoa" autocomplete="off" enterkeyhint="search" aria-label="ZIP code or city">
+   <button class="btn wx-btn" type="submit">Search</button>
+  </div>
  </form>
  <div class="wx-presets" id="wxPresets" role="group" aria-label="Radar presets"></div>
  <section class="wx-crt" aria-labelledby="wxRadarTitle">
@@ -134,7 +135,7 @@
  </section>
  <p class="wx-fine">Observed radar: Iowa Environmental Mesonet US composite (N0Q), the latest two hours. Forecast frames: NOAA HRRR via IEM. Place names: OpenStreetMap. Conditions: Open-Meteo and the National Weather Service. Ship dots are last-reported positions, not for navigation. During a warning, follow weather.gov.</p>
 </main>
-<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Not a substitute for official warnings. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">AI Search</a> · <a href="/stocks/">Stocks</a> · <a href="/wiki/">Wiki</a> · <a href="/board/">Board</a> · <a href="/chat/">Chat</a> · <a href="/arcade/">Arcade</a> · <a href="/pet/">Pet</a> · <a href="/forum/">Forum</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a> · <a href="/mmo/">MMO</a> · <a href="/fps/">FPS</a> · <a href="/escape/" aria-label="The Locked Room">???</a></div></footer>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Not a substitute for official warnings. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Recipe TV</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">Search</a> · <a href="/stocks/">Stocks</a> · <a href="/wiki/">Wiki</a> · <a href="/board/">Paint</a> · <a href="/chat/">Chat</a> · <a href="/arcade/">Arcade</a> · <a href="/pet/">Pet</a> · <a href="/forum/">Forum</a> · <a href="/market/">Market</a> · <a href="/8ball/">8-Ball</a> · <a href="/mmo/">MMO</a> · <a href="/fps/">FPS</a> · <a href="/escape/" aria-label="ASH_HOUSE.EXE">ASH_HOUSE.EXE</a></div></footer>
 <script src="/cruises/vendor/leaflet/leaflet.js"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
@@ -143,7 +144,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js"></script>
-<script src="/shell.js?v=4"></script>
+<script src="/shell.js?v=6"></script>
 <script src="/backup.js"></script>
 <script src="weather.js"></script>
 </body>

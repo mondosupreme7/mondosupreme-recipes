@@ -13,7 +13,7 @@ body.wordle-page main.word-main{
   flex-direction:column;
   overflow:clip
 }
-.word-play{flex:1 1 auto;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;width:100%;touch-action:manipulation}
+.word-play{flex:1 1 auto;min-height:0;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);width:100%;touch-action:manipulation}
 .word-bar{flex:0 0 auto;display:flex;align-items:center;gap:4px;min-height:44px}
 .word-bar h1{margin:0;flex:0 1 auto;font-size:1.05rem!important;line-height:1.1;white-space:nowrap}
 .word-modes{display:flex;flex:1 1 auto;flex-wrap:nowrap;gap:4px;margin:0;min-width:0}
@@ -23,7 +23,7 @@ body.wordle-page main.word-main{
 .word-modes .word-btn{flex:1 1 0;min-width:0;padding:0 4px;font-size:12px}
 .word-modes .btn[aria-pressed="true"]{outline:2px solid #2563eb;background:#eef4ff}
 .word-msg{flex:0 0 auto;min-height:2lh;margin:2px 0;overflow:hidden;white-space:normal;text-wrap:balance;font:600 var(--text-sm, .875rem)/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.word-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;container-type:size}
+.word-stage{flex:0 0 auto;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding-top:4px}
 .word-grid{
   --gap:6px;
   --tile:min(calc((100vw - 2 * var(--space-4, 16px) - 4 * 6px) / 5), calc((100svh - var(--nav-h) - var(--dock-h) - 3 * var(--key) - 12px - 96px) / 6), 60px);

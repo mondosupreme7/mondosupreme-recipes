@@ -29,10 +29,17 @@
     btn.className = 'btn';
     btn.textContent = name;
     btn.setAttribute('aria-pressed', name === current ? 'true' : 'false');
-    if (group === 'when') btn.setAttribute('role', 'tab');
+    if (group === 'when') {
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', name === current ? 'true' : 'false');
+    }
     btn.addEventListener('click', function () {
-      Array.prototype.forEach.call(btn.parentNode.children, function (el) { el.setAttribute('aria-pressed', 'false'); });
+      Array.prototype.forEach.call(btn.parentNode.children, function (el) {
+        el.setAttribute('aria-pressed', 'false');
+        if (el.getAttribute('role') === 'tab') el.setAttribute('aria-selected', 'false');
+      });
       btn.setAttribute('aria-pressed', 'true');
+      if (group === 'when') btn.setAttribute('aria-selected', 'true');
       set(name);
       paint();
     });

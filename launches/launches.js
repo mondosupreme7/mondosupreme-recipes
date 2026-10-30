@@ -155,7 +155,9 @@ async function loadLaunches() {
   } catch { live = []; }
   rows = live.length ? live : backupRows();
   picked = 0;
-  if (status) status.textContent = live.length ? ('Live schedule · ' + live.length + ' upcoming Space Coast launches.') : 'Launch Library is quiet or rate-limited. Showing the curated Falcon 9, Starship, Artemis, and ULA backup so the board is never empty.';
+  const backupNote = $('#launchBackup');
+  if (backupNote) backupNote.hidden = !!live.length;
+  if (status) status.textContent = live.length ? ('Live schedule · ' + live.length + ' upcoming Space Coast launches.') : 'Live data unavailable, showing backup schedule';
   paintList();
   paintGuide();
   paintClock();

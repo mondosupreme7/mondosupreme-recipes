@@ -411,7 +411,7 @@ function chefMatches(){
   if(!chef)return [];
   const q=state.q.toLowerCase();
   return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||r.cuisine===state.cuisine) && !state.tag && !state.fav &&
-    (!q||(r.q||r.title||'').toLowerCase().includes(q)));
+    (!q||[r.title,r.q,r.cuisine,r.cuisineDetail,r.category].join(' ').toLowerCase().includes(q)));
 }
 function saveChefToMine(id){
   return loadChefRecipe(id).then(full=>{
@@ -627,13 +627,14 @@ function renderList(){
   $('#grid').querySelectorAll('.card:not(.card-chef) .thumb').forEach((el,i)=>paintPhoto(el,mine[i]&&mine[i].photo));
   const totalShown=mine.length+chefList.length;
   if(countEl){
-    if(state.source==='backyard'&&chef){
+    if((state.source==='backyard'||q)&&chef){
       countEl.hidden=false;
-      const shownCount=state.cat||state.q||state.cuisine?chefList.length:chef.count;
-      countEl.textContent=shownCount.toLocaleString('en-US')+' Backyard Chef recipe'+(shownCount===1?'':'s');
-    }else if(q&&chef){
-      countEl.hidden=false;
-      countEl.textContent=chefList.length+' Backyard Chef match'+(chefList.length===1?'':'es');
+      if(q){
+        countEl.textContent='Showing '+shownChef.length.toLocaleString('en-US')+' of '+chefList.length.toLocaleString('en-US')+' matches for “'+state.q+'”';
+      }else{
+        const shownCount=state.cat||state.cuisine?chefList.length:chef.count;
+        countEl.textContent=shownCount.toLocaleString('en-US')+' Backyard Chef recipe'+(shownCount===1?'':'s');
+      }
     }else countEl.hidden=true;
   }
   if(more){
@@ -2285,7 +2286,7 @@ function init(){
   $('#btnExport').onclick=exportJSON;
   $('#importFile').onchange=e=>{if(e.target.files[0])importJSON(e.target.files[0]);e.target.value=''};
   $('#search').oninput=e=>{
-    state.q=e.target.value; chefPage=0; renderList();
+    state.q=e.target.value.trim(); chefPage=0; renderList();
     if(state.q)loadChefIndex().then(()=>renderList()).catch(()=>{});
   };
   $('#catFilter').onchange=e=>{state.cat=e.target.value;chefPage=0;renderList()};

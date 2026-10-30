@@ -31,7 +31,7 @@
 
   var sections = [
     { group: 'Home', title: 'Home', href: '/', text: 'landing mondosupreme' },
-    { group: 'Home', title: 'AI Search', href: '/search/', text: 'ask mondo jeeves search engine cyber butler altavista yahoo' },
+    { group: 'Home', title: 'Search', href: '/search/', text: 'ask mondo jeeves search engine cyber butler altavista yahoo' },
     { group: 'Kitchen', title: 'Recipes', href: '/recipes/', text: 'kitchen cookbook food' },
     { group: 'Kitchen', title: 'Grocery List', href: '/grocery/', text: 'mondorecipe grocery list recipes servings aisle shopping' },
     { group: 'Kitchen', title: 'Recipe TV', href: '/daily-recipe/', text: 'daily recipe youtube mondotv realplayer chef' },
@@ -42,17 +42,17 @@
     { group: 'Notes', title: 'Wiki', href: '/wiki/', text: 'notes wiki' },
     { group: 'Notes', title: 'Forum', href: '/forum/', text: 'bulletin posts forum' },
     { group: 'Shop', title: 'Market', href: '/market/', text: 'ebay classifieds market mondobay for sale' },
-    { group: 'Play', title: 'Wordle', href: '/wordle/', text: 'mondoword daily wordle puzzle five letter cyber' },
+    { group: 'Play', title: 'Word Game', href: '/wordle/', text: 'mondoword daily wordle puzzle five letter cyber' },
     { group: 'Play', title: 'Crossword', href: '/crossword/', text: 'mini crossword trivia daily five by five clues' },
     { group: 'Play', title: '8-Ball', href: '/8ball/', text: 'magic 8-ball mystic oracle fortune sphere' },
-    { group: 'Play', title: 'Board', href: '/board/', text: 'drawing whiteboard' },
+    { group: 'Play', title: 'Paint', href: '/board/', text: 'drawing whiteboard paint board' },
     { group: 'Play', title: 'Chat', href: '/chat/', text: 'chat room talk' },
     { group: 'Play', title: 'Arcade', href: '/arcade/', text: 'games arcade' },
     { group: 'Play', title: 'Pet', href: '/pet/', text: 'virtual pet egg mondogotchi habitat' },
     { group: 'Play', title: 'Radio', href: '/radio/', text: 'mondofm radio soundboard winamp somafm synth' },
     { group: 'Play', title: 'MMO', href: '/mmo/', text: 'world of mondocraft' },
     { group: 'Play', title: 'FPS', href: '/fps/', text: 'half-strike fortress' },
-    { group: 'Play', title: 'Locked Room', href: '/escape/', text: 'escape door ???' },
+    { group: 'Play', title: 'ASH_HOUSE.EXE', href: '/escape/', text: 'escape door locked room' },
     { group: 'Home', title: 'Privacy', href: '/privacy/', text: 'privacy delete my data account' }
   ];
   var games = [
@@ -64,7 +64,7 @@
     { kind: 'Game', title: "Half-Strike — Sector C Labs", href: '/fps/', text: 'fps half-life labs crowbar' },
     { kind: 'Game', title: 'Half-Strike — de_sandstorm', href: '/fps/', text: 'fps counter-strike bomb sandstorm' },
     { kind: 'Game', title: "Half-Strike — 2Fort_99", href: '/fps/', text: 'fps team fortress sentry 2fort' },
-    { kind: 'Game', title: 'The Locked Room', href: '/escape/', text: 'escape room door' }
+    { kind: 'Game', title: 'ASH_HOUSE.EXE', href: '/escape/', text: 'escape room door' }
   ];
 
   function addItem(list, item) {
@@ -443,7 +443,7 @@
   var AUDIO_KEY = 'mondosupreme.audio.v1';
   var FX_KEY = 'mondosupreme.fx.v1';
   var programs = [
-    { title: "Ask the Butler", href: '/search/', icon: 'search' },
+    { title: 'Search', href: '/search/', icon: 'search' },
     { title: 'Recipes', href: '/recipes/', icon: 'pot' },
     { title: 'Grocery List', href: '/grocery/', icon: 'meal' },
     { title: "Recipe TV", href: '/daily-recipe/', icon: 'tv' },
@@ -827,7 +827,7 @@
     var groups = [
       ['Kitchen & Food', ['Recipes', 'Grocery List', 'Recipe TV']],
       ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
-      ['Finance & Search', ['Stocks', 'Ask the Butler', 'Wiki']],
+      ['Finance & Search', ['Stocks', 'Search', 'Wiki']],
       ['Community', ['Bulletin Forum', 'Chat', 'Paint', 'Marketplace', 'Radio']],
       ['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
     ];

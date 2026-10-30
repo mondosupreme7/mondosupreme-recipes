@@ -1,9 +1,10 @@
 .xw-kicker{margin:0;font:700 13px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;color:#003399;letter-spacing:.08em;text-transform:uppercase}
 .xw-hero h1{margin:.2rem 0;font-size:clamp(1.35rem,5.5vw,2rem)}
-.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:min(100%,320px);margin:8px auto}
-.cell{position:relative;min-height:48px;background:#fff;border:2px solid #000080}
-.cell input{width:100%;height:48px;border:0;text-align:center;font:700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-transform:uppercase;background:transparent;padding:12px 0 0}
-.cell .num{position:absolute;left:2px;top:1px;font:700 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827}
+.xw-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:min(100%,calc(100vw - 32px));max-width:360px;margin:8px auto}
+.xw-grid .cell{position:relative;aspect-ratio:1;min-height:0;height:auto;background:var(--surface,#fff);color:var(--ink,#0f172a);border:2px solid var(--line-strong,#334155)}
+.xw-grid .cell input{width:100%;height:100%;min-height:44px;border:0;text-align:center;font:700 clamp(18px,5vw,24px)/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;background:transparent;color:var(--ink,#0f172a);padding:10px 0 0;caret-color:var(--ink,#0f172a)}
+.xw-grid .cell.black{background:#111827;border-color:#111827}
+.xw-grid .cell .num{position:absolute;left:2px;top:1px;font:700 10px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#111827)}
 .cell.black{background:#000080}
 .cell.bad input{background:#ffd0d0}
 .cell.good input{background:#d8ffd0}

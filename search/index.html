@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com; connect-src 'self' https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<title>Ask the Butler — AI Cyber-Butler &amp; Web Search Engine</title>
+<title>Search — Mondosupreme</title>
 <meta name="description" content="Ask the Butler, a cyber-butler that answers from a keyless AI line, Wikipedia, DuckDuckGo, and every corner of Mondosupreme.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,24 +24,24 @@
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
-<link rel="stylesheet" href="/shell.css?v=4">
+<link rel="stylesheet" href="/shell.css?v=6">
 <link rel="stylesheet" href="search.css?v=2">
-<link rel="stylesheet" href="/readable.css?v=4">
+<link rel="stylesheet" href="/readable.css?v=6">
 </head>
 <body class="search-page">
 <header class="site-header"><div class="wrap hdr">
- <a href="/search/" class="brand"><span class="logo">🔍</span><span>Ask the Butler</span></a>
+ <a href="/search/" class="brand"><span class="logo">🔍</span><span>Search</span></a>
  <nav class="site-nav" aria-label="Site">
   <a href="/">Home</a>
   <a href="/recipes/">Recipes</a>
-  <a href="/daily-recipe/">Daily</a>
+  <a href="/daily-recipe/">Recipe TV</a>
   <a href="/cruises/">Cruises</a>
   <a href="/weather/">Weather</a>
   <a href="/wordle/">Wordle</a>
-  <a href="/search/" aria-current="page">AI Search</a>
+  <a href="/search/" aria-current="page">Search</a>
   <a href="/stocks/">Stocks</a>
   <a href="/wiki/">Wiki</a>
-  <a href="/board/">Board</a>
+  <a href="/board/">Paint</a>
   <a href="/chat/">Chat</a>
   <a href="/arcade/">Arcade</a>
   <a href="/pet/">Pet</a>
@@ -54,23 +54,23 @@
   <a href="/grocery/">Grocery List</a>
   <a href="/radio/">Radio</a>
   <a href="/crossword/">Crossword</a>
-  <a href="/escape/" aria-label="The Locked Room">???</a>
+  <a href="/escape/" aria-label="ASH_HOUSE.EXE">ASH_HOUSE.EXE</a>
  </nav>
 </div></header>
 <main class="wrap ask-main">
  <div class="ask-hero">
   <figure class="butler-card">
    <img class="butler" src="butler.svg" width="128" height="128" alt="Ask Mondo butler" decoding="async">
-   <figcaption>Ask the Butler</figcaption>
+   <figcaption>Search</figcaption>
   </figure>
   <div class="ask-intro">
    <p class="ask-kicker">AI Cyber-Butler</p>
-   <h1>Ask the Butler — AI Cyber-Butler &amp; Web Search Engine</h1>
+   <h1>Search</h1>
    <p class="ask-lead">Ask in plain language. The butler writes an answer brief, checks Wikipedia and DuckDuckGo, and looks through recipes, ships, the wiki, the forum, Marketplace, and the rest of this site.</p>
   </div>
  </div>
  <form class="ask-form" id="askForm" role="search">
-  <label class="ask-label" for="q">Ask the Butler</label>
+  <label class="ask-label" for="q">Search</label>
   <div class="ask-bar">
    <input id="q" name="q" type="search" enterkeyhint="search" maxlength="140" autocomplete="off" placeholder="Ask anything… pancakes, Port Canaveral, 2 cups to ml" aria-describedby="askStatus">
    <button class="btn primary ask-go" type="submit">Search</button>
@@ -97,7 +97,7 @@
   <div id="toolBody"></div>
  </section>
  <section class="ask-win" id="briefWin" aria-labelledby="briefTitle">
-  <h2 id="briefTitle">Ask the Butler</h2>
+  <h2 id="briefTitle">Search</h2>
   <div id="briefBody">
    <p>The brief lands here. If the outside AI line is slow, Wikipedia, DuckDuckGo, and this site still fill the page.</p>
   </div>
@@ -120,7 +120,7 @@
   <ul class="wire-list" id="wireList"><li class="ask-empty">The wire is quiet. A public question can show up here.</li></ul>
  </section>
 </main>
-<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · A homemade butler, not those other search pages. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Daily</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">AI Search</a> · <a href="/stocks/">Stocks</a></div></footer>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · A homemade butler, not those other search pages. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Recipe TV</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">Search</a> · <a href="/stocks/">Stocks</a></div></footer>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>
@@ -128,7 +128,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js"></script>
-<script src="/shell.js?v=4"></script>
+<script src="/shell.js?v=6"></script>
 <script src="/backup.js"></script>
 <script src="search.js"></script>
 </body>

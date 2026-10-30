@@ -123,8 +123,14 @@ function focusIndex(index) {
   const input = document.querySelector('#grid input[data-i="' + index + '"]');
   if (input) input.focus();
 }
+function ensureClock() {
+  if (started) return;
+  started = Date.now();
+  tickClock();
+  clockTimer = setInterval(tickClock, 250);
+}
 function onType(input) {
-  if (!started) { started = Date.now(); tickClock(); clockTimer = setInterval(tickClock, 250); }
+  ensureClock();
   const i = Number(input.dataset.i);
   letters[i] = (input.value || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 1);
   input.value = letters[i];
@@ -141,6 +147,7 @@ function onKey(e, input) {
   const order = cells();
   const i = Number(input.dataset.i);
   const pos = order.indexOf(i);
+  if (/^[a-zA-Z]$/.test(e.key)) ensureClock();
   if (e.key === 'Backspace' && !input.value && pos > 0) {
     letters[order[pos - 1]] = '';
     focusIndex(order[pos - 1]);

@@ -26,7 +26,8 @@ table.board a.topic:hover{text-decoration:underline}
 .pill.lock{background:#ccc}
 .pill.cat{background:#fff;color:#003399}
 .counts{font-variant-numeric:tabular-nums;font-weight:700}
-.empty-board{margin:0;padding:22px 12px 28px;text-align:center;color:#003399;font:700 1.05rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.empty-board{margin:0;padding:22px 12px 28px;text-align:center;color:var(--ink,#0f172a);font:700 1.05rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.empty-board .btn{margin-top:12px;min-height:44px}
 #composeView,#threadView{padding:12px 14px 20px}
 #topicForm label,#replyForm label{display:flex;flex-direction:column;gap:4px;font:700 .85rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#003399;margin:8px 0}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}

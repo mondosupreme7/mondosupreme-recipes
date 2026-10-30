@@ -35,11 +35,13 @@ body.board-page main.paint-app{
 }
 .paint-dock{
   position:absolute;left:8px;right:8px;bottom:8px;z-index:5;
-  display:flex;align-items:stretch;gap:6px;
-  padding:6px;overflow-x:auto;overscroll-behavior:contain;touch-action:pan-x;
+  display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;
+  padding:6px;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y;
+  max-height:42%;
   background:rgba(255,255,255,.96);color:#0f172a;
   border:1px solid #e2e8f0;border-radius:16px;
   box-shadow:0 8px 24px rgba(15,23,42,.16);
+  mask-image:none;
 }
 .paint-dock .dock-btn, .shape-row .dock-btn, .paint-more button, .paint-more a{
   flex:0 0 auto;min-width:44px;min-height:44px;box-sizing:border-box;

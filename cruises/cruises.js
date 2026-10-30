@@ -332,7 +332,7 @@
 
   function syncLabels() {
     if (!map) return;
-    var show = map.getZoom() >= 9;
+    var show = map.getZoom() >= 6;
     Object.keys(markers).forEach(function (key) {
       var entry = markers[key];
       var row = posOf(entry.ship);
@@ -358,7 +358,7 @@
     var renderer = map.options.renderer;
     var hit = L.circleMarker([shown.lat, shown.lon], {
       renderer: renderer,
-      radius: 22,
+      radius: 24,
       stroke: false,
       fillOpacity: 0,
       interactive: true,
@@ -438,13 +438,13 @@
       var prev = run[run.length - 1];
       if (Math.abs(prev.lat - point.lat) < 0.00001 && Math.abs(prev.lon - point.lon) < 0.00001) return;
       var gap = point.t && prev.t ? (point.t - prev.t) / 3600000 : 99;
-      if (gap > 6) {
+      var miles = nmBetween(prev, point);
+      var speed = gap > 0.02 ? miles / gap : (miles > 1 ? 99 : 0);
+      if (gap > 2 || miles > 45 || speed > 28) {
         if (run.length > 1) segments.push(run);
         run = [point];
         return;
       }
-      var speed = gap > 0 ? nmBetween(prev, point) / gap : 99;
-      if (speed > 30) return;
       run.push(point);
     });
     if (run.length > 1) segments.push(run);
@@ -724,7 +724,7 @@
     var wait = Math.max(0, Math.min(nextOw || Date.now(), nextSnap || Date.now()) - Date.now());
     var seconds = Math.max(0, Math.ceil(wait / 1000));
     var updated = positions.updated ? 'updated ' + shortAge(positions.updated) : 'waiting for a snapshot';
-    status.textContent = 'Live · ' + updated + ' · next in ' + seconds + 's';
+    status.textContent = 'Live · ' + updated.replace(/^updated /, '') + ' · next ' + seconds + 's';
   }
 
   function tickAges() {
