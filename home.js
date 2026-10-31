@@ -310,10 +310,17 @@
     var list = data && Array.isArray(data.stocks) ? data.stocks.filter(function (row) {
       return row && row.symbol && typeof row.price === 'number';
     }) : [];
-    list.sort(function (a, b) {
-      return (b.rankScore || 0) - (a.rankScore || 0) || String(a.symbol).localeCompare(String(b.symbol));
+    var swing = list.filter(function (row) {
+      return row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20;
     });
-    return list[0] || null;
+    var pool = swing.length ? swing : list;
+    var useSwing = swing.length > 0;
+    pool.sort(function (a, b) {
+      var left = useSwing ? (a.swingScore || 0) : (a.rankScore || 0);
+      var right = useSwing ? (b.swingScore || 0) : (b.rankScore || 0);
+      return right - left || String(a.symbol).localeCompare(String(b.symbol));
+    });
+    return pool[0] || null;
   }
   function paintStock(data) {
     var line = $('homeStockLine');
@@ -329,8 +336,10 @@
       return;
     }
     line.replaceChildren();
-    var company = shortCompany(row.name);
+    var company = shortCompany(row.name).replace(/\s+\(The$/i, '');
     if (company.length > 14) company = company.split(/[\s,]+/)[0];
+    var main = document.createElement('span');
+    main.className = 'home-stock-main';
     var name = document.createElement('span');
     name.className = 'home-stock-name';
     name.textContent = row.symbol + (company ? ' ' + company : '') + ' · ';
@@ -343,11 +352,14 @@
       change.textContent = signedPct(row.dayChange);
       facts.appendChild(change);
     }
-    if (typeof row.rsi === 'number') {
-      var rsi = String(row.rsi.toFixed(1)).replace(/\.0$/, '');
-      facts.appendChild(document.createTextNode(' · RSI ' + rsi));
+    main.append(name, facts);
+    line.appendChild(main);
+    if (row.swingEligible && typeof row.swingScore === 'number') {
+      var badge = document.createElement('span');
+      badge.className = 'home-stock-score';
+      badge.textContent = String(row.swingScore).replace(/\.0$/, '');
+      line.appendChild(badge);
     }
-    line.append(name, facts);
   }
   function loadStock() {
     text('homeStockLine', 'Checking the screener');

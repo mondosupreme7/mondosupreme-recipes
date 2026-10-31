@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=7">
-<link rel="stylesheet" href="stocks.css?v=3">
+<link rel="stylesheet" href="stocks.css?v=4">
 <link rel="stylesheet" href="/readable.css?v=9">
 </head>
 <body>
@@ -85,6 +85,19 @@
  </details>
  <div class="quote-main">
  <p id="fresh" class="quote-fresh">Loading the screener…</p>
+ <section id="swingWatch" class="swing-watch" hidden>
+  <h2>Top stock to watch</h2>
+  <button type="button" id="swingOpen" class="swing-card">
+   <span class="swing-line">
+    <span id="swingSymbol" class="swing-symbol"></span>
+    <span id="swingPrice" class="swing-price"></span>
+    <span id="swingChange" class="swing-change"></span>
+    <span id="swingScore" class="swing-score"></span>
+   </span>
+   <span id="swingChips" class="swing-chips"></span>
+  </button>
+  <p class="swing-note">Not financial advice.</p>
+ </section>
  <div class="quote-tools">
   <label>Screen
    <select id="screen" aria-label="Filter the screener">
@@ -92,12 +105,14 @@
     <option value="deep">RSI &lt; 30 (Strictly Oversold)</option>
     <option value="ready">Oversold + Turning Up (Ready to Buy)</option>
     <option value="pull">Above 200-Day MA Pullbacks</option>
+    <option value="swing">Swing bottom setups</option>
     <option value="watch">My Watchlist</option>
    </select>
   </label>
   <label>Sort
    <select id="sort" aria-label="Sort the screener">
     <option value="rank" selected>Best swing rank</option>
+    <option value="swing">Swing bottom score</option>
     <option value="rsi">Lowest RSI</option>
     <option value="score">Highest Bounce Score</option>
     <option value="drop">Biggest 5-Day Drop</option>
@@ -164,7 +179,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=3"></script>
+<script src="stocks.js?v=4"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=3"></script>

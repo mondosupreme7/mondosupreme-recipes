@@ -69,7 +69,13 @@ ABOUT = (
     "are the 20-day average plus and minus two population standard deviations. ATR is Wilder's "
     "14-day average true range. The stop sketch is 1.5 times ATR under the last close. Targets are "
     "the 20-day average or the mid band, then the upper band, when those levels sit above the last "
-    "close. The rank mixes that setup with fundamentals. Yahoo quoteSummary is tried first. If that "
+    "close. Swing bottom score is a separate 0-100 read of a turn off the lows: RSI turning up "
+    "or diverging, a stochastic cross from below 20, MACD turning up under zero, a lower "
+    "Bollinger bounce, distance to the 52-week low, a 10- or 20-day average reclaim, volume "
+    "on the reversal, and a hammer or bullish engulfing. A pullback still above a rising "
+    "200-day average scores higher than a falling knife. Names under $5, or with thin share "
+    "and dollar volume, score 0. The rank mixes the older setup score with fundamentals. "
+    "Yahoo quoteSummary is tried first. If that "
     "crumb is blocked, Nasdaq's public quote, annual financials, analyst target, and earnings "
     "calendar are used instead: sector, industry, market cap, revenue growth, profit margin, free "
     "cash flow, debt-to-equity, forward P/E when Yahoo returns it, and the analyst target or "
@@ -199,6 +205,223 @@ def is_hammer(bar):
     lower = min(bar["open"], bar["close"]) - bar["low"]
     upper = bar["high"] - max(bar["open"], bar["close"])
     return lower >= body * 2 and upper <= body and bar["close"] >= bar["low"] + span * 0.6
+
+
+def ema_series(values, length):
+    out = [None] * len(values)
+    if len(values) < length or length < 1:
+        return out
+    acc = mean(values[:length])
+    out[length - 1] = acc
+    alpha = 2.0 / (length + 1.0)
+    for index in range(length, len(values)):
+        acc = values[index] * alpha + acc * (1.0 - alpha)
+        out[index] = acc
+    return out
+
+
+def macd_parts(closes):
+    fast = ema_series(closes, 12)
+    slow = ema_series(closes, 26)
+    line = [None] * len(closes)
+    for index in range(len(closes)):
+        if fast[index] is None or slow[index] is None:
+            continue
+        line[index] = fast[index] - slow[index]
+    start = next((index for index, value in enumerate(line) if value is not None), None)
+    signal = [None] * len(closes)
+    hist = [None] * len(closes)
+    if start is None:
+        return line, signal, hist
+    smooth = ema_series(line[start:], 9)
+    for offset, value in enumerate(smooth):
+        if value is None:
+            continue
+        signal[start + offset] = value
+        hist[start + offset] = line[start + offset] - value
+    return line, signal, hist
+
+
+def stochastic_kd(bars, length=14, smooth=3):
+    k_line = [None] * len(bars)
+    for index in range(length - 1, len(bars)):
+        window = bars[index + 1 - length:index + 1]
+        high = max(bar["high"] for bar in window)
+        low = min(bar["low"] for bar in window)
+        if high == low:
+            k_line[index] = 50.0
+        else:
+            k_line[index] = (bars[index]["close"] - low) / (high - low) * 100.0
+    d_line = [None] * len(bars)
+    for index in range(len(bars)):
+        sample = k_line[index + 1 - smooth:index + 1]
+        if len(sample) < smooth or any(value is None for value in sample):
+            continue
+        d_line[index] = mean(sample)
+    return k_line, d_line
+
+
+def obv_series(bars):
+    out = [0.0]
+    for index in range(1, len(bars)):
+        close = bars[index]["close"]
+        prev = bars[index - 1]["close"]
+        if close > prev:
+            out.append(out[-1] + bars[index]["volume"])
+        elif close < prev:
+            out.append(out[-1] - bars[index]["volume"])
+        else:
+            out.append(out[-1])
+    return out
+
+
+def lower_band_at(closes, index):
+    if index < 19:
+        return None
+    window = closes[index - 19:index + 1]
+    return mean(window) - 2 * population_stdev(window)
+
+
+def bullish_engulfing(prev, bar):
+    if prev["close"] >= prev["open"] or bar["close"] <= bar["open"]:
+        return False
+    prev_body = abs(prev["close"] - prev["open"])
+    body = abs(bar["close"] - bar["open"])
+    return bar["open"] <= prev["close"] and bar["close"] >= prev["open"] and body > prev_body
+
+
+def rsi_divergence(closes, rsi, last):
+    if last < 20:
+        return False
+    pivots = []
+    start = max(2, last - 45)
+    for index in range(start, last + 1):
+        if rsi[index] is None:
+            continue
+        left = min(closes[max(0, index - 2):index]) if index else closes[index]
+        right = min(closes[index:min(len(closes), index + 3)])
+        if closes[index] <= left and closes[index] <= right:
+            pivots.append(index)
+    if len(pivots) < 2:
+        return False
+    later = pivots[-1]
+    if last - later > 5:
+        return False
+    earlier = None
+    for index in reversed(pivots[:-1]):
+        if 5 <= later - index <= 30:
+            earlier = index
+            break
+    if earlier is None or rsi[earlier] is None or rsi[later] is None:
+        return False
+    return closes[later] < closes[earlier] * 0.997 and rsi[later] >= rsi[earlier] + 2.0
+
+
+def swing_bottom(bars):
+    """0-100 score for a daily-chart bottom that is starting to turn.
+
+    Liquidity below $5 or both thin share volume and thin dollar volume scores 0
+    so a junk print cannot become the top stock. Points:
+    RSI turning up 16, RSI divergence 10, stochastic cross from under 20 is 12,
+    MACD cross below zero 14 or a rising negative histogram 8, lower Bollinger
+    bounce 10, within 12% of the 52-week low 6, 10/20-day EMA reclaim 10,
+    uptrend pullback 8, volume reversal 8, hammer or bullish engulfing 6.
+    A close under a falling 200-day average loses 12. The total is capped at 100.
+    """
+    empty = {"score": 0.0, "signals": [], "eligible": False}
+    closes = [bar["close"] for bar in bars]
+    last = len(closes) - 1
+    if last < 60:
+        return empty
+    avg_volume = mean([bar["volume"] for bar in bars[last - 20:last]])
+    price = closes[last]
+    liquid = price >= 5 and avg_volume > 0 and (avg_volume >= 250000 or price * avg_volume >= 5000000)
+    if not liquid:
+        return empty
+    rsi = wilder_rsi(closes)
+    if rsi[last] is None or rsi[last - 1] is None:
+        return empty
+    signals = []
+    qualifying = []
+    points = 0
+
+    def add(label, weight, qualifies=True):
+        nonlocal points
+        signals.append(label)
+        points += weight
+        if qualifies:
+            qualifying.append(label)
+
+    recent = [rsi[index] for index in range(last - 7, last) if rsi[index] is not None]
+    if recent and min(recent) <= 35 and rsi[last] > rsi[last - 1] and rsi[last] < 55:
+        add("RSI turning up", 16)
+    if rsi_divergence(closes, rsi, last):
+        add("RSI divergence", 10)
+    k_line, d_line = stochastic_kd(bars)
+    if None not in (k_line[last], d_line[last], k_line[last - 1], d_line[last - 1]):
+        crossed = k_line[last - 1] <= d_line[last - 1] and k_line[last] > d_line[last]
+        was_low = min(k_line[last - 1], d_line[last - 1], k_line[last]) < 20
+        if crossed and was_low:
+            add("Stoch cross", 12)
+    line, signal, hist = macd_parts(closes)
+    if None not in (line[last], signal[last], line[last - 1], signal[last - 1]):
+        if line[last - 1] <= signal[last - 1] and line[last] > signal[last] and line[last] < 0:
+            add("MACD cross", 14)
+        elif None not in (hist[last], hist[last - 1], hist[last - 2]) and hist[last - 1] < 0 and hist[last] > hist[last - 1] and hist[last - 1] >= hist[last - 2]:
+            add("MACD rising", 8)
+    touched = False
+    for index in range(max(19, last - 2), last + 1):
+        band = lower_band_at(closes, index)
+        if band and bars[index]["low"] <= band * 1.005:
+            touched = True
+    band_now = lower_band_at(closes, last)
+    mid_now = mean(closes[last - 19:last + 1])
+    if touched and band_now and closes[last] >= band_now * 0.998 and closes[last] <= mid_now:
+        add("Lower BB bounce", 10)
+    year = bars[max(0, last - 251):last + 1]
+    low52 = min(bar["low"] for bar in year)
+    if low52 > 0 and (closes[last] - low52) / low52 <= 0.12:
+        add("Near 52w low", 6, qualifies=False)
+    high63 = max(closes[max(0, last - 62):last + 1])
+    if high63 > 0 and closes[last] <= high63 * 0.88:
+        add("Pullback from high", 4, qualifies=False)
+    ema10 = ema_series(closes, 10)
+    ema20 = ema_series(closes, 20)
+    below = 0
+    for index in range(last - 5, last):
+        if ema10[index] is not None and closes[index] < ema10[index]:
+            below += 1
+    reclaimed = False
+    if below >= 3 and ema10[last] is not None and ema10[last - 1] is not None and closes[last] > ema10[last] and closes[last - 1] <= ema10[last - 1]:
+        reclaimed = True
+    if below >= 3 and ema20[last] is not None and ema20[last - 1] is not None and closes[last] > ema20[last] and closes[last - 1] <= ema20[last - 1]:
+        reclaimed = True
+    if reclaimed:
+        add("EMA reclaim", 10)
+    if is_hammer(bars[last]) or (last >= 1 and bullish_engulfing(bars[last - 1], bars[last])):
+        add("Reversal candle", 6)
+    up = closes[last] > closes[last - 1]
+    capitulation = False
+    for index in range(max(1, last - 5), last + 1):
+        down = bars[index]["close"] < bars[index - 1]["close"]
+        if down and bars[index]["volume"] >= 1.5 * avg_volume:
+            capitulation = True
+    volume_up = bars[last]["volume"] >= avg_volume and up
+    obv = obv_series(bars)
+    obv_up = obv[last] > obv[last - 3] and up
+    if capitulation and (volume_up or (up and bars[last]["volume"] >= bars[last - 1]["volume"])):
+        add("Volume reversal", 8)
+    elif obv_up and volume_up:
+        add("Volume reversal", 8)
+    sma_now = sma_at(closes, last, 200)
+    sma_then = sma_at(closes, last - 20, 200) if last >= 220 else None
+    if qualifying and sma_now and sma_then and closes[last] > sma_now and sma_now >= sma_then:
+        add("Uptrend pullback", 8, qualifies=False)
+    drop21 = (closes[last] / closes[last - 21] - 1.0) * 100 if last >= 21 else None
+    if sma_now and sma_then and closes[last] < sma_now and sma_now < sma_then and ((drop21 is not None and drop21 <= -12) or not up):
+        points -= 12
+    score = round(max(0, min(100, points)), 1)
+    return {"score": score, "signals": signals, "eligible": bool(qualifying and score >= 20)}
 
 
 def score_row(rsi, close, lower, hammer, uptick, volume_ratio):
@@ -473,6 +696,7 @@ def analyze(symbol, bars, name, exchange):
     if target and stop and close > stop:
         reward = (target - close) / (close - stop)
     above200 = bool(sma200 and close > sma200)
+    swing = swing_bottom(bars)
     zone = "deep" if rsi < 30 else "watch" if rsi <= 40 else ""
     ready = rsi <= 40 and (uptick or hammer) and (close <= lower * 1.015 or score >= 45)
     strong = score >= 60 and rsi <= 35 and (uptick or hammer) and above200
@@ -520,6 +744,9 @@ def analyze(symbol, bars, name, exchange):
         "hammer": hammer,
         "uptick": uptick,
         "score": score,
+        "swingScore": swing["score"],
+        "swingSignals": swing["signals"],
+        "swingEligible": swing["eligible"],
         "strongBounce": strong,
         "ready": ready,
         "pullback": pullback,
@@ -1337,10 +1564,99 @@ def self_test():
     assert "revenue growth +12%" in rich["why"]
     assert "forward P/E 28.4" in rich["why"]
     assert "sector average" not in rich["why"].lower()
+    assert "swingScore" in sample and isinstance(sample["swingSignals"], list)
+    thin = []
+    for index in range(260):
+        price = 40.0 + index * 0.05
+        thin.append({"open": price, "high": price + 0.4, "low": price - 0.4, "close": price, "volume": 1000})
+    assert swing_bottom(thin)["eligible"] is False
+    assert swing_bottom(thin)["score"] == 0
+    bounce = []
+    for index in range(260):
+        if index < 200:
+            price = 80.0 + index * 0.15
+        elif index < 252:
+            price = 110.0 - (index - 200) * 0.85
+        else:
+            price = 66.0 + (index - 252) * 0.55
+        opened = price - 0.8 if index >= 252 else price + 0.4
+        high = max(opened, price) + 0.35
+        low = min(opened, price) - (1.8 if index == 259 else 0.45)
+        volume = 900000 if index < 258 else 2200000
+        bounce.append({"open": opened, "high": high, "low": low, "close": price, "volume": volume})
+    turned = swing_bottom(bounce)
+    assert turned["eligible"] is True
+    assert turned["score"] >= 20
+    assert turned["score"] > swing_bottom(thin)["score"]
+    knife = []
+    for index in range(260):
+        price = 80.0 - index * 0.18
+        knife.append({
+            "open": price + 0.3,
+            "high": price + 0.4,
+            "low": price - 0.5,
+            "close": price,
+            "volume": 800000,
+        })
+    assert swing_bottom(knife)["score"] <= turned["score"]
+
+
+def patch_swing_scores():
+    previous = load_json(OUT_PATH)
+    stocks = previous.get("stocks") if isinstance(previous, dict) else None
+    if not isinstance(stocks, list) or not stocks:
+        raise RuntimeError("no screener rows to score")
+    symbols = [row["symbol"] for row in stocks if isinstance(row, dict) and row.get("symbol")]
+    print("Scoring swing bottoms for " + str(len(symbols)) + " published names.", flush=True)
+    rows, failures = scan_charts(symbols)
+    by_symbol = {row["symbol"]: row for row in rows}
+    for row in stocks:
+        fresh = by_symbol.get(row.get("symbol"))
+        if not fresh:
+            row["swingScore"] = 0
+            row["swingSignals"] = []
+            row["swingEligible"] = False
+            continue
+        for key in (
+            "price", "dayChange", "rsi", "zone", "bbLower", "bbMid", "bbUpper", "bbDistancePct",
+            "sma20", "sma50", "sma200", "vsSma20", "vsSma50", "vsSma200", "above200",
+            "drop5", "drop21", "range52", "high52", "low52", "volumeRatio", "hammer", "uptick",
+            "atr", "entryLow", "entryHigh", "stop", "target", "targetLabel", "target2", "rewardRisk",
+            "series", "swingScore", "swingSignals", "swingEligible",
+        ):
+            if key in fresh:
+                row[key] = fresh[key]
+        why = row.get("why") or ""
+        if why and fresh.get("rsi") is not None:
+            row["why"] = re.sub(r"RSI\(14\) is [0-9.]+", "RSI(14) is " + format(fresh["rsi"], ".1f"), why, count=1)
+    write_doc(
+        stocks,
+        stamp(now_utc()),
+        previous.get("universeCount") or 0,
+        previous.get("priced") or 0,
+        previous.get("candidates") or 0,
+    )
+    ranked = sorted(
+        [row for row in stocks if row.get("swingEligible")],
+        key=lambda row: (-row.get("swingScore", 0), row["symbol"]),
+    )
+    if ranked:
+        top = ranked[0]
+        print(
+            "Top swing " + top["symbol"] + " " + str(top.get("swingScore"))
+            + " " + ", ".join(top.get("swingSignals") or [])
+        )
+    else:
+        print("No eligible swing bottom in the published list.")
+    if failures:
+        print("Missed " + str(len(failures)) + ": " + ", ".join(failures[:12]))
 
 
 def main():
     self_test()
+    if os.environ.get("STOCKS_SWING_ONLY") == "1":
+        patch_swing_scores()
+        return
     if os.environ.get("STOCKS_UNIVERSE_ONLY") == "1":
         os.environ["STOCKS_REFRESH_UNIVERSE"] = "1"
         symbols = load_universe()
@@ -1379,6 +1695,11 @@ def main():
             if "why" not in row:
                 build_copy(row, {})
     published = sorted(shortlist, key=lambda row: (-row.get("rankScore", 0), row["symbol"]))[:PUBLISH_CAP]
+    swing_pool = [row for row in shortlist if row.get("swingEligible")]
+    if swing_pool:
+        best_swing = max(swing_pool, key=lambda row: (row.get("swingScore") or 0, row["symbol"]))
+        if best_swing not in published:
+            published = [best_swing] + published[:PUBLISH_CAP - 1]
     if len(published) < 8:
         print("Only " + str(len(published)) + " swing candidates. Keeping the previous snapshot.")
         return

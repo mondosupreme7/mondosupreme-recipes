@@ -120,6 +120,7 @@
     if (mode === 'deep') return row.rsi < 30;
     if (mode === 'ready') return !!row.ready;
     if (mode === 'pull') return !!row.pullback;
+    if (mode === 'swing') return !!(row.swingEligible && row.swingScore >= 20);
     if (mode === 'watch') return !!watch[row.symbol];
     return true;
   }
@@ -152,6 +153,7 @@
       if (sort === 'score') return (b.score || 0) - (a.score || 0) || a.symbol.localeCompare(b.symbol);
       if (sort === 'drop') return (a.drop5 == null ? 0 : a.drop5) - (b.drop5 == null ? 0 : b.drop5) || a.symbol.localeCompare(b.symbol);
       if (sort === 'ticker') return a.symbol.localeCompare(b.symbol);
+      if (sort === 'swing') return (b.swingScore || 0) - (a.swingScore || 0) || a.symbol.localeCompare(b.symbol);
       if (sort === 'rsi') return (a.rsi == null ? 999 : a.rsi) - (b.rsi == null ? 999 : b.rsi) || a.symbol.localeCompare(b.symbol);
       return (b.rankScore || 0) - (a.rankScore || 0) || a.symbol.localeCompare(b.symbol);
     });
@@ -216,9 +218,10 @@
       var range = el('td', row.range52 == null ? '—' : row.range52.toFixed(0) + '%');
       range.setAttribute('data-label', '52-Wk');
       tr.appendChild(range);
-      var rankValue = row.rankScore != null ? row.rankScore : row.score;
+      var swingSort = document.getElementById('sort').value === 'swing';
+      var rankValue = swingSort ? row.swingScore : (row.rankScore != null ? row.rankScore : row.score);
       var score = el('td', rankValue == null ? '—' : String(rankValue));
-      score.setAttribute('data-label', 'Rank');
+      score.setAttribute('data-label', swingSort ? 'Swing' : 'Rank');
       tr.appendChild(score);
       tr.addEventListener('click', function () { openDetail(row.symbol); });
       tr.addEventListener('keydown', function (event) {
@@ -396,6 +399,8 @@
     var bits = [];
     if (row.price != null) bits.push('Last ' + money(row.price));
     if (row.rsi != null) bits.push('RSI ' + row.rsi.toFixed(1));
+    if (row.swingScore != null) bits.push('Swing bottom ' + row.swingScore);
+    if (row.swingSignals && row.swingSignals.length) bits.push(row.swingSignals.join(', '));
     if (row.rankScore != null) bits.push('Rank ' + row.rankScore);
     if (row.score != null) bits.push('Bounce score ' + row.score);
     if (row.entryLow != null && row.entryHigh != null) bits.push('Entry zone ' + money(row.entryLow) + '–' + money(row.entryHigh));
@@ -624,6 +629,56 @@
     });
   }
 
+  function swingPick() {
+    var list = rows.filter(function (row) {
+      return row && row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20 && typeof row.price === 'number';
+    });
+    list.sort(function (a, b) {
+      return (b.swingScore || 0) - (a.swingScore || 0) || a.symbol.localeCompare(b.symbol);
+    });
+    return list[0] || null;
+  }
+
+  function shortSwingName(name) {
+    return String(name || '').replace(/\s+/g, ' ').trim()
+      .replace(/\s+\(The$/i, '')
+      .replace(/,?\s+(Inc\.?|Incorporated|Corp\.?|Corporation|Company|Co\.?|Ltd\.?|Limited|PLC|LLC)\.?$/i, '')
+      .replace(/,\s*$/, '')
+      .trim();
+  }
+
+  function paintSwing() {
+    var card = document.getElementById('swingWatch');
+    var row = swingPick();
+    if (!card) return;
+    if (!row) {
+      card.hidden = true;
+      return;
+    }
+    card.hidden = false;
+    var company = shortSwingName(row.name);
+    document.getElementById('swingSymbol').textContent = row.symbol + (company ? ' ' + company : '');
+    document.getElementById('swingPrice').textContent = money(row.price);
+    var change = document.getElementById('swingChange');
+    if (typeof row.dayChange === 'number') {
+      var magnitude = Math.abs(row.dayChange).toFixed(1).replace(/\.0$/, '') + '%';
+      change.textContent = row.dayChange > 0 ? '+' + magnitude : (row.dayChange < 0 ? '−' + magnitude : magnitude);
+      change.className = 'swing-change ' + (row.dayChange < 0 ? 'num-down' : (row.dayChange > 0 ? 'num-up' : ''));
+    } else {
+      change.textContent = '';
+      change.className = 'swing-change';
+    }
+    document.getElementById('swingScore').textContent = String(row.swingScore).replace(/\.0$/, '');
+    var chips = document.getElementById('swingChips');
+    chips.replaceChildren();
+    (row.swingSignals || []).forEach(function (label) {
+      chips.appendChild(el('span', label, 'swing-chip'));
+    });
+    var button = document.getElementById('swingOpen');
+    button.dataset.symbol = row.symbol;
+    button.setAttribute('aria-label', 'Top stock to watch ' + row.symbol + ', swing bottom score ' + row.swingScore);
+  }
+
   function loadSnapshot() {
     return fetch('oversold.json?t=' + Date.now(), { cache: 'no-store' }).then(function (response) {
       if (!response.ok) throw new Error('snapshot');
@@ -637,6 +692,7 @@
       pricedCount = data && data.priced || 0;
       paintFresh();
       paintTape();
+      paintSwing();
       retryPrices();
       renderWatch();
       renderTable();
@@ -663,6 +719,10 @@
     rulesCard.open = true;
   });
 
+  document.getElementById('swingOpen').addEventListener('click', function () {
+    var symbol = document.getElementById('swingOpen').dataset.symbol;
+    if (symbol) openDetail(symbol);
+  });
   document.getElementById('screen').addEventListener('change', function () { stockShown = 10; renderTable(); });
   document.getElementById('sort').addEventListener('change', function () { stockShown = 10; renderTable(); });
   document.getElementById('stocksMore').addEventListener('click', function () { stockShown += 10; renderTable(); });

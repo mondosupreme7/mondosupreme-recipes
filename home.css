@@ -97,7 +97,15 @@ a.home-row .home-row-detail{
 }
 .home-row{min-height:56px;padding:8px 12px 8px 8px}
 .home-stock{margin:0 0 16px}
-.home-stock .home-row-detail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-stock .home-row-detail{
+  display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;white-space:nowrap
+}
+.home-stock-main{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-stock-score{
+  flex:none;min-width:28px;height:22px;padding:0 6px;border-radius:999px;
+  background:var(--ink);color:var(--surface) !important;
+  font:700 12px/22px var(--font-ui);text-align:center
+}
 a.home-row .home-stock-up{color:#166534 !important}
 a.home-row .home-stock-down{color:#991b1b !important}
 html[data-theme="dark"] a.home-row .home-stock-up,
