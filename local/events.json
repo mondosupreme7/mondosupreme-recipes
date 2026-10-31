@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31T01:41:58Z",
+ "updated": "2026-10-31T02:34:00Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -16,38 +16,44 @@
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
-   "ok": true,
-   "count": 1
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
-   "ok": true,
-   "count": 4
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=41&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
-   "ok": true,
-   "count": 3
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=22&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "Visit Space Coast",
@@ -280,20 +286,6 @@
    "kind": "event"
   },
   {
-   "id": "6940d2bca5515e99",
-   "title": "Trunk or Treat",
-   "start": "2026-10-31T20:00:00Z",
-   "end": "2026-10-31T22:00:00Z",
-   "town": "Rockledge",
-   "venue": "Frank T. Forester Recreation Center - 960 Cogswell Street Rockledge FL 32955",
-   "category": "Family",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2981",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2981",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "3603293dc22be917",
    "title": "Annual Village Idiot Pub Halloween Street Party",
    "start": "2026-10-31T22:00:00Z",
@@ -448,48 +440,6 @@
    "kind": "cruise"
   },
   {
-   "id": "83729fbed63ce72d",
-   "title": "Historic Preservation Board",
-   "start": "2026-11-02T18:00:00Z",
-   "end": "2026-11-02T19:00:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2347",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2347",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "a034fbe0a821b3bd",
-   "title": "North Brevard County Hospital District Board",
-   "start": "2026-11-02T19:00:00Z",
-   "end": "2026-11-03T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p><span style=\"color: rgb(51, 51, 51); font-family: Arial; font-size: 15.2px; font-style: normal; font-variant-ligature",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2415",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2415",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "a128f236a030e9d3",
-   "title": "Affordable Housing Advisory Committee Meeting & Public Hearing",
-   "start": "2026-11-02T21:30:00Z",
-   "end": "2026-11-02T23:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>725 South DeLeon Avenue</p> - Harry T. Moore Social Services Center 725 South DeLeon Avenue Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2670",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2670",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "ebedb287e1abdbf2",
    "title": "Norwegian Getaway in port",
    "start": "2026-11-02T22:00:00Z",
@@ -572,34 +522,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "3b803a60b19cabd0",
-   "title": "Cocoa Beach Woman's Club Meeting",
-   "start": "2026-11-05T14:30:00Z",
-   "end": "2026-11-05T16:30:00Z",
-   "town": "Cocoa Beach",
-   "venue": "Cocoa Beach Country Club - Open to the Public - 5000 Tom Warriner Blvd Cocoa Beach FL 32931",
-   "category": "Arts",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9724",
-   "description": "The Cocoa Beach Woman's Club welcomes you to visit our monthly meetings! We are a volunteer organization focusing on Arts and Culture, Civic Engagement, Education and Library, Environment and Health and Wellness. We support local schools and other non-profit Organizations. We are a part of the General Federation of Women's Clubs (GFWC). Find us on Facebook and our website listed below. https://www",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "9333f0620dca1d4d",
-   "title": "Community Development Block Grant Community Meeting",
-   "start": "2026-11-05T22:00:00Z",
-   "end": "2026-11-06T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Harry T. Moore Social Service Center&nbsp;</p> - 725 S Deleon Ave Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2688",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2688",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "88302741fe6c7049",
@@ -686,20 +608,6 @@
    "kind": "event"
   },
   {
-   "id": "b8c2149b3762976e",
-   "title": "November Craft Night",
-   "start": "2026-11-06T21:00:00Z",
-   "end": "2026-11-06T23:00:00Z",
-   "town": "Rockledge",
-   "venue": "Frank T. Forester Recreation Center - 960 Cogswell Street Rockledge FL 32955",
-   "category": "Family",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2989",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2989",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "13a9d39bb7e16608",
    "title": "Norwegian Getaway in port",
    "start": "2026-11-06T22:00:00Z",
@@ -754,20 +662,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "6bcaf2b2b27526a2",
-   "title": "Operation Shred",
-   "start": "2026-11-07T13:00:00Z",
-   "end": "2026-11-07T15:30:00Z",
-   "town": "Rockledge",
-   "venue": "- 1801 S. Fiske Boulevard Rockledge FL 32955",
-   "category": "Family",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2985",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2985",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "ae49cb9bb4325c32",
