@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-10-30T13:03:24Z",
+ "fetchedAt": "2026-10-31T12:55:39Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -12,8 +12,64 @@
   "NYT Cooking",
   "Not Another Cooking Show"
  ],
- "count": 103,
+ "count": 108,
  "videos": [
+  {
+   "videoId": "ztid0aQH1oI",
+   "title": "The Truth About Leftover Bacon 🥓",
+   "channel": "Food Wishes",
+   "handle": "foodwishes",
+   "published": "2026-10-30",
+   "thumbnail": "https://i.ytimg.com/vi/ztid0aQH1oI/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=ztid0aQH1oI",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Chef John recommends cooking your bacon before adding it to bacon burger recipes to produce a better flavor and texture. It would be the perfect recipe for leftover bacon, but as he rightly points out, there is no such thing as leftover bacon!"
+  },
+  {
+   "videoId": "xqqZI_S_spQ",
+   "title": "Hunter Schafer and Michelle Yeoh take on the #PizzaInterview 🍕 #nytcooking",
+   "channel": "NYT Cooking",
+   "handle": "nytcooking",
+   "published": "2026-10-30",
+   "thumbnail": "https://i.ytimg.com/vi/xqqZI_S_spQ/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=xqqZI_S_spQ",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Download the Cooking app for daily dinner picks, helpful tools, and even more videos:  VISIT NYT COOKING:  SUBSCRIBE to NYT COOKING:  A paid subscription gets you full access to our recipes, daily inspiration and a digital Recipe Box. YOUTUBE:  INSTAGRAM:  FACEBOOK:  PINTEREST:  About NYT Cooking: All the food that’s fit to eat (yes, it’s an official New York Times production)."
+  },
+  {
+   "videoId": "s6liqS8PTF8",
+   "title": "Braised Kabocha Squash Season!",
+   "channel": "J. Kenji López-Alt",
+   "handle": "JKenjiLopezAlt",
+   "published": "2026-10-30",
+   "thumbnail": "https://i.ytimg.com/vi/s6liqS8PTF8/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=s6liqS8PTF8",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": ""
+  },
+  {
+   "videoId": "kN2I28FAbsU",
+   "title": "Miso Explained: How to Buy the Best One | America's Test Kitchen",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-10-30",
+   "thumbnail": "https://i.ytimg.com/vi/kN2I28FAbsU/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=kN2I28FAbsU",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Think miso is only meant for soup? Think again. Today, Jack Bishop breaks down the science, production, and unique flavor profiles of this essential Japanese fermented paste. Plus, see how incorporating a spoonful of miso can elevate everyday marinades, rich pan sauces, vegetable dips, and even desserts. All About Miso:  Discover more recipes through the America’s Test Kitchen App:  Get exclusive access to every recipe, review, and more via our homepage:  Buy The Complete America's Test Kitchen TV Show Cookbook 2001–2026:  Discover the latest recipes, tips, and tricks from Cook’s Insider:  Sub"
+  },
   {
    "videoId": "Afn-3sWIeVk",
    "title": "Hunter Schafer and Michelle Yeoh show us the last food photos on their phones #pizzainterview",
@@ -27,6 +83,20 @@
     "Watch the full method in the video."
    ],
    "blurb": "Download the Cooking app for daily dinner picks, helpful tools, and even more videos:  VISIT NYT COOKING:  SUBSCRIBE to NYT COOKING:  A paid subscription gets you full access to our recipes, daily inspiration and a digital Recipe Box. YOUTUBE:  INSTAGRAM:  FACEBOOK:  PINTEREST:  About NYT Cooking: All the food that’s fit to eat (yes, it’s an official New York Times production)."
+  },
+  {
+   "videoId": "7KwoPama2MQ",
+   "title": "The Freezer-to-Oven Trick for Easier Veggie Sides",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-10-30",
+   "thumbnail": "https://i.ytimg.com/vi/7KwoPama2MQ/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=7KwoPama2MQ",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "From freezer to oven, no thawing required. We found a quick, easy way to get roasted, perfectly seasoned veggies straight from the freezer. Subscribe to America's Test Kitchen:  ​ Watch full episodes of America's Test Kitchen and Cook's Country for free on our new YouTube channel:  Watch More! ​ In The Test Kitchen:  ​ The Taste Test:  ​ Techniquely With Lan Lam:  ​ Most Popular:  Follow America's Test Kitchen: ​ Instagram:  ​ Pinterest:  ​ TikTok:  ​ Facebook:  ​ Twitter:  ​ At America’s Test Kitchen, we investigate every aspect of cooking—recipes, equipment, ingredients, and techniques—with "
   },
   {
    "videoId": "omJnBAg72mY",
@@ -155,7 +225,7 @@
   },
   {
    "videoId": "-HMSKdle3vk",
-   "title": "1 River, 4 Days, 25 Guests, No Refrigeration | Cooking on the River",
+   "title": "Cooking on the River: Episode 1 | Our Trip to the Moab Music Festival",
    "channel": "J. Kenji López-Alt",
    "handle": "JKenjiLopezAlt",
    "published": "2026-10-29",
@@ -506,7 +576,7 @@
   },
   {
    "videoId": "I4LnJGHmqqc",
-   "title": "Why I Stopped Making One Big Meatloaf",
+   "title": "The Meatloaf for People Who Love Meatball Parm",
    "channel": "Sip and Feast",
    "handle": "sipandfeast",
    "published": "2026-10-22",
