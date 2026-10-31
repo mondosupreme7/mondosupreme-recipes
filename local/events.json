@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31T03:26:10Z",
+ "updated": "2026-10-31T04:25:10Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 4
+   "count": 5
   },
   {
    "name": "City of Titusville",
@@ -59,7 +59,7 @@
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 34
+   "count": 33
   },
   {
    "name": "Launch Library 2",
@@ -110,62 +110,6 @@
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
-  },
-  {
-   "id": "74b8102b63489224",
-   "title": "Disney Wish in port",
-   "start": "2026-10-30T10:00:00Z",
-   "end": "2026-10-30T20:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "120ec8d996be8678",
-   "title": "Utopia of the Seas in port",
-   "start": "2026-10-30T10:30:00Z",
-   "end": "2026-10-30T20:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "c9773b79298bbf2e",
-   "title": "Carnival Freedom in port",
-   "start": "2026-10-30T11:00:00Z",
-   "end": "2026-10-30T19:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT6",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "690a49dc9d6721d3",
-   "title": "Adventure of the Seas in port",
-   "start": "2026-10-30T11:00:00Z",
-   "end": "2026-10-30T20:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "24698199d407b762",
@@ -907,6 +851,62 @@
    "description": "Join the Port St. John Community Foundation and enjoy some cooler weather and hot chili as we host the 8th Annual Fay Lake Festifall & Chili Cook-Off with Food Trucks, Craft/Cottage & Business Vendors, Non-Profits, Bounce Houses, Hay Ride, Petting Zoo, Photo Ops, Chili Cook-Off and FALL FAMILY FUN!",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "4e83374196587ff5",
+   "title": "Disney Wish in port",
+   "start": "2026-11-09T11:00:00Z",
+   "end": "2026-11-09T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "3ddcd2eb5af16eca",
+   "title": "Utopia of the Seas in port",
+   "start": "2026-11-09T11:30:00Z",
+   "end": "2026-11-09T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "d34277eb9776e214",
+   "title": "Carnival Glory in port",
+   "start": "2026-11-09T12:00:00Z",
+   "end": "2026-11-09T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "572fb80bccc3f49f",
+   "title": "Affordable Housing Advisory Committee Special Meeting",
+   "start": "2026-11-09T21:30:00Z",
+   "end": "2026-11-10T04:59:59Z",
+   "town": "Titusville",
+   "venue": "- Harry T. Moore Social Services Center 725 South DeLeon Avenue Titusville FL 32780",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2840",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2840",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
