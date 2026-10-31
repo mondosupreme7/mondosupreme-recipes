@@ -338,7 +338,7 @@ function paintPhoto(el,url){
   if(safe)el.textContent='';
 }
 const total=r=>(+r.prep||0)+(+r.cook||0);
-const CHEF_REV='5';
+const CHEF_REV='6';
 const LAYOUT_KEY='mondosupreme.recipes.layout.v1';
 function chefUrl(file){return '/recipes/collections/'+file+'?v='+CHEF_REV}
 function dropStaleChefCache(){
