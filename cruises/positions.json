@@ -5,7 +5,7 @@
     "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
-  "heard": 1,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -69,14 +69,14 @@
     },
     "309436000": {
       "aisName": "LIBERTY OF THE SEAS",
-      "cog": 225.2,
+      "cog": 197.6,
       "destination": "CMM",
       "eta": "11-02 06:15",
       "heading": 44,
       "lat": 29.3178,
       "lon": -94.78176,
       "navStatus": 5,
-      "seen": "2026-10-31T19:47:31Z",
+      "seen": "2026-10-31T20:11:31Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -94,15 +94,15 @@
     },
     "309906000": {
       "aisName": "FREEDOM OF THE SEAS",
-      "cog": 180.6,
+      "cog": 289.0,
       "destination": "BHCCC",
       "eta": "11-01 11:00",
       "heading": 295,
       "lat": 25.77002,
       "lon": -80.15207,
       "navStatus": 5,
-      "seen": "2026-10-31T19:53:26Z",
-      "sog": 0.0,
+      "seen": "2026-10-31T20:17:24Z",
+      "sog": 0.1,
       "source": "aishub",
       "trail": [
         {
@@ -169,14 +169,14 @@
     },
     "311000396": {
       "aisName": "HARMONY OF THE SEAS",
-      "cog": 179.8,
+      "cog": 359.8,
       "destination": "BSNAS",
       "eta": "11-02 11:30",
       "heading": 90,
       "lat": 28.40873,
       "lon": -80.61039,
       "navStatus": 5,
-      "seen": "2026-10-31T19:53:24Z",
+      "seen": "2026-10-31T20:17:24Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -339,16 +339,16 @@
     },
     "311000912": {
       "aisName": "ODYSSEY OF THE SEAS",
-      "cog": 266.0,
+      "cog": 266.9,
       "destination": "PT PDL",
       "eta": "11-02 10:00",
-      "heading": 271,
-      "lat": 38.51623,
-      "lon": -9.84016,
+      "heading": 269,
+      "lat": 38.50707,
+      "lon": -10.01242,
       "navStatus": 0,
-      "seen": "2026-10-31T19:54:25Z",
-      "sog": 19.9,
-      "source": "aishub",
+      "seen": "2026-10-31T20:19:13Z",
+      "sog": 20.0,
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 36.61714,
@@ -449,6 +449,11 @@
           "lat": 38.51623,
           "lon": -9.84016,
           "seen": "2026-10-31T19:54:25Z"
+        },
+        {
+          "lat": 38.50707,
+          "lon": -10.01242,
+          "seen": "2026-10-31T20:19:13Z"
         }
       ]
     },
@@ -526,9 +531,9 @@
       "lat": 25.77211,
       "lon": -80.15697,
       "navStatus": 5,
-      "seen": "2026-10-31T19:54:15Z",
+      "seen": "2026-10-31T20:18:14Z",
       "sog": 0.0,
-      "source": "aisstream.io",
+      "source": "aishub",
       "trail": [
         {
           "lat": 18.31197,
@@ -924,14 +929,14 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 231.3,
+      "cog": 246.0,
       "destination": "US TPA",
       "eta": "11-02 06:45",
       "heading": 200,
       "lat": 20.50961,
       "lon": -86.95725,
       "navStatus": 5,
-      "seen": "2026-10-31T19:54:01Z",
+      "seen": "2026-10-31T20:12:01Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -1144,16 +1149,16 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 158.4,
+      "cog": 197.3,
       "destination": "BS NAS",
       "eta": "11-02 11:15",
-      "heading": 73,
-      "lat": 27.94274,
-      "lon": -82.44536,
-      "navStatus": 5,
-      "seen": "2026-10-31T19:54:32Z",
-      "sog": 0.0,
-      "source": "aishub",
+      "heading": 198,
+      "lat": 27.93504,
+      "lon": -82.44612,
+      "navStatus": 0,
+      "seen": "2026-10-31T20:19:20Z",
+      "sog": 4.2,
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 27.29615,
@@ -1191,9 +1196,9 @@
           "seen": "2026-10-31T09:24:25Z"
         },
         {
-          "lat": 27.94274,
-          "lon": -82.44536,
-          "seen": "2026-10-31T18:36:31Z"
+          "lat": 27.93504,
+          "lon": -82.44612,
+          "seen": "2026-10-31T20:19:20Z"
         }
       ]
     },
@@ -1225,5 +1230,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-10-31T19:54:55Z"
+  "updated": "2026-10-31T20:19:42Z"
 }
