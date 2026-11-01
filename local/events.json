@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-01T01:46:44Z",
+ "updated": "2026-11-01T02:59:26Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -11,7 +11,7 @@
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=15&feed=calendar",
    "ok": true,
-   "count": 1
+   "count": 0
   },
   {
    "name": "City of Cocoa Beach",
@@ -53,7 +53,7 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 12
+   "count": 11
   },
   {
    "name": "Canaveral Port Authority",
@@ -152,34 +152,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "2c47c16c5de5094e",
-   "title": "Halloween at Intracoastal Brewing Company!",
-   "start": "2026-10-31T15:00:00Z",
-   "end": "2026-11-01T03:00:00Z",
-   "town": "Melbourne",
-   "venue": "Intracoastal Brewing Company, 652 W Eau Gallie Blvd, Melbourne, FL, 32935, United States",
-   "category": "Food & Markets",
-   "url": "https://www.visitspacecoast.com/event/halloween-at-intracoastal-brewing-company/",
-   "description": "We\u2019re bringing the Halloween fun to Intra with live music, a dog costume contest, and plenty of reasons to spend your Halloween with us, including the best treat of all \u2013 cold craft beer! Saturday, October 31st || 11am-11pm Break out the costumes and bring your four-legged bestie for our Dog Costume Contest! Judging kicks off at 2pm, with three categories and prizes up for grabs: Best Single Dog B",
-   "source": "Visit Space Coast",
-   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
-  },
-  {
-   "id": "3603293dc22be917",
-   "title": "Annual Village Idiot Pub Halloween Street Party",
-   "start": "2026-10-31T22:00:00Z",
-   "end": "2026-11-01T02:00:00Z",
-   "town": "Cocoa",
-   "venue": "Cocoa Riverfront Park - 401 Riveredge Blvd. Cocoa FL 32922",
-   "category": "Family",
-   "url": "https://www.cocoafl.gov/calendar.aspx?EID=6361",
-   "description": "https://www.cocoafl.gov/calendar.aspx?EID=6361",
-   "source": "City of Cocoa",
-   "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "252391e475e2c9c8",
