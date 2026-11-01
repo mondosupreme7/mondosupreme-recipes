@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-10-31T12:55:39Z",
+ "fetchedAt": "2026-11-01T12:56:48Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -12,8 +12,22 @@
   "NYT Cooking",
   "Not Another Cooking Show"
  ],
- "count": 108,
+ "count": 109,
  "videos": [
+  {
+   "videoId": "WQJBqvy1rR4",
+   "title": "It's a BADOP! drop. It's a BADROP!",
+   "channel": "J. Kenji López-Alt",
+   "handle": "JKenjiLopezAlt",
+   "published": "2026-10-31",
+   "thumbnail": "https://i.ytimg.com/vi/WQJBqvy1rR4/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=WQJBqvy1rR4",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Get yours today at"
+  },
   {
    "videoId": "ztid0aQH1oI",
    "title": "The Truth About Leftover Bacon 🥓",
