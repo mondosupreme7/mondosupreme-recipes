@@ -1,19 +1,17 @@
 {
- "updated": "2026-11-01T05:01:39Z",
+ "updated": "2026-11-01T05:56:20Z",
  "sources": [
   {
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "TimeoutError"
+   "ok": true,
+   "count": 0
   },
   {
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=15&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "TimeoutError"
+   "ok": true,
+   "count": 0
   },
   {
    "name": "City of Cocoa Beach",
