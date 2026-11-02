@@ -8,38 +8,9 @@
   },
   "browseUrl": "https://www.royalcaribbean.com/cruises?departureCode_PCN=true",
   "currency": "USD",
-  "fetchedAt": "2026-11-01T07:29:02Z",
+  "fetchedAt": "2026-11-02T03:41:14Z",
   "source": "Royal Caribbean public cruise search (https://www.royalcaribbean.com/cruises/graph).",
   "deals": [
-    {
-      "id": "UT-2026-11-02-UT4BH337",
-      "line": "Royal Caribbean International",
-      "ship": "Utopia of the Seas",
-      "shipCode": "UT",
-      "mmsi": "311001259",
-      "sailDate": "2026-11-02",
-      "endDate": "2026-11-06",
-      "nights": 4,
-      "title": "4-Night Bahamas & Perfect Day Cruise",
-      "ports": [
-        "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
-      ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 649.4,
-      "startingCabin": "Balcony",
-      "perNight": 162.35,
-      "cabins": {
-        "interior": null,
-        "oceanView": null,
-        "balcony": 649.4
-      },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-02&shipCode=UT&packageCode=UT4BH337&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
-      "packageCode": "UT4BH337",
-      "bestValue": false,
-      "under100": false
-    },
     {
       "id": "HM-2026-11-05-HM5BH348",
       "line": "Royal Caribbean International",
@@ -70,35 +41,6 @@
       "under100": false
     },
     {
-      "id": "UT-2026-11-06-UT3BH173",
-      "line": "Royal Caribbean International",
-      "ship": "Utopia of the Seas",
-      "shipCode": "UT",
-      "mmsi": "311001259",
-      "sailDate": "2026-11-06",
-      "endDate": "2026-11-09",
-      "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
-      "ports": [
-        "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
-      ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 529.36,
-      "startingCabin": "Interior",
-      "perNight": 176.45,
-      "cabins": {
-        "interior": 529.36,
-        "oceanView": null,
-        "balcony": null
-      },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-06&shipCode=UT&packageCode=UT3BH173&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
-      "packageCode": "UT3BH173",
-      "bestValue": false,
-      "under100": false
-    },
-    {
       "id": "ST-2026-11-08-ST07W709",
       "line": "Royal Caribbean International",
       "ship": "Star of the Seas",
@@ -122,7 +64,7 @@
       "cabins": {
         "interior": 1147.07,
         "oceanView": 1931.07,
-        "balcony": 2684.57
+        "balcony": 2581.57
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2026-11-08&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W709",
@@ -155,35 +97,6 @@
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-09&shipCode=UT&packageCode=UT4BH345&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH345",
-      "bestValue": false,
-      "under100": false
-    },
-    {
-      "id": "HM-2026-11-10-HM4BH363",
-      "line": "Royal Caribbean International",
-      "ship": "Harmony of the Seas",
-      "shipCode": "HM",
-      "mmsi": "311000396",
-      "sailDate": "2026-11-10",
-      "endDate": "2026-11-14",
-      "nights": 4,
-      "title": "4-Night Bahamas & Perfect Day Cruise",
-      "ports": [
-        "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
-      ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 537.62,
-      "startingCabin": "Balcony",
-      "perNight": 134.41,
-      "cabins": {
-        "interior": null,
-        "oceanView": null,
-        "balcony": 537.62
-      },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM04PCN-4069340908&sailDate=2026-11-10&shipCode=HM&packageCode=HM4BH363&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
-      "packageCode": "HM4BH363",
       "bestValue": false,
       "under100": false
     },
@@ -228,17 +141,17 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 478.39,
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "startingPrice": 639.39,
       "startingCabin": "Interior",
-      "perNight": 159.46,
+      "perNight": 213.13,
       "cabins": {
-        "interior": 478.39,
+        "interior": 639.39,
         "oceanView": 839.39,
-        "balcony": 811.89
+        "balcony": 951.89
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-13&shipCode=UT&packageCode=UT3BH174&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH174",
@@ -262,17 +175,17 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 334.04,
-      "startingCabin": "Interior",
-      "perNight": 47.72,
+      "startingPrice": 691.54,
+      "startingCabin": "Balcony",
+      "perNight": 98.79,
       "cabins": {
-        "interior": 334.04,
+        "interior": 801.54,
         "oceanView": 695.04,
         "balcony": 691.54
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2026-11-14&shipCode=HM&packageCode=HM07E505&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E505",
-      "bestValue": true,
+      "bestValue": false,
       "under100": true
     },
     {
@@ -327,7 +240,7 @@
       "cabins": {
         "interior": 448.18,
         "oceanView": 668.18,
-        "balcony": 560.68
+        "balcony": 570.18
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-16&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH346",
@@ -358,11 +271,11 @@
       "cabins": {
         "interior": 600.42,
         "oceanView": 845.92,
-        "balcony": 1126.92
+        "balcony": 1710.92
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX09PCN-1051579084&sailDate=2026-11-18&shipCode=EX&packageCode=EX09D179&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX09D179",
-      "bestValue": false,
+      "bestValue": true,
       "under100": true
     },
     {
@@ -377,16 +290,16 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 949.36,
       "startingCabin": "Interior",
       "perNight": 316.45,
       "cabins": {
         "interior": 949.36,
-        "oceanView": 1369.36,
+        "oceanView": null,
         "balcony": 1291.86
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-20&shipCode=UT&packageCode=UT3BH175&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -501,18 +414,18 @@
         "Puerto Plata"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Puerto Plata",
-      "startingPrice": 307.54,
-      "startingCabin": "Interior",
-      "perNight": 61.51,
+      "startingPrice": 767.54,
+      "startingCabin": "Ocean View",
+      "perNight": 153.51,
       "cabins": {
-        "interior": 307.54,
+        "interior": null,
         "oceanView": 767.54,
-        "balcony": 567.54
+        "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1312851610&sailDate=2026-11-27&shipCode=EX&packageCode=EX05E062&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05E062",
       "bestValue": false,
-      "under100": true
+      "under100": false
     },
     {
       "id": "UT-2026-11-27-UT3BH174",
@@ -526,10 +439,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 921.39,
       "startingCabin": "Balcony",
       "perNight": 307.13,
@@ -560,11 +473,11 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Philipsburg \u2192 San Juan \u2192 Perfect Day at CocoCay",
-      "startingPrice": 343.53,
-      "startingCabin": "Interior",
-      "perNight": 49.08,
+      "startingPrice": 691.53,
+      "startingCabin": "Balcony",
+      "perNight": 98.79,
       "cabins": {
-        "interior": 343.53,
+        "interior": 713.03,
         "oceanView": 782.03,
         "balcony": 691.53
       },
@@ -656,7 +569,7 @@
       "cabins": {
         "interior": 1160.81,
         "oceanView": 1414.81,
-        "balcony": null
+        "balcony": 2252.81
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX09PCN-1772335276&sailDate=2026-12-02&shipCode=EX&packageCode=EX09D180&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX09D180",
@@ -675,17 +588,17 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 548.86,
       "startingCabin": "Interior",
       "perNight": 182.95,
       "cabins": {
         "interior": 548.86,
         "oceanView": 592.86,
-        "balcony": 643.86
+        "balcony": 676.36
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-12-04&shipCode=UT&packageCode=UT3BH175&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH175",
@@ -775,7 +688,7 @@
       "cabins": {
         "interior": 518.45,
         "oceanView": 537.95,
-        "balcony": 520.95
+        "balcony": 590.95
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-12-07&shipCode=UT&packageCode=UT4BH347&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH347",
@@ -798,13 +711,13 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
-      "startingPrice": 358.46,
+      "startingPrice": 486.46,
       "startingCabin": "Interior",
-      "perNight": 71.69,
+      "perNight": 97.29,
       "cabins": {
-        "interior": 358.46,
+        "interior": 486.46,
         "oceanView": 528.46,
-        "balcony": 1005.46
+        "balcony": 1295.96
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-627001733&sailDate=2026-12-11&shipCode=EX&packageCode=EX05E063&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05E063",
@@ -823,10 +736,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 529.95,
       "startingCabin": "Interior",
       "perNight": 176.65,
@@ -857,18 +770,18 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 622.86,
+      "startingPrice": 720.86,
       "startingCabin": "Interior",
-      "perNight": 88.98,
+      "perNight": 102.98,
       "cabins": {
-        "interior": 622.86,
+        "interior": 720.86,
         "oceanView": 873.86,
         "balcony": 772.86
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2026-12-12&shipCode=HM&packageCode=HM07E508&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E508",
       "bestValue": false,
-      "under100": true
+      "under100": false
     },
     {
       "id": "ST-2026-12-13-ST07E490",
@@ -945,18 +858,18 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Cozumel",
-      "startingPrice": 348.23,
-      "startingCabin": "Interior",
-      "perNight": 69.65,
+      "startingPrice": 588.23,
+      "startingCabin": "Balcony",
+      "perNight": 117.65,
       "cabins": {
-        "interior": 348.23,
+        "interior": null,
         "oceanView": 841.23,
         "balcony": 588.23
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1677965205&sailDate=2026-12-16&shipCode=EX&packageCode=EX05W637&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W637",
       "bestValue": false,
-      "under100": true
+      "under100": false
     },
     {
       "id": "UT-2026-12-18-UT3BH175",
@@ -970,10 +883,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 589.36,
       "startingCabin": "Interior",
       "perNight": 196.45,
@@ -1071,7 +984,7 @@
       "cabins": {
         "interior": 1437.27,
         "oceanView": 1568.27,
-        "balcony": 2703.77
+        "balcony": 2423.77
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX07PCN-3258496699&sailDate=2026-12-21&shipCode=EX&packageCode=EX07W724&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX07W724",
@@ -1090,10 +1003,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 658.08,
       "startingCabin": "Interior",
       "perNight": 219.36,
@@ -1130,7 +1043,7 @@
       "cabins": {
         "interior": 2023.13,
         "oceanView": 2131.63,
-        "balcony": 2349.63
+        "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1431829222&sailDate=2026-12-23&shipCode=HM&packageCode=HM07E521&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E521",
@@ -1366,11 +1279,11 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 598.49,
+      "startingPrice": 659.49,
       "startingCabin": "Interior",
-      "perNight": 149.62,
+      "perNight": 164.87,
       "cabins": {
-        "interior": 598.49,
+        "interior": 659.49,
         "oceanView": 828.99,
         "balcony": 708.49
       },
@@ -1420,10 +1333,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 457.56,
       "startingCabin": "Interior",
       "perNight": 152.52,
@@ -1542,18 +1455,18 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Cozumel",
-      "startingPrice": 478.0,
+      "startingPrice": 565.0,
       "startingCabin": "Interior",
-      "perNight": 95.6,
+      "perNight": 113.0,
       "cabins": {
-        "interior": 478.0,
+        "interior": 565.0,
         "oceanView": 614.5,
-        "balcony": 907.5
+        "balcony": 927.0
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1677965205&sailDate=2027-01-13&shipCode=EX&packageCode=EX05W636&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W636",
       "bestValue": false,
-      "under100": true
+      "under100": false
     },
     {
       "id": "UT-2027-01-15-UT3BH175",
@@ -1567,10 +1480,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 620.06,
       "startingCabin": "Interior",
       "perNight": 206.69,
@@ -1695,7 +1608,7 @@
       "perNight": 127.23,
       "cabins": {
         "interior": 508.93,
-        "oceanView": 628.43,
+        "oceanView": 709.43,
         "balcony": 621.93
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2027-01-18&shipCode=UT&packageCode=UT4BH347&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -1719,11 +1632,11 @@
         "Puerto Plata"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Puerto Plata",
-      "startingPrice": 537.53,
+      "startingPrice": 688.53,
       "startingCabin": "Interior",
-      "perNight": 107.51,
+      "perNight": 137.71,
       "cabins": {
-        "interior": 537.53,
+        "interior": 688.53,
         "oceanView": null,
         "balcony": null
       },
@@ -1744,10 +1657,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 467.56,
       "startingCabin": "Interior",
       "perNight": 155.85,
@@ -1777,11 +1690,11 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 518.48,
+      "startingPrice": 594.48,
       "startingCabin": "Interior",
-      "perNight": 103.7,
+      "perNight": 118.9,
       "cabins": {
-        "interior": 518.48,
+        "interior": 594.48,
         "oceanView": 718.48,
         "balcony": 738.48
       },
@@ -1836,11 +1749,11 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 538.99,
+      "startingPrice": 599.49,
       "startingCabin": "Interior",
-      "perNight": 134.75,
+      "perNight": 149.87,
       "cabins": {
-        "interior": 538.99,
+        "interior": 599.49,
         "oceanView": 658.49,
         "balcony": 668.49
       },
@@ -1921,10 +1834,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 494.06,
       "startingCabin": "Interior",
       "perNight": 164.69,
@@ -2068,10 +1981,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 453.06,
       "startingCabin": "Interior",
       "perNight": 151.02,
@@ -2196,7 +2109,7 @@
       "cabins": {
         "interior": 488.55,
         "oceanView": 622.05,
-        "balcony": 669.55
+        "balcony": 899.05
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1161832262&sailDate=2027-02-10&shipCode=EX&packageCode=EX05W638&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W638",
@@ -2215,16 +2128,16 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 738.56,
       "startingCabin": "Interior",
       "perNight": 246.19,
       "cabins": {
         "interior": 738.56,
-        "oceanView": 828.56,
+        "oceanView": 952.06,
         "balcony": 811.56
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2027-02-12&shipCode=UT&packageCode=UT3BH175&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -2365,11 +2278,11 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay",
-      "startingPrice": 331.8,
+      "startingPrice": 418.8,
       "startingCabin": "Interior",
-      "perNight": 165.9,
+      "perNight": 209.4,
       "cabins": {
-        "interior": 331.8,
+        "interior": 418.8,
         "oceanView": 430.8,
         "balcony": 502.3
       },
@@ -2390,10 +2303,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 570.56,
       "startingCabin": "Interior",
       "perNight": 190.19,
@@ -2568,10 +2481,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 497.06,
       "startingCabin": "Interior",
       "perNight": 165.69,
@@ -2695,8 +2608,8 @@
       "perNight": 109.24,
       "cabins": {
         "interior": 546.18,
-        "oceanView": 788.68,
-        "balcony": 1051.18
+        "oceanView": 1098.68,
+        "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-2184217661&sailDate=2027-03-05&shipCode=EX&packageCode=EX05E063&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05E063",
@@ -2715,10 +2628,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 587.56,
       "startingCabin": "Interior",
       "perNight": 195.85,
@@ -2843,7 +2756,7 @@
       "cabins": {
         "interior": 386.5,
         "oceanView": 539.5,
-        "balcony": 520.5
+        "balcony": 697.0
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1677965205&sailDate=2027-03-10&shipCode=EX&packageCode=EX05W636&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W636",
@@ -2862,10 +2775,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 710.06,
       "startingCabin": "Interior",
       "perNight": 236.69,
@@ -3038,10 +2951,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 711.56,
       "startingCabin": "Balcony",
       "perNight": 237.19,
@@ -3360,10 +3273,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 835.06,
       "startingCabin": "Interior",
       "perNight": 278.35,
@@ -3507,10 +3420,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 1007.06,
       "startingCabin": "Interior",
       "perNight": 335.69,
@@ -3684,10 +3597,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 843.56,
       "startingCabin": "Interior",
       "perNight": 281.19,
@@ -3831,10 +3744,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 783.48,
       "startingCabin": "Interior",
       "perNight": 261.16,
@@ -3929,12 +3842,12 @@
         "Barcelona"
       ],
       "portsLabel": "Port Canaveral \u2192 Madeira (Funchal) \u2192 Seville (Cadiz) \u2192 M\u00e1laga \u2192 Cartagena \u2192 Palma De Mallorca \u2192 Barcelona",
-      "startingPrice": 958.42,
+      "startingPrice": 967.42,
       "startingCabin": "Interior",
-      "perNight": 68.46,
+      "perNight": 69.1,
       "cabins": {
-        "interior": 958.42,
-        "oceanView": 1203.42,
+        "interior": 967.42,
+        "oceanView": 1198.92,
         "balcony": 2182.92
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX14PCN-3673175876&sailDate=2027-04-26&shipCode=EX&packageCode=EX14T262&destinationCode=T.ATL&selectedCurrencyCode=USD&country=USA",
@@ -4012,10 +3925,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 841.98,
       "startingCabin": "Interior",
       "perNight": 280.66,
@@ -4160,10 +4073,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 732.98,
       "startingCabin": "Interior",
       "perNight": 244.33,
@@ -4200,7 +4113,7 @@
       "perNight": 132.96,
       "cabins": {
         "interior": 930.73,
-        "oceanView": 1790.23,
+        "oceanView": 1553.73,
         "balcony": 1569.73
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2027-05-08&shipCode=HM&packageCode=HM07W779&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -4308,10 +4221,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 688.98,
       "startingCabin": "Interior",
       "perNight": 229.66,
@@ -4458,10 +4371,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 712.48,
       "startingCabin": "Interior",
       "perNight": 237.49,
@@ -4605,10 +4518,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 1067.48,
       "startingCabin": "Interior",
       "perNight": 355.83,
@@ -4779,10 +4692,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 946.98,
       "startingCabin": "Interior",
       "perNight": 315.66,
@@ -4957,10 +4870,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 943.98,
       "startingCabin": "Interior",
       "perNight": 314.66,
@@ -5104,10 +5017,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 943.98,
       "startingCabin": "Interior",
       "perNight": 314.66,
@@ -5280,10 +5193,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 1001.98,
       "startingCabin": "Interior",
       "perNight": 333.99,
@@ -5428,10 +5341,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 951.98,
       "startingCabin": "Interior",
       "perNight": 317.33,
@@ -5631,10 +5544,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 948.98,
       "startingCabin": "Interior",
       "perNight": 316.33,
@@ -5778,10 +5691,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 950.98,
       "startingCabin": "Interior",
       "perNight": 316.99,
@@ -5956,10 +5869,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 918.98,
       "startingCabin": "Interior",
       "perNight": 306.33,
@@ -6103,10 +6016,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 951.98,
       "startingCabin": "Interior",
       "perNight": 317.33,
@@ -6250,10 +6163,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 899.98,
       "startingCabin": "Interior",
       "perNight": 299.99,
@@ -6398,10 +6311,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 845.48,
       "startingCabin": "Interior",
       "perNight": 281.83,
@@ -6574,10 +6487,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 754.98,
       "startingCabin": "Interior",
       "perNight": 251.66,
@@ -6721,10 +6634,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 751.48,
       "startingCabin": "Interior",
       "perNight": 250.49,
@@ -6924,10 +6837,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 774.59,
       "startingCabin": "Interior",
       "perNight": 258.2,
@@ -7073,10 +6986,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 644.48,
       "startingCabin": "Interior",
       "perNight": 214.83,
@@ -7221,10 +7134,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 630.48,
       "startingCabin": "Interior",
       "perNight": 210.16,
@@ -7371,10 +7284,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 661.48,
       "startingCabin": "Interior",
       "perNight": 220.49,
@@ -7518,10 +7431,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 663.98,
       "startingCabin": "Interior",
       "perNight": 221.33,
@@ -7667,10 +7580,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 639.48,
       "startingCabin": "Interior",
       "perNight": 213.16,
@@ -7815,10 +7728,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 614.48,
       "startingCabin": "Interior",
       "perNight": 204.83,
@@ -7964,10 +7877,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 624.98,
       "startingCabin": "Interior",
       "perNight": 208.33,
@@ -8111,10 +8024,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 639.48,
       "startingCabin": "Interior",
       "perNight": 213.16,
@@ -8260,10 +8173,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 605.09,
       "startingCabin": "Interior",
       "perNight": 201.7,
@@ -8408,10 +8321,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 584.8,
       "startingCabin": "Interior",
       "perNight": 194.93,
@@ -8557,10 +8470,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 584.8,
       "startingCabin": "Interior",
       "perNight": 194.93,
@@ -8705,10 +8618,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 754.8,
       "startingCabin": "Interior",
       "perNight": 251.6,
@@ -8854,10 +8767,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 584.8,
       "startingCabin": "Interior",
       "perNight": 194.93,
@@ -9002,10 +8915,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 594.3,
       "startingCabin": "Interior",
       "perNight": 198.1,
@@ -9149,10 +9062,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 644.8,
       "startingCabin": "Interior",
       "perNight": 214.93,
@@ -9354,10 +9267,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 944.3,
       "startingCabin": "Interior",
       "perNight": 314.77,
@@ -9503,10 +9416,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 1279.8,
       "startingCabin": "Interior",
       "perNight": 426.6,
@@ -9649,10 +9562,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 584.8,
       "startingCabin": "Interior",
       "perNight": 194.93,
@@ -9796,10 +9709,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 725.8,
       "startingCabin": "Interior",
       "perNight": 241.93,
@@ -9999,10 +9912,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 564.3,
       "startingCabin": "Interior",
       "perNight": 188.1,
@@ -10148,10 +10061,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 585.8,
       "startingCabin": "Interior",
       "perNight": 195.27,
@@ -10296,10 +10209,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 604.8,
       "startingCabin": "Interior",
       "perNight": 201.6,
@@ -10445,10 +10358,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 616.3,
       "startingCabin": "Interior",
       "perNight": 205.43,
@@ -10592,10 +10505,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 725.8,
       "startingCabin": "Interior",
       "perNight": 241.93,
@@ -10768,10 +10681,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 634.3,
       "startingCabin": "Interior",
       "perNight": 211.43,
@@ -10915,10 +10828,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 634.3,
       "startingCabin": "Interior",
       "perNight": 211.43,
@@ -11062,10 +10975,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 672.3,
       "startingCabin": "Interior",
       "perNight": 224.1,
@@ -11237,10 +11150,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 716.3,
       "startingCabin": "Interior",
       "perNight": 238.77,
@@ -11384,10 +11297,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 664.3,
       "startingCabin": "Interior",
       "perNight": 221.43,
@@ -11559,10 +11472,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 665.8,
       "startingCabin": "Interior",
       "perNight": 221.93,
@@ -11706,10 +11619,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 694.3,
       "startingCabin": "Interior",
       "perNight": 231.43,
@@ -11853,10 +11766,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Perfect Day at CocoCay",
-        "Nassau"
+        "Nassau",
+        "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
       "startingPrice": 794.8,
       "startingCabin": "Interior",
       "perNight": 264.93,
