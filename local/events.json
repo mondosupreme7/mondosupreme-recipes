@@ -1,17 +1,19 @@
 {
- "updated": "2026-11-02T06:21:36Z",
+ "updated": "2026-11-02T08:08:06Z",
  "sources": [
   {
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "TimeoutError"
   },
   {
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=15&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "TimeoutError"
   },
   {
    "name": "City of Cocoa Beach",
@@ -28,14 +30,16 @@
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
-   "ok": true,
-   "count": 7
+   "ok": false,
+   "count": 0,
+   "error": "TimeoutError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=41&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "TimeoutError"
   },
   {
    "name": "City of Rockledge",
@@ -140,48 +144,6 @@
    "kind": "cruise"
   },
   {
-   "id": "83729fbed63ce72d",
-   "title": "Historic Preservation Board",
-   "start": "2026-11-02T18:00:00Z",
-   "end": "2026-11-02T19:00:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2347",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2347",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "a034fbe0a821b3bd",
-   "title": "North Brevard County Hospital District Board",
-   "start": "2026-11-02T19:00:00Z",
-   "end": "2026-11-03T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p><span style=\"color: rgb(51, 51, 51); font-family: Arial; font-size: 15.2px; font-style: normal; font-variant-ligature",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2415",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2415",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "a128f236a030e9d3",
-   "title": "Affordable Housing Advisory Committee Meeting & Public Hearing",
-   "start": "2026-11-02T21:30:00Z",
-   "end": "2026-11-02T23:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>725 South DeLeon Avenue</p> - Harry T. Moore Social Services Center 725 South DeLeon Avenue Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2670",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2670",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "ebedb287e1abdbf2",
    "title": "Norwegian Getaway in port",
    "start": "2026-11-02T22:00:00Z",
@@ -277,20 +239,6 @@
    "description": "The Cocoa Beach Woman's Club welcomes you to visit our monthly meetings! We are a volunteer organization focusing on Arts and Culture, Civic Engagement, Education and Library, Environment and Health and Wellness. We support local schools and other non-profit Organizations. We are a part of the General Federation of Women's Clubs (GFWC). Find us on Facebook and our website listed below. https://www",
    "source": "City of Cocoa Beach",
    "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "9333f0620dca1d4d",
-   "title": "Community Development Block Grant Community Meeting",
-   "start": "2026-11-05T22:00:00Z",
-   "end": "2026-11-06T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Harry T. Moore Social Service Center&nbsp;</p> - 725 S Deleon Ave Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2688",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2688",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -644,20 +592,6 @@
    "kind": "cruise"
   },
   {
-   "id": "572fb80bccc3f49f",
-   "title": "Affordable Housing Advisory Committee Special Meeting",
-   "start": "2026-11-09T21:30:00Z",
-   "end": "2026-11-10T04:59:59Z",
-   "town": "Titusville",
-   "venue": "- Harry T. Moore Social Services Center 725 South DeLeon Avenue Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "c96eebfeef1790ae",
    "title": "Harmony of the Seas in port",
    "start": "2026-11-10T11:00:00Z",
@@ -700,20 +634,6 @@
    "kind": "cruise"
   },
   {
-   "id": "1da4ea694c9f9ccd",
-   "title": "Community Redevelopment Agency",
-   "start": "2026-11-10T22:30:00Z",
-   "end": "2026-11-10T23:30:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2373",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2373",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "64206f8e75bb2f20",
    "title": "Disney Fantasy in port",
    "start": "2026-11-11T11:00:00Z",
@@ -740,20 +660,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "896058a2ad6a8e30",
-   "title": "Titusville Environmental Commission",
-   "start": "2026-11-11T22:30:00Z",
-   "end": "2026-11-11T23:30:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2334",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2334",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "67d83301b335f2ac",
