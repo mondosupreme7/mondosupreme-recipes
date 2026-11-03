@@ -1,9 +1,10 @@
 {
   "about": "Positions for the Royal Caribbean ships in cruises/fleet.json. Each ship keeps a trail of position points from about the last 24 hours. aisstream.io is sampled for about 75 seconds every 5 minutes, then Open Waters fills ships that stayed quiet. A ship with nothing newer keeps its previous coordinates and seen time. Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard.",
   "attribution": {
-    "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)"
+    "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
+    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/)."
   },
-  "heard": 0,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -18,11 +19,6 @@
       "sog": 19.6,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 34.72581,
-          "lon": 129.08774,
-          "seen": "2026-11-02T20:45:42Z"
-        },
         {
           "lat": 34.9231,
           "lon": 129.15708,
@@ -97,14 +93,14 @@
     },
     "309436000": {
       "aisName": "LIBERTY OF THE SEAS",
-      "cog": 37.9,
+      "cog": 305.0,
       "destination": "USGLS",
       "eta": "11-05 11:30",
       "heading": 357,
       "lat": 20.48233,
-      "lon": -86.97588,
+      "lon": -86.97587,
       "navStatus": 5,
-      "seen": "2026-11-03T20:06:00Z",
+      "seen": "2026-11-03T20:54:01Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -125,8 +121,8 @@
         },
         {
           "lat": 20.48233,
-          "lon": -86.97588,
-          "seen": "2026-11-03T16:48:00Z"
+          "lon": -86.97587,
+          "seen": "2026-11-03T20:54:01Z"
         }
       ]
     },
@@ -402,16 +398,16 @@
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 341.5,
+      "cog": 8.1,
       "destination": "USMIA>BSNAS",
       "eta": "11-04 10:00",
-      "heading": 344,
-      "lat": 25.58184,
-      "lon": -79.6135,
+      "heading": 21,
+      "lat": 25.70421,
+      "lon": -79.59953,
       "navStatus": 0,
-      "seen": "2026-11-03T20:15:05Z",
-      "sog": 10.2,
-      "source": "aishub",
+      "seen": "2026-11-03T20:58:45Z",
+      "sog": 10.8,
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 25.78469,
@@ -492,6 +488,11 @@
           "lat": 25.58184,
           "lon": -79.6135,
           "seen": "2026-11-03T20:15:05Z"
+        },
+        {
+          "lat": 25.70421,
+          "lon": -79.59953,
+          "seen": "2026-11-03T20:58:45Z"
         }
       ]
     },
@@ -582,16 +583,16 @@
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 293.6,
+      "cog": 316.8,
       "destination": "US FLL",
       "eta": "11-06 10:00",
       "heading": 120,
-      "lat": 40.66443,
+      "lat": 40.66442,
       "lon": -74.06905,
       "navStatus": 5,
-      "seen": "2026-11-03T20:13:43Z",
+      "seen": "2026-11-03T20:58:45Z",
       "sog": 0.0,
-      "source": "aishub",
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 28.41016,
@@ -644,9 +645,9 @@
           "seen": "2026-11-03T11:31:03Z"
         },
         {
-          "lat": 40.66443,
+          "lat": 40.66442,
           "lon": -74.06905,
-          "seen": "2026-11-03T17:40:43Z"
+          "seen": "2026-11-03T20:58:45Z"
         }
       ]
     },
@@ -1084,11 +1085,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 27.94506,
-          "lon": -82.44354,
-          "seen": "2026-11-02T20:43:04Z"
-        },
-        {
           "lat": 27.93097,
           "lon": -82.44705,
           "seen": "2026-11-02T21:26:45Z"
@@ -1192,14 +1188,14 @@
     },
     "311805000": {
       "aisName": "M/V RHAPSODY OTS",
-      "cog": 26.5,
+      "cog": 68.1,
       "destination": "AG SJO",
       "eta": "11-04 11:00",
       "heading": 216,
       "lat": 18.00885,
       "lon": -63.04799,
       "navStatus": 5,
-      "seen": "2026-11-03T20:09:39Z",
+      "seen": "2026-11-03T20:51:54Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -1248,5 +1244,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-03T20:15:19Z"
+  "updated": "2026-11-03T20:59:14Z"
 }
