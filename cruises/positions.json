@@ -1,10 +1,9 @@
 {
   "about": "Positions for the Royal Caribbean ships in cruises/fleet.json. Each ship keeps a trail of position points from about the last 24 hours. aisstream.io is sampled for about 75 seconds every 5 minutes, then Open Waters fills ships that stayed quiet. A ship with nothing newer keeps its previous coordinates and seen time. Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard.",
   "attribution": {
-    "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
-    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/)."
+    "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)"
   },
-  "heard": 1,
+  "heard": 0,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -83,16 +82,16 @@
     },
     "309436000": {
       "aisName": "LIBERTY OF THE SEAS",
-      "cog": 8.9,
+      "cog": 41.1,
       "destination": "USGLS",
       "eta": "11-05 11:30",
-      "heading": 8,
-      "lat": 20.53028,
-      "lon": -86.97387,
+      "heading": 42,
+      "lat": 20.72598,
+      "lon": -86.83558,
       "navStatus": 0,
-      "seen": "2026-11-04T03:09:10Z",
-      "sog": 20.4,
-      "source": "aisstream.io",
+      "seen": "2026-11-04T03:46:20Z",
+      "sog": 23.6,
+      "source": "aishub",
       "trail": [
         {
           "lat": 20.3064,
@@ -133,6 +132,11 @@
           "lat": 20.53028,
           "lon": -86.97387,
           "seen": "2026-11-04T03:09:10Z"
+        },
+        {
+          "lat": 20.72598,
+          "lon": -86.83558,
+          "seen": "2026-11-04T03:46:20Z"
         }
       ]
     },
@@ -230,11 +234,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 33.28088,
-          "lon": -118.08047,
-          "seen": "2026-11-03T03:20:51Z"
-        },
-        {
           "lat": 33.16355,
           "lon": -117.99333,
           "seen": "2026-11-03T04:15:42Z"
@@ -315,11 +314,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 37.73619,
-          "lon": -27.77233,
-          "seen": "2026-11-03T03:20:31Z"
-        },
-        {
           "lat": 37.74177,
           "lon": -28.12734,
           "seen": "2026-11-03T04:15:25Z"
@@ -379,11 +373,6 @@
       "sog": 10.6,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 25.78641,
-          "lon": -79.60573,
-          "seen": "2026-11-03T03:20:35Z"
-        },
         {
           "lat": 25.69477,
           "lon": -79.62734,
@@ -522,7 +511,7 @@
         {
           "lat": 27.45178,
           "lon": -79.74605,
-          "seen": "2026-11-03T03:21:10Z"
+          "seen": "2026-11-04T03:57:51Z"
         }
       ]
     },
@@ -684,11 +673,6 @@
       "sog": 20.4,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 25.56228,
-          "lon": -79.85158,
-          "seen": "2026-11-03T03:20:50Z"
-        },
         {
           "lat": 25.77597,
           "lon": -80.03186,
@@ -865,11 +849,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 17.92861,
-          "lon": -63.67869,
-          "seen": "2026-11-03T03:19:39Z"
-        },
-        {
           "lat": 17.84799,
           "lon": -63.4574,
           "seen": "2026-11-03T04:15:08Z"
@@ -1008,15 +987,15 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 97.2,
+      "cog": 99.7,
       "destination": "BMCCY",
       "eta": "11-04 11:15",
       "heading": 101,
-      "lat": 26.27204,
-      "lon": -79.58901,
+      "lat": 26.25296,
+      "lon": -79.42175,
       "navStatus": 0,
-      "seen": "2026-11-04T03:09:45Z",
-      "sog": 11.3,
+      "seen": "2026-11-04T03:57:36Z",
+      "sog": 11.4,
       "source": "aishub",
       "trail": [
         {
@@ -1098,6 +1077,11 @@
           "lat": 26.27204,
           "lon": -79.58901,
           "seen": "2026-11-04T03:09:45Z"
+        },
+        {
+          "lat": 26.25296,
+          "lon": -79.42175,
+          "seen": "2026-11-04T03:57:36Z"
         }
       ]
     },
@@ -1179,5 +1163,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-04T03:10:13Z"
+  "updated": "2026-11-04T03:57:51Z"
 }
