@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T04:38:02Z",
+ "updated": "2026-11-04T05:40:12Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -17,7 +17,7 @@
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
    "ok": true,
-   "count": 1
+   "count": 2
   },
   {
    "name": "City of Cocoa Beach",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 6
+   "count": 7
   },
   {
    "name": "City of Titusville",
@@ -41,7 +41,7 @@
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
    "ok": true,
-   "count": 3
+   "count": 4
   },
   {
    "name": "City of Rockledge",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 9
+   "count": 11
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 26
+   "count": 30
   },
   {
    "name": "Launch Library 2",
@@ -96,20 +96,6 @@
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
    "kind": "event"
-  },
-  {
-   "id": "ebedb287e1abdbf2",
-   "title": "Norwegian Getaway in port",
-   "start": "2026-11-02T22:00:00Z",
-   "end": "2026-11-03T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "0c251f080ae4c68b",
@@ -714,6 +700,90 @@
    "kind": "event"
   },
   {
+   "id": "94f10ad82167fbb5",
+   "title": "Disney Wish in port",
+   "start": "2026-11-13T11:00:00Z",
+   "end": "2026-11-13T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "e1a9061d58dec2d1",
+   "title": "Utopia of the Seas in port",
+   "start": "2026-11-13T11:30:00Z",
+   "end": "2026-11-13T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "c98c4aaea7723418",
+   "title": "Norwegian Escape in port",
+   "start": "2026-11-13T12:00:00Z",
+   "end": "2026-11-13T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "8290eec5e0101156",
+   "title": "Explorer of the Seas in port",
+   "start": "2026-11-13T12:00:00Z",
+   "end": "2026-11-13T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "2ab3904e2ef1ad54",
+   "title": "Carnival Glory in port",
+   "start": "2026-11-13T12:00:00Z",
+   "end": "2026-11-13T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "bf39551c4feaf1d6",
+   "title": "Economic Development Board of Directors Meeting",
+   "start": "2026-11-13T14:00:00Z",
+   "end": "2026-11-14T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2682",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2682",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
    "id": "99ff4eb43701830e",
    "title": "Vulcan VC6L | Amazon Leo (LV-01)",
    "start": "2026-11-13T17:54:00Z",
@@ -726,6 +796,62 @@
    "source": "Launch Library 2",
    "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
    "kind": "launch"
+  },
+  {
+   "id": "11ed3146a0a0809a",
+   "title": "Rocky Water Welcome Brewers Party at Intracoastal Brewing Company",
+   "start": "2026-11-13T19:00:00Z",
+   "end": "2026-11-14T03:00:00Z",
+   "town": "Melbourne",
+   "venue": "Intracoastal Brewing Company, 652 W Eau Gallie Blvd, Melbourne, FL, 32935, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/rocky-water-welcome-brewers-party-at-intracoastal-brewing-company/",
+   "description": "Rocky Water Brewer\u2019s Party 2026! Get ready for our favorite weekend of the year at Intracoastal Brewing Company! Friday, November 13th is the Rocky Water Welcome Brewers Party! This event is open to the public and we\u2019ll have The Syndicate Band LIVE from 2-5pm & Hot Pink from 6-9pm! And Saturday, November 14th is the Rocky Water Brew Fest! Enjoy unlimited tastes from 40 breweries from around the st",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "7198f8da6b9a1cb1",
+   "title": "Food Truck Friday",
+   "start": "2026-11-13T21:30:00Z",
+   "end": "2026-11-14T00:30:00Z",
+   "town": "Rockledge",
+   "venue": "Larry L. Schultz Park - 2540 S. Fiske Boulevard Rockledge FL 32955",
+   "category": "Food & Markets",
+   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2980",
+   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2980",
+   "source": "City of Rockledge",
+   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "c13365cf09c757bb",
+   "title": "Keep Them Flying: A 1941 Gala & Fundraiser",
+   "start": "2026-11-13T22:00:00Z",
+   "end": "2026-11-14T02:00:00Z",
+   "town": "Titusville",
+   "venue": "Warbird Air Museum, 6600 Tico Road, Titusville, FL, 32780, United States",
+   "category": "Sports",
+   "url": "https://www.visitspacecoast.com/event/keep-them-flying-a-1941-gala-fundraiser/",
+   "description": "Valiant Air Command, Inc. Warbird Museum will host its Keep Them Flying \u2013 1941 Gala & Fundraiser on Friday, November 13, 2026, from 5:00 p.m. to 9:00 p.m. at Venue on the Horizon at the Valiant Air Command, Inc. Warbird Museum, 6600 Tico Road in Titusville. The special fundraising evening will transport guests back to 1941 for a night surrounded by historic military aircraft and aviation history. ",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "7f7c61e0d82abc3a",
+   "title": "Movie in the Park - TROLLS",
+   "start": "2026-11-14T00:00:00Z",
+   "end": "2026-11-14T02:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "<p>Join us for a free movie in the park on October 9, 2026 at 7pm.</p> - Cocoa Beach FL 32932",
+   "category": "Arts",
+   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9784",
+   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9784",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
   }
  ]
 }
