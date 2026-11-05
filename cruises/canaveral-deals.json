@@ -8,9 +8,38 @@
   },
   "browseUrl": "https://www.royalcaribbean.com/cruises?departureCode_PCN=true",
   "currency": "USD",
-  "fetchedAt": "2026-11-04T16:34:20Z",
+  "fetchedAt": "2026-11-05T13:46:03Z",
   "source": "Royal Caribbean public cruise search (https://www.royalcaribbean.com/cruises/graph).",
   "deals": [
+    {
+      "id": "UT-2026-11-06-UT3BH173",
+      "line": "Royal Caribbean International",
+      "ship": "Utopia of the Seas",
+      "shipCode": "UT",
+      "mmsi": "311001259",
+      "sailDate": "2026-11-06",
+      "endDate": "2026-11-09",
+      "nights": 3,
+      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Nassau"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 791.86,
+      "startingCabin": "Ocean View",
+      "perNight": 263.95,
+      "cabins": {
+        "interior": null,
+        "oceanView": 791.86,
+        "balcony": 833.86
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-06&shipCode=UT&packageCode=UT3BH173&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "UT3BH173",
+      "bestValue": false,
+      "under100": false
+    },
     {
       "id": "ST-2026-11-08-ST07W709",
       "line": "Royal Caribbean International",
@@ -29,13 +58,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1407.57,
-      "startingCabin": "Ocean View",
-      "perNight": 201.08,
+      "startingPrice": 755.57,
+      "startingCabin": "Interior",
+      "perNight": 107.94,
       "cabins": {
-        "interior": null,
-        "oceanView": 1407.57,
-        "balcony": 1612.07
+        "interior": 755.57,
+        "oceanView": null,
+        "balcony": 2350.07
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2026-11-08&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W709",
@@ -58,18 +87,18 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 390.82,
+      "startingPrice": 430.82,
       "startingCabin": "Interior",
-      "perNight": 97.7,
+      "perNight": 107.7,
       "cabins": {
-        "interior": 390.82,
+        "interior": 430.82,
         "oceanView": null,
-        "balcony": 722.82
+        "balcony": 473.32
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-09&shipCode=UT&packageCode=UT4BH345&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH345",
       "bestValue": false,
-      "under100": true
+      "under100": false
     },
     {
       "id": "HM-2026-11-10-HM4BH363",
@@ -87,45 +116,16 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 407.62,
+      "startingPrice": 459.62,
       "startingCabin": "Interior",
-      "perNight": 101.91,
+      "perNight": 114.91,
       "cabins": {
-        "interior": 407.62,
-        "oceanView": 663.62,
+        "interior": 459.62,
+        "oceanView": 635.62,
         "balcony": 1053.12
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM04PCN-4069340908&sailDate=2026-11-10&shipCode=HM&packageCode=HM4BH363&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM4BH363",
-      "bestValue": false,
-      "under100": false
-    },
-    {
-      "id": "EX-2026-11-13-EX05E061",
-      "line": "Royal Caribbean International",
-      "ship": "Explorer of the Seas",
-      "shipCode": "EX",
-      "mmsi": "311316000",
-      "sailDate": "2026-11-13",
-      "endDate": "2026-11-18",
-      "nights": 5,
-      "title": "5-Night Eastern Caribbean Getaway Cruise",
-      "ports": [
-        "Port Canaveral",
-        "Grand Turk",
-        "Nassau"
-      ],
-      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Nassau",
-      "startingPrice": 559.8,
-      "startingCabin": "Interior",
-      "perNight": 111.96,
-      "cabins": {
-        "interior": 559.8,
-        "oceanView": null,
-        "balcony": 933.8
-      },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1902275401&sailDate=2026-11-13&shipCode=EX&packageCode=EX05E061&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
-      "packageCode": "EX05E061",
       "bestValue": false,
       "under100": false
     },
@@ -141,17 +141,17 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 478.39,
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 1091.89,
       "startingCabin": "Interior",
-      "perNight": 159.46,
+      "perNight": 363.96,
       "cabins": {
-        "interior": 478.39,
-        "oceanView": 1081.39,
-        "balcony": 1353.89
+        "interior": 1091.89,
+        "oceanView": 1191.39,
+        "balcony": 1423.89
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-13&shipCode=UT&packageCode=UT3BH174&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH174",
@@ -211,7 +211,7 @@
       "cabins": {
         "interior": 739.8,
         "oceanView": 858.8,
-        "balcony": 935.8
+        "balcony": 973.3
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2026-11-15&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E490",
@@ -239,7 +239,7 @@
       "perNight": 99.67,
       "cabins": {
         "interior": 398.68,
-        "oceanView": 620.18,
+        "oceanView": null,
         "balcony": 582.68
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-16&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -270,8 +270,8 @@
       "perNight": 66.71,
       "cabins": {
         "interior": 600.42,
-        "oceanView": 845.92,
-        "balcony": 1126.92
+        "oceanView": 838.42,
+        "balcony": 1560.42
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX09PCN-1051579084&sailDate=2026-11-18&shipCode=EX&packageCode=EX09D179&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX09D179",
@@ -290,17 +290,17 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 1129.86,
       "startingCabin": "Interior",
       "perNight": 376.62,
       "cabins": {
         "interior": 1129.86,
-        "oceanView": 1477.86,
-        "balcony": 1907.86
+        "oceanView": 1633.86,
+        "balcony": 1512.36
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-20&shipCode=UT&packageCode=UT3BH175&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH175",
@@ -356,13 +356,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1515.92,
+      "startingPrice": 1234.42,
       "startingCabin": "Interior",
-      "perNight": 216.56,
+      "perNight": 176.35,
       "cabins": {
-        "interior": 1515.92,
-        "oceanView": 1788.42,
-        "balcony": 1750.92
+        "interior": 1234.42,
+        "oceanView": 1434.42,
+        "balcony": 1434.42
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2026-11-22&shipCode=ST&packageCode=ST07W723&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W723",
@@ -385,13 +385,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 798.68,
+      "startingPrice": 748.18,
       "startingCabin": "Interior",
-      "perNight": 199.67,
+      "perNight": 187.04,
       "cabins": {
-        "interior": 798.68,
+        "interior": 748.18,
         "oceanView": 1370.68,
-        "balcony": 1088.18
+        "balcony": 878.18
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-23&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH346",
@@ -414,18 +414,18 @@
         "Puerto Plata"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Puerto Plata",
-      "startingPrice": 307.54,
+      "startingPrice": 642.54,
       "startingCabin": "Interior",
-      "perNight": 61.51,
+      "perNight": 128.51,
       "cabins": {
-        "interior": 307.54,
-        "oceanView": 447.54,
-        "balcony": 955.04
+        "interior": 642.54,
+        "oceanView": 800.04,
+        "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1312851610&sailDate=2026-11-27&shipCode=EX&packageCode=EX05E062&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05E062",
       "bestValue": false,
-      "under100": true
+      "under100": false
     },
     {
       "id": "UT-2026-11-27-UT3BH174",
@@ -439,10 +439,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 924.39,
       "startingCabin": "Balcony",
       "perNight": 308.13,
@@ -473,13 +473,13 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Philipsburg \u2192 San Juan \u2192 Perfect Day at CocoCay",
-      "startingPrice": 691.53,
+      "startingPrice": 698.53,
       "startingCabin": "Balcony",
-      "perNight": 98.79,
+      "perNight": 99.79,
       "cabins": {
         "interior": 713.03,
         "oceanView": 782.03,
-        "balcony": 691.53
+        "balcony": 698.53
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1431829222&sailDate=2026-11-28&shipCode=HM&packageCode=HM07E522&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E522",
@@ -503,13 +503,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 912.8,
+      "startingPrice": 887.3,
       "startingCabin": "Interior",
-      "perNight": 130.4,
+      "perNight": 126.76,
       "cabins": {
-        "interior": 912.8,
-        "oceanView": 1107.3,
-        "balcony": 1087.3
+        "interior": 887.3,
+        "oceanView": 987.3,
+        "balcony": 1027.3
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2026-11-29&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E490",
@@ -588,16 +588,16 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 561.36,
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 528.36,
       "startingCabin": "Interior",
-      "perNight": 187.12,
+      "perNight": 176.12,
       "cabins": {
-        "interior": 561.36,
-        "oceanView": 726.36,
+        "interior": 528.36,
+        "oceanView": 578.36,
         "balcony": 634.36
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-12-04&shipCode=UT&packageCode=UT3BH175&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -622,11 +622,11 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Philipsburg \u2192 San Juan \u2192 Perfect Day at CocoCay",
-      "startingPrice": 907.27,
+      "startingPrice": 1021.27,
       "startingCabin": "Interior",
-      "perNight": 129.61,
+      "perNight": 145.9,
       "cabins": {
-        "interior": 907.27,
+        "interior": 1021.27,
         "oceanView": 1360.27,
         "balcony": 1316.77
       },
@@ -653,13 +653,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1075.07,
+      "startingPrice": 1005.07,
       "startingCabin": "Interior",
-      "perNight": 153.58,
+      "perNight": 143.58,
       "cabins": {
-        "interior": 1075.07,
-        "oceanView": 1284.07,
-        "balcony": 1225.07
+        "interior": 1005.07,
+        "oceanView": 1175.07,
+        "balcony": 1235.07
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2026-12-06&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W709",
@@ -711,13 +711,13 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
-      "startingPrice": 358.46,
+      "startingPrice": 428.46,
       "startingCabin": "Interior",
-      "perNight": 71.69,
+      "perNight": 85.69,
       "cabins": {
-        "interior": 358.46,
-        "oceanView": 528.46,
-        "balcony": 758.46
+        "interior": 428.46,
+        "oceanView": null,
+        "balcony": 1308.46
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-627001733&sailDate=2026-12-11&shipCode=EX&packageCode=EX05E063&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05E063",
@@ -736,17 +736,17 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 542.45,
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 507.95,
       "startingCabin": "Interior",
-      "perNight": 180.82,
+      "perNight": 169.32,
       "cabins": {
-        "interior": 542.45,
-        "oceanView": 602.45,
-        "balcony": 574.95
+        "interior": 507.95,
+        "oceanView": 557.95,
+        "balcony": 567.95
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-12-11&shipCode=UT&packageCode=UT3BH176&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH176",
@@ -770,13 +770,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 622.86,
+      "startingPrice": 542.86,
       "startingCabin": "Interior",
-      "perNight": 88.98,
+      "perNight": 77.55,
       "cabins": {
-        "interior": 622.86,
+        "interior": 542.86,
         "oceanView": 873.86,
-        "balcony": 772.86
+        "balcony": 642.86
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2026-12-12&shipCode=HM&packageCode=HM07E508&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E508",
@@ -800,13 +800,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 1064.3,
+      "startingPrice": 1017.3,
       "startingCabin": "Interior",
-      "perNight": 152.04,
+      "perNight": 145.33,
       "cabins": {
-        "interior": 1064.3,
-        "oceanView": 1607.3,
-        "balcony": 1707.3
+        "interior": 1017.3,
+        "oceanView": 1357.3,
+        "balcony": 1657.3
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2026-12-13&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E490",
@@ -829,11 +829,11 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 518.18,
+      "startingPrice": 508.18,
       "startingCabin": "Interior",
-      "perNight": 129.54,
+      "perNight": 127.05,
       "cabins": {
-        "interior": 518.18,
+        "interior": 508.18,
         "oceanView": 578.18,
         "balcony": 573.18
       },
@@ -858,18 +858,18 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Cozumel",
-      "startingPrice": 348.23,
+      "startingPrice": 524.73,
       "startingCabin": "Interior",
-      "perNight": 69.65,
+      "perNight": 104.95,
       "cabins": {
-        "interior": 348.23,
+        "interior": 524.73,
         "oceanView": 853.73,
-        "balcony": 588.23
+        "balcony": 728.23
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1677965205&sailDate=2026-12-16&shipCode=EX&packageCode=EX05W637&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W637",
       "bestValue": false,
-      "under100": true
+      "under100": false
     },
     {
       "id": "UT-2026-12-18-UT3BH175",
@@ -883,15 +883,15 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 581.86,
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 548.36,
       "startingCabin": "Interior",
-      "perNight": 193.95,
+      "perNight": 182.79,
       "cabins": {
-        "interior": 581.86,
+        "interior": 548.36,
         "oceanView": 771.36,
         "balcony": 653.86
       },
@@ -916,12 +916,12 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 988.41,
+      "startingPrice": 857.41,
       "startingCabin": "Interior",
-      "perNight": 247.1,
+      "perNight": 214.35,
       "cabins": {
-        "interior": 988.41,
-        "oceanView": 1124.41,
+        "interior": 857.41,
+        "oceanView": 908.41,
         "balcony": 1037.41
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM04PCN-4069340908&sailDate=2026-12-19&shipCode=HM&packageCode=HM4BH364&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -947,13 +947,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1600.74,
+      "startingPrice": 1435.24,
       "startingCabin": "Interior",
-      "perNight": 228.68,
+      "perNight": 205.03,
       "cabins": {
-        "interior": 1600.74,
+        "interior": 1435.24,
         "oceanView": 2445.74,
-        "balcony": 2319.74
+        "balcony": 2105.24
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2026-12-20&shipCode=ST&packageCode=ST07W710&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W710",
@@ -1003,16 +1003,16 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 650.58,
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 618.08,
       "startingCabin": "Interior",
-      "perNight": 216.86,
+      "perNight": 206.03,
       "cabins": {
-        "interior": 650.58,
-        "oceanView": 730.08,
+        "interior": 618.08,
+        "oceanView": 698.08,
         "balcony": 703.08
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-12-21&shipCode=UT&packageCode=UT3BH213&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -1097,11 +1097,11 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 2039.61,
+      "startingPrice": 1815.61,
       "startingCabin": "Interior",
-      "perNight": 291.37,
+      "perNight": 259.37,
       "cabins": {
-        "interior": 2039.61,
+        "interior": 1815.61,
         "oceanView": 3086.61,
         "balcony": 3727.61
       },
@@ -1218,13 +1218,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1617.74,
+      "startingPrice": 1490.74,
       "startingCabin": "Interior",
-      "perNight": 231.11,
+      "perNight": 212.96,
       "cabins": {
-        "interior": 1617.74,
-        "oceanView": 1708.24,
-        "balcony": 1850.74
+        "interior": 1490.74,
+        "oceanView": 1590.74,
+        "balcony": 1690.74
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2027-01-03&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W709",
@@ -1255,7 +1255,7 @@
       "perNight": 109.44,
       "cabins": {
         "interior": 984.93,
-        "oceanView": 1147.43,
+        "oceanView": 1127.93,
         "balcony": 1520.93
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX09PCN-1068112495&sailDate=2027-01-04&shipCode=EX&packageCode=EX09D181&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -1279,13 +1279,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 581.99,
+      "startingPrice": 578.49,
       "startingCabin": "Interior",
-      "perNight": 145.5,
+      "perNight": 144.62,
       "cabins": {
-        "interior": 581.99,
+        "interior": 578.49,
         "oceanView": 851.99,
-        "balcony": 704.49
+        "balcony": 698.49
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2027-01-04&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH346",
@@ -1308,13 +1308,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 428.48,
+      "startingPrice": 438.48,
       "startingCabin": "Interior",
-      "perNight": 107.12,
+      "perNight": 109.62,
       "cabins": {
-        "interior": 428.48,
-        "oceanView": 538.48,
-        "balcony": 538.48
+        "interior": 438.48,
+        "oceanView": 488.48,
+        "balcony": 488.48
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM04PCN-4069340908&sailDate=2027-01-05&shipCode=HM&packageCode=HM4BH365&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM4BH365",
@@ -1333,17 +1333,17 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 457.56,
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 477.56,
       "startingCabin": "Interior",
-      "perNight": 152.52,
+      "perNight": 159.19,
       "cabins": {
-        "interior": 457.56,
-        "oceanView": 557.56,
-        "balcony": 565.56
+        "interior": 477.56,
+        "oceanView": 547.56,
+        "balcony": 557.56
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2027-01-08&shipCode=UT&packageCode=UT3BH176&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH176",
@@ -1367,12 +1367,12 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 1016.01,
+      "startingPrice": 996.01,
       "startingCabin": "Interior",
-      "perNight": 145.14,
+      "perNight": 142.29,
       "cabins": {
-        "interior": 1016.01,
-        "oceanView": 1126.01,
+        "interior": 996.01,
+        "oceanView": 1317.51,
         "balcony": 1096.01
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2027-01-09&shipCode=HM&packageCode=HM07E508&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -1397,12 +1397,12 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 1453.77,
+      "startingPrice": 1403.77,
       "startingCabin": "Interior",
-      "perNight": 207.68,
+      "perNight": 200.54,
       "cabins": {
-        "interior": 1453.77,
-        "oceanView": 1553.77,
+        "interior": 1403.77,
+        "oceanView": 1503.77,
         "balcony": 1703.77
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2027-01-10&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -1426,13 +1426,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 548.49,
+      "startingPrice": 528.49,
       "startingCabin": "Interior",
-      "perNight": 137.12,
+      "perNight": 132.12,
       "cabins": {
-        "interior": 548.49,
-        "oceanView": 691.49,
-        "balcony": 663.99
+        "interior": 528.49,
+        "oceanView": 648.49,
+        "balcony": 658.49
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2027-01-11&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH346",
@@ -1455,18 +1455,18 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Cozumel",
-      "startingPrice": 528.0,
+      "startingPrice": 448.5,
       "startingCabin": "Interior",
-      "perNight": 105.6,
+      "perNight": 89.7,
       "cabins": {
-        "interior": 528.0,
-        "oceanView": 577.5,
+        "interior": 448.5,
+        "oceanView": 558.5,
         "balcony": 870.5
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1677965205&sailDate=2027-01-13&shipCode=EX&packageCode=EX05W636&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W636",
       "bestValue": false,
-      "under100": false
+      "under100": true
     },
     {
       "id": "UT-2027-01-15-UT3BH175",
@@ -1480,10 +1480,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 622.56,
       "startingCabin": "Interior",
       "perNight": 207.52,
@@ -1545,12 +1545,12 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1576.74,
+      "startingPrice": 1480.74,
       "startingCabin": "Interior",
-      "perNight": 225.25,
+      "perNight": 211.53,
       "cabins": {
-        "interior": 1576.74,
-        "oceanView": 1648.24,
+        "interior": 1480.74,
+        "oceanView": 1520.74,
         "balcony": 1832.24
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2027-01-17&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -1579,7 +1579,7 @@
       "perNight": 81.88,
       "cabins": {
         "interior": 327.51,
-        "oceanView": 457.51,
+        "oceanView": 463.01,
         "balcony": 470.01
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX04PCN-4069341204&sailDate=2027-01-18&shipCode=EX&packageCode=EX4BH361&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -1603,13 +1603,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 518.43,
+      "startingPrice": 521.43,
       "startingCabin": "Interior",
-      "perNight": 129.61,
+      "perNight": 130.36,
       "cabins": {
-        "interior": 518.43,
+        "interior": 521.43,
         "oceanView": 761.43,
-        "balcony": 648.43
+        "balcony": 704.43
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2027-01-18&shipCode=UT&packageCode=UT4BH347&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH347",
@@ -1632,11 +1632,11 @@
         "Puerto Plata"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Puerto Plata",
-      "startingPrice": 537.53,
+      "startingPrice": 604.03,
       "startingCabin": "Interior",
-      "perNight": 107.51,
+      "perNight": 120.81,
       "cabins": {
-        "interior": 537.53,
+        "interior": 604.03,
         "oceanView": null,
         "balcony": null
       },
@@ -1657,15 +1657,15 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 467.56,
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
+      "startingPrice": 482.56,
       "startingCabin": "Interior",
-      "perNight": 155.85,
+      "perNight": 160.85,
       "cabins": {
-        "interior": 467.56,
+        "interior": 482.56,
         "oceanView": 583.06,
         "balcony": 595.06
       },
@@ -1690,13 +1690,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 518.48,
+      "startingPrice": 548.48,
       "startingCabin": "Interior",
-      "perNight": 103.7,
+      "perNight": 109.7,
       "cabins": {
-        "interior": 518.48,
-        "oceanView": 718.48,
-        "balcony": 738.48
+        "interior": 548.48,
+        "oceanView": 598.48,
+        "balcony": 598.48
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM05PCN-3790280278&sailDate=2027-01-23&shipCode=HM&packageCode=HM5BH350&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM5BH350",
@@ -1754,8 +1754,8 @@
       "perNight": 130.37,
       "cabins": {
         "interior": 521.49,
-        "oceanView": 658.49,
-        "balcony": 668.49
+        "oceanView": 711.99,
+        "balcony": 693.99
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2027-01-25&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH346",
@@ -1809,13 +1809,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Cozumel",
-      "startingPrice": 564.68,
+      "startingPrice": 548.18,
       "startingCabin": "Interior",
-      "perNight": 112.94,
+      "perNight": 109.64,
       "cabins": {
-        "interior": 564.68,
+        "interior": 548.18,
         "oceanView": 724.18,
-        "balcony": 787.18
+        "balcony": 598.18
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM05PCN-1161832766&sailDate=2027-01-28&shipCode=HM&packageCode=HM05W645&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM05W645",
@@ -1834,10 +1834,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 506.56,
       "startingCabin": "Interior",
       "perNight": 168.85,
@@ -1869,13 +1869,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1691.74,
+      "startingPrice": 1700.74,
       "startingCabin": "Interior",
-      "perNight": 241.68,
+      "perNight": 242.96,
       "cabins": {
-        "interior": 1691.74,
-        "oceanView": 1842.74,
-        "balcony": 1825.24
+        "interior": 1700.74,
+        "oceanView": 1800.74,
+        "balcony": 1820.74
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2027-01-31&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W709",
@@ -1933,7 +1933,7 @@
       "cabins": {
         "interior": 435.48,
         "oceanView": 498.48,
-        "balcony": 531.98
+        "balcony": 508.48
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM04PCN-4069340908&sailDate=2027-02-02&shipCode=HM&packageCode=HM4BH365&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM4BH365",
@@ -1981,10 +1981,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 465.56,
       "startingCabin": "Interior",
       "perNight": 155.19,
@@ -2015,13 +2015,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 1106.01,
+      "startingPrice": 1163.51,
       "startingCabin": "Interior",
-      "perNight": 158.0,
+      "perNight": 166.22,
       "cabins": {
-        "interior": 1106.01,
+        "interior": 1163.51,
         "oceanView": 1688.51,
-        "balcony": 1366.01
+        "balcony": 1296.01
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2027-02-06&shipCode=HM&packageCode=HM07E508&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E508",
@@ -2128,10 +2128,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 692.56,
       "startingCabin": "Interior",
       "perNight": 230.85,
@@ -2192,13 +2192,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1278.54,
+      "startingPrice": 1343.04,
       "startingCabin": "Interior",
-      "perNight": 182.65,
+      "perNight": 191.86,
       "cabins": {
-        "interior": 1278.54,
-        "oceanView": 1538.04,
-        "balcony": 1735.54
+        "interior": 1343.04,
+        "oceanView": 1616.04,
+        "balcony": 1826.04
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2027-02-14&shipCode=ST&packageCode=ST07W723&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W723",
@@ -2303,10 +2303,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 573.06,
       "startingCabin": "Interior",
       "perNight": 191.02,
@@ -2366,13 +2366,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 1437.42,
+      "startingPrice": 1511.42,
       "startingCabin": "Interior",
-      "perNight": 205.35,
+      "perNight": 215.92,
       "cabins": {
-        "interior": 1437.42,
-        "oceanView": 1446.92,
-        "balcony": 1750.92
+        "interior": 1511.42,
+        "oceanView": 1521.42,
+        "balcony": 1813.42
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2027-02-21&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E490",
@@ -2481,10 +2481,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 501.06,
       "startingCabin": "Interior",
       "perNight": 167.02,
@@ -2628,10 +2628,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 600.06,
       "startingCabin": "Interior",
       "perNight": 200.02,
@@ -2756,7 +2756,7 @@
       "cabins": {
         "interior": 399.0,
         "oceanView": 552.0,
-        "balcony": 710.0
+        "balcony": 533.0
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1677965205&sailDate=2027-03-10&shipCode=EX&packageCode=EX05W636&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W636",
@@ -2775,10 +2775,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 722.56,
       "startingCabin": "Interior",
       "perNight": 240.85,
@@ -2814,7 +2814,7 @@
       "perNight": 137.94,
       "cabins": {
         "interior": 965.6,
-        "oceanView": 1179.6,
+        "oceanView": null,
         "balcony": 1017.6
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2764364175&sailDate=2027-03-13&shipCode=HM&packageCode=HM07E525&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -2951,10 +2951,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 724.06,
       "startingCabin": "Balcony",
       "perNight": 241.35,
@@ -3273,10 +3273,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 847.56,
       "startingCabin": "Interior",
       "perNight": 282.52,
@@ -3307,13 +3307,13 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Basseterre \u2192 San Juan \u2192 Perfect Day at CocoCay",
-      "startingPrice": 908.4,
+      "startingPrice": 955.9,
       "startingCabin": "Interior",
-      "perNight": 129.77,
+      "perNight": 136.56,
       "cabins": {
-        "interior": 908.4,
+        "interior": 955.9,
         "oceanView": 1055.9,
-        "balcony": 1013.4
+        "balcony": 1068.9
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2507154650&sailDate=2027-04-03&shipCode=HM&packageCode=HM07E507&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E507",
@@ -3337,13 +3337,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 1389.09,
+      "startingPrice": 1460.59,
       "startingCabin": "Interior",
-      "perNight": 198.44,
+      "perNight": 208.66,
       "cabins": {
-        "interior": 1389.09,
-        "oceanView": 1612.59,
-        "balcony": 1759.59
+        "interior": 1460.59,
+        "oceanView": 1696.09,
+        "balcony": 1853.09
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2027-04-04&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E490",
@@ -3420,10 +3420,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 1019.56,
       "startingCabin": "Interior",
       "perNight": 339.85,
@@ -3486,13 +3486,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1278.17,
+      "startingPrice": 1342.67,
       "startingCabin": "Interior",
-      "perNight": 182.6,
+      "perNight": 191.81,
       "cabins": {
-        "interior": 1278.17,
-        "oceanView": 1515.17,
-        "balcony": 1459.67
+        "interior": 1342.67,
+        "oceanView": 1592.67,
+        "balcony": 1535.67
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2027-04-11&shipCode=ST&packageCode=ST07W723&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W723",
@@ -3597,10 +3597,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 856.06,
       "startingCabin": "Interior",
       "perNight": 285.35,
@@ -3744,10 +3744,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 795.98,
       "startingCabin": "Interior",
       "perNight": 265.33,
@@ -3842,13 +3842,13 @@
         "Barcelona"
       ],
       "portsLabel": "Port Canaveral \u2192 Madeira (Funchal) \u2192 Seville (Cadiz) \u2192 M\u00e1laga \u2192 Cartagena \u2192 Palma De Mallorca \u2192 Barcelona",
-      "startingPrice": 895.42,
+      "startingPrice": 897.42,
       "startingCabin": "Interior",
-      "perNight": 63.96,
+      "perNight": 64.1,
       "cabins": {
-        "interior": 895.42,
-        "oceanView": 1100.42,
-        "balcony": 1985.42
+        "interior": 897.42,
+        "oceanView": 1119.92,
+        "balcony": 1990.92
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX14PCN-3673175876&sailDate=2027-04-26&shipCode=EX&packageCode=EX14T262&destinationCode=T.ATL&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX14T262",
@@ -3906,7 +3906,7 @@
       "cabins": {
         "interior": 617.04,
         "oceanView": 696.54,
-        "balcony": 879.04
+        "balcony": 816.04
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-627002653&sailDate=2027-04-30&shipCode=AD&packageCode=AD05E087&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E087",
@@ -3925,10 +3925,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 803.98,
       "startingCabin": "Interior",
       "perNight": 267.99,
@@ -3959,13 +3959,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 806.65,
+      "startingPrice": 848.15,
       "startingCabin": "Interior",
-      "perNight": 115.24,
+      "perNight": 121.16,
       "cabins": {
-        "interior": 806.65,
+        "interior": 848.15,
         "oceanView": 1119.15,
-        "balcony": 1044.65
+        "balcony": 1100.65
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1055410745&sailDate=2027-05-01&shipCode=HM&packageCode=HM07E541&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E541",
@@ -4073,10 +4073,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 732.98,
       "startingCabin": "Interior",
       "perNight": 244.33,
@@ -4113,7 +4113,7 @@
       "perNight": 126.89,
       "cabins": {
         "interior": 888.23,
-        "oceanView": null,
+        "oceanView": 1387.73,
         "balcony": 1400.73
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2027-05-08&shipCode=HM&packageCode=HM07W779&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -4138,13 +4138,13 @@
         "Charlotte Amalie"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Saman\u00e1 \u2192 Charlotte Amalie",
-      "startingPrice": 1358.73,
+      "startingPrice": 1429.23,
       "startingCabin": "Interior",
-      "perNight": 194.1,
+      "perNight": 204.18,
       "cabins": {
-        "interior": 1358.73,
-        "oceanView": 1581.73,
-        "balcony": 1769.73
+        "interior": 1429.23,
+        "oceanView": 1663.73,
+        "balcony": 1863.73
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2639875519&sailDate=2027-05-09&shipCode=ST&packageCode=ST07E535&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E535",
@@ -4221,10 +4221,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 688.98,
       "startingCabin": "Interior",
       "perNight": 229.66,
@@ -4255,13 +4255,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 882.65,
+      "startingPrice": 928.15,
       "startingCabin": "Interior",
-      "perNight": 126.09,
+      "perNight": 132.59,
       "cabins": {
-        "interior": 882.65,
+        "interior": 928.15,
         "oceanView": 1105.65,
-        "balcony": 1044.65
+        "balcony": 1100.65
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1055410745&sailDate=2027-05-15&shipCode=HM&packageCode=HM07E541&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E541",
@@ -4371,10 +4371,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 712.48,
       "startingCabin": "Interior",
       "perNight": 237.49,
@@ -4435,13 +4435,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 1687.56,
+      "startingPrice": 1775.56,
       "startingCabin": "Interior",
-      "perNight": 241.08,
+      "perNight": 253.65,
       "cabins": {
-        "interior": 1687.56,
-        "oceanView": 1878.56,
-        "balcony": 2245.56
+        "interior": 1775.56,
+        "oceanView": 1976.06,
+        "balcony": 2364.06
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2027-05-23&shipCode=ST&packageCode=ST07E536&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E536",
@@ -4518,10 +4518,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 1067.48,
       "startingCabin": "Interior",
       "perNight": 355.83,
@@ -4551,13 +4551,13 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 907.18,
+      "startingPrice": 953.68,
       "startingCabin": "Interior",
-      "perNight": 181.44,
+      "perNight": 190.74,
       "cabins": {
-        "interior": 907.18,
+        "interior": 953.68,
         "oceanView": 1183.18,
-        "balcony": 1097.18
+        "balcony": 1155.68
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM05PCN-3790280278&sailDate=2027-05-29&shipCode=HM&packageCode=HM5BH355&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM5BH355",
@@ -4692,10 +4692,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 946.98,
       "startingCabin": "Interior",
       "perNight": 315.66,
@@ -4727,13 +4727,13 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
-      "startingPrice": 999.23,
+      "startingPrice": 1058.23,
       "startingCabin": "Interior",
-      "perNight": 142.75,
+      "perNight": 151.18,
       "cabins": {
-        "interior": 999.23,
+        "interior": 1058.23,
         "oceanView": 1266.23,
-        "balcony": 1227.73
+        "balcony": 1300.73
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2027-06-05&shipCode=HM&packageCode=HM07W779&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07W779",
@@ -4870,10 +4870,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 943.98,
       "startingCabin": "Interior",
       "perNight": 314.66,
@@ -5017,10 +5017,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 943.98,
       "startingCabin": "Interior",
       "perNight": 314.66,
@@ -5193,10 +5193,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 1001.98,
       "startingCabin": "Interior",
       "perNight": 333.99,
@@ -5341,10 +5341,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 951.98,
       "startingCabin": "Interior",
       "perNight": 317.33,
@@ -5544,10 +5544,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 948.98,
       "startingCabin": "Interior",
       "perNight": 316.33,
@@ -5691,10 +5691,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 950.98,
       "startingCabin": "Interior",
       "perNight": 316.99,
@@ -5869,10 +5869,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 918.98,
       "startingCabin": "Interior",
       "perNight": 306.33,
@@ -6016,10 +6016,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 951.98,
       "startingCabin": "Interior",
       "perNight": 317.33,
@@ -6192,10 +6192,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 899.98,
       "startingCabin": "Interior",
       "perNight": 299.99,
@@ -6340,10 +6340,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 845.48,
       "startingCabin": "Interior",
       "perNight": 281.83,
@@ -6516,10 +6516,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 754.98,
       "startingCabin": "Interior",
       "perNight": 251.66,
@@ -6663,10 +6663,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 751.48,
       "startingCabin": "Interior",
       "perNight": 250.49,
@@ -6866,10 +6866,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 774.59,
       "startingCabin": "Interior",
       "perNight": 258.2,
@@ -7015,10 +7015,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 644.48,
       "startingCabin": "Interior",
       "perNight": 214.83,
@@ -7163,10 +7163,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 630.48,
       "startingCabin": "Interior",
       "perNight": 210.16,
@@ -7313,10 +7313,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 661.48,
       "startingCabin": "Interior",
       "perNight": 220.49,
@@ -7431,10 +7431,10 @@
       "title": "5-Night Eastern Caribbean Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee",
+        "Grand Turk",
         "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Nassau",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Nassau",
       "startingPrice": 576.7,
       "startingCabin": "Interior",
       "perNight": 115.34,
@@ -7460,10 +7460,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 663.98,
       "startingCabin": "Interior",
       "perNight": 221.33,
@@ -7609,10 +7609,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 639.48,
       "startingCabin": "Interior",
       "perNight": 213.16,
@@ -7680,7 +7680,7 @@
       "cabins": {
         "interior": 1480.15,
         "oceanView": 1580.65,
-        "balcony": 1762.65
+        "balcony": 1823.15
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2027-10-10&shipCode=ST&packageCode=ST07W773&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W773",
@@ -7757,10 +7757,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 614.48,
       "startingCabin": "Interior",
       "perNight": 204.83,
@@ -7906,10 +7906,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 624.98,
       "startingCabin": "Interior",
       "perNight": 208.33,
@@ -8053,10 +8053,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 639.48,
       "startingCabin": "Interior",
       "perNight": 213.16,
@@ -8202,10 +8202,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 667.59,
       "startingCabin": "Interior",
       "perNight": 222.53,
@@ -8318,13 +8318,13 @@
       "sailDate": "2027-11-12",
       "endDate": "2027-11-17",
       "nights": 5,
-      "title": "5-Night Perfect Day CocoCay & Caribbean Getaway Cruise",
+      "title": "5-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee",
+        "Grand Turk",
         "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
       "startingPrice": 779.54,
       "startingCabin": "Interior",
       "perNight": 155.91,
@@ -8333,7 +8333,7 @@
         "oceanView": 829.54,
         "balcony": 1079.54
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-2184216997&sailDate=2027-11-12&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-627002653&sailDate=2027-11-12&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E102",
       "bestValue": false,
       "under100": false
@@ -8350,10 +8350,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 647.3,
       "startingCabin": "Interior",
       "perNight": 215.77,
@@ -8499,10 +8499,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 647.3,
       "startingCabin": "Interior",
       "perNight": 215.77,
@@ -8619,9 +8619,9 @@
       "ports": [
         "Port Canaveral",
         "Grand Turk",
-        "Labadee"
+        "Grand Bahama Island"
       ],
-      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Labadee",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Grand Bahama Island",
       "startingPrice": 652.02,
       "startingCabin": "Interior",
       "perNight": 130.4,
@@ -8630,7 +8630,7 @@
         "oceanView": 712.02,
         "balcony": 979.52
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-3507806658&sailDate=2027-11-26&shipCode=AD&packageCode=AD05E116&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-1492242228&sailDate=2027-11-26&shipCode=AD&packageCode=AD05E116&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E116",
       "bestValue": false,
       "under100": false
@@ -8647,10 +8647,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 817.3,
       "startingCabin": "Interior",
       "perNight": 272.43,
@@ -8796,10 +8796,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 647.3,
       "startingCabin": "Interior",
       "perNight": 215.77,
@@ -8912,13 +8912,13 @@
       "sailDate": "2027-12-10",
       "endDate": "2027-12-15",
       "nights": 5,
-      "title": "5-Night Perfect Day CocoCay & Caribbean Getaway Cruise",
+      "title": "5-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee",
+        "Grand Turk",
         "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
       "startingPrice": 759.54,
       "startingCabin": "Interior",
       "perNight": 151.91,
@@ -8927,7 +8927,7 @@
         "oceanView": 790.04,
         "balcony": 1049.54
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-2184216997&sailDate=2027-12-10&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-627002653&sailDate=2027-12-10&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E102",
       "bestValue": false,
       "under100": false
@@ -8944,10 +8944,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 656.8,
       "startingCabin": "Interior",
       "perNight": 218.93,
@@ -9091,10 +9091,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 707.3,
       "startingCabin": "Interior",
       "perNight": 235.77,
@@ -9296,10 +9296,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 1006.8,
       "startingCabin": "Interior",
       "perNight": 335.6,
@@ -9381,13 +9381,13 @@
       "sailDate": "2027-12-29",
       "endDate": "2028-01-03",
       "nights": 5,
-      "title": "5-Night Perfect Day CocoCay & Caribbean Getaway Cruise",
+      "title": "5-Night Perfect Day CocoCay & Caribbean Holiday",
       "ports": [
         "Port Canaveral",
-        "Labadee",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Labadee"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Labadee",
       "startingPrice": 1218.57,
       "startingCabin": "Interior",
       "perNight": 243.71,
@@ -9445,10 +9445,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 1342.3,
       "startingCabin": "Interior",
       "perNight": 447.43,
@@ -9591,10 +9591,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 647.3,
       "startingCabin": "Interior",
       "perNight": 215.77,
@@ -9738,10 +9738,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 788.3,
       "startingCabin": "Interior",
       "perNight": 262.77,
@@ -9909,13 +9909,13 @@
       "sailDate": "2028-01-21",
       "endDate": "2028-01-26",
       "nights": 5,
-      "title": "5-Night Perfect Day CocoCay & Caribbean Getaway Cruise",
+      "title": "5-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee",
+        "Grand Turk",
         "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
       "startingPrice": 633.04,
       "startingCabin": "Interior",
       "perNight": 126.61,
@@ -9924,7 +9924,7 @@
         "oceanView": 639.54,
         "balcony": 750.54
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-2184216997&sailDate=2028-01-21&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-627002653&sailDate=2028-01-21&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E102",
       "bestValue": false,
       "under100": false
@@ -9941,10 +9941,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 626.8,
       "startingCabin": "Interior",
       "perNight": 208.93,
@@ -10090,10 +10090,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 648.3,
       "startingCabin": "Interior",
       "perNight": 216.1,
@@ -10210,9 +10210,9 @@
       "ports": [
         "Port Canaveral",
         "Grand Turk",
-        "Labadee"
+        "MISSING PORT CONTENT"
       ],
-      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Labadee",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 MISSING PORT CONTENT",
       "startingPrice": 623.02,
       "startingCabin": "Interior",
       "perNight": 124.6,
@@ -10221,7 +10221,7 @@
         "oceanView": 673.02,
         "balcony": 920.02
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-3507806658&sailDate=2028-02-04&shipCode=AD&packageCode=AD05E116&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-4171494147&sailDate=2028-02-04&shipCode=AD&packageCode=AD05E116&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E116",
       "bestValue": false,
       "under100": false
@@ -10238,10 +10238,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 667.3,
       "startingCabin": "Interior",
       "perNight": 222.43,
@@ -10387,10 +10387,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 678.8,
       "startingCabin": "Interior",
       "perNight": 226.27,
@@ -10502,13 +10502,13 @@
       "sailDate": "2028-02-18",
       "endDate": "2028-02-23",
       "nights": 5,
-      "title": "5-Night Perfect Day CocoCay & Caribbean Getaway Cruise",
+      "title": "5-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee",
+        "Grand Turk",
         "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
       "startingPrice": 735.04,
       "startingCabin": "Interior",
       "perNight": 147.01,
@@ -10517,7 +10517,7 @@
         "oceanView": 760.54,
         "balcony": 1000.04
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-2184216997&sailDate=2028-02-18&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-627002653&sailDate=2028-02-18&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E102",
       "bestValue": false,
       "under100": false
@@ -10534,10 +10534,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 747.3,
       "startingCabin": "Interior",
       "perNight": 249.1,
@@ -10710,10 +10710,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 656.8,
       "startingCabin": "Interior",
       "perNight": 218.93,
@@ -10825,13 +10825,13 @@
       "sailDate": "2028-03-03",
       "endDate": "2028-03-08",
       "nights": 5,
-      "title": "5-Night Perfect Day CocoCay & Caribbean Getaway Cruise",
+      "title": "5-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee",
+        "Grand Turk",
         "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
       "startingPrice": 720.54,
       "startingCabin": "Interior",
       "perNight": 144.11,
@@ -10840,7 +10840,7 @@
         "oceanView": 780.04,
         "balcony": 850.54
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-2184216997&sailDate=2028-03-03&shipCode=AD&packageCode=AD05E106&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-627002653&sailDate=2028-03-03&shipCode=AD&packageCode=AD05E106&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E106",
       "bestValue": false,
       "under100": false
@@ -10857,10 +10857,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 696.8,
       "startingCabin": "Interior",
       "perNight": 232.27,
@@ -11004,10 +11004,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 734.8,
       "startingCabin": "Interior",
       "perNight": 244.93,
@@ -11147,13 +11147,13 @@
       "sailDate": "2028-03-17",
       "endDate": "2028-03-22",
       "nights": 5,
-      "title": "5-Night Perfect Day CocoCay & Caribbean Getaway Cruise",
+      "title": "5-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee",
+        "Grand Turk",
         "Perfect Day at CocoCay"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
       "startingPrice": 730.54,
       "startingCabin": "Interior",
       "perNight": 146.11,
@@ -11162,7 +11162,7 @@
         "oceanView": 790.54,
         "balcony": 890.54
       },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-2184216997&sailDate=2028-03-17&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-627002653&sailDate=2028-03-17&shipCode=AD&packageCode=AD05E102&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05E102",
       "bestValue": false,
       "under100": false
@@ -11179,10 +11179,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 778.8,
       "startingCabin": "Interior",
       "perNight": 259.6,
@@ -11326,10 +11326,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 726.8,
       "startingCabin": "Interior",
       "perNight": 242.27,
@@ -11415,9 +11415,9 @@
       "title": "4-Night Eastern Caribbean Getaway Cruise",
       "ports": [
         "Port Canaveral",
-        "Labadee"
+        "Grand Turk"
       ],
-      "portsLabel": "Port Canaveral \u2192 Labadee",
+      "portsLabel": "Port Canaveral \u2192 Grand Turk",
       "startingPrice": 587.02,
       "startingCabin": "Interior",
       "perNight": 146.75,
@@ -11501,10 +11501,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 728.3,
       "startingCabin": "Interior",
       "perNight": 242.77,
@@ -11648,10 +11648,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 756.8,
       "startingCabin": "Interior",
       "perNight": 252.27,
@@ -11792,7 +11792,7 @@
       "sailDate": "2028-04-14",
       "endDate": "2028-04-19",
       "nights": 5,
-      "title": "5-Night Eastern Caribbean Getaway",
+      "title": "5-Night Eastern Caribbean Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Grand Turk",
@@ -11824,10 +11824,10 @@
       "title": "3-Night Bahamas & Perfect Day Cruise",
       "ports": [
         "Port Canaveral",
-        "Nassau",
-        "Perfect Day at CocoCay"
+        "Perfect Day at CocoCay",
+        "Nassau"
       ],
-      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
       "startingPrice": 857.3,
       "startingCabin": "Interior",
       "perNight": 285.77,
@@ -11956,6 +11956,1675 @@
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD05PCN-1677965069&sailDate=2028-04-19&shipCode=AD&packageCode=AD05W740&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "AD05W740",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-04-22-HM07E612",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-04-22",
+      "endDate": "2028-04-29",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Philipsburg",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Philipsburg \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1154.42,
+      "startingCabin": "Interior",
+      "perNight": 164.92,
+      "cabins": {
+        "interior": 1154.42,
+        "oceanView": 1284.42,
+        "balcony": 1340.92
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1431829222&sailDate=2028-04-22&shipCode=HM&packageCode=HM07E612&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E612",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-04-23-ST07E607",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-04-23",
+      "endDate": "2028-04-30",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1466.3,
+      "startingCabin": "Interior",
+      "perNight": 209.47,
+      "cabins": {
+        "interior": 1466.3,
+        "oceanView": 1716.3,
+        "balcony": 1873.8
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-04-23&shipCode=ST&packageCode=ST07E607&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E607",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-04-29-HM07E600",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-04-29",
+      "endDate": "2028-05-06",
+      "nights": 7,
+      "title": "7-Night Eastern Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Nassau",
+        "Saman\u00e1",
+        "Charlotte Amalie"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Saman\u00e1 \u2192 Charlotte Amalie",
+      "startingPrice": 1073.8,
+      "startingCabin": "Interior",
+      "perNight": 153.4,
+      "cabins": {
+        "interior": 1073.8,
+        "oceanView": 1184.8,
+        "balcony": 1241.3
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1206346257&sailDate=2028-04-29&shipCode=HM&packageCode=HM07E600&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E600",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-04-30-ST07W943",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-04-30",
+      "endDate": "2028-05-07",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1425.07,
+      "startingCabin": "Interior",
+      "perNight": 203.58,
+      "cabins": {
+        "interior": 1425.07,
+        "oceanView": 1665.07,
+        "balcony": 1812.07
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-04-30&shipCode=ST&packageCode=ST07W943&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W943",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-05-06-HM07W936",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-05-06",
+      "endDate": "2028-05-13",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1198.21,
+      "startingCabin": "Interior",
+      "perNight": 171.17,
+      "cabins": {
+        "interior": 1198.21,
+        "oceanView": 1317.71,
+        "balcony": 1375.21
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-05-06&shipCode=HM&packageCode=HM07W936&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W936",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-05-07-ST07E607",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-05-07",
+      "endDate": "2028-05-14",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1516.3,
+      "startingCabin": "Interior",
+      "perNight": 216.61,
+      "cabins": {
+        "interior": 1516.3,
+        "oceanView": 1765.8,
+        "balcony": 1923.3
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-05-07&shipCode=ST&packageCode=ST07E607&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E607",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-05-13-HM07E601",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-05-13",
+      "endDate": "2028-05-20",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "Saman\u00e1",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Saman\u00e1 \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1202.69,
+      "startingCabin": "Interior",
+      "perNight": 171.81,
+      "cabins": {
+        "interior": 1202.69,
+        "oceanView": 1333.19,
+        "balcony": 1400.19
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2639875933&sailDate=2028-05-13&shipCode=HM&packageCode=HM07E601&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E601",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-05-14-ST07E608",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-05-14",
+      "endDate": "2028-05-21",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1566.27,
+      "startingCabin": "Interior",
+      "perNight": 223.75,
+      "cabins": {
+        "interior": 1566.27,
+        "oceanView": 1826.27,
+        "balcony": 1993.27
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-05-14&shipCode=ST&packageCode=ST07E608&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E608",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-05-20-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-05-20",
+      "endDate": "2028-05-27",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1268.95,
+      "startingCabin": "Interior",
+      "perNight": 181.28,
+      "cabins": {
+        "interior": 1268.95,
+        "oceanView": 1408.95,
+        "balcony": 1475.95
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-05-20&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-05-21-ST07W944",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-05-21",
+      "endDate": "2028-05-28",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1487.22,
+      "startingCabin": "Interior",
+      "perNight": 212.46,
+      "cabins": {
+        "interior": 1487.22,
+        "oceanView": 1727.22,
+        "balcony": 1884.72
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-05-21&shipCode=ST&packageCode=ST07W944&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W944",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-05-27-HM07W937",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-05-27",
+      "endDate": "2028-06-03",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1297.81,
+      "startingCabin": "Interior",
+      "perNight": 185.4,
+      "cabins": {
+        "interior": 1297.81,
+        "oceanView": 1437.81,
+        "balcony": 1505.31
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-05-27&shipCode=HM&packageCode=HM07W937&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W937",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-05-28-ST07E609",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-05-28",
+      "endDate": "2028-06-04",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "San Juan",
+        "Charlotte Amalie"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 San Juan \u2192 Charlotte Amalie",
+      "startingPrice": 1935.92,
+      "startingCabin": "Interior",
+      "perNight": 276.56,
+      "cabins": {
+        "interior": 1935.92,
+        "oceanView": 2265.92,
+        "balcony": 2473.42
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-3908274577&sailDate=2028-05-28&shipCode=ST&packageCode=ST07E609&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E609",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-06-03-HM07E599",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-06-03",
+      "endDate": "2028-06-10",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1414.82,
+      "startingCabin": "Interior",
+      "perNight": 202.12,
+      "cabins": {
+        "interior": 1414.82,
+        "oceanView": 1574.82,
+        "balcony": 1652.82
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1055410745&sailDate=2028-06-03&shipCode=HM&packageCode=HM07E599&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E599",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-06-04-ST07E607",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-06-04",
+      "endDate": "2028-06-11",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1946.8,
+      "startingCabin": "Interior",
+      "perNight": 278.11,
+      "cabins": {
+        "interior": 1946.8,
+        "oceanView": 2286.3,
+        "balcony": 2493.8
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-06-04&shipCode=ST&packageCode=ST07E607&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E607",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-06-10-HM07E603",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-06-10",
+      "endDate": "2028-06-17",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1414.24,
+      "startingCabin": "Interior",
+      "perNight": 202.03,
+      "cabins": {
+        "interior": 1414.24,
+        "oceanView": 1574.24,
+        "balcony": 1652.24
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-06-10&shipCode=HM&packageCode=HM07E603&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E603",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-06-11-ST07W945",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-06-11",
+      "endDate": "2028-06-18",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1864.48,
+      "startingCabin": "Interior",
+      "perNight": 266.35,
+      "cabins": {
+        "interior": 1864.48,
+        "oceanView": 2185.48,
+        "balcony": 2382.48
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-06-11&shipCode=ST&packageCode=ST07W945&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W945",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-06-17-HM07W938",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-06-17",
+      "endDate": "2028-06-24",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1436.25,
+      "startingCabin": "Interior",
+      "perNight": 205.18,
+      "cabins": {
+        "interior": 1436.25,
+        "oceanView": 1596.75,
+        "balcony": 1663.75
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-06-17&shipCode=HM&packageCode=HM07W938&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W938",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-06-18-ST07E607",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-06-18",
+      "endDate": "2028-06-25",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1886.3,
+      "startingCabin": "Interior",
+      "perNight": 269.47,
+      "cabins": {
+        "interior": 1886.3,
+        "oceanView": 2216.3,
+        "balcony": 2413.3
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-06-18&shipCode=ST&packageCode=ST07E607&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E607",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-06-24-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-06-24",
+      "endDate": "2028-07-01",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1478.95,
+      "startingCabin": "Interior",
+      "perNight": 211.28,
+      "cabins": {
+        "interior": 1478.95,
+        "oceanView": 1638.95,
+        "balcony": 1715.95
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-06-24&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-06-25-ST07E608",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-06-25",
+      "endDate": "2028-07-02",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1956.27,
+      "startingCabin": "Interior",
+      "perNight": 279.47,
+      "cabins": {
+        "interior": 1956.27,
+        "oceanView": 2296.77,
+        "balcony": 2503.77
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-06-25&shipCode=ST&packageCode=ST07E608&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E608",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-07-01-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-07-01",
+      "endDate": "2028-07-08",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1508.95,
+      "startingCabin": "Interior",
+      "perNight": 215.56,
+      "cabins": {
+        "interior": 1508.95,
+        "oceanView": 1678.95,
+        "balcony": 1746.45
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-07-01&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-07-02-ST07W944",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-07-02",
+      "endDate": "2028-07-09",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1997.22,
+      "startingCabin": "Interior",
+      "perNight": 285.32,
+      "cabins": {
+        "interior": 1997.22,
+        "oceanView": 2347.22,
+        "balcony": 2564.22
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-07-02&shipCode=ST&packageCode=ST07W944&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W944",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-07-08-HM07W936",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-07-08",
+      "endDate": "2028-07-15",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1478.21,
+      "startingCabin": "Interior",
+      "perNight": 211.17,
+      "cabins": {
+        "interior": 1478.21,
+        "oceanView": 1638.71,
+        "balcony": 1705.21
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-07-08&shipCode=HM&packageCode=HM07W936&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W936",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-07-09-ST07E610",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-07-09",
+      "endDate": "2028-07-16",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Saman\u00e1",
+        "Charlotte Amalie"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Saman\u00e1 \u2192 Charlotte Amalie",
+      "startingPrice": 1979.5,
+      "startingCabin": "Interior",
+      "perNight": 282.79,
+      "cabins": {
+        "interior": 1979.5,
+        "oceanView": 2329.5,
+        "balcony": 2546.5
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2639875519&sailDate=2028-07-09&shipCode=ST&packageCode=ST07E610&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E610",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-07-15-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-07-15",
+      "endDate": "2028-07-22",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1435.95,
+      "startingCabin": "Interior",
+      "perNight": 205.14,
+      "cabins": {
+        "interior": 1435.95,
+        "oceanView": 1606.45,
+        "balcony": 1673.95
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-07-15&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-07-16-ST07E607",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-07-16",
+      "endDate": "2028-07-23",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1936.3,
+      "startingCabin": "Interior",
+      "perNight": 276.61,
+      "cabins": {
+        "interior": 1936.3,
+        "oceanView": 2266.3,
+        "balcony": 2473.8
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-07-16&shipCode=ST&packageCode=ST07E607&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E607",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-07-22-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-07-22",
+      "endDate": "2028-07-29",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1435.95,
+      "startingCabin": "Interior",
+      "perNight": 205.14,
+      "cabins": {
+        "interior": 1435.95,
+        "oceanView": 1606.45,
+        "balcony": 1673.95
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-07-22&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-07-23-ST07W943",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-07-23",
+      "endDate": "2028-07-30",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1895.07,
+      "startingCabin": "Interior",
+      "perNight": 270.72,
+      "cabins": {
+        "interior": 1895.07,
+        "oceanView": 2214.57,
+        "balcony": 2413.07
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-07-23&shipCode=ST&packageCode=ST07W943&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W943",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-07-29-HM07W938",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-07-29",
+      "endDate": "2028-08-05",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1456.75,
+      "startingCabin": "Interior",
+      "perNight": 208.11,
+      "cabins": {
+        "interior": 1456.75,
+        "oceanView": 1617.25,
+        "balcony": 1683.75
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-07-29&shipCode=HM&packageCode=HM07W938&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W938",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-07-30-ST07E610",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-07-30",
+      "endDate": "2028-08-06",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Saman\u00e1",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Saman\u00e1 \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1937.66,
+      "startingCabin": "Interior",
+      "perNight": 276.81,
+      "cabins": {
+        "interior": 1937.66,
+        "oceanView": 2287.66,
+        "balcony": 2495.16
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1410378016&sailDate=2028-07-30&shipCode=ST&packageCode=ST07E610&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E610",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-08-05-HM07E599",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-08-05",
+      "endDate": "2028-08-12",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1297.52,
+      "startingCabin": "Interior",
+      "perNight": 185.36,
+      "cabins": {
+        "interior": 1297.52,
+        "oceanView": 1437.52,
+        "balcony": 1504.52
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1055410745&sailDate=2028-08-05&shipCode=HM&packageCode=HM07E599&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E599",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-08-06-ST07E610",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-08-06",
+      "endDate": "2028-08-13",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Saman\u00e1",
+        "Charlotte Amalie"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Saman\u00e1 \u2192 Charlotte Amalie",
+      "startingPrice": 1867.66,
+      "startingCabin": "Interior",
+      "perNight": 266.81,
+      "cabins": {
+        "interior": 1867.66,
+        "oceanView": 2197.66,
+        "balcony": 2394.66
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2639875519&sailDate=2028-08-06&shipCode=ST&packageCode=ST07E610&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E610",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-08-12-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-08-12",
+      "endDate": "2028-08-19",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1249.45,
+      "startingCabin": "Interior",
+      "perNight": 178.49,
+      "cabins": {
+        "interior": 1249.45,
+        "oceanView": 1378.95,
+        "balcony": 1455.95
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-08-12&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-08-13-ST07W944",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-08-13",
+      "endDate": "2028-08-20",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1807.22,
+      "startingCabin": "Interior",
+      "perNight": 258.17,
+      "cabins": {
+        "interior": 1807.22,
+        "oceanView": 2117.22,
+        "balcony": 2304.72
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-08-13&shipCode=ST&packageCode=ST07W944&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W944",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-08-19-HM07W936",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-08-19",
+      "endDate": "2028-08-26",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1148.71,
+      "startingCabin": "Interior",
+      "perNight": 164.1,
+      "cabins": {
+        "interior": 1148.71,
+        "oceanView": 1258.21,
+        "balcony": 1324.71
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-08-19&shipCode=HM&packageCode=HM07W936&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W936",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-08-20-ST07E610",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-08-20",
+      "endDate": "2028-08-27",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Saman\u00e1",
+        "Charlotte Amalie"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Saman\u00e1 \u2192 Charlotte Amalie",
+      "startingPrice": 1727.66,
+      "startingCabin": "Interior",
+      "perNight": 246.81,
+      "cabins": {
+        "interior": 1727.66,
+        "oceanView": 2027.16,
+        "balcony": 2215.16
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2639875519&sailDate=2028-08-20&shipCode=ST&packageCode=ST07E610&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E610",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-08-26-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-08-26",
+      "endDate": "2028-09-02",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1138.45,
+      "startingCabin": "Interior",
+      "perNight": 162.64,
+      "cabins": {
+        "interior": 1138.45,
+        "oceanView": 1258.95,
+        "balcony": 1326.45
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-08-26&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-08-27-ST07E607",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-08-27",
+      "endDate": "2028-09-03",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1676.3,
+      "startingCabin": "Interior",
+      "perNight": 239.47,
+      "cabins": {
+        "interior": 1676.3,
+        "oceanView": 1966.3,
+        "balcony": 2143.8
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-08-27&shipCode=ST&packageCode=ST07E607&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E607",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-09-02-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-09-02",
+      "endDate": "2028-09-09",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1138.45,
+      "startingCabin": "Interior",
+      "perNight": 162.64,
+      "cabins": {
+        "interior": 1138.45,
+        "oceanView": 1258.95,
+        "balcony": 1326.45
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-09-02&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-09-03-ST07W943",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-09-03",
+      "endDate": "2028-09-10",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1365.07,
+      "startingCabin": "Interior",
+      "perNight": 195.01,
+      "cabins": {
+        "interior": 1365.07,
+        "oceanView": 1575.07,
+        "balcony": 1722.57
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-09-03&shipCode=ST&packageCode=ST07W943&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W943",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-09-09-HM07W938",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-09-09",
+      "endDate": "2028-09-16",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 975.83,
+      "startingCabin": "Interior",
+      "perNight": 139.4,
+      "cabins": {
+        "interior": 975.83,
+        "oceanView": 1065.33,
+        "balcony": 1132.33
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-09-09&shipCode=HM&packageCode=HM07W938&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W938",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-09-10-ST07E610",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-09-10",
+      "endDate": "2028-09-17",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Saman\u00e1",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Saman\u00e1 \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1368.16,
+      "startingCabin": "Interior",
+      "perNight": 195.45,
+      "cabins": {
+        "interior": 1368.16,
+        "oceanView": 1597.66,
+        "balcony": 1745.16
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1410378016&sailDate=2028-09-10&shipCode=ST&packageCode=ST07E610&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E610",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-09-16-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-09-16",
+      "endDate": "2028-09-23",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 945.95,
+      "startingCabin": "Interior",
+      "perNight": 135.14,
+      "cabins": {
+        "interior": 945.95,
+        "oceanView": 1035.95,
+        "balcony": 1103.45
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-09-16&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-09-17-ST07E608",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-09-17",
+      "endDate": "2028-09-24",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1326.27,
+      "startingCabin": "Interior",
+      "perNight": 189.47,
+      "cabins": {
+        "interior": 1326.27,
+        "oceanView": 1536.27,
+        "balcony": 1684.27
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-09-17&shipCode=ST&packageCode=ST07E608&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E608",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-09-23-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-09-23",
+      "endDate": "2028-09-30",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 945.95,
+      "startingCabin": "Interior",
+      "perNight": 135.14,
+      "cabins": {
+        "interior": 945.95,
+        "oceanView": 1035.95,
+        "balcony": 1103.45
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-09-23&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-09-24-ST07W944",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-09-24",
+      "endDate": "2028-10-01",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1336.58,
+      "startingCabin": "Interior",
+      "perNight": 190.94,
+      "cabins": {
+        "interior": 1336.58,
+        "oceanView": 1546.58,
+        "balcony": 1684.08
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-09-24&shipCode=ST&packageCode=ST07W944&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W944",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-09-30-HM07W936",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-09-30",
+      "endDate": "2028-10-07",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1008.71,
+      "startingCabin": "Interior",
+      "perNight": 144.1,
+      "cabins": {
+        "interior": 1008.71,
+        "oceanView": 1098.21,
+        "balcony": 1165.21
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-09-30&shipCode=HM&packageCode=HM07W936&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W936",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-10-01-ST07E610",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-10-01",
+      "endDate": "2028-10-08",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Saman\u00e1",
+        "Charlotte Amalie"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Saman\u00e1 \u2192 Charlotte Amalie",
+      "startingPrice": 1421.49,
+      "startingCabin": "Interior",
+      "perNight": 203.07,
+      "cabins": {
+        "interior": 1421.49,
+        "oceanView": 1661.99,
+        "balcony": 1819.49
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2639875519&sailDate=2028-10-01&shipCode=ST&packageCode=ST07E610&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E610",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-10-07-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-10-07",
+      "endDate": "2028-10-14",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1098.95,
+      "startingCabin": "Interior",
+      "perNight": 156.99,
+      "cabins": {
+        "interior": 1098.95,
+        "oceanView": 1208.45,
+        "balcony": 1265.95
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-10-07&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-10-08-ST07E607",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-10-08",
+      "endDate": "2028-10-15",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 1396.3,
+      "startingCabin": "Interior",
+      "perNight": 199.47,
+      "cabins": {
+        "interior": 1396.3,
+        "oceanView": 1636.3,
+        "balcony": 1783.3
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2028-10-08&shipCode=ST&packageCode=ST07E607&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E607",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-10-14-HM07E602",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-10-14",
+      "endDate": "2028-10-21",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1098.95,
+      "startingCabin": "Interior",
+      "perNight": 156.99,
+      "cabins": {
+        "interior": 1098.95,
+        "oceanView": 1208.45,
+        "balcony": 1265.95
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-3908275379&sailDate=2028-10-14&shipCode=HM&packageCode=HM07E602&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E602",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-10-15-ST07W943",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-10-15",
+      "endDate": "2028-10-22",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1355.07,
+      "startingCabin": "Interior",
+      "perNight": 193.58,
+      "cabins": {
+        "interior": 1355.07,
+        "oceanView": 1565.07,
+        "balcony": 1713.07
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-10-15&shipCode=ST&packageCode=ST07W943&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W943",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2028-10-21-HM07W938",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2028-10-21",
+      "endDate": "2028-10-28",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1065.33,
+      "startingCabin": "Interior",
+      "perNight": 152.19,
+      "cabins": {
+        "interior": 1065.33,
+        "oceanView": 1165.33,
+        "balcony": 1221.83
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2028-10-21&shipCode=HM&packageCode=HM07W938&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07W938",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-10-22-ST07E611",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-10-22",
+      "endDate": "2028-10-29",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Saman\u00e1",
+        "San Juan",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Saman\u00e1 \u2192 San Juan \u2192 Perfect Day at CocoCay",
+      "startingPrice": 1450.58,
+      "startingCabin": "Interior",
+      "perNight": 207.23,
+      "cabins": {
+        "interior": 1450.58,
+        "oceanView": 1680.08,
+        "balcony": 1837.58
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1410378016&sailDate=2028-10-22&shipCode=ST&packageCode=ST07E611&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E611",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "ST-2028-10-29-ST07W948",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2028-10-29",
+      "endDate": "2028-11-05",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Puerto Costa Maya",
+        "Roatan",
+        "Cozumel"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
+      "startingPrice": 1357.39,
+      "startingCabin": "Interior",
+      "perNight": 193.91,
+      "cabins": {
+        "interior": 1357.39,
+        "oceanView": 1567.39,
+        "balcony": 1715.39
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2028-10-29&shipCode=ST&packageCode=ST07W948&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07W948",
       "bestValue": false,
       "under100": false
     }
