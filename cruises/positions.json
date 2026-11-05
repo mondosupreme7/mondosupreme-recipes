@@ -6,7 +6,7 @@
     "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
-  "heard": 1,
+  "heard": 2,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -105,14 +105,14 @@
     },
     "309436000": {
       "aisName": "LIBERTY OF THE SEAS",
-      "cog": 22.3,
+      "cog": 32.4,
       "destination": "USGLS",
       "eta": "11-05 11:30",
       "heading": 44,
       "lat": 29.3178,
       "lon": -94.78176,
       "navStatus": 5,
-      "seen": "2026-11-05T13:43:46Z",
+      "seen": "2026-11-05T14:40:48Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -135,16 +135,16 @@
     },
     "309906000": {
       "aisName": "FREEDOM OF THE SEAS",
-      "cog": 343.6,
+      "cog": 138.4,
       "destination": "USMIA",
       "eta": "11-05 10:00",
       "heading": 116,
       "lat": 25.77213,
-      "lon": -80.15715,
+      "lon": -80.15713,
       "navStatus": 5,
-      "seen": "2026-11-05T13:43:46Z",
+      "seen": "2026-11-05T14:40:46Z",
       "sog": 0.0,
-      "source": "openwaters.io",
+      "source": "aishub",
       "trail": [
         {
           "lat": 25.9786,
@@ -168,22 +168,22 @@
         },
         {
           "lat": 25.77213,
-          "lon": -80.15715,
-          "seen": "2026-11-05T13:43:46Z"
+          "lon": -80.15713,
+          "seen": "2026-11-05T14:40:46Z"
         }
       ]
     },
     "311000267": {
       "aisName": "QUANTUM OF THE SEAS",
-      "cog": 260.1,
+      "cog": 260.5,
       "destination": "AUBNE",
       "eta": "11-05 16:00",
-      "heading": 260,
-      "lat": -26.56197,
-      "lon": 153.99612,
+      "heading": 254,
+      "lat": -26.65975,
+      "lon": 153.53548,
       "navStatus": 0,
-      "seen": "2026-11-05T13:11:52Z",
-      "sog": 16.8,
+      "seen": "2026-11-05T14:41:16Z",
+      "sog": 14.6,
       "source": "aishub",
       "trail": [
         {
@@ -220,6 +220,11 @@
           "lat": -26.56197,
           "lon": 153.99612,
           "seen": "2026-11-05T13:11:52Z"
+        },
+        {
+          "lat": -26.65975,
+          "lon": 153.53548,
+          "seen": "2026-11-05T14:41:16Z"
         }
       ]
     },
@@ -245,22 +250,17 @@
     },
     "311000396": {
       "aisName": "HARMONY OF THE SEAS",
-      "cog": 179.8,
+      "cog": 359.8,
       "destination": "USPCV",
       "eta": "11-05 08:45",
       "heading": 90,
       "lat": 28.40873,
-      "lon": -80.61039,
+      "lon": -80.61038,
       "navStatus": 5,
-      "seen": "2026-11-05T13:43:04Z",
+      "seen": "2026-11-05T14:40:04Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.32084,
-          "lon": -79.66593,
-          "seen": "2026-11-04T14:39:21Z"
-        },
         {
           "lat": 26.47775,
           "lon": -79.64014,
@@ -343,8 +343,8 @@
         },
         {
           "lat": 28.40873,
-          "lon": -80.61039,
-          "seen": "2026-11-05T13:43:04Z"
+          "lon": -80.61038,
+          "seen": "2026-11-05T14:40:04Z"
         }
       ]
     },
@@ -361,11 +361,6 @@
       "sog": 10.2,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 33.36512,
-          "lon": -118.30165,
-          "seen": "2026-11-04T14:39:36Z"
-        },
         {
           "lat": 33.35075,
           "lon": -118.31492,
@@ -580,22 +575,17 @@
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 241.2,
+      "cog": 79.4,
       "destination": "SX PHI >>> US PCV",
       "eta": "11-08 08:00",
       "heading": 228,
-      "lat": 18.0114,
+      "lat": 18.01141,
       "lon": -63.04863,
       "navStatus": 5,
-      "seen": "2026-11-05T13:42:28Z",
+      "seen": "2026-11-05T14:39:28Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 18.30113,
-          "lon": -65.065,
-          "seen": "2026-11-04T14:40:04Z"
-        },
         {
           "lat": 18.32015,
           "lon": -64.96398,
@@ -657,9 +647,9 @@
           "seen": "2026-11-05T10:38:59Z"
         },
         {
-          "lat": 18.0114,
+          "lat": 18.01141,
           "lon": -63.04863,
-          "seen": "2026-11-05T12:27:22Z"
+          "seen": "2026-11-05T14:39:28Z"
         }
       ]
     },
@@ -765,21 +755,21 @@
     },
     "311263000": {
       "aisName": "ADVENTURE OF THE SEA",
-      "cog": 204.1,
+      "cog": 137.5,
       "destination": "USPCV",
       "eta": "11-05 05:15",
       "heading": 180,
       "lat": 28.41581,
-      "lon": -80.62552,
+      "lon": -80.62553,
       "navStatus": 5,
-      "seen": "2026-11-05T13:44:27Z",
+      "seen": "2026-11-05T14:41:27Z",
       "sog": 0.0,
-      "source": "aisstream",
+      "source": "aishub",
       "trail": [
         {
           "lat": 28.41581,
-          "lon": -80.62552,
-          "seen": "2026-11-05T13:44:27Z"
+          "lon": -80.62553,
+          "seen": "2026-11-05T14:41:27Z"
         }
       ]
     },
@@ -805,16 +795,16 @@
     },
     "311316000": {
       "aisName": "EXPLORER OF THE SEAS",
-      "cog": 218.3,
+      "cog": 247.6,
       "destination": "PTPDL",
       "eta": "11-05 11:00",
       "heading": 68,
-      "lat": 37.73639,
+      "lat": 37.73638,
       "lon": -25.6589,
       "navStatus": 5,
-      "seen": "2026-11-05T13:45:40Z",
+      "seen": "2026-11-05T14:39:54Z",
       "sog": 0.0,
-      "source": "aisstream.io",
+      "source": "aisstream",
       "trail": [
         {
           "lat": 36.24125,
@@ -827,24 +817,24 @@
           "seen": "2026-11-05T09:38:06Z"
         },
         {
-          "lat": 37.73639,
+          "lat": 37.73638,
           "lon": -25.6589,
-          "seen": "2026-11-05T13:45:40Z"
+          "seen": "2026-11-05T14:39:54Z"
         }
       ]
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 308.1,
+      "cog": 283.9,
       "destination": "US LAX",
       "eta": "11-05 13:30",
-      "heading": 309,
-      "lat": 33.70902,
-      "lon": -118.24826,
+      "heading": 206,
+      "lat": 33.74379,
+      "lon": -118.27634,
       "navStatus": 0,
-      "seen": "2026-11-05T13:45:36Z",
-      "sog": 7.7,
-      "source": "aishub",
+      "seen": "2026-11-05T14:41:05Z",
+      "sog": 0.1,
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 22.94251,
@@ -895,19 +885,24 @@
           "lat": 33.70902,
           "lon": -118.24826,
           "seen": "2026-11-05T13:45:36Z"
+        },
+        {
+          "lat": 33.74379,
+          "lon": -118.27634,
+          "seen": "2026-11-05T14:41:05Z"
         }
       ]
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 51.0,
+      "cog": 333.8,
       "destination": "MX CZM",
       "eta": "11-05 11:15",
       "heading": 20,
       "lat": 20.51157,
       "lon": -86.95602,
       "navStatus": 5,
-      "seen": "2026-11-05T13:24:56Z",
+      "seen": "2026-11-05T14:36:56Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -1000,16 +995,16 @@
     },
     "311361000": {
       "aisName": "BRILLIANCE OF SEAS",
-      "cog": 171.0,
+      "cog": 342.0,
       "destination": "ESAGP",
       "eta": "11-05 06:15",
       "heading": 188,
       "lat": 36.7009,
       "lon": -4.41462,
       "navStatus": 5,
-      "seen": "2026-11-05T13:44:24Z",
+      "seen": "2026-11-05T14:41:25Z",
       "sog": 0.0,
-      "source": "aisstream",
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 37.59519,
@@ -1075,14 +1070,14 @@
     },
     "311493000": {
       "aisName": "MARINER OF THE SEAS",
-      "cog": 39.6,
+      "cog": 112.1,
       "destination": "CZM-MX",
       "eta": "11-05 11:15",
       "heading": 20,
       "lat": 20.5115,
       "lon": -86.95656,
       "navStatus": 5,
-      "seen": "2026-11-05T13:28:49Z",
+      "seen": "2026-11-05T14:37:49Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -1186,5 +1181,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-05T13:45:58Z"
+  "updated": "2026-11-05T14:41:47Z"
 }
