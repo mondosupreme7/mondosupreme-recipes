@@ -427,9 +427,37 @@
       }).catch(function () { return forceBrowserLocal(auth); });
     });
   }
+  function parseWatchMap(raw) {
+    try {
+      var data = JSON.parse(raw || '');
+      if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
+      return data;
+    } catch (e) { return null; }
+  }
+  function mergeWatchJson(localRaw, remoteRaw) {
+    var local = parseWatchMap(localRaw) || {};
+    var remote = parseWatchMap(remoteRaw);
+    if (!remote) return JSON.stringify(local);
+    var out = {};
+    Object.keys(local).forEach(function (key) { out[key] = local[key]; });
+    Object.keys(remote).forEach(function (key) {
+      if (!out[key]) { out[key] = remote[key]; return; }
+      var localAt = out[key] && typeof out[key].updatedAt === 'number' ? out[key].updatedAt : 0;
+      var remoteAt = remote[key] && typeof remote[key].updatedAt === 'number' ? remote[key].updatedAt : 0;
+      if (remoteAt > localAt) out[key] = remote[key];
+    });
+    return JSON.stringify(out);
+  }
   function syncSnapshot() {
     var bag = {};
-    SYNC.forEach(function (row) { bag[row[0]] = readLocal(row[1]).slice(0, row[2]); });
+    SYNC.forEach(function (row) {
+      var raw = readLocal(row[1]);
+      if (row[0] === 'stocks') {
+        if (raw && raw.length <= row[2] && parseWatchMap(raw)) bag[row[0]] = raw;
+        return;
+      }
+      bag[row[0]] = raw.slice(0, row[2]);
+    });
     return JSON.stringify(bag);
   }
   async function pullSync(data) {
@@ -437,7 +465,16 @@
     SYNC.forEach(function (row) {
       var remote = data && typeof data[row[0]] === 'string' ? data[row[0]] : '';
       if (!remote || remote.length > row[2]) return;
-      if (readLocal(row[1]) !== remote) {
+      var localRaw = readLocal(row[1]);
+      if (row[0] === 'stocks') {
+        var merged = mergeWatchJson(localRaw, remote);
+        if (merged && merged !== localRaw && merged !== '{}') {
+          writeLocal(row[1], merged);
+          changed = true;
+        }
+        return;
+      }
+      if (localRaw !== remote) {
         writeLocal(row[1], remote);
         changed = true;
       }

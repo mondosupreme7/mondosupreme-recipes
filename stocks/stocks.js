@@ -12,6 +12,7 @@
   var uid = '';
   var member = false;
   var pendingPrice = Object.create(null);
+  var removedPins = Object.create(null);
   var stockShown = 10;
   var watchShown = 10;
 
@@ -558,6 +559,7 @@
   }
 
   function removePin(symbol) {
+    removedPins[symbol] = Date.now();
     delete watch[symbol];
     writeWatch();
     renderWatch();
@@ -582,32 +584,50 @@
     });
   }
 
+  function pinStamp(pin) {
+    return pin && typeof pin.updatedAt === 'number' ? pin.updatedAt : 0;
+  }
+  function addedStamp(pin) {
+    if (!pin) return '';
+    if (typeof pin.addedAt === 'string' && Number.isFinite(Date.parse(pin.addedAt))) return pin.addedAt;
+    if (typeof pin.addedAt === 'number' && pin.addedAt > 0) return new Date(pin.addedAt).toISOString();
+    return '';
+  }
   function applyCloud(value) {
     if (!value || typeof value !== 'object') return;
-    var next = {};
+    var merged = {};
+    Object.keys(watch).forEach(function (symbol) {
+      if (TICKER.test(symbol) && watch[symbol]) merged[symbol] = watch[symbol];
+    });
     Object.keys(value).forEach(function (symbol) {
-      if (!TICKER.test(symbol) || !value[symbol]) return;
+      if (!TICKER.test(symbol) || !value[symbol] || typeof value[symbol] !== 'object') return;
+      if (removedPins[symbol] && !watch[symbol]) return;
       var pin = value[symbol];
-      var prior = watch[symbol] || {};
-      var addedAt = '';
-      if (typeof pin.addedAt === 'string' && Number.isFinite(Date.parse(pin.addedAt))) addedAt = pin.addedAt;
-      else if (typeof pin.addedAt === 'number' && pin.addedAt > 0) addedAt = new Date(pin.addedAt).toISOString();
-      else if (prior.addedAt) addedAt = prior.addedAt;
+      var prior = merged[symbol];
+      var cloudAt = pinStamp(pin);
+      var localAt = pinStamp(prior);
+      var cloudNewer = !prior || cloudAt >= localAt;
+      var addedAt = addedStamp(pin) || (prior && prior.addedAt) || '';
       var addedPrice = loggedPrice(pin.addedPrice);
-      if (addedPrice == null && prior.addedPrice != null && !pin.addedAt && !pin.addedPrice) addedPrice = loggedPrice(prior.addedPrice);
-      next[symbol] = {
-        note: String(pin.note || '').slice(0, 140),
-        target: typeof pin.target === 'number' ? pin.target : null,
-        updatedAt: typeof pin.updatedAt === 'number' ? pin.updatedAt : 0,
+      if (addedPrice == null && prior) addedPrice = loggedPrice(prior.addedPrice);
+      merged[symbol] = {
+        note: String((cloudNewer ? pin.note : (prior && prior.note)) || pin.note || (prior && prior.note) || '').slice(0, 140),
+        target: cloudNewer
+          ? (typeof pin.target === 'number' ? pin.target : (prior && typeof prior.target === 'number' ? prior.target : null))
+          : (prior && typeof prior.target === 'number' ? prior.target : (typeof pin.target === 'number' ? pin.target : null)),
+        updatedAt: Math.max(cloudAt, localAt),
         addedAt: addedAt,
         addedPrice: addedPrice
       };
     });
-    if (!Object.keys(next).length && Object.keys(watch).length) return;
-    watch = next;
+    var localOnly = Object.keys(watch).filter(function (symbol) {
+      return TICKER.test(symbol) && watch[symbol] && !value[symbol];
+    });
+    watch = merged;
     writeWatch();
     renderWatch();
     renderTable();
+    localOnly.forEach(function (symbol) { pushCloud(symbol); });
   }
 
   function watchAuth() {
@@ -620,7 +640,9 @@
         var who = isAdminNow() ? 'Webmaster pins sync with this account.' : 'Signed-in pins sync to this account.';
         if (!watchAuth.ownerListen) { watchAuth.ownerListen = true; document.addEventListener('mondo-owner', function () { if (member && lead) lead.textContent = isAdminNow() ? 'Webmaster pins sync with this account.' : 'Signed-in pins sync to this account.'; }); }
         lead.textContent = who;
-        firebase.database().ref('stocks/watchlist/' + uid).once('value').then(function (snap) {
+        var current = uid;
+        firebase.database().ref('stocks/watchlist/' + current).once('value').then(function (snap) {
+          if (uid !== current || !member) return;
           applyCloud(snap.val());
         }).catch(function () {});
       } else {
