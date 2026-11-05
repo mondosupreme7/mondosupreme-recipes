@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-05T16:19:38Z",
+ "updated": "2026-11-05T17:40:29Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -23,19 +23,21 @@
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 2
+   "count": 1
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
-   "ok": true,
-   "count": 7
+   "ok": false,
+   "count": 0,
+   "error": "HTTPError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=41&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "HTTPError"
   },
   {
    "name": "City of Rockledge",
@@ -53,7 +55,7 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 15
+   "count": 17
   },
   {
    "name": "Canaveral Port Authority",
@@ -138,34 +140,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "3b803a60b19cabd0",
-   "title": "Cocoa Beach Woman's Club Meeting",
-   "start": "2026-11-05T14:30:00Z",
-   "end": "2026-11-05T16:30:00Z",
-   "town": "Cocoa Beach",
-   "venue": "Cocoa Beach Country Club - Open to the Public - 5000 Tom Warriner Blvd Cocoa Beach FL 32931",
-   "category": "Arts",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9724",
-   "description": "The Cocoa Beach Woman's Club welcomes you to visit our monthly meetings! We are a volunteer organization focusing on Arts and Culture, Civic Engagement, Education and Library, Environment and Health and Wellness. We support local schools and other non-profit Organizations. We are a part of the General Federation of Women's Clubs (GFWC). Find us on Facebook and our website listed below. https://www",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "20310810a58035f6",
-   "title": "Community Development Block Grant Community Meeting",
-   "start": "2026-11-05T20:00:00Z",
-   "end": "2026-11-05T22:00:00Z",
-   "town": "Titusville",
-   "venue": "<p>Harry T. Moore Social Service Center&nbsp;</p> - 725 S Deleon Ave Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2688",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2688",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "88302741fe6c7049",
@@ -392,6 +366,20 @@
    "kind": "event"
   },
   {
+   "id": "6a32f679593e1029",
+   "title": "10th Anniversary Celebration at Studios of Cocoa Beach",
+   "start": "2026-11-07T21:00:00Z",
+   "end": "2026-11-08T00:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "Studios of Cocoa Beach, 165 Minutemen Causeway, Cocoa Beach, FL, 32931, United States",
+   "category": "Arts",
+   "url": "https://www.visitspacecoast.com/event/10th-anniversary-celebration-at-studios-of-cocoa-beach/",
+   "description": "Studios of Cocoa Beach is celebrating 10 years of hosting and promoting local Artists in Cocoa Beach. We are a 501.c3 and all the art in the gallery is by local artists. The show on display will be from many different Artists that have shown at the Studio in the past 10 years. Many of our Artists will be present for the celebration.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
    "id": "b52a9ea2aaf05eaa",
    "title": "Star of the Seas in port",
    "start": "2026-11-08T11:00:00Z",
@@ -518,20 +506,6 @@
    "kind": "cruise"
   },
   {
-   "id": "572fb80bccc3f49f",
-   "title": "Affordable Housing Advisory Committee Special Meeting",
-   "start": "2026-11-09T21:30:00Z",
-   "end": "2026-11-10T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Harry T. Moore Social Services Center</p><p>725 South DeLeon Avenue</p><p>Titusville, FL 32780</p> - Harry T. Moore S",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "c96eebfeef1790ae",
    "title": "Harmony of the Seas in port",
    "start": "2026-11-10T11:00:00Z",
@@ -574,20 +548,6 @@
    "kind": "cruise"
   },
   {
-   "id": "1da4ea694c9f9ccd",
-   "title": "Community Redevelopment Agency",
-   "start": "2026-11-10T22:30:00Z",
-   "end": "2026-11-10T23:30:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2373",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2373",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "64206f8e75bb2f20",
    "title": "Disney Fantasy in port",
    "start": "2026-11-11T11:00:00Z",
@@ -616,20 +576,6 @@
    "kind": "cruise"
   },
   {
-   "id": "896058a2ad6a8e30",
-   "title": "Titusville Environmental Commission",
-   "start": "2026-11-11T22:30:00Z",
-   "end": "2026-11-11T23:30:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2334",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2334",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "7d51ef361801754b",
    "title": "Carnival Freedom in port",
    "start": "2026-11-12T12:00:00Z",
@@ -656,34 +602,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "2bebd526b2fbf85b",
-   "title": "Other Post Employee Board of Trustees",
-   "start": "2026-11-12T16:00:00Z",
-   "end": "2026-11-13T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Round Room at City Hall</p><p>555 South Washington Avenue</p> - Round Room at City Hall 555 South Washington Avenue T",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2839",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2839",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "c5ec53227921ff4d",
-   "title": "North Brevard Commission on Parks and Recreation",
-   "start": "2026-11-12T21:00:00Z",
-   "end": "2026-11-13T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>North Brevard Senior Center</p> - 909 Lane Avenue Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2559",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2559",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "94f10ad82167fbb5",
@@ -754,20 +672,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "bf39551c4feaf1d6",
-   "title": "Economic Development Board of Directors Meeting",
-   "start": "2026-11-13T14:00:00Z",
-   "end": "2026-11-14T04:59:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2682",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2682",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "99ff4eb43701830e",
@@ -989,6 +893,20 @@
    "category": "Food & Markets",
    "url": "https://www.visitspacecoast.com/event/rocky-water-brew-fest/",
    "description": "The Rocky Water Brew Fest returns for its 12th year, bringing together some of the best small craft breweries from across Florida! Hosted by the Eau Gallie Rotary Club and Intracoastal Brewing Company, this outdoor event offers unlimited 2\u20134 oz tastings of craft beer from all over the state, all included with your ticket. You\u2019ll also receive a commemorative tasting glass to take home. A variety of",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "436de4ea2ca59953",
+   "title": "Red White and Brass",
+   "start": "2026-11-14T23:00:00Z",
+   "end": "2026-11-15T01:00:00Z",
+   "town": "Merritt Island",
+   "venue": "Merritt Island Veterans Memorial Amphitheater, 555 Fortenberry Rd, Merritt Island, FL, 32952, United States",
+   "category": "Launches",
+   "url": "https://www.visitspacecoast.com/event/red-white-and-brass/",
+   "description": "A soaring, FREE patriotic celebration presented by SpaceX, honoring our Armed Forces with stirring music, magnificent voices and a community united in song. SpaceX, the Merritt Island Redevelopment Agency and your Space Coast Symphony present Red, White & Brass, launching an exciting new concert series with an evening dedicated to Brevard County veterans. Aaron Collins leads your Space Coast Symph",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
