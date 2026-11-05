@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-05T04:40:57Z",
+ "updated": "2026-11-05T05:42:41Z",
  "sources": [
   {
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 0
+   "count": 1
   },
   {
    "name": "City of Cocoa",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 10
+   "count": 14
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 30
+   "count": 35
   },
   {
    "name": "Launch Library 2",
@@ -837,6 +837,146 @@
    "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9784",
    "source": "City of Cocoa Beach",
    "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "9169f2d7f2de6d43",
+   "title": "Disney Treasure in port",
+   "start": "2026-11-14T11:00:00Z",
+   "end": "2026-11-14T22:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "c48b94b71386ae1c",
+   "title": "Harmony of the Seas in port",
+   "start": "2026-11-14T11:00:00Z",
+   "end": "2026-11-14T21:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "9237dac45c174c37",
+   "title": "Carnival Mardi Gras in port",
+   "start": "2026-11-14T11:00:00Z",
+   "end": "2026-11-14T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "b24a0f72d4c62dc8",
+   "title": "Carnival Vista in port",
+   "start": "2026-11-14T12:00:00Z",
+   "end": "2026-11-14T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "201b83271aa44435",
+   "title": "Celebrity Apex in port",
+   "start": "2026-11-14T12:00:00Z",
+   "end": "2026-11-14T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "78fee4d989656e5a",
+   "title": "Food Drive Collection Event at Publix",
+   "start": "2026-11-14T15:00:00Z",
+   "end": "2026-11-14T19:00:00Z",
+   "town": "Cocoa",
+   "venue": "<p>Publix Supermarket Cocoa Commons</p> - 2301 State Road 524 Cocoa FL 32922",
+   "category": "Food & Markets",
+   "url": "https://www.cocoafl.gov/calendar.aspx?EID=6368",
+   "description": "Join Team Cocoa at Publix as we collect items for the Food Drive. https://www.cocoafl.gov/calendar.aspx?EID=6368",
+   "source": "City of Cocoa",
+   "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "3212bb865f01c788",
+   "title": "North Brevard Art League Holiday Artisan Market",
+   "start": "2026-11-14T15:00:00Z",
+   "end": "2026-11-15T20:00:00Z",
+   "town": "Titusville",
+   "venue": "North Brevard Art League Studio, 1421 Draa Rd, Titusville, FL, 32796, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/north-brevard-art-league-holiday-artisan-market/",
+   "description": "Get a head start on holiday shopping while supporting local artists and makers at the North Brevard Holiday Artisan Market, taking place Saturday, November 14, from 10 a.m. to 3 p.m., and Sunday, November 15, from 12 p.m. to 3 p.m. at the North Brevard Art League, 1421 Draa Road in Titusville. Admission and parking are free. The Holiday Artisan Market will bring together talented local artists, ar",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "125d74a9d5e4c680",
+   "title": "Parade of Gems",
+   "start": "2026-11-14T15:00:00Z",
+   "end": "2026-11-15T21:00:00Z",
+   "town": "Melbourne",
+   "venue": "MELBOURNE AUDITORIUM, 625 E Hibiscus Blvd 32901, Melbourne, FL, 32901",
+   "category": "Family",
+   "url": "https://www.visitspacecoast.com/event/annual-parade-of-gems/",
+   "description": "Parade of Gems is the largest Mineral and Gem show in Melbourne Held Nov. 14th & 15th at the Melbourne Auditorium. This annual event is hosted by the Canaveral Mineral & Gem Society. There is something for everyone: kid\u2019s corner, vendors selling gifts, lapidary materials, jewelry, silent auction & Grand prize drawing. Saturday, Nov. 14th \u2013 10-5 pm Sunday, Nov. 15th \u2013 10-4 pm Entry fee/donation $5 ",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "40a7e0c9fb5ba12c",
+   "title": "Cocoa Village Saturday Art Market",
+   "start": "2026-11-14T16:00:00Z",
+   "end": "2026-11-14T22:00:00Z",
+   "town": "Cocoa",
+   "venue": "MYRT THARPE SQUARE, 12 Stone St, Cocoa, FL, 32922",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/cocoa-village-saturday-art-market-2/2026-11-14/",
+   "description": "Enjoy this weekly Saturday Cocoa Village Art Market in the heart of Cocoa Village with an array of artisans. Come browse and shop original local artwork by area artists! Spend the day in Cocoa Village also visiting the many shops and eateries.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "431088b4bfa72d03",
+   "title": "Rocky Water Brew Fest 2026",
+   "start": "2026-11-14T18:00:00Z",
+   "end": "2026-11-14T22:00:00Z",
+   "town": "Melbourne",
+   "venue": "Intracoastal Brewing Company, 652 W Eau Gallie Blvd, Melbourne, FL, 32935, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/rocky-water-brew-fest/",
+   "description": "The Rocky Water Brew Fest returns for its 12th year, bringing together some of the best small craft breweries from across Florida! Hosted by the Eau Gallie Rotary Club and Intracoastal Brewing Company, this outdoor event offers unlimited 2\u20134 oz tastings of craft beer from all over the state, all included with your ticket. You\u2019ll also receive a commemorative tasting glass to take home. A variety of",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   }
  ]
