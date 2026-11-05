@@ -2,6 +2,7 @@
   "about": "Positions for the Royal Caribbean ships in cruises/fleet.json. Each ship keeps a trail of position points from about the last 24 hours. aisstream.io is sampled for about 75 seconds every 5 minutes, then Open Waters fills ships that stayed quiet. A ship with nothing newer keeps its previous coordinates and seen time. Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard.",
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
+    "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
     "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
@@ -9,14 +10,14 @@
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
-      "cog": 227.1,
+      "cog": 87.6,
       "destination": "JP NAH",
       "eta": "11-05 21:30",
-      "heading": 314,
-      "lat": 22.30613,
+      "heading": 313,
+      "lat": 22.30612,
       "lon": 114.21207,
       "navStatus": 5,
-      "seen": "2026-11-05T23:07:16Z",
+      "seen": "2026-11-05T23:46:16Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -71,9 +72,9 @@
           "seen": "2026-11-05T21:33:09Z"
         },
         {
-          "lat": 22.30613,
+          "lat": 22.30612,
           "lon": 114.21207,
-          "seen": "2026-11-05T23:07:16Z"
+          "seen": "2026-11-05T23:46:16Z"
         }
       ]
     },
@@ -119,14 +120,14 @@
     },
     "309436000": {
       "aisName": "LIBERTY OF THE SEAS",
-      "cog": 146.8,
+      "cog": 133.2,
       "destination": "MXCZM",
       "eta": "11-07 11:00",
-      "heading": 145,
-      "lat": 29.24688,
-      "lon": -94.58255,
+      "heading": 132,
+      "lat": 29.20913,
+      "lon": -94.54217,
       "navStatus": 0,
-      "seen": "2026-11-05T23:07:13Z",
+      "seen": "2026-11-05T23:18:43Z",
       "sog": 16.3,
       "source": "aishub",
       "trail": [
@@ -154,20 +155,25 @@
           "lat": 29.24688,
           "lon": -94.58255,
           "seen": "2026-11-05T23:07:13Z"
+        },
+        {
+          "lat": 29.20913,
+          "lon": -94.54217,
+          "seen": "2026-11-05T23:18:43Z"
         }
       ]
     },
     "309906000": {
       "aisName": "FREEDOM OF THE SEAS",
-      "cog": 64.8,
+      "cog": 67.9,
       "destination": "COCOCAY",
       "eta": "11-06 12:00",
-      "heading": 74,
-      "lat": 25.8356,
-      "lon": -79.91515,
+      "heading": 77,
+      "lat": 25.87582,
+      "lon": -79.81205,
       "navStatus": 0,
-      "seen": "2026-11-05T23:07:47Z",
-      "sog": 9.0,
+      "seen": "2026-11-05T23:47:47Z",
+      "sog": 8.9,
       "source": "aishub",
       "trail": [
         {
@@ -204,19 +210,24 @@
           "lat": 25.8356,
           "lon": -79.91515,
           "seen": "2026-11-05T23:07:47Z"
+        },
+        {
+          "lat": 25.87582,
+          "lon": -79.81205,
+          "seen": "2026-11-05T23:47:47Z"
         }
       ]
     },
     "311000267": {
       "aisName": "QUANTUM OF THE SEAS",
-      "cog": 104.5,
+      "cog": 356.0,
       "destination": "AUBNE",
       "eta": "11-08 16:00",
       "heading": 238,
       "lat": -27.38162,
       "lon": 153.15634,
       "navStatus": 5,
-      "seen": "2026-11-05T23:07:14Z",
+      "seen": "2026-11-05T23:46:13Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -325,11 +336,6 @@
       "sog": 16.2,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.56888,
-          "lon": -79.68259,
-          "seen": "2026-11-04T23:40:52Z"
-        },
         {
           "lat": 26.67262,
           "lon": -79.70196,
@@ -536,11 +542,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 20.60201,
-          "lon": -86.91523,
-          "seen": "2026-11-04T23:40:50Z"
-        },
-        {
           "lat": 20.69716,
           "lon": -86.83036,
           "seen": "2026-11-05T00:02:27Z"
@@ -560,11 +561,6 @@
       "sog": 9.0,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.25747,
-          "lon": -79.6616,
-          "seen": "2026-11-04T23:40:51Z"
-        },
         {
           "lat": 26.25742,
           "lon": -79.55623,
@@ -590,11 +586,6 @@
       "sog": 20.8,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 18.32015,
-          "lon": -64.96398,
-          "seen": "2026-11-04T23:41:30Z"
-        },
         {
           "lat": 18.22974,
           "lon": -64.94149,
@@ -714,15 +705,15 @@
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 292.4,
+      "cog": 12.4,
       "destination": "KN BAS",
       "eta": "11-05 11:00",
-      "heading": 291,
-      "lat": 17.30817,
-      "lon": -62.96132,
+      "heading": 12,
+      "lat": 17.54832,
+      "lon": -63.12447,
       "navStatus": 0,
-      "seen": "2026-11-05T22:49:27Z",
-      "sog": 20.5,
+      "seen": "2026-11-05T23:47:31Z",
+      "sog": 20.9,
       "source": "aishub",
       "trail": [
         {
@@ -774,6 +765,11 @@
           "lat": 17.30817,
           "lon": -62.96132,
           "seen": "2026-11-05T22:49:27Z"
+        },
+        {
+          "lat": 17.54832,
+          "lon": -63.12447,
+          "seen": "2026-11-05T23:47:31Z"
         }
       ]
     },
@@ -864,14 +860,14 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 214.0,
+      "cog": 129.1,
       "destination": "US CKI",
       "eta": "11-06 15:00",
       "heading": 206,
       "lat": 33.74383,
       "lon": -118.27641,
       "navStatus": 5,
-      "seen": "2026-11-05T23:04:52Z",
+      "seen": "2026-11-05T23:46:53Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -934,16 +930,16 @@
     },
     "311319000": {
       "aisName": "RADIANCE OF THE SEAS",
-      "cog": 38.0,
+      "cog": 35.9,
       "destination": "US TPA",
       "eta": "11-07 08:00",
-      "heading": 38,
-      "lat": 20.64639,
-      "lon": -86.88678,
+      "heading": 35,
+      "lat": 20.74695,
+      "lon": -86.80654,
       "navStatus": 0,
-      "seen": "2026-11-05T23:07:55Z",
-      "sog": 14.2,
-      "source": "aisstream.io",
+      "seen": "2026-11-05T23:39:25Z",
+      "sog": 14.5,
+      "source": "aisstream",
       "trail": [
         {
           "lat": 20.3739,
@@ -964,6 +960,11 @@
           "lat": 20.64639,
           "lon": -86.88678,
           "seen": "2026-11-05T23:07:55Z"
+        },
+        {
+          "lat": 20.74695,
+          "lon": -86.80654,
+          "seen": "2026-11-05T23:39:25Z"
         }
       ]
     },
@@ -980,11 +981,6 @@
       "sog": 10.5,
       "source": "openwaters.io",
       "trail": [
-        {
-          "lat": 17.98751,
-          "lon": -63.37395,
-          "seen": "2026-11-04T23:41:08Z"
-        },
         {
           "lat": 17.98074,
           "lon": -63.4607,
@@ -1091,11 +1087,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 22.88657,
-          "lon": -109.89422,
-          "seen": "2026-11-04T23:11:23Z"
-        },
-        {
           "lat": 22.87908,
           "lon": -109.87296,
           "seen": "2026-11-05T01:28:25Z"
@@ -1109,16 +1100,16 @@
     },
     "311493000": {
       "aisName": "MARINER OF THE SEAS",
-      "cog": 8.8,
+      "cog": 36.5,
       "destination": "MSY-US",
       "eta": "11-07 12:00",
-      "heading": 8,
-      "lat": 20.5602,
-      "lon": -86.95559,
+      "heading": 36,
+      "lat": 20.7468,
+      "lon": -86.82447,
       "navStatus": 0,
-      "seen": "2026-11-05T23:05:42Z",
-      "sog": 17.6,
-      "source": "aishub",
+      "seen": "2026-11-05T23:47:30Z",
+      "sog": 19.6,
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 20.38171,
@@ -1134,6 +1125,11 @@
           "lat": 20.5602,
           "lon": -86.95559,
           "seen": "2026-11-05T23:05:42Z"
+        },
+        {
+          "lat": 20.7468,
+          "lon": -86.82447,
+          "seen": "2026-11-05T23:47:30Z"
         }
       ]
     },
@@ -1215,5 +1211,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-05T23:08:01Z"
+  "updated": "2026-11-05T23:48:31Z"
 }
