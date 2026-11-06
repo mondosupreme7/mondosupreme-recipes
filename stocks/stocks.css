@@ -51,7 +51,8 @@
   font:650 15px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-align:center
 }
 #toast.show{transform:translateX(-50%);opacity:1}
-.watch-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:center;padding:6px 0;border-top:1px dotted #CBD5E1;min-height:44px}
+.watch-list li{display:flex;align-items:center;gap:8px;padding:4px 0;border-top:1px dotted #CBD5E1;min-height:44px}
+.watch-list li .watch-meta{flex:1;min-width:0;flex-wrap:nowrap}
 .watch-list button{min-height:44px;padding:0 10px}
 .watch-meta{display:flex;align-items:baseline;gap:4px;min-width:0;font:600 11px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1C1917)}
 .watch-when{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -110,6 +111,21 @@ a.rule-chip{text-decoration:none;color:#111827}
  .rules-card{grid-column:2;grid-row:1 / span 2;position:sticky;top:72px;max-height:calc(100vh - 88px);overflow:auto;margin:0}
  .quote-main{grid-column:1;grid-row:2;min-width:0}
 }
+td.quote-row{display:flex;align-items:center;gap:8px;min-height:44px;width:100%}
+.quote-line{display:flex;flex:1;align-items:baseline;gap:8px;min-width:0}
+.quote-px,.quote-chg,.quote-score{font:650 15px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.quote-score{margin-left:auto;color:var(--ink,#0f172a)}
+.watch-btn{
+  flex:0 0 auto;min-width:72px;min-height:44px;padding:0 10px;border-radius:12px;
+  border:1px solid var(--line-strong,#64748b);background:var(--surface,#fff);color:var(--ink,#0f172a);
+  font:650 14px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+html[data-theme] .watch-btn.is-on,
+.watch-btn.is-on{border-color:#e11d48 !important;color:#9f1239 !important;background:#fff1f2 !important}
+html[data-theme="dark"] .watch-btn.is-on,html[data-theme="harbor"] .watch-btn.is-on{color:#fda4af !important;border-color:#fda4af !important;background:#3f121c !important}
+.watch-list li .btn{flex:none;min-height:44px;padding:0 10px}
+.watch-when{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.watch-at,.watch-now{flex:none;white-space:nowrap}
 @media(max-width:768px){
  .quote-tools label,.pin-form label{flex:1 1 140px}
  .quote-hero h1{font-size:1.45rem}
@@ -117,6 +133,10 @@ a.rule-chip{text-decoration:none;color:#111827}
  .quote-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
  .quote-table thead{display:none}
  .quote-table,.quote-table tbody,.quote-table tr,.quote-table td{display:block;width:auto}
+ .quote-table tr.is-compact{display:flex;align-items:center;margin:0;padding:0;border:0;border-bottom:1px solid var(--line,#334155);background:transparent;min-height:44px}
+ .quote-table tr.is-compact td{display:flex;width:100%;border:0;padding:2px 0;background:transparent}
+ html[data-theme] .quote-table tr.is-compact td.quote-row{background:transparent!important;color:var(--ink)!important;border-left:0!important;box-shadow:none!important}
+ .quote-table tr.is-compact td::before{display:none}
  .quote-table tr{margin:8px;border:2px solid #39ff14;background:#001400}
  .quote-table td{border-top:0;padding:6px 8px}
  .quote-table td::before{content:attr(data-label);display:block;font:600 11px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#cbd5e1}

@@ -13,8 +13,10 @@
   var member = false;
   var pendingPrice = Object.create(null);
   var removedPins = Object.create(null);
-  var stockShown = 10;
-  var watchShown = 10;
+  var PAGE = 25;
+  var WATCH_CAP = 100;
+  var stockShown = PAGE;
+  var watchShown = PAGE;
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
@@ -178,6 +180,18 @@
     return node;
   }
 
+  function rowScore(row) {
+    var swingView = document.getElementById('sort').value === 'swing' || document.getElementById('screen').value === 'swing';
+    var value = swingView ? row.swingScore : (row.rankScore != null ? row.rankScore : row.score);
+    return value == null || !isFinite(value) ? '—' : String(value);
+  }
+  function dayText(value) {
+    if (typeof value !== 'number' || !isFinite(value)) return '—';
+    var magnitude = Math.abs(value).toFixed(1).replace(/\.0$/, '') + '%';
+    if (value > 0) return '+' + magnitude;
+    if (value < 0) return '−' + magnitude;
+    return magnitude;
+  }
   function renderTable() {
     var body = document.getElementById('rows');
     var list = visibleRows();
@@ -186,46 +200,45 @@
     body.replaceChildren();
     shown.forEach(function (row) {
       var tr = document.createElement('tr');
+      tr.className = 'is-compact' + (row.symbol === selected ? ' is-open' : '');
       tr.tabIndex = 0;
-      if (row.symbol === selected) tr.className = 'is-open';
-      var name = document.createElement('td');
-      name.setAttribute('data-label', 'Ticker');
-      name.appendChild(el('span', row.symbol, 'tick'));
-      name.appendChild(el('small', row.name || ''));
-      if (row.chips && row.chips.setup) name.appendChild(el('small', row.chips.setup, 'row-setup'));
-      var marks = badges(row);
-      if (marks) name.appendChild(marks);
-      tr.appendChild(name);
-      var last = el('td', row.price == null ? '—' : money(row.price));
-      last.setAttribute('data-label', 'Last');
-      tr.appendChild(last);
-      var rsi = numCell(row.rsi, 1);
-      rsi.setAttribute('data-label', 'RSI-14');
-      tr.appendChild(rsi);
-      var bb = document.createElement('td');
-      bb.setAttribute('data-label', 'Lower BB');
-      bb.textContent = row.bbDistancePct == null ? '—' : ((row.bbDistancePct > 0 ? '+' : '') + row.bbDistancePct.toFixed(1) + '%');
-      if (typeof row.bbDistancePct === 'number' && row.bbDistancePct < 0) bb.className = 'num-down';
-      tr.appendChild(bb);
-      var sma = numCell(row.vsSma200, 1, '%', true);
-      sma.setAttribute('data-label', 'vs 200d');
-      tr.appendChild(sma);
-      var drop5 = numCell(row.drop5, 1, '%', true);
-      drop5.setAttribute('data-label', '5-Day');
-      tr.appendChild(drop5);
-      var drop21 = numCell(row.drop21, 1, '%', true);
-      drop21.setAttribute('data-label', '1-Month');
-      tr.appendChild(drop21);
-      var range = el('td', row.range52 == null ? '—' : row.range52.toFixed(0) + '%');
-      range.setAttribute('data-label', '52-Wk');
-      tr.appendChild(range);
-      var swingSort = document.getElementById('sort').value === 'swing';
-      var rankValue = swingSort ? row.swingScore : (row.rankScore != null ? row.rankScore : row.score);
-      var score = el('td', rankValue == null ? '—' : String(rankValue));
-      score.setAttribute('data-label', swingSort ? 'Swing' : 'Rank');
-      tr.appendChild(score);
-      tr.addEventListener('click', function () { openDetail(row.symbol); });
+      var cell = document.createElement('td');
+      cell.className = 'quote-row';
+      var saved = !!watch[row.symbol];
+      var pinBtn = el('button', saved ? 'Saved' : 'Watch', 'watch-btn' + (saved ? ' is-on' : ''));
+      pinBtn.type = 'button';
+      pinBtn.setAttribute('aria-pressed', saved ? 'true' : 'false');
+      pinBtn.setAttribute('aria-label', saved ? row.symbol + ' saved' : 'Watch ' + row.symbol);
+      pinBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (watch[row.symbol]) {
+          removePin(row.symbol);
+          watchToast('Removed from watchlist');
+        } else if (savePin(row.symbol, '', null)) {
+          watchToast('Added to watchlist');
+          renderTable();
+        } else {
+          watchToast(document.getElementById('addStatus').textContent || 'Could not add that ticker.');
+        }
+      });
+      var line = document.createElement('div');
+      line.className = 'quote-line';
+      line.appendChild(el('span', row.symbol, 'tick'));
+      line.appendChild(el('span', row.price == null ? '—' : money(row.price), 'quote-px'));
+      var change = el('span', dayText(row.dayChange), 'quote-chg');
+      if (typeof row.dayChange === 'number' && row.dayChange < 0) change.classList.add('num-down');
+      else if (typeof row.dayChange === 'number' && row.dayChange > 0) change.classList.add('num-up');
+      line.appendChild(change);
+      line.appendChild(el('span', rowScore(row), 'quote-score'));
+      cell.append(pinBtn, line);
+      tr.appendChild(cell);
+      tr.addEventListener('click', function (event) {
+        if (event.target.closest('.watch-btn')) return;
+        openDetail(row.symbol);
+      });
       tr.addEventListener('keydown', function (event) {
+        if (event.target.closest('.watch-btn')) return;
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           openDetail(row.symbol);
@@ -235,13 +248,18 @@
     });
     document.getElementById('empty').hidden = list.length !== 0;
     document.getElementById('count').textContent = list.length ? 'Showing ' + shown.length + ' of ' + list.length : '';
-    if (more) more.hidden = shown.length >= list.length;
+    if (more) {
+      more.hidden = shown.length >= list.length;
+      more.textContent = 'Show ' + PAGE + ' more';
+    }
   }
 
   function fillWhy(row) {
     var box = document.getElementById('detailWhy');
     box.replaceChildren();
     box.appendChild(el('p', row.why || why(row)));
+    var marks = badges(row);
+    if (marks) box.appendChild(marks);
     if (row.chips) {
       var chips = el('div', null, 'why-chips');
       [['Value', row.chips.value], ['Setup', row.chips.setup], ['Risk', row.chips.risk]].forEach(function (pair) {
@@ -400,6 +418,11 @@
     var bits = [];
     if (row.price != null) bits.push('Last ' + money(row.price));
     if (row.rsi != null) bits.push('RSI ' + row.rsi.toFixed(1));
+    if (row.bbDistancePct != null) bits.push('Lower BB ' + (row.bbDistancePct > 0 ? '+' : '') + row.bbDistancePct.toFixed(1) + '%');
+    if (row.vsSma200 != null) bits.push('vs 200d ' + (row.vsSma200 > 0 ? '+' : '') + row.vsSma200.toFixed(1) + '%');
+    if (row.drop5 != null) bits.push('5-day ' + (row.drop5 > 0 ? '+' : '') + row.drop5.toFixed(1) + '%');
+    if (row.drop21 != null) bits.push('1-month ' + (row.drop21 > 0 ? '+' : '') + row.drop21.toFixed(1) + '%');
+    if (row.range52 != null) bits.push('52-wk ' + row.range52.toFixed(0) + '%');
     if (row.swingScore != null) bits.push('Swing bottom ' + row.swingScore);
     if (row.swingSignals && row.swingSignals.length) bits.push(row.swingSignals.join(', '));
     if (row.rankScore != null) bits.push('Rank ' + row.rankScore);
@@ -438,7 +461,7 @@
   function renderWatch() {
     var list = document.getElementById('watchList');
     var symbols = Object.keys(watch).sort();
-    var page = symbols.length > 10 ? symbols.slice(0, watchShown) : symbols;
+    var page = symbols.length > PAGE ? symbols.slice(0, watchShown) : symbols;
     var more = document.getElementById('watchMore');
     list.replaceChildren();
     page.forEach(function (symbol) {
@@ -480,7 +503,10 @@
       count.hidden = symbols.length === 0;
       count.textContent = symbols.length ? 'Showing ' + page.length + ' of ' + symbols.length : '';
     }
-    if (more) more.hidden = symbols.length <= 10 || page.length >= symbols.length;
+    if (more) {
+      more.hidden = symbols.length <= PAGE || page.length >= symbols.length;
+      more.textContent = 'Show ' + PAGE + ' more';
+    }
   }
 
   function paintTape() {
@@ -511,8 +537,8 @@
 
   function savePin(symbol, note, target) {
     if (!TICKER.test(symbol)) return false;
-    if (Object.keys(watch).length >= 40 && !watch[symbol]) {
-      document.getElementById('addStatus').textContent = 'The watchlist holds 40 tickers.';
+    if (Object.keys(watch).length >= WATCH_CAP && !watch[symbol]) {
+      document.getElementById('addStatus').textContent = 'The watchlist holds ' + WATCH_CAP + ' tickers.';
       return false;
     }
     var prior = watch[symbol];
@@ -772,10 +798,10 @@
     var symbol = document.getElementById('swingOpen').dataset.symbol;
     if (symbol) openDetail(symbol);
   });
-  document.getElementById('screen').addEventListener('change', function () { stockShown = 10; renderTable(); });
-  document.getElementById('sort').addEventListener('change', function () { stockShown = 10; renderTable(); });
-  document.getElementById('stocksMore').addEventListener('click', function () { stockShown += 10; renderTable(); });
-  document.getElementById('watchMore').addEventListener('click', function () { watchShown += 10; renderWatch(); });
+  document.getElementById('screen').addEventListener('change', function () { stockShown = PAGE; renderTable(); });
+  document.getElementById('sort').addEventListener('change', function () { stockShown = PAGE; renderTable(); });
+  document.getElementById('stocksMore').addEventListener('click', function () { stockShown += PAGE; renderTable(); });
+  document.getElementById('watchMore').addEventListener('click', function () { watchShown += PAGE; renderWatch(); });
   document.getElementById('detailClose').addEventListener('click', function () {
     selected = '';
     document.getElementById('detail').hidden = true;

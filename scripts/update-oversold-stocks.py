@@ -56,7 +56,7 @@ MAX_AGE_HOURS = 0.4
 MIN_PRICED_RATIO = 0.65
 UNIVERSE_MAX_AGE_DAYS = 7
 SERIES = 30
-PUBLISH_CAP = 48
+PUBLISH_CAP = 120
 FUND_CAP = 80
 CHART_WORKERS = 5
 CHART_GAP = 0.22
@@ -69,12 +69,13 @@ ABOUT = (
     "are the 20-day average plus and minus two population standard deviations. ATR is Wilder's "
     "14-day average true range. The stop sketch is 1.5 times ATR under the last close. Targets are "
     "the 20-day average or the mid band, then the upper band, when those levels sit above the last "
-    "close. Swing bottom score is a separate 0-100 read of a turn off the lows: RSI turning up "
-    "or diverging, a stochastic cross from below 20, MACD turning up under zero, a lower "
-    "Bollinger bounce, distance to the 52-week low, a 10- or 20-day average reclaim, volume "
-    "on the reversal, and a hammer or bullish engulfing. A pullback still above a rising "
-    "200-day average scores higher than a falling knife. Names under $5, or with thin share "
-    "and dollar volume, score 0. The rank mixes the older setup score with fundamentals. "
+    "close. Swing bottom score is a separate 0-100 read of a turn off the lows. Points come from "
+    "RSI turning up or diverging, a stochastic cross from below 20, MACD turning up under zero, "
+    "a lower Bollinger bounce, a 10- or 20-day average reclaim, volume on the reversal, and a "
+    "hammer or bullish engulfing. A high score needs at least two of those confirming signals. "
+    "Price under the 200-day average, earnings inside 7 days, or reward-to-risk under 2:1 is "
+    "down-ranked and is not a swing candidate. A name under $5, or with thin share and dollar "
+    "volume, scores 0. The rank mixes the older setup score with fundamentals. "
     "Yahoo quoteSummary is tried first. If that "
     "crumb is blocked, Nasdaq's public quote, annual financials, analyst target, and earnings "
     "calendar are used instead: sector, industry, market cap, revenue growth, profit margin, free "
@@ -327,6 +328,8 @@ def swing_bottom(bars):
     bounce 10, within 12% of the 52-week low 6, 10/20-day EMA reclaim 10,
     uptrend pullback 8, volume reversal 8, hammer or bullish engulfing 6.
     A close under a falling 200-day average loses 12. The total is capped at 100.
+    Eligibility is decided later: several confirming signals, price above the
+    200-day average, reward at least 2:1, and no earnings inside 7 days.
     """
     empty = {"score": 0.0, "signals": [], "eligible": False}
     closes = [bar["close"] for bar in bars]
@@ -421,7 +424,47 @@ def swing_bottom(bars):
     if sma_now and sma_then and closes[last] < sma_now and sma_now < sma_then and ((drop21 is not None and drop21 <= -12) or not up):
         points -= 12
     score = round(max(0, min(100, points)), 1)
-    return {"score": score, "signals": signals, "eligible": bool(qualifying and score >= 20)}
+    above = bool(sma_now and closes[last] > sma_now)
+    return {
+        "score": score,
+        "signals": signals,
+        "eligible": bool(above and len(qualifying) >= 2 and score >= 36),
+    }
+
+
+SWING_CONTEXT = {"Near 52w low", "Pullback from high", "Uptrend pullback"}
+
+
+def finalize_swing(row):
+    """Apply the trade rules that a chart score cannot see by itself.
+
+    Rule 1: a bottom entry is a pullback above the 200-day, not a falling knife.
+    Rule 2: at least two confirming reversal signals, and a score of 36 or more.
+    Rule 3: earnings inside 7 days knocks the name out.
+    Rule 5: reward versus the sketched stop must be at least 2:1.
+    """
+    base = row.get("swingBase", row.get("swingScore") or 0)
+    signals = list(row.get("swingSignals") or [])
+    qualifying = [label for label in signals if label not in SWING_CONTEXT]
+    score = base
+    if not row.get("above200"):
+        score -= 30
+    reward = row.get("rewardRisk")
+    if not isinstance(reward, (int, float)) or reward < 2:
+        score -= 20
+    flags = row.get("flags") or []
+    if "Earnings within 7 days" in flags:
+        score -= 25
+    score = round(max(0, min(100, score)), 1)
+    row["swingScore"] = score
+    row["swingEligible"] = bool(
+        row.get("above200")
+        and len(qualifying) >= 2
+        and score >= 36
+        and isinstance(reward, (int, float))
+        and reward >= 2
+        and "Earnings within 7 days" not in flags
+    )
 
 
 def score_row(rsi, close, lower, hammer, uptick, volume_ratio):
@@ -717,7 +760,7 @@ def analyze(symbol, bars, name, exchange):
             series_l.append(None)
         series_c.append(round(closes[index], 2))
         series_r.append(round_num(rsi_series[index], 1))
-    return {
+    row = {
         "symbol": symbol,
         "name": name,
         "price": round(close, 2),
@@ -744,9 +787,10 @@ def analyze(symbol, bars, name, exchange):
         "hammer": hammer,
         "uptick": uptick,
         "score": score,
+        "swingBase": swing["score"],
         "swingScore": swing["score"],
         "swingSignals": swing["signals"],
-        "swingEligible": swing["eligible"],
+        "swingEligible": False,
         "strongBounce": strong,
         "ready": ready,
         "pullback": pullback,
@@ -762,6 +806,8 @@ def analyze(symbol, bars, name, exchange):
         "tradingview": "https://www.tradingview.com/chart/?symbol=" + tradingview_symbol(symbol, exchange),
         "series": {"c": series_c, "u": series_u, "m": series_m, "l": series_l, "r": series_r},
     }
+    finalize_swing(row)
+    return row
 
 
 def is_candidate(row, loose=False):
@@ -1340,6 +1386,7 @@ def build_copy(row, facts):
     if "Earnings within 7 days" in flags:
         rank -= 6
     row["rankScore"] = round(max(0, min(100, rank)), 1)
+    finalize_swing(row)
     if facts.get("sector"):
         row["sector"] = facts["sector"]
     if facts.get("industry"):
@@ -1585,9 +1632,21 @@ def self_test():
         volume = 900000 if index < 258 else 2200000
         bounce.append({"open": opened, "high": high, "low": low, "close": price, "volume": volume})
     turned = swing_bottom(bounce)
-    assert turned["eligible"] is True
     assert turned["score"] >= 20
+    assert len([label for label in turned["signals"] if label not in SWING_CONTEXT]) >= 1
     assert turned["score"] > swing_bottom(thin)["score"]
+    below = dict(above200=False, rewardRisk=3, swingBase=50, swingSignals=["RSI turning up", "Lower BB bounce"], flags=[])
+    finalize_swing(below)
+    assert below["swingEligible"] is False
+    earnings = dict(above200=True, rewardRisk=3, swingBase=60, swingSignals=["RSI turning up", "MACD cross"], flags=["Earnings within 7 days"])
+    finalize_swing(earnings)
+    assert earnings["swingEligible"] is False
+    thin_rr = dict(above200=True, rewardRisk=1.2, swingBase=60, swingSignals=["RSI turning up", "Stoch cross"], flags=[])
+    finalize_swing(thin_rr)
+    assert thin_rr["swingEligible"] is False
+    clear = dict(above200=True, rewardRisk=2.4, swingBase=48, swingSignals=["RSI turning up", "Lower BB bounce", "Uptrend pullback"], flags=[])
+    finalize_swing(clear)
+    assert clear["swingEligible"] is True
     knife = []
     for index in range(260):
         price = 80.0 - index * 0.18
@@ -1622,10 +1681,11 @@ def patch_swing_scores():
             "sma20", "sma50", "sma200", "vsSma20", "vsSma50", "vsSma200", "above200",
             "drop5", "drop21", "range52", "high52", "low52", "volumeRatio", "hammer", "uptick",
             "atr", "entryLow", "entryHigh", "stop", "target", "targetLabel", "target2", "rewardRisk",
-            "series", "swingScore", "swingSignals", "swingEligible",
+            "series", "swingBase", "swingScore", "swingSignals", "swingEligible",
         ):
             if key in fresh:
                 row[key] = fresh[key]
+        finalize_swing(row)
         why = row.get("why") or ""
         if why and fresh.get("rsi") is not None:
             row["why"] = re.sub(r"RSI\(14\) is [0-9.]+", "RSI(14) is " + format(fresh["rsi"], ".1f"), why, count=1)
@@ -1694,8 +1754,12 @@ def main():
         for row in shortlist:
             if "why" not in row:
                 build_copy(row, {})
-    published = sorted(shortlist, key=lambda row: (-row.get("rankScore", 0), row["symbol"]))[:PUBLISH_CAP]
-    swing_pool = [row for row in shortlist if row.get("swingEligible")]
+    technical = chosen[:PUBLISH_CAP]
+    for row in technical:
+        if "why" not in row:
+            build_copy(row, {})
+    published = sorted(technical, key=lambda row: (-row.get("rankScore", 0), row["symbol"]))[:PUBLISH_CAP]
+    swing_pool = [row for row in technical if row.get("swingEligible")]
     if swing_pool:
         best_swing = max(swing_pool, key=lambda row: (row.get("swingScore") or 0, row["symbol"]))
         if best_swing not in published:
