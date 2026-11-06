@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-11-05T13:20:02Z",
+ "fetchedAt": "2026-11-06T13:14:12Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -14,6 +14,82 @@
  ],
  "count": 120,
  "videos": [
+  {
+   "videoId": "96KI9DYTYaA",
+   "title": "Jerrelle Guy's Chocolate Tahini Mousse Cake recipe is on NYT Cooking!",
+   "channel": "NYT Cooking",
+   "handle": "nytcooking",
+   "published": "2026-11-06",
+   "thumbnail": "https://i.ytimg.com/vi/96KI9DYTYaA/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=96KI9DYTYaA",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Download the Cooking app for daily dinner picks, helpful tools, and even more videos:  VISIT NYT COOKING:  SUBSCRIBE to NYT COOKING:  A paid subscription gets you full access to our recipes, daily inspiration and a digital Recipe Box. YOUTUBE:  INSTAGRAM:  FACEBOOK:  PINTEREST:  About NYT Cooking: All the food that’s fit to eat (yes, it’s an official New York Times production)."
+  },
+  {
+   "videoId": "xTmG7TbqgDQ",
+   "title": "Cooking on the River: Episode 2",
+   "channel": "J. Kenji López-Alt",
+   "handle": "JKenjiLopezAlt",
+   "published": "2026-11-05",
+   "thumbnail": "https://i.ytimg.com/vi/xTmG7TbqgDQ/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=xTmG7TbqgDQ",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "We're back with Episode 2 of Cooking on the River, a three-part series documenting our trip down the Colorado River where we cooked for 25 guests over 4 days—with no refrigeration. It was the challenge of a lifetime, and we're bringing you along for the ride! All the recipes from the event will be released over on my free Patreon. Check out the dishes—along with these episodes ad-free—here:  Thank you to Lena, my head of operations and chef extraordinaire, for joining me for this once-in-a-lifetime adventure. Thank you to editor David Zimmermann for masterfully putting together this docuseries"
+  },
+  {
+   "videoId": "uUgHubtjaNo",
+   "title": "My Family Loves This As Much As My Lasagna",
+   "channel": "Sip and Feast",
+   "handle": "sipandfeast",
+   "published": "2026-11-05",
+   "thumbnail": "https://i.ytimg.com/vi/uUgHubtjaNo/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=uUgHubtjaNo",
+   "ingredients": [
+    "1 pound (454g) #2 Pastitsio Pasta - or bucatini, long ziti, or ziti",
+    "1/4 cup (25g) grated parmesan cheese",
+    "1/4 cup (60ml) extra virgin olive oil",
+    "3 pounds (1.3kg) ground sirloin (90/10)",
+    "1 large onion - finely diced",
+    "5 cloves garlic - minced",
+    "2 tablespoons (30g) tomato paste",
+    "1/2 cup (120ml) dry red wine",
+    "1 28-ounce can plum tomatoes - blender pulsed",
+    "1 tablespoon (22g) honey",
+    "2 large bay leaves",
+    "1/4 teaspoon ground cloves",
+    "1/2 teaspoon cinnamon",
+    "1 stick (113g) unsalted butter",
+    "3/4 cup (100g) all-purpose flour",
+    "5 cups (1.2L) whole milk warm",
+    "2 large eggs",
+    "1 egg yolk",
+    "1/2 teaspoon ground nutmeg"
+   ],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "SIP AND FEAST COOKBOOK:  Today, we're making Greek Pastitsio (Pastichio). I hope you enjoy it! PRODUCTS USED (affiliate links) Hedley & Bennet Apron:  Melissa #2 Pastitsio Pasta 500g (5 Pack):  Farberware Meat Masher:  T-fal Jumbo Cooker 5 Quart:  Unicorn Magnum Pepper Grinder:  Winco 4.5qt sauce pan:  Staub Ceramic 13\" x 9\" Rectangular Baking Dish Set:  Faay Flat Edge Wooden Spoon:  Olive-Wood Handcrafted Salt Box:  Mac Chef's Knife:  Workhorse Cutting Board:  SUPPORT ON PATREON (FULL MEAL VIDEOS!):  SUBSCRIBE FOR WEEKLY RECIPES:  FOLLOW US ON INSTAGRAM:  MY AMAZON STORE (This is an affiliate"
+  },
+  {
+   "videoId": "JEMHwtyK4OA",
+   "title": "Easy Pumpkin Cheesecake Recipe",
+   "channel": "Preppy Kitchen",
+   "handle": "preppykitchen",
+   "published": "2026-11-05",
+   "thumbnail": "https://i.ytimg.com/vi/JEMHwtyK4OA/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=JEMHwtyK4OA",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Creamy and gently spiced, this pumpkin cheesecake has plenty of real pumpkin flavor inside a crisp graham cracker crust. You can make it ahead for Thanksgiving or any fall gathering! If you love cheesecake and fall this dessert is a must make! Comes out perfectly every time and it is so very delicious! RECIPE:  ORDER MY NEW BOOK! Amazon:  Amazon CA:  Barnes & Noble:  BAM:  Bookshop:  Hudson Booksellers:  Target:  Walmart:"
+  },
   {
    "videoId": "oUYvoQVyITY",
    "title": "Melissa's new ep of #Cooking101 has everything you need to know about mashed potatoes #thanksgiving",
@@ -1883,79 +1959,6 @@
     "Watch the full method in the video."
    ],
    "blurb": "Get the written recipe for this easy weeknight chanterelle mushroom pasta over on my free Patreon:  To unlock weekly bonus content—and to join the best community of food nerds on the internet—consider becoming a Super Frienji:  Joining my Patreon, purchasing my books and products, and subscribing to my social media channels is the best way to support my work. You can get any of my books (The Food Lab, The Wok, and Every Night is Pizza Night) wherever books are sold, or you can order signed and personalized copies to be shipped anywhere in the world from here:  MY SHOP:  BOOKS: Signed, personal"
-  },
-  {
-   "videoId": "KOWR5FfqdxI",
-   "title": "Better Than Beef Bolognese! (Budget Turkey and Pork Ragù) | Food Wishes",
-   "channel": "Food Wishes",
-   "handle": "foodwishes",
-   "published": "2026-09-23",
-   "thumbnail": "https://i.ytimg.com/vi/KOWR5FfqdxI/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=KOWR5FfqdxI",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "This better than beef bolognese sauce is made with ground turkey and ground pork which makes it less expensive, probably lower in fat, and yet just as rich, satisfying, and delicious as the original version. If you don’t tell your guests they probably won’t know this isn’t made with beef, but you should tell them, so they can try it as well. Enjoy! For the fully formatted, printable, written recipe, follow this link:  To become a Member of Food Wishes, and read Chef John’s post about Better Than Beef Bolognese, follow this link: / @foodwishes You can also find more of Chef John’s content on Al"
-  },
-  {
-   "videoId": "lo2pf0pYB9U",
-   "title": "Fully Loaded Italian Pasta Salad With Homemade Dressing",
-   "channel": "Brian Lagerstrom",
-   "handle": "brianlagerstrom",
-   "published": "2026-09-20",
-   "thumbnail": "https://i.ytimg.com/vi/lo2pf0pYB9U/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=lo2pf0pYB9U",
-   "ingredients": [
-    "*As an Amazon Associate I earn from qualifying purchases**",
-    "1-2 tsp olive oil",
-    "60-75g red bell pepper, small diced",
-    "100-150g fresh mozzarella",
-    "1 clove garlic",
-    "1/4t dried oregano",
-    "1/4t dried basil",
-    "1/4t red chile flake",
-    "1/4t ground black pepper"
-   ],
-   "steps": [
-    "Bring water to a boil",
-    "Add red wine vinegar, 45g white vinegar, rinsed chopped red onion, garlic, red bell pepper, grainy mustard, sugar, salt, and oregano, basil, pepper, and chile flake to a tall, narrow container. Blend until completely broken down.",
-    "With the immersion blender running, slowly stream in neutral oil, moving the blender up and down as the dressing thickens. Blend until opaque",
-    "Dice mozzarella into ¼-inch cubes. Halve olives, chop pepperoncini, small dice red bell pepper, chop Genoa salami, and chop sun-dried tomatoes.",
-    "Add salt to the boiling water. Add rotini, stir, and boil 11 to 12 minutes, or about 25% longer than the box instructions, until fully tender",
-    "Drain the pasta. Don't rinse. While still hot, toss with white distilled vinegar and 2 tsp oil. Toss gently. Let cool to roughly room temperature",
-    "Add mix-ins, about half the dressing, and grated Parmesan to the cooled pasta. Fold together gently",
-    "Serve immediately or chill then serve topped with extra dressing and grated parm."
-   ],
-   "blurb": "This classic Italian style pasta salad recipe uses an unconventional technique for the best possible result. Get $20 off your first order of Cometeer at  ▶️WATCH NEXT: JERK CHICKEN:  DAD RIBS:  CROCK POT ITALIAN BEEF:  📝 DETAILED RECIPES ON MY BLOG:  🔪MY GEAR: CUTTING BOARD:  DIGITAL SCALE:  IMMERSION BLENDER:  SPATULA:  FAVORITE STAINLESS BOWL:  MESH STRAINER:  PORTABLE BURNER:  AMAZON STORE:  **As an Amazon Associate I earn from qualifying purchases** *RECIPE - Full recipe including volumetric conversions on my blog:  * Pasta Salad: 2000g water 45g fine salt, for the pasta water 235g rotini "
-  },
-  {
-   "videoId": "BmvpfCZDe-I",
-   "title": "The World’s Most Popular Cocktail #olesmoky",
-   "channel": "NOT ANOTHER COOKING SHOW",
-   "handle": "notanothercookingshow",
-   "published": "2026-09-18",
-   "thumbnail": "https://i.ytimg.com/vi/BmvpfCZDe-I/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=BmvpfCZDe-I",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Grab a jar of @OleSmoky near you & check out their site to get exclusive merch using code SHINE20 at checkout! Shine responsibly."
-  },
-  {
-   "videoId": "9NMJBNtw0Js",
-   "title": "F**k the Box, This is How I Make American Taco Night Now",
-   "channel": "NOT ANOTHER COOKING SHOW",
-   "handle": "notanothercookingshow",
-   "published": "2026-09-16",
-   "thumbnail": "https://i.ytimg.com/vi/9NMJBNtw0Js/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=9NMJBNtw0Js",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Get $20 off your first Cometeer order at  This video is sponsored by Cometeer. Make better ground beef tacos with homemade taco seasoning, chili sauce, and crispy oven-baked shells. Taco night was the highlight of the week growing up. Today, we’re upgrading that classic American taco dinner with homemade versions of everything that came in the box, plus a few extras. I’ll show you how to make taco sauce with ancho and guajillo chiles, mix your own taco seasoning, and turn store-bought corn tortillas into crunchy taco shells in the oven. Then we’re cooking ground beef with the sauce, a splash o"
   }
  ]
 }
