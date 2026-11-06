@@ -2,10 +2,9 @@
   "about": "Positions for the Royal Caribbean ships in cruises/fleet.json. Each ship keeps a trail of position points from about the last 24 hours. aisstream.io is sampled for about 75 seconds every 5 minutes, then Open Waters fills ships that stayed quiet. A ship with nothing newer keeps its previous coordinates and seen time. Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard.",
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
-    "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
-    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/)."
+    "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io"
   },
-  "heard": 1,
+  "heard": 0,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -339,16 +338,16 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 246.4,
+      "cog": 296.0,
       "destination": "US LAX",
       "eta": "11-06 13:30",
       "heading": 206,
       "lat": 33.74386,
-      "lon": -118.27638,
+      "lon": -118.27639,
       "navStatus": 5,
-      "seen": "2026-11-06T16:53:31Z",
+      "seen": "2026-11-06T17:35:41Z",
       "sog": 0.0,
-      "source": "aishub",
+      "source": "aisstream",
       "trail": [
         {
           "lat": 31.96,
@@ -407,21 +406,21 @@
         },
         {
           "lat": 33.74386,
-          "lon": -118.27638,
-          "seen": "2026-11-06T16:53:31Z"
+          "lon": -118.27639,
+          "seen": "2026-11-06T17:35:41Z"
         }
       ]
     },
     "311000660": {
       "aisName": "SYMPHONY OF THE SEAS",
-      "cog": 234.3,
+      "cog": 156.7,
       "destination": "COZUMEL, MEXICO",
       "eta": "11-06 12:15",
       "heading": 357,
       "lat": 20.48248,
       "lon": -86.97593,
       "navStatus": 5,
-      "seen": "2026-11-06T16:51:59Z",
+      "seen": "2026-11-06T17:33:59Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -469,14 +468,14 @@
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 25.7,
+      "cog": 205.7,
       "destination": "USMIA>BSNAS",
       "eta": "11-07 11:30",
       "heading": 116,
       "lat": 25.77215,
       "lon": -80.15707,
       "navStatus": 5,
-      "seen": "2026-11-06T16:51:22Z",
+      "seen": "2026-11-06T17:36:22Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -664,14 +663,14 @@
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 179.7,
+      "cog": 164.7,
       "destination": "US FLL",
       "eta": "11-06 10:00",
       "heading": 179,
       "lat": 26.08688,
       "lon": -80.11974,
       "navStatus": 5,
-      "seen": "2026-11-06T16:52:58Z",
+      "seen": "2026-11-06T17:38:01Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -758,7 +757,7 @@
         {
           "lat": 28.40719,
           "lon": -80.57249,
-          "seen": "2026-11-05T17:32:53Z"
+          "seen": "2026-11-06T17:38:06Z"
         }
       ]
     },
@@ -984,15 +983,15 @@
     },
     "311361000": {
       "aisName": "BRILLIANCE OF SEAS",
-      "cog": 228.7,
+      "cog": 229.2,
       "destination": "ESSCT",
       "eta": "11-07 07:20",
-      "heading": 229,
-      "lat": 31.82199,
-      "lon": -11.65105,
+      "heading": 230,
+      "lat": 31.48785,
+      "lon": -12.09176,
       "navStatus": 0,
-      "seen": "2026-11-06T16:08:32Z",
-      "sog": 20.8,
+      "seen": "2026-11-06T17:37:50Z",
+      "sog": 20.6,
       "source": "aishub",
       "trail": [
         {
@@ -1054,6 +1053,11 @@
           "lat": 31.82199,
           "lon": -11.65105,
           "seen": "2026-11-06T16:08:32Z"
+        },
+        {
+          "lat": 31.48785,
+          "lon": -12.09176,
+          "seen": "2026-11-06T17:37:50Z"
         }
       ]
     },
@@ -1159,16 +1163,16 @@
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 359.2,
+      "cog": 256.9,
       "destination": "MX CZM",
       "eta": "11-06 11:15",
       "heading": 357,
       "lat": 20.48229,
       "lon": -86.97534,
       "navStatus": 5,
-      "seen": "2026-11-06T16:53:10Z",
+      "seen": "2026-11-06T17:35:11Z",
       "sog": 0.0,
-      "source": "aisstream.io",
+      "source": "aishub",
       "trail": [
         {
           "lat": 25.31012,
@@ -1215,5 +1219,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-06T16:54:19Z"
+  "updated": "2026-11-06T17:38:06Z"
 }
