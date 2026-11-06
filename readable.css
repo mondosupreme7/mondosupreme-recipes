@@ -1271,3 +1271,8 @@ html[data-theme="retro"] .app-label{
 }
 html[data-theme="retro"] .studio-app[aria-current="page"]{background:#ffffcc !important;color:#111827 !important}
 html[data-theme="retro"] .studio-app[aria-current="page"] .app-label{color:#111827 !important}
+#toast{
+  position:fixed !important;z-index:1400 !important;left:50% !important;right:auto !important;
+  top:calc(var(--nav-h, 56px) + env(safe-area-inset-top, 0px) + 12px) !important;bottom:auto !important;
+  max-width:min(92vw, 24rem);pointer-events:none
+}

@@ -475,6 +475,11 @@
       list.appendChild(item);
     });
     if (!symbols.length) list.appendChild(el('li', 'No pins yet.'));
+    var count = document.getElementById('watchCount');
+    if (count) {
+      count.hidden = symbols.length === 0;
+      count.textContent = symbols.length ? 'Showing ' + page.length + ' of ' + symbols.length : '';
+    }
     if (more) more.hidden = symbols.length <= 10 || page.length >= symbols.length;
   }
 
@@ -569,18 +574,35 @@
     }
   }
 
+  function watchToast(message) {
+    var node = document.getElementById('toast');
+    if (!node) return;
+    node.setAttribute('role', 'status');
+    node.setAttribute('aria-live', 'polite');
+    node.setAttribute('aria-atomic', 'true');
+    node.textContent = message;
+    node.classList.add('show');
+    clearTimeout(watchToast.timer);
+    watchToast.timer = setTimeout(function () { node.classList.remove('show'); }, 2000);
+  }
   function pushCloud(symbol) {
-    if (!member || !uid || !bootFirebase()) return;
     var pin = watch[symbol];
     if (!pin) return;
+    if (!member || !uid || !bootFirebase()) {
+      if (member) watchToast('Signed in, but this pin stayed on this phone only.');
+      return;
+    }
     var payload = { note: pin.note || '', updatedAt: firebase.database.ServerValue.TIMESTAMP };
     if (pin.target) payload.target = pin.target;
     if (pin.addedAt) payload.addedAt = pin.addedAt;
     if (typeof pin.addedPrice === 'number') payload.addedPrice = pin.addedPrice;
     firebase.database().ref('stocks/watchlist/' + uid + '/' + symbol).set(payload).then(function () {
-      document.getElementById('pinStatus').textContent = 'Pinned and synced to your account.';
+      var status = document.getElementById('pinStatus');
+      if (status && selected === symbol) status.textContent = 'Pinned and synced to your account.';
     }).catch(function () {
-      document.getElementById('pinStatus').textContent = 'Pinned in this browser. The cloud copy needs the updated Firebase rules.';
+      watchToast('Could not save the watchlist to your account.');
+      var status = document.getElementById('pinStatus');
+      if (status && selected === symbol) status.textContent = 'Pinned in this browser. The account copy did not update.';
     });
   }
 
@@ -607,9 +629,14 @@
       var cloudAt = pinStamp(pin);
       var localAt = pinStamp(prior);
       var cloudNewer = !prior || cloudAt >= localAt;
-      var addedAt = addedStamp(pin) || (prior && prior.addedAt) || '';
-      var addedPrice = loggedPrice(pin.addedPrice);
-      if (addedPrice == null && prior) addedPrice = loggedPrice(prior.addedPrice);
+      var cloudAdded = addedStamp(pin);
+      var localAdded = prior ? addedStamp(prior) : '';
+      var addedAt = cloudAdded && localAdded
+        ? (Date.parse(cloudAdded) <= Date.parse(localAdded) ? cloudAdded : localAdded)
+        : (cloudAdded || localAdded);
+      var cloudPrice = loggedPrice(pin.addedPrice);
+      var localPrice = prior ? loggedPrice(prior.addedPrice) : null;
+      var addedPrice = cloudPrice == null ? localPrice : (localPrice == null ? cloudPrice : (addedAt && localAdded === addedAt ? localPrice : cloudPrice));
       merged[symbol] = {
         note: String((cloudNewer ? pin.note : (prior && prior.note)) || pin.note || (prior && prior.note) || '').slice(0, 140),
         target: cloudNewer
@@ -620,14 +647,14 @@
         addedPrice: addedPrice
       };
     });
-    var localOnly = Object.keys(watch).filter(function (symbol) {
-      return TICKER.test(symbol) && watch[symbol] && !value[symbol];
+    var localSymbols = Object.keys(watch).filter(function (symbol) {
+      return TICKER.test(symbol) && watch[symbol];
     });
     watch = merged;
     writeWatch();
     renderWatch();
     renderTable();
-    localOnly.forEach(function (symbol) { pushCloud(symbol); });
+    localSymbols.forEach(function (symbol) { pushCloud(symbol); });
   }
 
   function watchAuth() {

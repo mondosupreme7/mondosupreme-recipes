@@ -320,7 +320,17 @@ async function signOutOwner(){
   isOwner=false;
   try{await firebase.auth().signOut()}catch{}
 }
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
+function toast(m){
+  const t=$('#toast');
+  if(!t)return;
+  t.setAttribute('role','status');
+  t.setAttribute('aria-live','polite');
+  t.setAttribute('aria-atomic','true');
+  t.textContent=m;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h=setTimeout(()=>t.classList.remove('show'),2000);
+}
 function safePhoto(url){
   if(typeof url!=='string')return '';
   const u=url.trim();
@@ -410,7 +420,7 @@ function publicNotes(recipe){
 function chefMatches(){
   if(!chef)return [];
   const q=state.q.toLowerCase();
-  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||r.cuisine===state.cuisine) && !state.tag && !state.fav &&
+  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||r.cuisine===state.cuisine) && !state.tag && (!state.fav||favs.has(r.id)) &&
     (!q||[r.title,r.q,r.cuisine,r.cuisineDetail,r.category].join(' ').toLowerCase().includes(q)));
 }
 function saveChefToMine(id){
@@ -481,6 +491,10 @@ function recipeMeta(r){
   if(r.category)bits.push(r.category);
   return bits.join(' · ');
 }
+function favButton(id, compact){
+  const on=favs.has(id);
+  return `<button type="button" class="fav-btn${on?' is-on':''}${compact?' is-compact':''}" data-fav="${esc(id)}" aria-pressed="${on?'true':'false'}" aria-label="${on?'Favorited':'Add to favorites'}"><span class="fav-heart" aria-hidden="true">${on?'♥':'♡'}</span><span class="fav-label">${on?'Favorited':'Favorite'}</span></button>`;
+}
 function recipeActions(r){
   const chef=isChefId(r.id);
   return `<div class="recipe-actions">
@@ -493,21 +507,21 @@ function recipeItem(r){
   const href='#/recipe/'+encodeURIComponent(r.id);
   const meta=recipeMeta(r);
   if(recipeLayout==='list'){
-    return `<a class="recipe-row" href="${href}">
+    return `<div class="recipe-row-wrap"><a class="recipe-row" href="${href}">
       <span class="recipe-row-thumb">${recipePhoto(r)}</span>
       <span class="recipe-row-copy"><span class="recipe-row-title">${esc(r.title)}</span>${meta?`<span class="recipe-row-meta">${esc(meta)}</span>`:''}</span>
       <svg class="recipe-chevron" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 6l6 6-6 6"/></svg>
-    </a>`;
+    </a>${favButton(r.id,true)}</div>`;
   }
   if(recipeLayout==='grid'){
-    return `<a class="recipe-tile" href="${href}">
+    return `<div class="recipe-tile-wrap"><a class="recipe-tile" href="${href}">
       <span class="recipe-tile-photo">${recipePhoto(r)}</span>
       <span class="recipe-tile-title">${esc(r.title)}</span>
-    </a>`;
+    </a>${favButton(r.id,true)}</div>`;
   }
   const chef=isChefId(r.id);
   return `<article class="card${chef?' card-chef':''} recipe-card" data-id="${esc(r.id)}" ${chef?'data-chef="1" ':''}tabindex="0">
-    <div class="thumb">${recipePhoto(r)}</div>
+    <div class="thumb">${recipePhoto(r)}${favButton(r.id,true)}</div>
     <div class="card-body">
       ${r.category?`<p class="cat-pill">${esc(r.category)}</p>`:''}
       <h3>${esc(r.title)}</h3>
@@ -591,7 +605,7 @@ function renderList(){
   const q=state.q.toLowerCase();
   const mine=state.source==='backyard'?[]:recipes.filter(r=>(!state.cat||r.category===state.cat)&&(!state.tag||(r.tags||[]).includes(state.tag))&&(!state.fav||favs.has(r.id))&&
     (!q||[r.title,r.category,r.notes,...(r.tags||[]),...(r.ingredients||[])].join(' ').toLowerCase().includes(q)));
-  const wantChef=state.source==='backyard'||!!q;
+  const wantChef=state.source==='backyard'||!!q||state.fav;
   const chefList=wantChef?chefMatches():[];
   const pageEnd=(chefPage+1)*CHEF_PAGE;
   const shownChef=chefList.slice(0, pageEnd);
@@ -607,7 +621,7 @@ function renderList(){
     $('#empty').hidden=true;
     return;
   }
-  const grouped=state.source==='backyard'&&chef&&!q&&!state.cuisine;
+  const grouped=state.source==='backyard'&&chef&&!q&&!state.cuisine&&!state.fav;
   if(grouped){
     $('#grid').classList.add('is-grouped');
     $('#grid').removeAttribute('data-recipe-layout');
@@ -789,7 +803,7 @@ function paintDetail(r, readonly){
   const partial=!!(r.partial||/INCOMPLETE\s*:/i.test(r.notes||''));
   const factors=[[0.5,'½x'],[1,'1x'],[2,'2x'],[3,'3x']];
   v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
-   <div class="dbar"><a href="#/" class="btn ghost">← Back</a><button class="btn ghost" id="dFav">${readonly?'♡ Save & favorite':(favs.has(r.id)?'♥ Favorited':'♡ Favorite')}</button>
+   <div class="dbar"><a href="#/" class="btn ghost">← Back</a>${favButton(r.id,false)}
    <button class="btn ghost" id="dPrint">🖨 Print</button>${own?'<button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button>':''}</div>
    ${!isOwner&&!readonly?'<p class="lock-note">This recipe is read-only. Only an admin can change the shared notebook. Favorites stay on this device.</p>':''}
    <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}${readonly?' · Backyard Chef':''}</div>
@@ -813,10 +827,6 @@ function paintDetail(r, readonly){
   });
   $('#addGrocery').onclick=()=>{addGroceryLines(lines,r);toast('Added to Grocery List');openGrocery();};
   if($('#saveMine'))$('#saveMine').onclick=()=>{saveChefToMine(r.id)};
-  $('#dFav').onclick=()=>{
-    if(readonly){saveChefToMine(r.id).then(copy=>{if(copy&&!favs.has(copy.id))toggleFav(copy.id);});return}
-    toggleFav(r.id);renderDetail(r.id);
-  };
   $('#dPrint').onclick=()=>window.print();
   if($('#dEdit'))$('#dEdit').onclick=()=>openEditor(r);
   if($('#dDel'))$('#dDel').onclick=()=>{
@@ -831,7 +841,51 @@ function paintDetail(r, readonly){
     location.hash='#/';
   };
 }
-function toggleFav(id){favs.has(id)?favs.delete(id):favs.add(id);saveFavs()}
+function paintFavButtons(id, pop){
+  document.querySelectorAll('[data-fav]').forEach(btn=>{
+    if(id&&btn.dataset.fav!==id)return;
+    const on=favs.has(btn.dataset.fav);
+    btn.classList.toggle('is-on', on);
+    btn.setAttribute('aria-pressed', on?'true':'false');
+    btn.setAttribute('aria-label', on?'Favorited':'Add to favorites');
+    const heart=btn.querySelector('.fav-heart');
+    const label=btn.querySelector('.fav-label');
+    if(heart)heart.textContent=on?'♥':'♡';
+    if(label)label.textContent=on?'Favorited':'Favorite';
+    if(pop){
+      btn.classList.remove('is-pop');
+      void btn.offsetWidth;
+      btn.classList.add('is-pop');
+    }
+  });
+}
+function toggleFav(id){
+  if(!id)return;
+  const had=favs.has(id);
+  const previous=new Set(favs);
+  if(had)favs.delete(id); else favs.add(id);
+  saveFavs();
+  paintFavButtons(id, true);
+  if(state.fav)renderList();
+  toast(had?'Removed from Favorites':'Added to Favorites');
+  const member=window.MONDO_MEMBER&&MONDO_MEMBER.isMember&&MONDO_MEMBER.isMember();
+  const who=member&&MONDO_MEMBER.uid&&MONDO_MEMBER.uid();
+  if(!member||!who||typeof firebase==='undefined'||!firebase.apps||!firebase.apps.length){
+    if(member)toast('Signed in, but Favorites stayed on this phone only.');
+    return;
+  }
+  const payload=JSON.stringify([...favs]);
+  firebase.database().ref('users/'+who+'/favs').set(payload).catch(()=>{
+    favs.clear();
+    previous.forEach(item=>favs.add(item));
+    saveFavs();
+    paintFavButtons(id, false);
+    if(state.fav)renderList();
+    const open=location.hash.match(/^#\/recipe\/(.+)$/);
+    if(open)renderDetail(decodeURIComponent(open[1]));
+    toast('Could not save Favorites');
+  });
+}
 function route(){
   const m=location.hash.match(/^#\/recipe\/(.+)$/);
   $('#listView').hidden=!!m; $('#detailView').hidden=!m;
@@ -2291,7 +2345,13 @@ function init(){
   };
   $('#catFilter').onchange=e=>{state.cat=e.target.value;chefPage=0;renderList()};
   $('#tagFilter').onchange=e=>{state.tag=e.target.value;renderList()};
-  $('#favFilter').onclick=e=>{state.fav=!state.fav;e.currentTarget.setAttribute('aria-pressed',state.fav);e.currentTarget.textContent=state.fav?'♥ Favorites':'♡ Favorites';renderList()};
+  $('#favFilter').onclick=e=>{
+    state.fav=!state.fav;
+    e.currentTarget.setAttribute('aria-pressed',state.fav);
+    e.currentTarget.textContent=state.fav?'♥ Favorites':'♡ Favorites';
+    if(state.fav)loadChefIndex().then(()=>renderList()).catch(()=>renderList());
+    else renderList();
+  };
   paintGroceryButton();
   $('#btnGrocery').onclick=openGrocery;
   $('#groceryClose').onclick=()=>$('#groceryDialog').close();
@@ -2373,6 +2433,13 @@ function init(){
     const box=group.querySelector('.cuisine-cards');
     if(box&&!box.childElementCount)fillCuisine(group, true);
   }, true);
+  document.addEventListener('click',e=>{
+    const fb=e.target.closest&&e.target.closest('[data-fav]');
+    if(!fb)return;
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFav(fb.dataset.fav);
+  });
   $('#grid').addEventListener('click',e=>{
     const groupMore=e.target.closest('.cuisine-more');
     if(groupMore){e.preventDefault();e.stopPropagation();fillCuisine(groupMore.closest('details'), false);return}
@@ -2380,7 +2447,7 @@ function init(){
     if(save){e.preventDefault();e.stopPropagation();saveChefToMine(save.dataset.save);return}
     const groc=e.target.closest('[data-groc]');
     if(groc){e.preventDefault();e.stopPropagation();addChefToGrocery(groc.dataset.groc);return}
-    const fb=e.target.closest('[data-fav]'); if(fb){e.stopPropagation();toggleFav(fb.dataset.fav);renderList();return}
+    if(e.target.closest('[data-fav]'))return;
     if(e.target.closest('a,button'))return;
     const c=e.target.closest('.card'); if(c)location.hash='#/recipe/'+encodeURIComponent(c.dataset.id);
   });
