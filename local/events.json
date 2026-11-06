@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-06T01:52:46Z",
+ "updated": "2026-11-06T03:05:44Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -16,38 +16,44 @@
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
-   "ok": true,
-   "count": 2
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
-   "ok": true,
-   "count": 1
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
-   "ok": true,
-   "count": 6
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=41&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
-   "ok": true,
-   "count": 4
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=22&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "Visit Space Coast",
@@ -81,20 +87,6 @@
    "description": "Join us at the Space Coast State Fair! This is your CHANCE to experience the Space Coast State Fair before it\u2019s gone! Join us for unforgettable fun with rides, games, delicious food, and FREE shows for the whole family! Event Dates: October 29 \u2013 November 15, 2026 Event Hours: Monday \u2013Thursday: 5 PM \u2013 10 PM Friday: 5 PM \u2013 11 PM Saturday: 1 PM \u2013 11:30 PM Sunday: 1 PM \u2013 10 PM Veterans Day: Wed, Nov 1",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
-  },
-  {
-   "id": "7c300ac7333876d7",
-   "title": "City of Rockledge Holiday Food Drive",
-   "start": "2026-11-02T05:00:00Z",
-   "end": "2026-12-11T05:00:00Z",
-   "town": "Rockledge",
-   "venue": "- Rockledge FL 32955",
-   "category": "Food & Markets",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
    "kind": "event"
   },
   {
@@ -224,20 +216,6 @@
    "kind": "event"
   },
   {
-   "id": "b8c2149b3762976e",
-   "title": "November Craft Night",
-   "start": "2026-11-06T21:00:00Z",
-   "end": "2026-11-06T23:00:00Z",
-   "town": "Rockledge",
-   "venue": "Frank T. Forester Recreation Center - 960 Cogswell Street Rockledge FL 32955",
-   "category": "Family",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2989",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2989",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "13a9d39bb7e16608",
    "title": "Norwegian Getaway in port",
    "start": "2026-11-06T22:00:00Z",
@@ -292,20 +270,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "6bcaf2b2b27526a2",
-   "title": "Operation Shred",
-   "start": "2026-11-07T13:00:00Z",
-   "end": "2026-11-07T15:30:00Z",
-   "town": "Rockledge",
-   "venue": "- 1801 S. Fiske Boulevard Rockledge FL 32955",
-   "category": "Family",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2985",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2985",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "ae49cb9bb4325c32",
@@ -504,20 +468,6 @@
    "kind": "cruise"
   },
   {
-   "id": "572fb80bccc3f49f",
-   "title": "Affordable Housing Advisory Committee Special Meeting",
-   "start": "2026-11-09T21:30:00Z",
-   "end": "2026-11-10T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Harry T. Moore Social Services Center</p><p>725 South DeLeon Avenue</p><p>Titusville, FL 32780</p> - Harry T. Moore S",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "c96eebfeef1790ae",
    "title": "Harmony of the Seas in port",
    "start": "2026-11-10T11:00:00Z",
@@ -532,20 +482,6 @@
    "kind": "cruise"
   },
   {
-   "id": "69fc638095545618",
-   "title": "Coffee with the City Manager",
-   "start": "2026-11-10T14:00:00Z",
-   "end": "2026-11-10T15:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "Cocoa Beach Country Club - Open to the Public - 5000 Tom Warriner Blvd Cocoa Beach FL 32931",
-   "category": "Outdoors",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9606",
-   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9606",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "ba1d8e577e32c1c9",
    "title": "Odyssey of the Seas in port",
    "start": "2026-11-10T18:00:00Z",
@@ -558,20 +494,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "1da4ea694c9f9ccd",
-   "title": "Community Redevelopment Agency",
-   "start": "2026-11-10T22:30:00Z",
-   "end": "2026-11-10T23:30:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2373",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2373",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "64206f8e75bb2f20",
@@ -602,20 +524,6 @@
    "kind": "cruise"
   },
   {
-   "id": "896058a2ad6a8e30",
-   "title": "Titusville Environmental Commission",
-   "start": "2026-11-11T22:30:00Z",
-   "end": "2026-11-11T23:30:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2334",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2334",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "7d51ef361801754b",
    "title": "Carnival Freedom in port",
    "start": "2026-11-12T12:00:00Z",
@@ -642,34 +550,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "2bebd526b2fbf85b",
-   "title": "Other Post Employee Board of Trustees",
-   "start": "2026-11-12T16:00:00Z",
-   "end": "2026-11-13T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Round Room at City Hall</p><p>555 South Washington Avenue</p> - Round Room at City Hall 555 South Washington Avenue T",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2839",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2839",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "c5ec53227921ff4d",
-   "title": "North Brevard Commission on Parks and Recreation",
-   "start": "2026-11-12T21:00:00Z",
-   "end": "2026-11-13T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>North Brevard Senior Center</p> - 909 Lane Avenue Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2559",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2559",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "94f10ad82167fbb5",
@@ -742,20 +622,6 @@
    "kind": "cruise"
   },
   {
-   "id": "bf39551c4feaf1d6",
-   "title": "Economic Development Board of Directors Meeting",
-   "start": "2026-11-13T14:00:00Z",
-   "end": "2026-11-14T04:59:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2682",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2682",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "99ff4eb43701830e",
    "title": "Vulcan VC6L | Amazon Leo (LV-01)",
    "start": "2026-11-13T17:54:00Z",
@@ -784,20 +650,6 @@
    "kind": "event"
   },
   {
-   "id": "7198f8da6b9a1cb1",
-   "title": "Food Truck Friday",
-   "start": "2026-11-13T21:30:00Z",
-   "end": "2026-11-14T00:30:00Z",
-   "town": "Rockledge",
-   "venue": "Larry L. Schultz Park - 2540 S. Fiske Boulevard Rockledge FL 32955",
-   "category": "Food & Markets",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2980",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2980",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "c13365cf09c757bb",
    "title": "Keep Them Flying: A 1941 Gala & Fundraiser",
    "start": "2026-11-13T22:00:00Z",
@@ -809,20 +661,6 @@
    "description": "Valiant Air Command, Inc. Warbird Museum will host its Keep Them Flying \u2013 1941 Gala & Fundraiser on Friday, November 13, 2026, from 5:00 p.m. to 9:00 p.m. at Venue on the Horizon at the Valiant Air Command, Inc. Warbird Museum, 6600 Tico Road in Titusville. The special fundraising evening will transport guests back to 1941 for a night surrounded by historic military aircraft and aviation history. ",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
-  },
-  {
-   "id": "7f7c61e0d82abc3a",
-   "title": "Movie in the Park - TROLLS",
-   "start": "2026-11-14T00:00:00Z",
-   "end": "2026-11-14T02:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "<p>Join us for a free movie in the park on October 9, 2026 at 7pm.</p> - Cocoa Beach FL 32932",
-   "category": "Arts",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9784",
-   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9784",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
    "kind": "event"
   },
   {
