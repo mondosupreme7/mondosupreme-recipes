@@ -363,7 +363,7 @@
   }
   function loadStock() {
     text('homeStockLine', 'Checking the screener');
-    getJSON('/stocks/oversold.json?v=6').then(paintStock, function () { paintStock(null); });
+    getJSON('/stocks/oversold.json?v=7').then(paintStock, function () { paintStock(null); });
   }
   function loadTropics() {
     var url = 'https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Active_Hurricanes_v1/FeatureServer/1/query?where=' +

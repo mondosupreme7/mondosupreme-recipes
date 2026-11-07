@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Build stocks/oversold.json from a maintained index universe and Yahoo Finance.
 
-The universe is the S&P 500, the Nasdaq-100, and the S&P MidCap 400, taken from
-the public Wikipedia constituent tables and written to scripts/universe.json.
+The universe is the S&P 500, the Nasdaq-100, the S&P MidCap 400, the S&P
+SmallCap 600, and the Russell 2000. Index tables come from Wikipedia. Russell
+2000 names come from the iShares Russell 2000 ETF holdings file. The union is
+written to scripts/universe.json.
 RCL is left out on purpose. Daily bars come from Yahoo's public chart endpoint.
 Fundamentals, for names that pass the swing screen, come from Yahoo quoteSummary
 (summaryProfile, summaryDetail, financialData, defaultKeyStatistics,
@@ -16,6 +18,8 @@ constituent list. Set STOCKS_UNIVERSE_ONLY=1 to refresh that list and stop.
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 import math
 import os
@@ -40,6 +44,8 @@ UNIVERSE_PATH = ROOT / "scripts" / "universe.json"
 SP_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
 NDX_URL = "https://en.wikipedia.org/wiki/List_of_NASDAQ-100_companies"
 MID_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_400_companies"
+SP600_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_600_companies"
+RUSSELL_URL = "https://www.ishares.com/us/products/239710/ishares-russell-2000-etf/latest-holdings.csv"
 CHART = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=2y&interval=1d&includePrePost=false"
 CRUMB_URL = "https://query1.finance.yahoo.com/v1/test/getcrumb"
 COOKIE_URL = "https://fc.yahoo.com"
@@ -50,20 +56,22 @@ SUMMARY = (
 
 UA = "MondosupremeStocks/1.0 (+https://mondosupreme.com/stocks/)"
 WIKI_UA = "MondosupremeStocks/1.0 (universe refresh; +https://mondosupreme.com/stocks/)"
+HOLDINGS_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+LISTED_EXCHANGES = {"NASDAQ", "NYSE", "NYSE MKT LLC", "NYSE AMERICAN", "NYSE ARCA", "AMEX", "NYSEARCA"}
 EXCLUDE = {"RCL"}
 TICKER_RE = re.compile(r"^[A-Z]{1,5}(?:-[A-Z])?$")
 MAX_AGE_HOURS = 0.4
 MIN_PRICED_RATIO = 0.65
 UNIVERSE_MAX_AGE_DAYS = 7
 SERIES = 30
-PUBLISH_CAP = 120
+PUBLISH_CAP = 700
 FUND_CAP = 80
 CHART_WORKERS = 5
-CHART_GAP = 0.22
-FUND_GAP = 0.55
+CHART_GAP = 0.28
+FUND_GAP = 1.1
 
 ABOUT = (
-    "Swing screen of S&P 500, Nasdaq-100, and S&P MidCap 400 stocks. A name is published when "
+    "Swing screen of S&P 500, Nasdaq-100, S&P MidCap 400, S&P SmallCap 600, and Russell 2000 stocks. A name is published when "
     "the daily chart shows an oversold RSI, a lower Bollinger touch or re-entry, or a pullback "
     "while price is still above the 200-day average. RSI is Wilder's 14-day RSI. Bollinger Bands "
     "are the 20-day average plus and minus two population standard deviations. ATR is Wilder's "
@@ -603,15 +611,51 @@ def symbols_from_page(url, minimum):
     return found
 
 
+def parse_russell_holdings(text):
+    """Equity tickers from the iShares Russell 2000 holdings file.
+
+    Cash, futures, and unlisted or bulletin-board lines are left out. Share
+    classes such as "MOG A" become MOG-A, which is the chart symbol.
+    """
+    start = text.find("Ticker,Name,")
+    if start < 0:
+        raise RuntimeError("Russell holdings header missing")
+    found = []
+    seen = set()
+    for row in csv.DictReader(io.StringIO(text[start:])):
+        if (row.get("Asset Class") or "").strip() != "Equity":
+            continue
+        exchange = (row.get("Exchange") or "").strip().upper()
+        if exchange not in LISTED_EXCHANGES:
+            continue
+        symbol = normalize_symbol(re.sub(r"\s+", "-", (row.get("Ticker") or "").strip()))
+        if not symbol or symbol in seen:
+            continue
+        seen.add(symbol)
+        found.append(symbol)
+    return found
+
+
+def symbols_from_russell():
+    opener = urllib.request.build_opener()
+    raw = read_url(opener, RUSSELL_URL, 60, attempts=3, user_agent=HOLDINGS_UA)
+    found = parse_russell_holdings(raw.decode("utf-8", "replace"))
+    if len(found) < 1500:
+        raise RuntimeError("Russell holdings returned " + str(len(found)) + " symbols")
+    return found
+
+
 def build_universe():
     groups = {
         "sp500": symbols_from_page(SP_URL, 480),
         "ndx100": symbols_from_page(NDX_URL, 95),
         "mid400": symbols_from_page(MID_URL, 380),
+        "sp600": symbols_from_page(SP600_URL, 550),
+        "russell2000": symbols_from_russell(),
     }
     ordered = []
     seen = set()
-    for key in ("sp500", "ndx100", "mid400"):
+    for key in ("sp500", "ndx100", "mid400", "sp600", "russell2000"):
         for symbol in groups[key]:
             if symbol in seen or symbol in EXCLUDE:
                 continue
@@ -622,12 +666,14 @@ def build_universe():
         raise RuntimeError("RCL slipped into the universe")
     return {
         "updated": stamp(now_utc()),
-        "sources": [SP_URL, NDX_URL, MID_URL],
+        "sources": [SP_URL, NDX_URL, MID_URL, SP600_URL, RUSSELL_URL],
         "excluded": sorted(EXCLUDE),
         "counts": {
             "sp500": len(groups["sp500"]),
             "ndx100": len(groups["ndx100"]),
             "mid400": len(groups["mid400"]),
+            "sp600": len(groups["sp600"]),
+            "russell2000": len(groups["russell2000"]),
             "union": len(ordered),
         },
         "symbols": ordered,
@@ -639,7 +685,10 @@ def universe_stale(document):
         return True
     if not isinstance(document, dict) or not isinstance(document.get("symbols"), list):
         return True
-    if len(document["symbols"]) < 450:
+    counts = document.get("counts") if isinstance(document.get("counts"), dict) else {}
+    if counts.get("sp600", 0) < 500 or counts.get("russell2000", 0) < 1500:
+        return True
+    if len(document["symbols"]) < 1400:
         return True
     if "RCL" in document["symbols"]:
         return True
@@ -663,7 +712,8 @@ def load_universe():
         document = build_universe()
     except (OSError, urllib.error.URLError, TimeoutError, RuntimeError, re.error) as error:
         symbols = [symbol for symbol in previous.get("symbols", []) if isinstance(symbol, str) and normalize_symbol(symbol)]
-        if len(symbols) >= 450 and "RCL" not in symbols:
+        counts = previous.get("counts") if isinstance(previous.get("counts"), dict) else {}
+        if len(symbols) >= 1400 and counts.get("russell2000", 0) >= 1500 and "RCL" not in symbols:
             print("Universe refresh failed (" + str(error).splitlines()[0][:120] + "). Keeping the saved list.")
             return symbols
         raise
@@ -678,6 +728,10 @@ def load_universe():
         + str(counts["ndx100"])
         + ", MidCap 400 "
         + str(counts["mid400"])
+        + ", SmallCap 600 "
+        + str(counts["sp600"])
+        + ", Russell 2000 "
+        + str(counts["russell2000"])
         + ")."
     )
     return document["symbols"]
@@ -874,7 +928,7 @@ class YahooSession:
             if self.crumb and not force:
                 return self.crumb
             last = None
-            for attempt in range(3):
+            for attempt in range(4):
                 cookie_request = request(COOKIE_URL, UA)
                 try:
                     self.opener.open(cookie_request, timeout=20).read()
@@ -885,8 +939,8 @@ class YahooSession:
                     body = read_url(self.opener, CRUMB_URL, 20, attempts=2).decode("utf-8", "replace").strip().strip('"')
                 except urllib.error.HTTPError as error:
                     last = error
-                    if error.code == 429 and attempt + 1 < 3:
-                        delay = 8 * (attempt + 1)
+                    if error.code == 429 and attempt + 1 < 4:
+                        delay = 10 * (2 ** attempt)
                         print("Yahoo crumb rate limited, waiting " + str(delay) + "s.", flush=True)
                         time.sleep(delay)
                         continue
@@ -1500,8 +1554,10 @@ def attach_fundamentals(rows, session, gate):
         if index == 0 or (index + 1) % 8 == 0:
             print("Fundamentals " + str(index + 1) + "/" + str(len(rows)) + ".", flush=True)
         facts = {}
-        if not session.blocked:
+        if session is not None and not session.blocked:
             gate.wait()
+            if index and index % 10 == 0:
+                time.sleep(2)
             try:
                 facts = session.quote_summary(row["symbol"])
             except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, RuntimeError, KeyError, ValueError) as error:
@@ -1554,8 +1610,11 @@ def write_doc(rows, fetched_at, universe_count, priced, candidates):
             "Nasdaq's public quote, financials, analyst target, ratings, and earnings calendar "
             "(https://api.nasdaq.com/)."
         ),
-        "universeSource": "Wikipedia constituent tables: " + SP_URL + " ; " + NDX_URL + " ; " + MID_URL + ".",
-        "universe": "S&P 500, Nasdaq-100, and S&P MidCap 400",
+        "universeSource": (
+            "Wikipedia constituent tables: " + SP_URL + " ; " + NDX_URL + " ; " + MID_URL + " ; " + SP600_URL
+            + ". Russell 2000 holdings: " + RUSSELL_URL + "."
+        ),
+        "universe": "S&P 500, Nasdaq-100, S&P MidCap 400, S&P SmallCap 600, and Russell 2000",
         "universeCount": universe_count,
         "priced": priced,
         "candidates": candidates,
@@ -1584,6 +1643,15 @@ def self_test():
     assert normalize_symbol("BRK.B") == "BRK-B"
     assert normalize_symbol("rcl") == ""
     assert normalize_symbol("<td>AAPL</td>") == "AAPL"
+    holdings = (
+        "Ticker,Name,Asset Class,Exchange\n"
+        "AAA,Alpha,Equity,NASDAQ\n"
+        "RCL,Skip,Equity,NYSE\n"
+        "BBB,Unlisted,Equity,NO MARKET (E.G. UNLISTED)\n"
+        "MOG A,Moog,Equity,NYSE\n"
+        "CASH,Cash,Money Market,-\n"
+    )
+    assert parse_russell_holdings(holdings) == ["AAA", "MOG-A"]
     sample = analyze("TEST", [
         {"time": index, "open": 100 + (index % 3) * 0.2, "high": 101 + index * 0.01, "low": 99, "close": 100 - index * 0.05, "volume": 1000 + index}
         for index in range(80)
@@ -1744,10 +1812,14 @@ def main():
     shortlist = chosen[:FUND_CAP]
     print("Swing candidates " + str(len(chosen)) + "; fundamentals for " + str(len(shortlist)) + ".", flush=True)
     print("Cooling down before the fundamentals sheet.", flush=True)
-    time.sleep(20)
+    time.sleep(25)
+    session = YahooSession()
     try:
-        session = YahooSession()
         session.ensure_crumb()
+    except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, RuntimeError) as error:
+        session.blocked = True
+        print("Yahoo crumb unavailable (" + str(error).splitlines()[0][:140] + "). Fundamentals will use the Nasdaq sheet.", flush=True)
+    try:
         attach_fundamentals(shortlist, session, Gate(FUND_GAP))
     except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, RuntimeError) as error:
         print("Fundamentals handshake failed (" + str(error).splitlines()[0][:140] + "). Publishing the technical note only.")

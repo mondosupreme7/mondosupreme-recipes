@@ -1,6 +1,6 @@
 name: Update oversold stock screener
 
-# Prices the S&P 500, Nasdaq-100, and S&P MidCap 400 from Yahoo Finance and
+# Prices the S&P 1500, Nasdaq-100, and Russell 2000 from Yahoo Finance and
 # writes stocks/oversold.json. Weekday crons are UTC so they cover 9:30am–4pm
 # Eastern in both EST and EDT: the 13:30 UTC run is the EDT open (and 8:30am
 # EST), and the 21:00 UTC run is the EST close (and 5:00pm EDT). Sunday
@@ -33,7 +33,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
