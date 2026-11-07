@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-07T05:31:06Z",
+ "updated": "2026-11-07T06:30:42Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -64,9 +64,8 @@
   {
    "name": "Launch Library 2",
    "url": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=20",
-   "ok": false,
-   "count": 0,
-   "error": "TimeoutError"
+   "ok": true,
+   "count": 1
   }
  ],
  "events": [
@@ -629,6 +628,20 @@
    "source": "City of Titusville",
    "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
+  },
+  {
+   "id": "99ff4eb43701830e",
+   "title": "Vulcan VC6L | Amazon Leo (LV-01)",
+   "start": "2026-11-13T17:54:00Z",
+   "end": "2026-11-13T18:24:00Z",
+   "town": "Port Canaveral",
+   "venue": "Space Launch Complex 41",
+   "category": "Launches",
+   "url": "https://ll.thespacedevs.com/2.2.0/launch/ef9850ad-1096-425b-9d27-f7bbd186e61a/",
+   "description": "Go for Launch \u00b7 United Launch Alliance \u00b7 Vulcan VC6L \u00b7 Space Launch Complex 41",
+   "source": "Launch Library 2",
+   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
+   "kind": "launch"
   },
   {
    "id": "11ed3146a0a0809a",
