@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-11-07T12:58:18Z",
+ "fetchedAt": "2026-11-08T12:58:55Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -14,6 +14,34 @@
  ],
  "count": 120,
  "videos": [
+  {
+   "videoId": "uNiCqbdvWZY",
+   "title": "Cooking Our Highest Rated Thanksgiving Recipes | America’s Test Kitchen",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-11-07",
+   "thumbnail": "https://i.ytimg.com/vi/uNiCqbdvWZY/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=uNiCqbdvWZY",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Want to make the best-ever Thanksgiving dinner? America’s Test Kitchen’s Dan Souza invites nine test cooks to his home to create the all-time best Thanksgiving meal using top rated recipes. Gear Heads' Hannah Crowley brings her must-have Thanksgiving equipment, from digital scales to roasting pans to the perfect pie plate. Meanwhile, Cocktail Lab host Joe Gitter whips up a festive Browned Butter and Maple Old-Fashioned. Editors-in-residence Vallery Lomas, Nik Sharma, and Jonathan Zaragoza tackle the sides with Extra-Crunchy Green Bean Casserole, Butter-Roasted Carrots with Hazelnut Crumble and"
+  },
+  {
+   "videoId": "9Uu6yXx1yFw",
+   "title": "Pumpkin Cheesecake!",
+   "channel": "Preppy Kitchen",
+   "handle": "preppykitchen",
+   "published": "2026-11-07",
+   "thumbnail": "https://i.ytimg.com/vi/9Uu6yXx1yFw/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=9Uu6yXx1yFw",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": ""
+  },
   {
    "videoId": "oeaEfHAKaOM",
    "title": "Chef John's Favorite Italian Sausage, Beans & Greens",
@@ -1917,34 +1945,6 @@
     "Watch the full method in the video."
    ],
    "blurb": "This video is sponsored by Gozney. Explore the Arc XL:  BBQ chicken pizza gets an upgrade with juicy chicken thighs, crispy chicken skin, and Chicago tavern-style thin crust. As a New York pizza purist, I have a confession: I love BBQ chicken pizza. California Pizza Kitchen deserves credit for making it a classic, but I think we can make it better. Instead of chicken breast that dries out after being cooked twice, I’m roasting chicken thighs and saving the skin for a crispy topping. Add homemade barbecue sauce, a blend of gouda and mozzarella, red onion, banana peppers, and cilantro, and you’v"
-  },
-  {
-   "videoId": "cMZnOz2OIcc",
-   "title": "Loaded Baked Potato Stuffed French Toast | New Brunch Hack | Food Wishes",
-   "channel": "Food Wishes",
-   "handle": "foodwishes",
-   "published": "2026-09-30",
-   "thumbnail": "https://i.ytimg.com/vi/cMZnOz2OIcc/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=cMZnOz2OIcc",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "This loaded baked potato French toast recipe might be the most delicious mash-up I’ve ever created. Potatoes, cheddar cheese, green onions, crispy bacon, and sour cream bring all the flavors of a classic loaded baked potato into a savory, stuffed French toast. You’ll also learn how to make a spicy, sweet and sour maple syrup to enjoy alongside. Enjoy! For the fully formatted, printable, written recipe, follow this link:  To become a Member of Food Wishes, and read Chef John’s post about Loaded Baked Potato French Toast, follow this link:  You can also find more of Chef John’s content on Allrec"
-  },
-  {
-   "videoId": "CxX0AHuhEQ8",
-   "title": "Late Night Souped-Up Ramen",
-   "channel": "J. Kenji López-Alt",
-   "handle": "JKenjiLopezAlt",
-   "published": "2026-09-30",
-   "thumbnail": "https://i.ytimg.com/vi/CxX0AHuhEQ8/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=CxX0AHuhEQ8",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "There's no written recipe for this late night amalgamation of flavors I threw together, but if you head over and join my free Patreon, you can get some guiding tips on ways to improve your instant ramen. Check it out:  To unlock weekly bonus content—and to join the best community of food nerds on the internet—consider becoming a Super Frienji:  Joining my Patreon, purchasing my books and products, and subscribing to my social media channels is the best way to support my work. You can get any of my books (The Food Lab, The Wok, and Every Night is Pizza Night) wherever books are sold, or you can"
   }
  ]
 }
