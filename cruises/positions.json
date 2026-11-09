@@ -5,7 +5,7 @@
     "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
-  "heard": 2,
+  "heard": 3,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -29,14 +29,14 @@
     },
     "210662000": {
       "aisName": "NAVIGATOR OF THE SEA",
-      "cog": 325.5,
+      "cog": 290.0,
       "destination": "SIN>PEN",
       "eta": "11-10 05:00",
       "heading": 144,
       "lat": 1.26452,
-      "lon": 103.86073,
+      "lon": 103.86075,
       "navStatus": 5,
-      "seen": "2026-11-09T03:20:30Z",
+      "seen": "2026-11-09T04:23:32Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -62,8 +62,8 @@
         },
         {
           "lat": 1.26452,
-          "lon": 103.86073,
-          "seen": "2026-11-09T03:20:30Z"
+          "lon": 103.86075,
+          "seen": "2026-11-09T04:23:32Z"
         }
       ]
     },
@@ -179,15 +179,15 @@
     },
     "311000267": {
       "aisName": "QUANTUM OF THE SEAS",
-      "cog": 171.5,
+      "cog": 157.5,
       "destination": "AUWSY",
       "eta": "11-10 20:00",
       "heading": 238,
       "lat": -27.38162,
       "lon": 153.15634,
       "navStatus": 5,
-      "seen": "2026-11-09T03:21:21Z",
-      "sog": 0.1,
+      "seen": "2026-11-09T04:23:37Z",
+      "sog": 0.0,
       "source": "openwaters.io",
       "trail": [
         {
@@ -294,15 +294,15 @@
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 348.5,
+      "cog": 345.0,
       "destination": "US LAX",
       "eta": "11-09 13:30",
-      "heading": 350,
-      "lat": 32.04057,
-      "lon": -117.59326,
+      "heading": 347,
+      "lat": 32.21476,
+      "lon": -117.64418,
       "navStatus": 0,
-      "seen": "2026-11-09T03:23:16Z",
-      "sog": 10.1,
+      "seen": "2026-11-09T04:26:17Z",
+      "sog": 10.4,
       "source": "aisstream.io",
       "trail": [
         {
@@ -444,20 +444,25 @@
           "lat": 32.04057,
           "lon": -117.59326,
           "seen": "2026-11-09T03:23:16Z"
+        },
+        {
+          "lat": 32.21476,
+          "lon": -117.64418,
+          "seen": "2026-11-09T04:26:17Z"
         }
       ]
     },
     "311000660": {
       "aisName": "SYMPHONY OF THE SEAS",
-      "cog": 127.5,
+      "cog": 125.4,
       "destination": "MX COM",
       "eta": "11-11 13:15",
-      "heading": 124,
-      "lat": 28.59537,
-      "lon": -93.4924,
+      "heading": 122,
+      "lat": 28.43177,
+      "lon": -93.25783,
       "navStatus": 0,
-      "seen": "2026-11-09T03:22:26Z",
-      "sog": 15.5,
+      "seen": "2026-11-09T04:26:14Z",
+      "sog": 14.7,
       "source": "aisstream.io",
       "trail": [
         {
@@ -514,6 +519,11 @@
           "lat": 28.59537,
           "lon": -93.4924,
           "seen": "2026-11-09T03:22:26Z"
+        },
+        {
+          "lat": 28.43177,
+          "lon": -93.25783,
+          "seen": "2026-11-09T04:26:14Z"
         }
       ]
     },
@@ -614,26 +624,26 @@
     },
     "311001033": {
       "aisName": "WONDER OF THE SEAS",
-      "cog": 274.0,
-      "destination": "USMIA>BSNAS",
-      "eta": "11-07 11:30",
-      "heading": 270,
-      "lat": 26.21114,
-      "lon": -79.36076,
+      "cog": 190.0,
+      "destination": "BSCOC>USMIA",
+      "eta": "11-09 10:00",
+      "heading": 187,
+      "lat": 26.18014,
+      "lon": -79.50929,
       "navStatus": 0,
-      "seen": "2026-11-09T03:22:49Z",
-      "sog": 9.2,
+      "seen": "2026-11-09T04:25:30Z",
+      "sog": 7.8,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.26688,
-          "lon": -78.93456,
-          "seen": "2026-11-08T03:32:06Z"
-        },
         {
           "lat": 26.21114,
           "lon": -79.36076,
           "seen": "2026-11-09T03:22:49Z"
+        },
+        {
+          "lat": 26.18014,
+          "lon": -79.50929,
+          "seen": "2026-11-09T04:25:30Z"
         }
       ]
     },
@@ -679,15 +689,15 @@
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 163.4,
+      "cog": 183.8,
       "destination": "US PCV >>> MX COM",
       "eta": "11-08 15:00",
-      "heading": 165,
-      "lat": 26.89487,
-      "lon": -79.7606,
+      "heading": 183,
+      "lat": 26.57498,
+      "lon": -79.75757,
       "navStatus": 0,
-      "seen": "2026-11-09T03:22:46Z",
-      "sog": 18.1,
+      "seen": "2026-11-09T04:25:52Z",
+      "sog": 18.6,
       "source": "aishub",
       "trail": [
         {
@@ -754,27 +764,27 @@
           "lat": 26.89487,
           "lon": -79.7606,
           "seen": "2026-11-09T03:22:46Z"
+        },
+        {
+          "lat": 26.57498,
+          "lon": -79.75757,
+          "seen": "2026-11-09T04:25:52Z"
         }
       ]
     },
     "311001716": {
       "aisName": "LEGEND OF THE SEAS",
-      "cog": 81.9,
+      "cog": 82.3,
       "destination": "BH PCC",
       "eta": "11-09 12:00",
-      "heading": 92,
-      "lat": 26.13256,
-      "lon": -79.70172,
+      "heading": 88,
+      "lat": 26.16708,
+      "lon": -79.43291,
       "navStatus": 0,
-      "seen": "2026-11-09T03:22:52Z",
+      "seen": "2026-11-09T04:26:00Z",
       "sog": 13.9,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.08673,
-          "lon": -80.11972,
-          "seen": "2026-11-08T03:30:31Z"
-        },
         {
           "lat": 26.09367,
           "lon": -80.10428,
@@ -789,6 +799,11 @@
           "lat": 26.13256,
           "lon": -79.70172,
           "seen": "2026-11-09T03:22:52Z"
+        },
+        {
+          "lat": 26.16708,
+          "lon": -79.43291,
+          "seen": "2026-11-09T04:26:00Z"
         }
       ]
     },
@@ -904,15 +919,15 @@
     },
     "311315000": {
       "aisName": "GRANDEUR OF THE SEAS",
-      "cog": 17.9,
+      "cog": 17.2,
       "destination": "ORANESTAD, ARUBA",
       "eta": "11-10 12:00",
       "heading": 20,
-      "lat": 10.91202,
-      "lon": -75.58614,
+      "lat": 11.03814,
+      "lon": -75.54737,
       "navStatus": 0,
-      "seen": "2026-11-09T03:22:30Z",
-      "sog": 11.6,
+      "seen": "2026-11-09T04:02:52Z",
+      "sog": 11.7,
       "source": "aishub",
       "trail": [
         {
@@ -974,6 +989,11 @@
           "lat": 10.91202,
           "lon": -75.58614,
           "seen": "2026-11-09T03:22:30Z"
+        },
+        {
+          "lat": 11.03814,
+          "lon": -75.54737,
+          "seen": "2026-11-09T04:02:52Z"
         }
       ]
     },
@@ -999,14 +1019,14 @@
     },
     "311317000": {
       "aisName": "VOYAGER OF THE SEAS",
-      "cog": 77.2,
+      "cog": 45.8,
       "destination": "MX SJD",
       "eta": "11-08 19:30",
       "heading": 341,
-      "lat": 22.88583,
-      "lon": -109.89924,
+      "lat": 22.88582,
+      "lon": -109.89925,
       "navStatus": 1,
-      "seen": "2026-11-09T03:20:24Z",
+      "seen": "2026-11-09T04:23:23Z",
       "sog": 0.0,
       "source": "aishub",
       "trail": [
@@ -1026,9 +1046,9 @@
           "seen": "2026-11-08T18:19:51Z"
         },
         {
-          "lat": 22.88583,
-          "lon": -109.89924,
-          "seen": "2026-11-09T03:20:24Z"
+          "lat": 22.88582,
+          "lon": -109.89925,
+          "seen": "2026-11-09T04:23:23Z"
         }
       ]
     },
@@ -1045,16 +1065,6 @@
       "sog": 13.7,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.95325,
-          "lon": -83.35778,
-          "seen": "2026-11-08T03:31:50Z"
-        },
-        {
-          "lat": 26.76757,
-          "lon": -83.45883,
-          "seen": "2026-11-08T04:25:05Z"
-        },
         {
           "lat": 26.58259,
           "lon": -83.55938,
@@ -1104,16 +1114,16 @@
     },
     "311492000": {
       "aisName": "SERENADE OF THE SEAS",
-      "cog": 202.4,
+      "cog": 230.6,
       "destination": "MXESE",
       "eta": "11-09 14:50",
-      "heading": 200,
-      "lat": 32.40423,
-      "lon": -117.45256,
+      "heading": 230,
+      "lat": 32.29233,
+      "lon": -117.5316,
       "navStatus": 0,
-      "seen": "2026-11-09T03:22:58Z",
-      "sog": 7.2,
-      "source": "aishub",
+      "seen": "2026-11-09T04:26:17Z",
+      "sog": 7.6,
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 31.44552,
@@ -1189,6 +1199,11 @@
           "lat": 32.40423,
           "lon": -117.45256,
           "seen": "2026-11-09T03:22:58Z"
+        },
+        {
+          "lat": 32.29233,
+          "lon": -117.5316,
+          "seen": "2026-11-09T04:26:17Z"
         }
       ]
     },
@@ -1226,35 +1241,25 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 26.81118,
-          "lon": -83.40024,
-          "seen": "2026-11-08T03:31:23Z"
-        },
-        {
           "lat": 26.74141,
           "lon": -83.43475,
-          "seen": "2026-11-08T03:46:17Z"
+          "seen": "2026-11-09T04:26:22Z"
         }
       ]
     },
     "311733000": {
       "aisName": "ENCHANTMENT OTS",
-      "cog": 204.0,
+      "cog": 206.1,
       "destination": "MX COM",
       "eta": "11-10 11:45",
-      "heading": 205,
-      "lat": 26.80768,
-      "lon": -83.43675,
+      "heading": 207,
+      "lat": 26.52049,
+      "lon": -83.58271,
       "navStatus": 0,
-      "seen": "2026-11-09T03:23:12Z",
-      "sog": 19.6,
+      "seen": "2026-11-09T04:20:47Z",
+      "sog": 19.7,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.80104,
-          "lon": -83.46113,
-          "seen": "2026-11-08T03:31:15Z"
-        },
         {
           "lat": 26.97851,
           "lon": -83.36611,
@@ -1344,6 +1349,11 @@
           "lat": 26.80768,
           "lon": -83.43675,
           "seen": "2026-11-09T03:23:12Z"
+        },
+        {
+          "lat": 26.52049,
+          "lon": -83.58271,
+          "seen": "2026-11-09T04:20:47Z"
         }
       ]
     },
@@ -1385,5 +1395,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-09T03:23:25Z"
+  "updated": "2026-11-09T04:26:22Z"
 }
