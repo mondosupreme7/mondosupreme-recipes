@@ -310,17 +310,15 @@
     var list = data && Array.isArray(data.stocks) ? data.stocks.filter(function (row) {
       return row && row.symbol && typeof row.price === 'number';
     }) : [];
-    var swing = list.filter(function (row) {
-      return row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20;
-    });
-    var pool = swing.length ? swing : list;
-    var useSwing = swing.length > 0;
-    pool.sort(function (a, b) {
-      var left = useSwing ? (a.swingScore || 0) : (a.rankScore || 0);
-      var right = useSwing ? (b.swingScore || 0) : (b.rankScore || 0);
+    list.sort(function (a, b) {
+      var aSwing = a.swingEligible && typeof a.swingScore === 'number' && a.swingScore >= 20 ? 1 : 0;
+      var bSwing = b.swingEligible && typeof b.swingScore === 'number' && b.swingScore >= 20 ? 1 : 0;
+      if (aSwing !== bSwing) return bSwing - aSwing;
+      var left = typeof a.rankScore === 'number' ? a.rankScore : (a.score || 0);
+      var right = typeof b.rankScore === 'number' ? b.rankScore : (b.score || 0);
       return right - left || String(a.symbol).localeCompare(String(b.symbol));
     });
-    return pool[0] || null;
+    return list[0] || null;
   }
   function paintStock(data) {
     var line = $('homeStockLine');
@@ -354,10 +352,11 @@
     }
     main.append(name, facts);
     line.appendChild(main);
-    if (row.swingEligible && typeof row.swingScore === 'number') {
+    var badgeScore = typeof row.rankScore === 'number' ? row.rankScore : row.score;
+    if (typeof badgeScore === 'number') {
       var badge = document.createElement('span');
       badge.className = 'home-stock-score';
-      badge.textContent = String(row.swingScore).replace(/\.0$/, '');
+      badge.textContent = String(badgeScore).replace(/\.0$/, '');
       line.appendChild(badge);
     }
   }

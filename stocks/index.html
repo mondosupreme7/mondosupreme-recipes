@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=7">
-<link rel="stylesheet" href="stocks.css?v=6">
+<link rel="stylesheet" href="stocks.css?v=7">
 <link rel="stylesheet" href="/readable.css?v=10">
 </head>
 <body>
@@ -95,28 +95,15 @@
     <span id="swingScore" class="swing-score"></span>
    </span>
    <span id="swingChips" class="swing-chips"></span>
+   <span id="swingVerdict" class="swing-verdict"></span>
   </button>
   <p class="swing-note">Not financial advice.</p>
  </section>
  <div class="quote-tools">
-  <label>Screen
-   <select id="screen" aria-label="Filter the screener">
-    <option value="all">Swing list</option>
-    <option value="deep">RSI &lt; 30 (Strictly Oversold)</option>
-    <option value="ready">Oversold + Turning Up (Ready to Buy)</option>
-    <option value="pull">Above 200-Day MA Pullbacks</option>
-    <option value="swing">Swing bottom setups</option>
-    <option value="watch">My Watchlist</option>
-   </select>
-  </label>
   <label>Sort
-   <select id="sort" aria-label="Sort the screener">
-    <option value="rank" selected>Best swing rank</option>
-    <option value="swing">Swing bottom score</option>
-    <option value="rsi">Lowest RSI</option>
-    <option value="score">Highest Bounce Score</option>
-    <option value="drop">Biggest 5-Day Drop</option>
-    <option value="ticker">Ticker</option>
+   <select id="sort" aria-label="Sort the top stocks">
+    <option value="rank" selected>Best score</option>
+    <option value="ticker">Ticker (A–Z)</option>
    </select>
   </label>
  </div>
@@ -140,17 +127,25 @@
    <tbody id="rows"></tbody>
   </table>
  </div>
- <p id="empty" class="empty" hidden>No stocks match that screen.</p>
- <button id="stocksMore" class="btn stocks-more" type="button" hidden>Show 25 more</button>
+ <p id="empty" class="empty" hidden>No stocks in this snapshot.</p>
  <section class="quote-card" id="detail" hidden aria-labelledby="detailTitle">
   <div class="quote-card-bar">
-   <h2 id="detailTitle">Quote</h2>
+   <div class="quote-head-copy">
+    <h2 id="detailTitle">Quote</h2>
+    <p id="detailSub" class="quote-sub"></p>
+    <p id="detailPrice" class="quote-head-px"></p>
+   </div>
    <button type="button" id="detailClose" class="btn">Close</button>
   </div>
-  <p id="detailMeta"></p>
-  <canvas id="chart" width="720" height="320" aria-label="Price, Bollinger Bands, and RSI chart"></canvas>
-  <div id="detailWhy" class="why-box"></div>
-  <p id="detailLinks"></p>
+  <p id="detailVerdict" class="detail-verdict"></p>
+  <div id="detailPlan" class="trade-plan"></div>
+  <div id="detailFacts" class="detail-facts"></div>
+  <details id="detailMore" class="detail-more">
+   <summary>More details</summary>
+   <canvas id="chart" width="720" height="320" aria-label="Price, Bollinger Bands, and RSI chart"></canvas>
+   <div id="detailWhy" class="why-box"></div>
+   <p id="detailLinks"></p>
+  </details>
   <form id="pinForm" class="pin-form">
    <label>Note<input id="pinNote" maxlength="140" autocomplete="off"></label>
    <label>Price target<input id="pinTarget" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Optional"></label>
@@ -180,7 +175,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=7"></script>
+<script src="stocks.js?v=8"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

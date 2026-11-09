@@ -14,8 +14,8 @@
   var pendingPrice = Object.create(null);
   var removedPins = Object.create(null);
   var PAGE = 25;
+  var LIST_CAP = 5;
   var WATCH_CAP = 100;
-  var stockShown = PAGE;
   var watchShown = PAGE;
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
@@ -118,48 +118,26 @@
     return null;
   }
 
-  function passes(row) {
-    var mode = document.getElementById('screen').value;
-    if (mode === 'deep') return row.rsi < 30;
-    if (mode === 'ready') return !!row.ready;
-    if (mode === 'pull') return !!row.pullback;
-    if (mode === 'swing') return !!(row.swingEligible && row.swingScore >= 20);
-    if (mode === 'watch') return !!watch[row.symbol];
-    return true;
+  function isSwingPick(row) {
+    return !!(row && row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20);
   }
-
+  function bestScore(row) {
+    if (typeof row.rankScore === 'number') return row.rankScore;
+    if (typeof row.score === 'number') return row.score;
+    return 0;
+  }
+  function byBestScore(a, b) {
+    var swing = (isSwingPick(b) ? 1 : 0) - (isSwingPick(a) ? 1 : 0);
+    if (swing) return swing;
+    var score = bestScore(b) - bestScore(a);
+    if (score) return score;
+    return a.symbol.localeCompare(b.symbol);
+  }
   function visibleRows() {
-    var mode = document.getElementById('screen').value;
-    var list = rows.filter(passes);
-    if (mode === 'watch') {
-      Object.keys(watch).forEach(function (symbol) {
-        if (!bySymbol(symbol)) {
-          list.push({
-            symbol: symbol,
-            name: 'Pinned ticker',
-            price: null,
-            rsi: null,
-            bbDistancePct: null,
-            vsSma200: null,
-            drop5: null,
-            drop21: null,
-            range52: null,
-            score: null,
-            zone: '',
-            pinnedOnly: true
-          });
-        }
-      });
+    var list = rows.slice().sort(byBestScore).slice(0, LIST_CAP);
+    if (document.getElementById('sort').value === 'ticker') {
+      list.sort(function (a, b) { return a.symbol.localeCompare(b.symbol); });
     }
-    var sort = document.getElementById('sort').value;
-    list.sort(function (a, b) {
-      if (sort === 'score') return (b.score || 0) - (a.score || 0) || a.symbol.localeCompare(b.symbol);
-      if (sort === 'drop') return (a.drop5 == null ? 0 : a.drop5) - (b.drop5 == null ? 0 : b.drop5) || a.symbol.localeCompare(b.symbol);
-      if (sort === 'ticker') return a.symbol.localeCompare(b.symbol);
-      if (sort === 'swing') return (b.swingScore || 0) - (a.swingScore || 0) || a.symbol.localeCompare(b.symbol);
-      if (sort === 'rsi') return (a.rsi == null ? 999 : a.rsi) - (b.rsi == null ? 999 : b.rsi) || a.symbol.localeCompare(b.symbol);
-      return (b.rankScore || 0) - (a.rankScore || 0) || a.symbol.localeCompare(b.symbol);
-    });
     return list;
   }
 
@@ -181,8 +159,7 @@
   }
 
   function rowScore(row) {
-    var swingView = document.getElementById('sort').value === 'swing' || document.getElementById('screen').value === 'swing';
-    var value = swingView ? row.swingScore : (row.rankScore != null ? row.rankScore : row.score);
+    var value = typeof row.rankScore === 'number' ? row.rankScore : row.score;
     return value == null || !isFinite(value) ? '—' : String(value);
   }
   function dayText(value) {
@@ -195,8 +172,7 @@
   function renderTable() {
     var body = document.getElementById('rows');
     var list = visibleRows();
-    var shown = list.slice(0, stockShown);
-    var more = document.getElementById('stocksMore');
+    var shown = list;
     body.replaceChildren();
     shown.forEach(function (row) {
       var tr = document.createElement('tr');
@@ -247,11 +223,7 @@
       body.appendChild(tr);
     });
     document.getElementById('empty').hidden = list.length !== 0;
-    document.getElementById('count').textContent = list.length ? 'Showing ' + shown.length + ' of ' + list.length : '';
-    if (more) {
-      more.hidden = shown.length >= list.length;
-      more.textContent = 'Show ' + PAGE + ' more';
-    }
+    document.getElementById('count').textContent = list.length ? 'Top ' + list.length : '';
   }
 
   function fillWhy(row) {
@@ -308,6 +280,190 @@
     return notes;
   }
 
+  var SWING_CONTEXT = { 'Near 52w low': 1, 'Pullback from high': 1, 'Uptrend pullback': 1 };
+  function confirmingSignals(row) {
+    return (row.swingSignals || []).filter(function (label) { return !SWING_CONTEXT[label]; });
+  }
+  function fundamentalsKnown(row) {
+    var value = row.chips && row.chips.value;
+    if (!value) return false;
+    return value.indexOf('missing') === -1 && value.indexOf('Fundamentals sheet') === -1;
+  }
+  function earningsSoon(row) {
+    return (row.flags || []).indexOf('Earnings within 7 days') !== -1;
+  }
+  function planState(row) {
+    var price = row.price;
+    var low = row.entryLow;
+    var high = row.entryHigh;
+    var stop = row.stop;
+    if (typeof price !== 'number' || typeof low !== 'number' || typeof high !== 'number') return '';
+    if (typeof stop === 'number' && price < stop) return 'Below stop';
+    if (price > high) return 'Above buy zone — wait';
+    if (price + 0.0001 < low) return 'Below buy zone';
+    return 'In buy zone';
+  }
+  function verdict(row) {
+    if (row.pinnedOnly) return 'This ticker is on your watchlist and was not in the latest scan.';
+    var lead;
+    if (row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20) lead = 'Swing-bottom setup.';
+    else if (row.above200 === false) lead = 'Not a setup yet.';
+    else if (row.above200 && ((typeof row.drop5 === 'number' && row.drop5 < 0) || (typeof row.vsSma20 === 'number' && row.vsSma20 < 0))) lead = 'Pullback, not a full swing-bottom setup yet.';
+    else lead = 'Not a setup yet.';
+    var bits = [];
+    if (row.above200 === true && typeof row.vsSma200 === 'number') bits.push(Math.abs(row.vsSma200).toFixed(1).replace(/\.0$/, '') + '% above the 200-day');
+    else if (row.above200 === false && typeof row.vsSma200 === 'number') bits.push(Math.abs(row.vsSma200).toFixed(1).replace(/\.0$/, '') + '% under the 200-day');
+    else if (row.above200 === false) bits.push('under the 200-day');
+    var signals = confirmingSignals(row);
+    if (signals.length) bits.push(signals.slice(0, 3).join(', '));
+    if (earningsSoon(row)) bits.push('earnings inside 7 days');
+    var sentence = lead;
+    if (bits.length) sentence += ' ' + bits.join('; ') + '.';
+    if (typeof row.rewardRisk === 'number') {
+      var ratio = row.rewardRisk.toFixed(1).replace(/\.0$/, '');
+      sentence += ' Reward to risk is ' + ratio + ':1' + (row.rewardRisk < 2 ? ', under 2:1' : '') + '.';
+    }
+    return sentence;
+  }
+  function factRow(state, label, detail) {
+    var li = el('li', null, 'fact-row');
+    var mark = state === true ? 'Pass' : state === false ? 'Fail' : '—';
+    var klass = state === true ? 'is-pass' : state === false ? 'is-fail' : 'is-na';
+    li.appendChild(el('span', mark, 'fact-mark ' + klass));
+    var text = el('span', null, 'fact-text');
+    text.appendChild(el('b', label));
+    if (detail) text.appendChild(document.createTextNode(' ' + detail));
+    li.appendChild(text);
+    return li;
+  }
+  function factBlock(title, rows) {
+    var block = el('section', null, 'stat-block');
+    block.appendChild(el('h3', title));
+    var list = el('ul', null, 'fact-list');
+    rows.forEach(function (row) { if (row) list.appendChild(row); });
+    block.appendChild(list);
+    return block;
+  }
+  function paintPlan(row) {
+    var box = document.getElementById('detailPlan');
+    box.replaceChildren();
+    var state = planState(row);
+    var low = row.entryLow;
+    var high = row.entryHigh;
+    var stop = row.stop;
+    var target = row.target;
+    var price = row.price;
+    if (!state || typeof stop !== 'number' || typeof target !== 'number') {
+      box.appendChild(el('p', 'This snapshot has no entry, stop, and target for this ticker.', 'plan-missing'));
+      return;
+    }
+    var banner = el('p', state, 'plan-state');
+    if (state === 'In buy zone') banner.classList.add('is-in');
+    else if (state === 'Below stop') banner.classList.add('is-stop');
+    else banner.classList.add('is-wait');
+    box.appendChild(banner);
+    var spanMin = Math.min(stop, price, low);
+    var spanMax = Math.max(target, price, high);
+    var pad = (spanMax - spanMin) * 0.06 || 1;
+    spanMin -= pad;
+    spanMax += pad;
+    function at(value) {
+      return Math.max(0, Math.min(100, ((value - spanMin) / (spanMax - spanMin)) * 100));
+    }
+    var ladder = el('div', null, 'ladder');
+    ladder.setAttribute('role', 'img');
+    ladder.setAttribute('aria-label', 'Last ' + money(price) + ', ' + state.toLowerCase() + '. Buy zone ' + money(low) + ' to ' + money(high) + '. Stop ' + money(stop) + '. Target ' + money(target) + '.');
+    var track = el('div', null, 'ladder-track');
+    var zone = el('span', null, 'ladder-zone');
+    var zoneLeft = at(Math.min(low, high));
+    var zoneRight = at(Math.max(low, high));
+    zone.style.left = zoneLeft + '%';
+    zone.style.width = Math.max(1.5, zoneRight - zoneLeft) + '%';
+    var stopMark = el('span', null, 'ladder-stop');
+    stopMark.style.left = at(stop) + '%';
+    var targetMark = el('span', null, 'ladder-target');
+    targetMark.style.left = at(target) + '%';
+    var now = el('span', null, 'ladder-now');
+    now.style.left = at(price) + '%';
+    track.append(zone, stopMark, targetMark, now);
+    var labels = el('div', null, 'ladder-labels');
+    labels.appendChild(el('span', 'Stop ' + money(stop)));
+    labels.appendChild(el('span', 'Now ' + money(price)));
+    labels.appendChild(el('span', 'Target ' + money(target)));
+    ladder.append(track, labels);
+    box.appendChild(ladder);
+    var grid = el('div', null, 'plan-grid');
+    var buy = el('div', null, 'plan-tile plan-buy');
+    buy.appendChild(el('span', 'Buy zone', 'plan-k'));
+    buy.appendChild(el('strong', money(low) + '–' + money(high), 'plan-v'));
+    var stopTile = el('div', null, 'plan-tile plan-stop');
+    stopTile.appendChild(el('span', 'Stop', 'plan-k'));
+    stopTile.appendChild(el('strong', money(stop), 'plan-v'));
+    stopTile.appendChild(el('span', 'Sell if it breaks', 'plan-hint'));
+    var goal = el('div', null, 'plan-tile plan-target');
+    goal.appendChild(el('span', 'Target', 'plan-k'));
+    var goalText = money(target);
+    if (row.targetLabel) goalText += ' · ' + row.targetLabel;
+    if (typeof row.target2 === 'number' && row.target2 > target) goalText += ' · next ' + money(row.target2);
+    goal.appendChild(el('strong', goalText, 'plan-v'));
+    var reward = el('div', null, 'plan-tile plan-rr' + (typeof row.rewardRisk === 'number' && row.rewardRisk < 2 ? ' is-fail' : ''));
+    reward.appendChild(el('span', 'Reward:risk', 'plan-k'));
+    reward.appendChild(el('strong', typeof row.rewardRisk === 'number' ? row.rewardRisk.toFixed(1).replace(/\.0$/, '') + ':1' : '—', 'plan-v'));
+    grid.append(buy, stopTile, goal, reward);
+    box.appendChild(grid);
+  }
+  function paintFacts(row) {
+    var box = document.getElementById('detailFacts');
+    box.replaceChildren();
+    if (row.pinnedOnly) return;
+    var signals = confirmingSignals(row);
+    var known = fundamentalsKnown(row);
+    var rules = el('div', null, 'rule-strip');
+    [
+      ['Rule 1', row.above200 === true, 'Trend'],
+      ['Rule 2', signals.length >= 2, 'Setup'],
+      ['Rule 3', earningsSoon(row) ? false : (known ? true : null), 'Earnings'],
+      ['Rule 5', typeof row.rewardRisk === 'number' ? row.rewardRisk >= 2 : null, '2:1']
+    ].forEach(function (item) {
+      var pill = el('span', item[0] + ' ' + (item[1] === true ? 'Pass' : item[1] === false ? 'Fail' : '—'), 'rule-pill ' + (item[1] === true ? 'is-pass' : item[1] === false ? 'is-fail' : 'is-na'));
+      pill.title = item[2];
+      rules.appendChild(pill);
+    });
+    box.appendChild(rules);
+    var trend = [
+      factRow(row.above200 === true, '200-day', row.above200 === true ? 'Above ' + (typeof row.vsSma200 === 'number' ? pctSigned(row.vsSma200) : '') : 'Below ' + (typeof row.vsSma200 === 'number' ? pctSigned(row.vsSma200) : '')),
+      typeof row.vsSma50 === 'number' ? factRow(row.above200 === true && row.vsSma50 < 0, '50-day', (row.vsSma50 < 0 ? 'Pullback ' : 'Above ') + pctSigned(row.vsSma50)) : null,
+      typeof row.drop5 === 'number' ? factRow(null, '5-day', pctSigned(row.drop5)) : null,
+      typeof row.drop21 === 'number' ? factRow(null, '1-month', pctSigned(row.drop21)) : null
+    ];
+    var momentum = [
+      typeof row.rsi === 'number' ? factRow(row.rsi <= 40, 'RSI-14', row.rsi.toFixed(1)) : null,
+      factRow(!!(row.uptick || row.hammer || signals.indexOf('RSI turning up') !== -1), 'Turn', row.uptick ? 'Last close turned up' : (row.hammer ? 'Hammer' : 'Last close did not turn up')),
+      factRow(signals.length >= 2, 'Signals', signals.length ? signals.join(', ') : 'No confirming signal')
+    ];
+    var volumePass = signals.indexOf('Volume reversal') !== -1 || (typeof row.volumeRatio === 'number' && row.volumeRatio >= 1);
+    var volume = [
+      typeof row.volumeRatio === 'number' ? factRow(volumePass, 'Volume', row.volumeRatio.toFixed(1).replace(/\.0$/, '') + '× the prior 20 sessions') : factRow(null, 'Volume', 'Not in this snapshot')
+    ];
+    var earnState = earningsSoon(row) ? false : (known ? true : null);
+    var earnDetail = earningsSoon(row) ? 'Inside 7 days' : (known ? 'Not inside 7 days' : 'Date not in this pass');
+    var fundRows = [factRow(earnState, 'Earnings', earnDetail)];
+    if (row.chips && row.chips.value) fundRows.push(factRow(null, 'Sheet', row.chips.value));
+    (row.flags || []).forEach(function (flag) {
+      if (flag === 'Earnings within 7 days' || flag === 'Below the 200-day') return;
+      fundRows.push(factRow(false, 'Flag', flag));
+    });
+    box.appendChild(factBlock('Trend', trend));
+    box.appendChild(factBlock('Momentum', momentum));
+    box.appendChild(factBlock('Volume', volume));
+    box.appendChild(factBlock('Fundamentals', fundRows));
+  }
+  function pctSigned(value) {
+    var magnitude = Math.abs(value).toFixed(1).replace(/\.0$/, '') + '%';
+    if (value > 0) return '+' + magnitude;
+    if (value < 0) return '−' + magnitude;
+    return magnitude;
+  }
   function why(row) {
     if (row.pinnedOnly) return 'This ticker is on your watchlist and was not in the latest scan.';
     var parts = ['RSI(14) at ' + row.rsi.toFixed(1)];
@@ -414,28 +570,33 @@
     selected = symbol;
     var card = document.getElementById('detail');
     card.hidden = false;
-    document.getElementById('detailTitle').textContent = symbol + (row.name ? ' — ' + row.name : '');
-    var bits = [];
-    if (row.price != null) bits.push('Last ' + money(row.price));
-    if (row.rsi != null) bits.push('RSI ' + row.rsi.toFixed(1));
-    if (row.bbDistancePct != null) bits.push('Lower BB ' + (row.bbDistancePct > 0 ? '+' : '') + row.bbDistancePct.toFixed(1) + '%');
-    if (row.vsSma200 != null) bits.push('vs 200d ' + (row.vsSma200 > 0 ? '+' : '') + row.vsSma200.toFixed(1) + '%');
-    if (row.drop5 != null) bits.push('5-day ' + (row.drop5 > 0 ? '+' : '') + row.drop5.toFixed(1) + '%');
-    if (row.drop21 != null) bits.push('1-month ' + (row.drop21 > 0 ? '+' : '') + row.drop21.toFixed(1) + '%');
-    if (row.range52 != null) bits.push('52-wk ' + row.range52.toFixed(0) + '%');
-    if (row.swingScore != null) bits.push('Swing bottom ' + row.swingScore);
-    if (row.swingSignals && row.swingSignals.length) bits.push(row.swingSignals.join(', '));
-    if (row.rankScore != null) bits.push('Rank ' + row.rankScore);
-    if (row.score != null) bits.push('Bounce score ' + row.score);
-    if (row.entryLow != null && row.entryHigh != null) bits.push('Entry zone ' + money(row.entryLow) + '–' + money(row.entryHigh));
-    if (row.stop != null) bits.push('Stop ' + money(row.stop));
-    if (row.target != null) bits.push('Target ' + money(row.target));
-    if (row.rewardRisk != null) bits.push('Reward:risk ' + row.rewardRisk.toFixed(1) + ':1');
-    if (row.sma20) bits.push('SMA20 ' + money(row.sma20));
-    if (row.sma50) bits.push('SMA50 ' + money(row.sma50));
-    if (row.sma200) bits.push('SMA200 ' + money(row.sma200));
-    document.getElementById('detailMeta').textContent = bits.join(' · ');
+    document.getElementById('detailTitle').textContent = symbol;
+    document.getElementById('detailSub').textContent = row.name && row.name !== symbol ? row.name : '';
+    var priceLine = document.getElementById('detailPrice');
+    priceLine.replaceChildren();
+    priceLine.appendChild(el('span', row.price == null ? '—' : money(row.price), 'quote-last'));
+    if (typeof row.dayChange === 'number') {
+      var change = el('span', dayText(row.dayChange), 'quote-day');
+      if (row.dayChange > 0) change.classList.add('num-up');
+      else if (row.dayChange < 0) change.classList.add('num-down');
+      priceLine.appendChild(change);
+    }
+    document.getElementById('detailVerdict').textContent = verdict(row);
+    paintPlan(row);
+    paintFacts(row);
+    document.getElementById('detailMore').open = false;
     fillWhy(row);
+    var extra = document.getElementById('detailWhy');
+    var moreBits = [];
+    if (row.sma20) moreBits.push('SMA20 ' + money(row.sma20));
+    if (row.sma50) moreBits.push('SMA50 ' + money(row.sma50));
+    if (row.sma200) moreBits.push('SMA200 ' + money(row.sma200));
+    if (row.bbDistancePct != null) moreBits.push('Lower BB ' + (row.bbDistancePct > 0 ? '+' : '') + row.bbDistancePct.toFixed(1) + '%');
+    if (row.range52 != null) moreBits.push('52-wk ' + row.range52.toFixed(0) + '%');
+    if (row.swingScore != null) moreBits.push('Swing bottom ' + row.swingScore);
+    if (row.rankScore != null) moreBits.push('Rank ' + row.rankScore);
+    if (row.score != null) moreBits.push('Bounce score ' + row.score);
+    if (moreBits.length) extra.appendChild(el('p', moreBits.join(' · '), 'more-metrics'));
     var links = document.getElementById('detailLinks');
     links.replaceChildren();
     var yahoo = document.createElement('a');
@@ -706,11 +867,8 @@
 
   function swingPick() {
     var list = rows.filter(function (row) {
-      return row && row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20 && typeof row.price === 'number';
-    });
-    list.sort(function (a, b) {
-      return (b.swingScore || 0) - (a.swingScore || 0) || a.symbol.localeCompare(b.symbol);
-    });
+      return row && typeof row.price === 'number';
+    }).sort(byBestScore);
     return list[0] || null;
   }
 
@@ -743,15 +901,21 @@
       change.textContent = '';
       change.className = 'swing-change';
     }
-    document.getElementById('swingScore').textContent = String(row.swingScore).replace(/\.0$/, '');
+    document.getElementById('swingScore').textContent = rowScore(row);
     var chips = document.getElementById('swingChips');
     chips.replaceChildren();
-    (row.swingSignals || []).forEach(function (label) {
+    (row.swingSignals || []).slice(0, 3).forEach(function (label) {
       chips.appendChild(el('span', label, 'swing-chip'));
     });
+    var summary = document.getElementById('swingVerdict');
+    if (summary) {
+      var text = verdict(row);
+      var cut = text.indexOf('. ');
+      summary.textContent = cut === -1 ? text : text.slice(0, cut + 1);
+    }
     var button = document.getElementById('swingOpen');
     button.dataset.symbol = row.symbol;
-    button.setAttribute('aria-label', 'Top stock to watch ' + row.symbol + ', swing bottom score ' + row.swingScore);
+    button.setAttribute('aria-label', 'Top stock to watch ' + row.symbol + ', best score ' + rowScore(row));
   }
 
   function loadSnapshot() {
@@ -798,9 +962,7 @@
     var symbol = document.getElementById('swingOpen').dataset.symbol;
     if (symbol) openDetail(symbol);
   });
-  document.getElementById('screen').addEventListener('change', function () { stockShown = PAGE; renderTable(); });
-  document.getElementById('sort').addEventListener('change', function () { stockShown = PAGE; renderTable(); });
-  document.getElementById('stocksMore').addEventListener('click', function () { stockShown += PAGE; renderTable(); });
+  document.getElementById('sort').addEventListener('change', function () { renderTable(); });
   document.getElementById('watchMore').addEventListener('click', function () { watchShown += PAGE; renderWatch(); });
   document.getElementById('detailClose').addEventListener('click', function () {
     selected = '';
@@ -833,7 +995,6 @@
     if (savePin(symbol, '', null)) {
       status.textContent = symbol + ' is on the watchlist.';
       document.getElementById('addTicker').value = '';
-      document.getElementById('screen').value = 'watch';
       renderTable();
       openDetail(symbol);
     }
