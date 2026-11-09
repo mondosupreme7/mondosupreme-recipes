@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-11-08T12:58:55Z",
+ "fetchedAt": "2026-11-09T13:22:33Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -14,6 +14,34 @@
  ],
  "count": 120,
  "videos": [
+  {
+   "videoId": "G05hqkITvCQ",
+   "title": "Your Guilty Pleasure Pasta Just Got a SERIOUS Upgrade",
+   "channel": "Brian Lagerstrom",
+   "handle": "brianlagerstrom",
+   "published": "2026-11-08",
+   "thumbnail": "https://i.ytimg.com/vi/G05hqkITvCQ/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=G05hqkITvCQ",
+   "ingredients": [
+    "*As an Amazon Associate I earn from qualifying purchases**",
+    "450–500g (about 1 lb, or 2 large) boneless, skinless chicken breasts"
+   ],
+   "steps": [
+    "blend all seasoning ingredients on high for about 30 seconds until finely ground and well combined. Measure 50g into a shallow bowl and store the untouched remainder",
+    "Cut chicken in half. Slice each thick lobe horizontally into two cutlets, making six pieces total. Pound any thicker areas to about ¾ inch",
+    "Press both sides of each chicken piece into the 50g seasoning Refrigerate uncovered on a rack over a tray for 20–30 minutes.",
+    "Meanwhile, bring 4 liters/qts of water to a rolling boil in a large pot. Finely grate Parmesan, cube 75g butter and measure half-and-half.",
+    "Transfer to a plate and pour the pan butter over the chicken. Rest the chicken while making the pasta.",
+    "Add 2 very large 3 finger pinch of salt to the boiling water along with the fettuccine. Stir to separate and cook according to the package instructions.",
+    "Reserve bout 1½ cups pasta water, then drain",
+    "In the empty Dutch oven over medium heat, bring 1/2c pasta water and half-and-half to a gentle simmer. Add 75g cubed butter and stir until opaque and smooth with no greasy slick.",
+    "Fold in the pasta gently. There should be enough liquid in the bottom of the pan that when you pull away the pasta, the liquid is fully coating the bottom of the pan. If needed, add more pasta water.",
+    "Turn off the heat and sprinkle in 75g Parmesan evenly over the pasta. Very gently turn and fold the pasta until the parmesan is melted into the sauce.",
+    "Loosen with small splashes of reserved pasta water if needed until glossy and slightly loose, with just a little sauce pooling underneath. Fold to incorporate very gently so you don’t break the pasta. Taste and add salt only if needed.",
+    "Transfer the chicken to a clean cutting board and chop into bite-size pieces. Swirl pasta into warm bowls, top with a sprinkle of grated parmesan and a serving of the chopped chicken"
+   ],
+   "blurb": "This blackened chicken Alfredo recipe improves every detail of your favorite '90s pasta. Get $20 off your first order of Cometeer at  ▶️WATCH NEXT: 📝 DETAILED RECIPES ON MY BLOG:  🔪MY GEAR: 12\" SAUTE PAN:  CUTTING BOARD:  BLENDER:  6.75 QT DUTCH OVEN:  MEAT PRESS:  INSTANT READ THERMOMETER:  QUARTER SHEET PAN + RACK:  FAVORITE STAINLESS BOWL:  PORTABLE BUTANE BURNER:  AMAZON STORE:  **As an Amazon Associate I earn from qualifying purchases** Blackened Seasoning: 25g (about 3½ T) smoked paprika 8g (about 1 T + ½ tsp) ground black pepper 15g (about 1½ T) garlic powder 30g (about ¼ cup) onion pow"
+  },
   {
    "videoId": "uNiCqbdvWZY",
    "title": "Cooking Our Highest Rated Thanksgiving Recipes | America’s Test Kitchen",
@@ -1931,20 +1959,6 @@
     "Watch the full method in the video."
    ],
    "blurb": "Soft, fluffy pumpkin muffins bake with tall domes using a simple two-temperature baking trick. All you need is two bowls and about 10 minutes to stir together the batter before you have warmly spiced muffins to enjoy! RECIPE:  ORDER MY NEW BOOK! Amazon:  Amazon CA:  Barnes & Noble:  BAM:  Bookshop:  Hudson Booksellers:  Target:  Walmart:"
-  },
-  {
-   "videoId": "pL5AbhAeHY4",
-   "title": "How This Bad Pizza Chain Changed Pizza Forever",
-   "channel": "NOT ANOTHER COOKING SHOW",
-   "handle": "notanothercookingshow",
-   "published": "2026-09-30",
-   "thumbnail": "https://i.ytimg.com/vi/pL5AbhAeHY4/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=pL5AbhAeHY4",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "This video is sponsored by Gozney. Explore the Arc XL:  BBQ chicken pizza gets an upgrade with juicy chicken thighs, crispy chicken skin, and Chicago tavern-style thin crust. As a New York pizza purist, I have a confession: I love BBQ chicken pizza. California Pizza Kitchen deserves credit for making it a classic, but I think we can make it better. Instead of chicken breast that dries out after being cooked twice, I’m roasting chicken thighs and saving the skin for a crispy topping. Add homemade barbecue sauce, a blend of gouda and mozzarella, red onion, banana peppers, and cilantro, and you’v"
   }
  ]
 }
