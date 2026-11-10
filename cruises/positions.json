@@ -2,10 +2,10 @@
   "about": "Positions for the Royal Caribbean ships in cruises/fleet.json. Each ship keeps a trail of position points from about the last 24 hours. aisstream.io is sampled for about 75 seconds every 5 minutes, then Open Waters fills ships that stayed quiet. A ship with nothing newer keeps its previous coordinates and seen time. Not for navigation. updated is when this snapshot was published; seen is when that ship was last heard.",
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
-    "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
+    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
-  "heard": 0,
+  "heard": 1,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -134,16 +134,16 @@
     },
     "309436000": {
       "aisName": "LIBERTY OF THE SEAS",
-      "cog": 125.6,
+      "cog": 141.6,
       "destination": "MXCZM",
       "eta": "11-11 11:00",
-      "heading": 125,
-      "lat": 28.36412,
-      "lon": -93.1362,
+      "heading": 139,
+      "lat": 28.16573,
+      "lon": -92.85618,
       "navStatus": 0,
-      "seen": "2026-11-10T04:06:52Z",
-      "sog": 19.8,
-      "source": "aisstream",
+      "seen": "2026-11-10T05:04:57Z",
+      "sog": 18.3,
+      "source": "aishub",
       "trail": [
         {
           "lat": 28.311,
@@ -209,6 +209,11 @@
           "lat": 28.36412,
           "lon": -93.1362,
           "seen": "2026-11-10T04:06:52Z"
+        },
+        {
+          "lat": 28.16573,
+          "lon": -92.85618,
+          "seen": "2026-11-10T05:04:57Z"
         }
       ]
     },
@@ -299,15 +304,15 @@
     },
     "311000396": {
       "aisName": "HARMONY OF THE SEAS",
-      "cog": 342.9,
+      "cog": 341.5,
       "destination": "USPCN",
       "eta": "11-10 09:45",
-      "heading": 342,
-      "lat": 27.52406,
-      "lon": -79.94592,
+      "heading": 338,
+      "lat": 27.68432,
+      "lon": -79.98228,
       "navStatus": 0,
-      "seen": "2026-11-10T04:15:25Z",
-      "sog": 11.4,
+      "seen": "2026-11-10T05:07:36Z",
+      "sog": 10.5,
       "source": "aishub",
       "trail": [
         {
@@ -429,27 +434,27 @@
           "lat": 27.52406,
           "lon": -79.94592,
           "seen": "2026-11-10T04:15:25Z"
+        },
+        {
+          "lat": 27.68432,
+          "lon": -79.98228,
+          "seen": "2026-11-10T05:07:36Z"
         }
       ]
     },
     "311000397": {
       "aisName": "OVATION OF THE SEAS",
-      "cog": 147.6,
+      "cog": 149.1,
       "destination": "US AOU",
       "eta": "11-11 14:30",
       "heading": 149,
-      "lat": 33.1692,
-      "lon": -117.99627,
+      "lat": 33.05501,
+      "lon": -117.90835,
       "navStatus": 0,
-      "seen": "2026-11-10T04:15:23Z",
-      "sog": 9.3,
-      "source": "aishub",
+      "seen": "2026-11-10T05:06:52Z",
+      "sog": 9.6,
+      "source": "aisstream.io",
       "trail": [
-        {
-          "lat": 32.21476,
-          "lon": -117.64418,
-          "seen": "2026-11-09T04:26:17Z"
-        },
         {
           "lat": 32.39289,
           "lon": -117.69521,
@@ -524,6 +529,11 @@
           "lat": 33.1692,
           "lon": -117.99627,
           "seen": "2026-11-10T04:15:23Z"
+        },
+        {
+          "lat": 33.05501,
+          "lon": -117.90835,
+          "seen": "2026-11-10T05:06:52Z"
         }
       ]
     },
@@ -540,11 +550,6 @@
       "sog": 14.1,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 28.43177,
-          "lon": -93.25783,
-          "seen": "2026-11-09T04:26:14Z"
-        },
         {
           "lat": 28.28513,
           "lon": -93.01398,
@@ -606,11 +611,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 26.18014,
-          "lon": -79.50929,
-          "seen": "2026-11-09T04:25:30Z"
-        },
-        {
           "lat": 26.0446,
           "lon": -79.51622,
           "seen": "2026-11-09T05:30:10Z"
@@ -664,21 +664,26 @@
     },
     "311001178": {
       "aisName": "ICON OF THE SEAS",
-      "cog": 158.9,
+      "cog": 115.0,
       "destination": "SX PHI",
       "eta": "11-10 11:00",
-      "heading": 158,
-      "lat": 24.52856,
-      "lon": -79.51997,
+      "heading": 115,
+      "lat": 18.86465,
+      "lon": -64.36506,
       "navStatus": 0,
-      "seen": "2026-11-08T02:18:24Z",
-      "sog": 21.8,
-      "source": "aishub",
+      "seen": "2026-11-10T04:51:58Z",
+      "sog": 18.0,
+      "source": "openwaters.io",
       "trail": [
         {
           "lat": 24.52856,
           "lon": -79.51997,
           "seen": "2026-11-10T02:33:22Z"
+        },
+        {
+          "lat": 18.86465,
+          "lon": -64.36506,
+          "seen": "2026-11-10T04:51:58Z"
         }
       ]
     },
@@ -741,11 +746,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 26.57498,
-          "lon": -79.75757,
-          "seen": "2026-11-09T04:25:52Z"
-        },
-        {
           "lat": 26.23558,
           "lon": -79.78159,
           "seen": "2026-11-09T05:31:03Z"
@@ -785,11 +785,6 @@
       "sog": 13.3,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.16708,
-          "lon": -79.43291,
-          "seen": "2026-11-09T04:26:00Z"
-        },
         {
           "lat": 26.20017,
           "lon": -79.20938,
@@ -1111,11 +1106,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 32.29233,
-          "lon": -117.5316,
-          "seen": "2026-11-09T04:26:17Z"
-        },
-        {
           "lat": 32.19611,
           "lon": -117.63608,
           "seen": "2026-11-09T05:30:27Z"
@@ -1223,7 +1213,7 @@
         {
           "lat": 26.74141,
           "lon": -83.43475,
-          "seen": "2026-11-09T04:26:22Z"
+          "seen": "2026-11-10T05:08:03Z"
         }
       ]
     },
@@ -1240,11 +1230,6 @@
       "sog": 13.6,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 26.52049,
-          "lon": -83.58271,
-          "seen": "2026-11-09T04:20:47Z"
-        },
         {
           "lat": 26.22469,
           "lon": -83.74268,
@@ -1290,5 +1275,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-10T04:15:55Z"
+  "updated": "2026-11-10T05:08:03Z"
 }
