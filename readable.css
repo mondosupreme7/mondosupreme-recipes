@@ -1186,7 +1186,7 @@ html:not([data-theme="retro"]) .file-tabs,.source-chips{
   font:400 18px/var(--tap) var(--font-ui) !important;color:var(--ink-muted) !important;background:none !important
 }
 .ship-callout .leaflet-popup-tip{background:var(--surface)}
-html:not([data-theme="retro"]) #map{height:min(52svh,480px) !important;min-height:220px}
+html:not([data-theme="retro"]) #map{height:240px !important;min-height:200px}
 html:not([data-theme="retro"]) .cruise-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 html:not([data-theme="retro"]) .tile{
   background:var(--surface) !important;color:var(--ink) !important;border:2px solid var(--line-strong) !important;

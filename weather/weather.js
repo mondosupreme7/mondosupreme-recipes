@@ -2,6 +2,7 @@
   'use strict';
   var KEY = 'mondosupreme.weather.v1';
   var PORT = { lat: 28.4103, lon: -80.6188, name: 'Port Canaveral' };
+  var FLORIDA = [[24.4, -87.7], [31.1, -79.9]];
   var PRESETS = [
     { id: 'cocoa', label: 'Cocoa (32927)', q: '32927', name: 'Cocoa, FL', lat: 28.38612, lon: -80.742, zoom: 10 },
     { id: 'port', label: 'Port Canaveral', q: 'Port Canaveral', name: 'Port Canaveral, FL', lat: 28.4103, lon: -80.6188, zoom: 11 },
@@ -20,6 +21,10 @@
   var futureOn = true;
   var speedMs = 700;
   var radarCache = null;
+  var radarCaches = {};
+  var radarSource = 'iem';
+  var radarHasFuture = true;
+  var autoplay = true;
   var radarToken = 0;
   var map, pin, nexradLayer, shipLayer, shipLoaded = false;
   var frames = [];
@@ -118,7 +123,7 @@
       btn.setAttribute('aria-pressed', btn.getAttribute('data-preset') === (place.id || '') ? 'true' : 'false');
     });
   }
-  function movePin() {
+  function movePin(recenter) {
     if (!map) return;
     if (!pin) {
       pin = L.circleMarker([place.lat, place.lon], {
@@ -127,7 +132,11 @@
     } else {
       pin.setLatLng([place.lat, place.lon]);
     }
-    map.setView([place.lat, place.lon], place.zoom);
+    if (recenter) map.setView([place.lat, place.lon], place.zoom || 8);
+  }
+  function showFlorida() {
+    if (!map) return;
+    map.fitBounds(FLORIDA, { paddingTopLeft: [40, 4], paddingBottomRight: [4, 16], maxZoom: 6, animate: false });
   }
   function applyPlace(next) {
     place = {
@@ -139,7 +148,7 @@
       zoom: next.zoom || 10
     };
     paintPlace();
-    movePin();
+    movePin(true);
     save();
     loadForecast();
     loadMarine();
@@ -215,8 +224,9 @@
     });
     if (nexradOn) nexradLayer.addTo(map);
     shipLayer = L.layerGroup();
-    movePin();
-    setTimeout(function () { map.invalidateSize(); }, 200);
+    movePin(false);
+    showFlorida();
+    setTimeout(function () { map.invalidateSize(); showFlorida(); }, 200);
   }
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -230,6 +240,9 @@
     return String(d.getUTCFullYear()) + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate()) + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes());
   }
   function tileUrl(frame, z, x, y) {
+    if (frame.source === 'rain') {
+      return (frame.host || 'https://tilecache.rainviewer.com') + frame.path + '/256/' + z + '/' + x + '/' + y + '/2/1_1.png';
+    }
     var layer = frame.kind === 'forecast'
       ? 'hrrr::REFD-F' + frame.lead + '-' + frame.run
       : 'ridge::USCOMP-N0Q-' + frame.comp;
@@ -314,11 +327,17 @@
     frames.forEach(function (frame) { if (frame.kind !== 'forecast') last = frame.time; });
     return last || Date.now();
   }
+  function phaseOf(frame) {
+    var mins = Math.round((frame.time - Date.now()) / 60000);
+    if (frame.kind === 'forecast' || mins > 7) return 'Future';
+    if (mins < -7) return 'Past';
+    return 'Now';
+  }
   function frameCaption(frame) {
     var rel = relLabel(frame.time, Date.now());
-    if (rel === 'Now') return 'Now · ' + clockLabel(frame.time);
-    if (frame.kind === 'forecast') return rel + ' · ' + clockLabel(frame.time);
-    return rel;
+    var phase = phaseOf(frame);
+    if (rel === 'Now' || phase === 'Now') return 'Now · ' + clockLabel(frame.time);
+    return phase + ' · ' + clockLabel(frame.time);
   }
   function nextGood(from, dir) {
     if (!frames.length) return 0;
@@ -348,6 +367,8 @@
     }
     var stamp = $('wxStamp');
     if (stamp) stamp.textContent = caption;
+    var phase = $('wxPhase');
+    if (phase) phase.textContent = phaseOf(frame);
     var read = $('wxScrubRead');
     if (read) read.textContent = caption;
     var scrub = $('wxScrub');
@@ -362,6 +383,17 @@
     }
   }
   function whenReady(layer) {
+    if (layer && layer.options && layer.options.noaaImage) {
+      return new Promise(function (resolve) {
+        var done = false;
+        function finish(ok) { if (!done) { done = true; resolve(ok); } }
+        layer.once('load', function () { finish(true); });
+        layer.once('error', function () { finish(false); });
+        layer.setOpacity(0);
+        if (!map.hasLayer(layer)) layer.addTo(map);
+        setTimeout(function () { finish(true); }, 5000);
+      });
+    }
     return new Promise(function (resolve) {
       if (!layer) { resolve(false); return; }
       var settled = false;
@@ -430,16 +462,29 @@
     frames = [];
   }
   function makeLayer(frame) {
+    if (frame.image) {
+      return L.imageOverlay(frame.image, FLORIDA, {
+        opacity: 0,
+        pane: 'radar',
+        interactive: false,
+        noaaImage: true,
+        attribution: 'NOAA/NWS radar'
+      });
+    }
+    var credit = frame.source === 'rain'
+      ? 'RainViewer'
+      : (frame.kind === 'forecast' ? 'NOAA HRRR via Iowa Environmental Mesonet' : 'NEXRAD via Iowa Environmental Mesonet');
     return new RadarTile('', {
       frame: frame,
       pane: 'radar',
       opacity: 0,
       maxZoom: 14,
-      maxNativeZoom: 8,
-      attribution: frame.kind === 'forecast' ? 'NOAA HRRR via Iowa Environmental Mesonet' : 'NEXRAD via Iowa Environmental Mesonet'
+      maxNativeZoom: frame.source === 'rain' ? 7 : 8,
+      attribution: credit
     });
   }
   function sampleUrl(frame) {
+    if (frame.image) return frame.image;
     var z = 6;
     var x = 17;
     var y = 26;
@@ -534,15 +579,16 @@
         if (frames[n].kind !== 'forecast' && frames[n].ok !== false) { nowIndex = n; break; }
       }
       var crt = document.querySelector('.wx-crt');
-      if (crt) crt.classList.toggle('is-past', !futureOn || !forecastCount);
+      radarHasFuture = forecastCount > 0;
+      if (crt) crt.classList.toggle('is-past', !radarHasFuture);
       syncLiveUnderlay();
-      showFrame(nowIndex);
+      showFrame(0).then(function () {
+        if (autoplay) play();
+      });
       preloadFrames();
-      if (wasPlaying) play();
-      var reach = forecastCount ? relLabel(frames[frames.length - 1].time, obsAnchor()) : 'Now';
-      note(futureOn
-        ? 'Latest two hours of observed radar, then a short HRRR look ahead to ' + reach + '.'
-        : 'Latest two hours of observed US composite, ending on the newest scan.');
+      if (wasPlaying && !autoplay) play();
+      if (radarHasFuture) note('Looping past, now, and the forecast.');
+      else note('This source loops past to now.');
     });
   }
   function loadRecentScans() {
@@ -561,22 +607,86 @@
       }).filter(function (frame) { return Number.isFinite(frame.time); });
     });
   }
+  function noaaImage(time) {
+    return 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer/exportImage'
+      + '?bbox=-87.7,24.4,-79.9,31.1&bboxSR=4326&size=780,520&format=png32&transparent=true&f=image&time=' + String(Math.round(time));
+  }
+  function loadNoaa() {
+    return fetch('https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer?f=json')
+      .then(function (res) { if (!res.ok) throw new Error('noaa'); return res.json(); })
+      .then(function (meta) {
+        var extent = meta.timeInfo && meta.timeInfo.timeExtent;
+        if (!extent || extent.length < 2) throw new Error('noaa time');
+        var step = 10 * 60 * 1000;
+        var built = [];
+        for (var t = extent[0]; t <= extent[1]; t += step) {
+          built.push({ kind: 'obs', time: t, image: noaaImage(t), ok: true, source: 'noaa' });
+        }
+        if (built.length && built[built.length - 1].time < extent[1] - 60000) {
+          built.push({ kind: 'obs', time: extent[1], image: noaaImage(extent[1]), ok: true, source: 'noaa' });
+        }
+        return { at: Date.now(), frames: built, hasFuture: false, mode: 'built' };
+      });
+  }
+  function loadRain() {
+    return fetch('https://api.rainviewer.com/public/weather-maps.json')
+      .then(function (res) { if (!res.ok) throw new Error('rain'); return res.json(); })
+      .then(function (data) {
+        var host = data.host || 'https://tilecache.rainviewer.com';
+        var radar = data.radar || {};
+        var past = radar.past || [];
+        var nowcast = radar.nowcast || [];
+        var built = past.map(function (frame) {
+          return { kind: 'obs', time: frame.time * 1000, path: frame.path, host: host, source: 'rain', ok: true };
+        });
+        nowcast.forEach(function (frame) {
+          built.push({ kind: 'forecast', time: frame.time * 1000, path: frame.path, host: host, source: 'rain', ok: true });
+        });
+        if (!built.length) throw new Error('rain empty');
+        return { at: Date.now(), frames: built, hasFuture: nowcast.length > 0, mode: 'built' };
+      });
+  }
+  function loadIem() {
+    return Promise.all([loadRecentScans().catch(function () { return null; }), findLatest(), futureOn ? findHrrr() : Promise.resolve(null)])
+      .then(function (pair) {
+        return { at: Date.now(), scans: pair[0], latest: pair[1], hrrr: pair[2], mode: 'iem' };
+      });
+  }
   function loadRadar() {
-    var first = frames.length === 0;
-    if (radarCache && Date.now() - radarCache.at < 8 * 60 * 1000) {
-      applyRadar(radarCache);
+    var key = radarSource + (radarSource === 'iem' && futureOn ? '-future' : '');
+    var cached = radarCaches[key];
+    if (cached && Date.now() - cached.at < 8 * 60 * 1000) {
+      if (cached.mode === 'iem') applyRadar(cached);
+      else applyBuilt(cached);
       return;
     }
     if ($('wxStamp')) $('wxStamp').textContent = 'Loading the latest radar…';
-    Promise.all([loadRecentScans().catch(function () { return null; }), findLatest(), findHrrr()]).then(function (pair) {
-      radarCache = { at: Date.now(), scans: pair[0], latest: pair[1], hrrr: pair[2] };
-      applyRadar(radarCache);
+    var job = radarSource === 'rain' ? loadRain() : radarSource === 'noaa' ? loadNoaa() : loadIem();
+    job.then(function (pack) {
+      radarCaches[key] = pack;
+      radarCache = pack;
+      if (pack.mode === 'iem') applyRadar(pack);
+      else applyBuilt(pack);
     }).catch(function () {
-      if (first) {
-        $('wxStamp').textContent = 'Radar loop unavailable';
-        if (!nexradOn) setNexrad(true);
-      }
-      note('The radar loop did not load. The live US composite is still available.');
+      $('wxStamp').textContent = 'Radar loop unavailable';
+      note('That radar source did not load. Try another source.');
+    });
+  }
+  function applyBuilt(pack) {
+    var token = ++radarToken;
+    keepGoodFrames(pack.frames || []).then(function (good) {
+      if (token !== radarToken || !map) return;
+      clearLoop();
+      frames = good;
+      radarHasFuture = !!(pack.hasFuture && frames.some(function (frame) { return frame.kind === 'forecast'; }));
+      frameLayers = frames.map(makeLayer);
+      var crt = document.querySelector('.wx-crt');
+      if (crt) crt.classList.toggle('is-past', !radarHasFuture);
+      syncLiveUnderlay();
+      showFrame(0).then(function () { if (autoplay) play(); });
+      if (!pack.frames || !pack.frames[0] || !pack.frames[0].image) preloadFrames();
+      if (radarHasFuture) note('Looping past, now, and the forecast.');
+      else note('This source loops past to now.');
     });
   }
   function play() {
@@ -602,7 +712,8 @@
       playTimer = setTimeout(tick, speedMs);
     });
   }
-  function pause() {
+  function pause(fromUser) {
+    if (fromUser) autoplay = false;
     playing = false;
     if (playTimer) clearTimeout(playTimer);
     playTimer = 0;
@@ -750,7 +861,7 @@
     if (start < 0) start = 0;
     var hourly = $('wxHourly');
     clearNode(hourly);
-    for (var i = start; i < Math.min(times.length, start + 12); i++) {
+    for (var i = start; i < Math.min(times.length, start + 8); i++) {
       var cell = document.createElement('div');
       cell.className = 'wx-hour';
       var bar = document.createElement('div');
@@ -767,8 +878,12 @@
       hour.textContent = hm ? ((hourNum % 12) || 12) + (hourNum >= 12 ? 'p' : 'a') : '';
       var chance = document.createElement('div');
       chance.textContent = (typeof pop === 'number' ? pop : '—') + '%';
+      var temp = document.createElement('div');
+      var reading = data.hourly.temperature_2m && data.hourly.temperature_2m[i];
+      temp.textContent = typeof reading === 'number' ? Math.round(reading) + '°' : '';
       cell.appendChild(bar);
       cell.appendChild(hour);
+      cell.appendChild(temp);
       cell.appendChild(chance);
       hourly.appendChild(cell);
     }
@@ -777,7 +892,7 @@
   function paintDays(periods) {
     var box = $('wxDays');
     clearNode(box);
-    periods.slice(0, 14).forEach(function (period) {
+    periods.slice(0, 6).forEach(function (period) {
       var card = document.createElement('article');
       card.className = 'wx-day';
       var name = document.createElement('b');
@@ -978,7 +1093,13 @@
         note('The place lookup did not answer.');
       });
     });
-    $('wxPlay').addEventListener('click', function () { if (playing) pause(); else play(); });
+    $('wxPlay').addEventListener('click', function () { if (playing) pause(true); else { autoplay = true; play(); } });
+    $('wxSource').addEventListener('change', function (event) {
+      radarSource = event.target.value || 'iem';
+      var horizon = $('wxHorizon');
+      if (horizon) horizon.hidden = radarSource !== 'iem';
+      loadRadar();
+    });
     $('wxPrev').addEventListener('click', function () { pause(); showFrame(frameIndex - 1); });
     $('wxNext').addEventListener('click', function () { pause(); showFrame(frameIndex + 1); });
     $('wxScrub').addEventListener('input', function (event) {

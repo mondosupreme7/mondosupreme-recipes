@@ -80,6 +80,47 @@ html[data-theme="harbor"] .leaflet-control-attribution{background:rgba(11,18,32,
 html[data-theme="dark"] .leaflet-control-attribution a,
 html[data-theme="harbor"] .leaflet-control-attribution a{color:var(--link,#93c5fd)}
 .leaflet-container{font:12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.wx-source{display:flex;align-items:center;gap:8px;min-height:44px;font:650 14px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.wx-source select{flex:1;min-height:44px;font-size:16px}
+.wx-phase{margin:0;min-height:28px;display:inline-flex;align-items:center;padding:0 10px;border-radius:999px;background:#1e293b;color:#f8fafc;font:700 13px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+html:not([data-theme="retro"]) body.wx-page .ticker{display:none}
+html:not([data-theme="retro"]) .wx-hero{margin:0 0 6px}
+html:not([data-theme="retro"]) .wx-hero h1{font-size:1.35rem;margin:0}
+html:not([data-theme="retro"]) .wx-search label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+html:not([data-theme="retro"]) .wx-search{margin:0 0 6px}
+html:not([data-theme="retro"]) .wx-presets{flex-wrap:nowrap;overflow-x:auto;margin:0 0 6px}
+html:not([data-theme="retro"]) .wx-presets .btn{flex:0 0 auto}
+html:not([data-theme="retro"]) #map{height:240px}
+html:not([data-theme="retro"]) .leaflet-control-attribution{font-size:9px;line-height:1.2;max-height:28px;overflow:hidden}
+html:not([data-theme="retro"]) .wx-map-wrap{margin:4px;border-width:3px}
+html:not([data-theme="retro"]) .wx-controls{gap:4px;padding:6px}
+html:not([data-theme="retro"]) .wx-slider,
+html:not([data-theme="retro"]) .wx-scrub,
+html:not([data-theme="retro"]) #wxHorizon,
+html:not([data-theme="retro"]) label.wx-check:has(#wxRain),
+html:not([data-theme="retro"]) label.wx-check:has(#wxNexrad){display:none}
+html:not([data-theme="retro"]) .wx-day > div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html:not([data-theme="retro"]) .wx-note{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html:not([data-theme="retro"]) .wx-star-top{background:transparent}
+html:not([data-theme="retro"]) .wx-screen{margin:4px;padding:8px;background:var(--surface,#151c2c);color:var(--ink,#f8fafc);border:1px solid var(--line,#334155);box-shadow:none}
+html:not([data-theme="retro"]) .wx-temp{font-size:2.4rem;color:var(--ink,#f8fafc);text-shadow:none;min-width:0}
+html:not([data-theme="retro"]) .wx-now{gap:8px}
+html:not([data-theme="retro"]) .wx-cond{font-size:1rem;margin:0;color:var(--ink,#f8fafc)}
+html:not([data-theme="retro"]) .wx-facts{color:var(--ink-muted,#cbd5e1);gap:4px 10px}
+html:not([data-theme="retro"]) .wx-facts li:nth-child(n+4){display:none}
+html:not([data-theme="retro"]) .wx-sub{margin:8px 0 4px;color:var(--ink-muted,#cbd5e1);letter-spacing:0}
+html:not([data-theme="retro"]) .wx-hour .bar{display:none}
+html:not([data-theme="retro"]) .wx-hour{flex:0 0 auto;min-width:44px;font-size:12px;color:var(--ink,#f8fafc)}
+html:not([data-theme="retro"]) .wx-days{flex-direction:column;overflow:visible;gap:0}
+html:not([data-theme="retro"]) .wx-day{flex:none;min-height:0;width:auto;display:grid;grid-template-columns:7.2rem auto minmax(0,1fr) auto;gap:6px;align-items:center;padding:4px 0;background:transparent;border:0;border-top:1px solid var(--line,#334155);color:var(--ink,#f8fafc)}
+html:not([data-theme="retro"]) .wx-day b{white-space:nowrap}
+html:not([data-theme="retro"]) .wx-day b{color:var(--ink,#f8fafc)}
+html:not([data-theme="retro"]) .wx-day .hi{font-size:1rem}
+html:not([data-theme="retro"]) .wx-marine{display:block;font-size:.9rem}
+html:not([data-theme="retro"]) .wx-sea{background:transparent;border:0;padding:2px 0;color:var(--ink,#f8fafc)}
+html:not([data-theme="retro"]) .wx-sea b{color:var(--ink,#f8fafc)}
+html:not([data-theme="retro"]) .wx-alert.is-clear{background:transparent;color:var(--ink-muted,#cbd5e1);border:0;padding:0}
+html:not([data-theme="retro"]) #wxMusic{display:none}
 @media(max-width:768px){
  #map{height:min(48svh,360px)}
  .wx-temp{font-size:3.2rem}
