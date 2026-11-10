@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Build stocks/oversold.json from a maintained index universe and Yahoo Finance.
 
-The universe is the S&P 500, the Nasdaq-100, the S&P MidCap 400, the S&P
-SmallCap 600, and the Russell 2000. Index tables come from Wikipedia. Russell
-2000 names come from the iShares Russell 2000 ETF holdings file. The union is
-written to scripts/universe.json.
+The universe is US common stocks listed on Nasdaq, the NYSE, and NYSE American,
+taken from the Nasdaq Trader symbol directories. ETFs, ETNs, warrants, units,
+rights, preferreds, and test issues are left out. RCL is left out on purpose.
+The list is written to scripts/universe.json.
 RCL is left out on purpose. Daily bars come from Yahoo's public chart endpoint.
 Fundamentals, for names that pass the swing screen, come from Yahoo quoteSummary
 (summaryProfile, summaryDetail, financialData, defaultKeyStatistics,
@@ -47,6 +47,8 @@ NDX_URL = "https://en.wikipedia.org/wiki/List_of_NASDAQ-100_companies"
 MID_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_400_companies"
 SP600_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_600_companies"
 RUSSELL_URL = "https://www.ishares.com/us/products/239710/ishares-russell-2000-etf/latest-holdings.csv"
+NASDAQ_LISTED_URL = "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt"
+OTHER_LISTED_URL = "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt"
 CHART = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=2y&interval=1d&includePrePost=false"
 CRUMB_URL = "https://query1.finance.yahoo.com/v1/test/getcrumb"
 COOKIE_URL = "https://fc.yahoo.com"
@@ -61,6 +63,11 @@ HOLDINGS_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHT
 LISTED_EXCHANGES = {"NASDAQ", "NYSE", "NYSE MKT LLC", "NYSE AMERICAN", "NYSE ARCA", "AMEX", "NYSEARCA"}
 EXCLUDE = {"RCL"}
 TICKER_RE = re.compile(r"^[A-Z]{1,5}(?:-[A-Z])?$")
+LISTED_BAD_NAME = re.compile(
+    r"\b(warrant|warrants|right|rights|unit|units|preferred|preference|depositary|etn|notes?|debentures?|fund)\b"
+    r"|when[- ]issued|test stock|acquisition corp|blank check",
+    re.I,
+)
 MAX_AGE_HOURS = 0.4
 MIN_PRICED_RATIO = 0.65
 UNIVERSE_MAX_AGE_DAYS = 7
@@ -72,7 +79,9 @@ CHART_GAP = 0.28
 FUND_GAP = 1.1
 
 ABOUT = (
-    "Swing screen of S&P 500, Nasdaq-100, S&P MidCap 400, S&P SmallCap 600, and Russell 2000 stocks. A name is published when "
+    "Swing screen of US common stocks listed on Nasdaq, the NYSE, and NYSE American. "
+    "ETFs, ETNs, warrants, units, rights, preferreds, and test issues are left out, "
+    "as are names under $3 or under $2 million of average daily dollar volume. A name is published when "
     "the daily chart shows an oversold RSI, a lower Bollinger touch or re-entry, or a pullback "
     "while price is still above the 200-day average. RSI is Wilder's 14-day RSI. Bollinger Bands "
     "are the 20-day average plus and minus two population standard deviations. ATR is Wilder's "
@@ -679,6 +688,66 @@ def parse_russell_holdings(text):
     return found
 
 
+def listed_symbol(raw):
+    text = (raw or "").strip().upper().replace(".", "-").replace("/", "-")
+    if "$" in text or "%" in text:
+        return ""
+    return normalize_symbol(text)
+
+
+def keep_common_name(name):
+    return bool(name) and LISTED_BAD_NAME.search(name) is None
+
+
+def parse_symbol_directory(nasdaq_text, other_text):
+    """Common stocks from the Nasdaq Trader symbol directories.
+
+    Nasdaq, NYSE, and NYSE American only. ETFs, test issues, and names that
+    are warrants, rights, units, preferreds, notes, or funds are dropped.
+    """
+    nasdaq = []
+    nyse = []
+    amex = []
+    seen = set()
+
+    def add(symbol, bucket):
+        if not symbol or symbol in seen or symbol in EXCLUDE:
+            return
+        seen.add(symbol)
+        bucket.append(symbol)
+
+    for line in nasdaq_text.splitlines():
+        parts = line.split("|")
+        if len(parts) < 8 or parts[0] in {"Symbol", ""}:
+            continue
+        if parts[6] != "N" or parts[3] != "N" or parts[7] == "Y":
+            continue
+        if not keep_common_name(parts[1]):
+            continue
+        add(listed_symbol(parts[0]), nasdaq)
+    for line in other_text.splitlines():
+        parts = line.split("|")
+        if len(parts) < 8 or parts[0] in {"ACT Symbol", ""}:
+            continue
+        if parts[2] not in {"N", "A"} or parts[4] != "N" or parts[6] != "N":
+            continue
+        if not keep_common_name(parts[1]):
+            continue
+        add(listed_symbol(parts[0]), nyse if parts[2] == "N" else amex)
+    return {"nasdaq": nasdaq, "nyse": nyse, "amex": amex}
+
+
+def fetch_symbol_directory():
+    opener = urllib.request.build_opener()
+    nasdaq = read_url(opener, NASDAQ_LISTED_URL, 60, attempts=3, user_agent=WIKI_UA).decode("utf-8", "replace")
+    other = read_url(opener, OTHER_LISTED_URL, 60, attempts=3, user_agent=WIKI_UA).decode("utf-8", "replace")
+    groups = parse_symbol_directory(nasdaq, other)
+    union = len(groups["nasdaq"]) + len(groups["nyse"]) + len(groups["amex"])
+    if union < 4000:
+        raise RuntimeError("symbol directory returned " + str(union) + " common stocks")
+    return groups
+
+
 def symbols_from_russell():
     opener = urllib.request.build_opener()
     raw = read_url(opener, RUSSELL_URL, 60, attempts=3, user_agent=HOLDINGS_UA)
@@ -689,34 +758,18 @@ def symbols_from_russell():
 
 
 def build_universe():
-    groups = {
-        "sp500": symbols_from_page(SP_URL, 480),
-        "ndx100": symbols_from_page(NDX_URL, 95),
-        "mid400": symbols_from_page(MID_URL, 380),
-        "sp600": symbols_from_page(SP600_URL, 550),
-        "russell2000": symbols_from_russell(),
-    }
-    ordered = []
-    seen = set()
-    for key in ("sp500", "ndx100", "mid400", "sp600", "russell2000"):
-        for symbol in groups[key]:
-            if symbol in seen or symbol in EXCLUDE:
-                continue
-            seen.add(symbol)
-            ordered.append(symbol)
-    ordered.sort()
-    if "RCL" in ordered or "RCL" in seen:
+    groups = fetch_symbol_directory()
+    ordered = sorted(groups["nasdaq"] + groups["nyse"] + groups["amex"])
+    if "RCL" in ordered:
         raise RuntimeError("RCL slipped into the universe")
     return {
         "updated": stamp(now_utc()),
-        "sources": [SP_URL, NDX_URL, MID_URL, SP600_URL, RUSSELL_URL],
+        "sources": [NASDAQ_LISTED_URL, OTHER_LISTED_URL],
         "excluded": sorted(EXCLUDE),
         "counts": {
-            "sp500": len(groups["sp500"]),
-            "ndx100": len(groups["ndx100"]),
-            "mid400": len(groups["mid400"]),
-            "sp600": len(groups["sp600"]),
-            "russell2000": len(groups["russell2000"]),
+            "nasdaq": len(groups["nasdaq"]),
+            "nyse": len(groups["nyse"]),
+            "amex": len(groups["amex"]),
             "union": len(ordered),
         },
         "symbols": ordered,
@@ -729,9 +782,10 @@ def universe_stale(document):
     if not isinstance(document, dict) or not isinstance(document.get("symbols"), list):
         return True
     counts = document.get("counts") if isinstance(document.get("counts"), dict) else {}
-    if counts.get("sp600", 0) < 500 or counts.get("russell2000", 0) < 1500:
+    sources = document.get("sources") if isinstance(document.get("sources"), list) else []
+    if NASDAQ_LISTED_URL not in sources or counts.get("union", 0) < 4000:
         return True
-    if len(document["symbols"]) < 1400:
+    if len(document["symbols"]) < 4000:
         return True
     if "RCL" in document["symbols"]:
         return True
@@ -756,7 +810,7 @@ def load_universe():
     except (OSError, urllib.error.URLError, TimeoutError, RuntimeError, re.error) as error:
         symbols = [symbol for symbol in previous.get("symbols", []) if isinstance(symbol, str) and normalize_symbol(symbol)]
         counts = previous.get("counts") if isinstance(previous.get("counts"), dict) else {}
-        if len(symbols) >= 1400 and counts.get("russell2000", 0) >= 1500 and "RCL" not in symbols:
+        if len(symbols) >= 4000 and counts.get("union", 0) >= 4000 and "RCL" not in symbols:
             print("Universe refresh failed (" + str(error).splitlines()[0][:120] + "). Keeping the saved list.")
             return symbols
         raise
@@ -765,16 +819,12 @@ def load_universe():
     print(
         "Universe refreshed: "
         + str(counts["union"])
-        + " symbols (S&P 500 "
-        + str(counts["sp500"])
-        + ", Nasdaq-100 "
-        + str(counts["ndx100"])
-        + ", MidCap 400 "
-        + str(counts["mid400"])
-        + ", SmallCap 600 "
-        + str(counts["sp600"])
-        + ", Russell 2000 "
-        + str(counts["russell2000"])
+        + " common stocks (Nasdaq "
+        + str(counts["nasdaq"])
+        + ", NYSE "
+        + str(counts["nyse"])
+        + ", NYSE American "
+        + str(counts["amex"])
         + ")."
     )
     return document["symbols"]
@@ -885,6 +935,7 @@ def analyze(symbol, bars, name, exchange):
         "high52": round(high52, 2),
         "low52": round(low52, 2),
         "volumeRatio": round(volume_ratio, 2),
+        "avgDollarVolume": round(close * mean(prior_volume)) if prior_volume and mean(prior_volume) else None,
         "hammer": hammer,
         "uptick": uptick,
         "score": score,
@@ -1667,11 +1718,8 @@ def write_doc(rows, fetched_at, universe_count, priced, candidates):
             "Nasdaq's public quote, financials, analyst target, ratings, and earnings calendar "
             "(https://api.nasdaq.com/)."
         ),
-        "universeSource": (
-            "Wikipedia constituent tables: " + SP_URL + " ; " + NDX_URL + " ; " + MID_URL + " ; " + SP600_URL
-            + ". Russell 2000 holdings: " + RUSSELL_URL + "."
-        ),
-        "universe": "S&P 500, Nasdaq-100, S&P MidCap 400, S&P SmallCap 600, and Russell 2000",
+        "universeSource": "Nasdaq Trader symbol directories: " + NASDAQ_LISTED_URL + " ; " + OTHER_LISTED_URL + ".",
+        "universe": "US common stocks on Nasdaq, NYSE, and NYSE American",
         "universeCount": universe_count,
         "priced": priced,
         "candidates": candidates,
@@ -1709,6 +1757,21 @@ def self_test():
         "CASH,Cash,Money Market,-\n"
     )
     assert parse_russell_holdings(holdings) == ["AAA", "MOG-A"]
+    sample_dir = parse_symbol_directory(
+        "Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares\n"
+        "AAPL|Apple Inc. - Common Stock|Q|N|N|100|N|N\n"
+        "QQQ|Invesco QQQ Trust|Q|N|N|100|Y|N\n"
+        "ABCDW|Example Warrant|S|N|N|100|N|N\n",
+        "ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol\n"
+        "IBM|International Business Machines Common Stock|N|IBM|N|100|N|IBM\n"
+        "RCL|Skip Common Stock|N|RCL|N|100|N|RCL\n"
+        "BAC$E|Bank Preferred|N|BAC$E|N|100|N|BAC$E\n"
+        "SPY|SPDR S&P 500 ETF|P|SPY|Y|100|N|SPY\n"
+        "ATEX|Example Common Stock|A|ATEX|N|100|N|ATEX\n",
+    )
+    assert sample_dir["nasdaq"] == ["AAPL"]
+    assert sample_dir["nyse"] == ["IBM"]
+    assert sample_dir["amex"] == ["ATEX"]
     sample = analyze("TEST", [
         {"time": index, "open": 100 + (index % 3) * 0.2, "high": 101 + index * 0.01, "low": 99, "close": 100 - index * 0.05, "volume": 1000 + index}
         for index in range(80)
@@ -2184,6 +2247,22 @@ def main():
         if failures:
             print("Missed: " + ", ".join(failures[:12]))
         return
+    priced_count = len(rows)
+    min_price = float(swing_param("universeFilter.minPrice", 3))
+    min_dollar = float(swing_param("universeFilter.minDollarVolume", 2000000))
+    liquid = [
+        row for row in rows
+        if (row.get("price") or 0) >= min_price and (row.get("avgDollarVolume") or 0) >= min_dollar
+    ]
+    print(
+        "Priced " + str(len(rows)) + "; " + str(len(liquid)) + " left after the $"
+        + format(min_price, ".0f") + " and $" + format(min_dollar / 1000000, ".0f") + "M dollar-volume filter.",
+        flush=True,
+    )
+    if len(liquid) < 80:
+        print("Too few liquid names. Keeping the previous snapshot.")
+        return
+    rows = liquid
     strict = [row for row in rows if is_candidate(row, loose=False)]
     chosen = strict if len(strict) >= 24 else [row for row in rows if is_candidate(row, loose=True)]
     chosen.sort(key=lambda row: (-row["score"], row["rsi"], row["symbol"]))
@@ -2217,7 +2296,7 @@ def main():
     if len(published) < 8:
         print("Only " + str(len(published)) + " swing candidates. Keeping the previous snapshot.")
         return
-    write_doc(published, stamp(now_utc()), len(symbols), len(rows), len(chosen))
+    write_doc(published, stamp(now_utc()), len(symbols), priced_count, len(chosen))
     record_picks(published, spy_context())
     deep = sum(1 for row in published if row["zone"] == "deep")
     print(

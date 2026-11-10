@@ -7,6 +7,11 @@ name: Update oversold stock screener
 # workflow. A failed fetch keeps the previous file.
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/update-oversold-stocks.py
+      - .github/workflows/stock-screener.yml
   schedule:
     - cron: '30 20 * * 1-5'
     - cron: '30 21 * * 1-5'
@@ -25,7 +30,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 70
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -38,9 +43,9 @@ jobs:
 
       - name: Fetch oversold snapshot
         env:
-          STOCKS_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+          STOCKS_FORCE: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'push') && '1' || '0' }}
           STOCKS_AFTER_CLOSE: ${{ github.event_name == 'schedule' && github.event.schedule != '15 12 * * 0' && '1' || '0' }}
-          STOCKS_REFRESH_UNIVERSE: ${{ (github.event_name == 'workflow_dispatch' || github.event.schedule == '15 12 * * 0') && '1' || '0' }}
+          STOCKS_REFRESH_UNIVERSE: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.schedule == '15 12 * * 0') && '1' || '0' }}
           STOCKS_UNIVERSE_ONLY: ${{ github.event.schedule == '15 12 * * 0' && '1' || '0' }}
         run: python3 scripts/update-oversold-stocks.py
 

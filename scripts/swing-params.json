@@ -1,10 +1,14 @@
 {
-  "version": "2026-11-10.1",
+  "version": "2026-11-10.2",
   "liquidity": {
     "minPrice": 5,
     "minAvgVolume": 250000,
     "minDollarVolume": 5000000,
     "minBars": 60
+  },
+  "universeFilter": {
+    "minPrice": 3,
+    "minDollarVolume": 2000000
   },
   "rsi": {
     "lookback": 7,
