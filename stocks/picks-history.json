@@ -238,6 +238,251 @@
       "maePct": -2.5,
       "lastPrice": 58.56,
       "evaluatedAt": "2026-11-10T17:46:04Z"
+    },
+    {
+      "id": "2026-11-10-HALO",
+      "pickedOn": "2026-11-10",
+      "paramVersion": "2026-11-10.2",
+      "rank": 1,
+      "symbol": "HALO",
+      "name": "Halozyme Therapeutics, Inc.",
+      "priceAtPick": 103.43,
+      "entryLow": 102.22,
+      "entryHigh": 103.43,
+      "stop": 96.14,
+      "target": 122.58,
+      "rewardRisk": 2.63,
+      "score": 82.5,
+      "swingScore": 40,
+      "swingEligible": true,
+      "signals": [
+        "RSI turning up",
+        "Stoch cross",
+        "Pullback from high",
+        "Uptrend pullback"
+      ],
+      "gates": {
+        "above200": true,
+        "confirming": [
+          "RSI turning up",
+          "Stoch cross"
+        ],
+        "adjustedScore": 40,
+        "rewardRisk": 2.63,
+        "earningsClear": true
+      },
+      "sector": "Health Care",
+      "market": {
+        "symbol": "SPY",
+        "price": 747.03,
+        "vsSma50": -2.34,
+        "vsSma200": 2.2
+      },
+      "status": "open",
+      "outcome": null,
+      "filledOn": null,
+      "closedOn": null,
+      "daysHeld": null,
+      "returnPct": null,
+      "mfePct": null,
+      "maePct": null,
+      "lastPrice": 103.43,
+      "evaluatedAt": "2026-11-10T18:34:36Z"
+    },
+    {
+      "id": "2026-11-10-PAGP",
+      "pickedOn": "2026-11-10",
+      "paramVersion": "2026-11-10.2",
+      "rank": 2,
+      "symbol": "PAGP",
+      "name": "Plains GP Holdings, L.P.",
+      "priceAtPick": 25.57,
+      "entryLow": 25.41,
+      "entryHigh": 25.57,
+      "stop": 24.64,
+      "target": 27.46,
+      "rewardRisk": 2.05,
+      "score": 55.4,
+      "swingScore": 40,
+      "swingEligible": true,
+      "signals": [
+        "RSI turning up",
+        "Lower BB bounce",
+        "Reversal candle",
+        "Uptrend pullback"
+      ],
+      "gates": {
+        "above200": true,
+        "confirming": [
+          "RSI turning up",
+          "Lower BB bounce",
+          "Reversal candle"
+        ],
+        "adjustedScore": 40,
+        "rewardRisk": 2.05,
+        "earningsClear": true
+      },
+      "sector": "Energy",
+      "market": {
+        "symbol": "SPY",
+        "price": 747.03,
+        "vsSma50": -2.34,
+        "vsSma200": 2.2
+      },
+      "status": "open",
+      "outcome": null,
+      "filledOn": null,
+      "closedOn": null,
+      "daysHeld": null,
+      "returnPct": null,
+      "mfePct": null,
+      "maePct": null,
+      "lastPrice": 25.57,
+      "evaluatedAt": "2026-11-10T18:34:36Z"
+    },
+    {
+      "id": "2026-11-10-SU",
+      "pickedOn": "2026-11-10",
+      "paramVersion": "2026-11-10.2",
+      "rank": 3,
+      "symbol": "SU",
+      "name": "Suncor Energy Inc.",
+      "priceAtPick": 67.62,
+      "entryLow": 67.02,
+      "entryHigh": 67.62,
+      "stop": 64.0,
+      "target": 75.41,
+      "rewardRisk": 2.15,
+      "score": 52.4,
+      "swingScore": 38,
+      "swingEligible": true,
+      "signals": [
+        "RSI turning up",
+        "Lower BB bounce",
+        "Pullback from high",
+        "Uptrend pullback"
+      ],
+      "gates": {
+        "above200": true,
+        "confirming": [
+          "RSI turning up",
+          "Lower BB bounce"
+        ],
+        "adjustedScore": 38,
+        "rewardRisk": 2.15,
+        "earningsClear": true
+      },
+      "sector": "",
+      "market": {
+        "symbol": "SPY",
+        "price": 747.03,
+        "vsSma50": -2.34,
+        "vsSma200": 2.2
+      },
+      "status": "open",
+      "outcome": null,
+      "filledOn": null,
+      "closedOn": null,
+      "daysHeld": null,
+      "returnPct": null,
+      "mfePct": null,
+      "maePct": null,
+      "lastPrice": 67.62,
+      "evaluatedAt": "2026-11-10T18:34:36Z"
+    },
+    {
+      "id": "2026-11-10-CNQ",
+      "pickedOn": "2026-11-10",
+      "paramVersion": "2026-11-10.2",
+      "rank": 4,
+      "symbol": "CNQ",
+      "name": "Canadian Natural Resources Limi",
+      "priceAtPick": 48.1,
+      "entryLow": 47.62,
+      "entryHigh": 48.1,
+      "stop": 45.87,
+      "target": 52.74,
+      "rewardRisk": 2.07,
+      "score": 47.8,
+      "swingScore": 38,
+      "swingEligible": true,
+      "signals": [
+        "RSI turning up",
+        "Lower BB bounce",
+        "Pullback from high",
+        "Uptrend pullback"
+      ],
+      "gates": {
+        "above200": true,
+        "confirming": [
+          "RSI turning up",
+          "Lower BB bounce"
+        ],
+        "adjustedScore": 38,
+        "rewardRisk": 2.07,
+        "earningsClear": true
+      },
+      "sector": "",
+      "market": {
+        "symbol": "SPY",
+        "price": 747.03,
+        "vsSma50": -2.34,
+        "vsSma200": 2.2
+      },
+      "status": "open",
+      "outcome": null,
+      "filledOn": null,
+      "closedOn": null,
+      "daysHeld": null,
+      "returnPct": null,
+      "mfePct": null,
+      "maePct": null,
+      "lastPrice": 48.1,
+      "evaluatedAt": "2026-11-10T18:34:36Z"
+    },
+    {
+      "id": "2026-11-10-PAYS",
+      "pickedOn": "2026-11-10",
+      "paramVersion": "2026-11-10.2",
+      "rank": 5,
+      "symbol": "PAYS",
+      "name": "Paysign, Inc.",
+      "priceAtPick": 10.35,
+      "entryLow": 10.06,
+      "entryHigh": 10.35,
+      "stop": 8.64,
+      "target": 14.48,
+      "rewardRisk": 2.43,
+      "score": 80.5,
+      "swingScore": 4,
+      "swingEligible": false,
+      "signals": [
+        "Pullback from high"
+      ],
+      "gates": {
+        "above200": true,
+        "confirming": [],
+        "adjustedScore": 4,
+        "rewardRisk": 2.43,
+        "earningsClear": true
+      },
+      "sector": "Technology",
+      "market": {
+        "symbol": "SPY",
+        "price": 747.03,
+        "vsSma50": -2.34,
+        "vsSma200": 2.2
+      },
+      "status": "open",
+      "outcome": null,
+      "filledOn": null,
+      "closedOn": null,
+      "daysHeld": null,
+      "returnPct": null,
+      "mfePct": null,
+      "maePct": null,
+      "lastPrice": 10.35,
+      "evaluatedAt": "2026-11-10T18:34:36Z"
     }
   ]
 }
