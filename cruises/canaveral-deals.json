@@ -8,7 +8,7 @@
   },
   "browseUrl": "https://www.royalcaribbean.com/cruises?departureCode_PCN=true",
   "currency": "USD",
-  "fetchedAt": "2026-11-09T21:56:49Z",
+  "fetchedAt": "2026-11-10T18:18:05Z",
   "source": "Royal Caribbean public cruise search (https://www.royalcaribbean.com/cruises/graph).",
   "deals": [
     {
@@ -27,12 +27,12 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Nassau",
-      "startingPrice": 563.3,
-      "startingCabin": "Interior",
-      "perNight": 112.66,
+      "startingPrice": 741.8,
+      "startingCabin": "Ocean View",
+      "perNight": 148.36,
       "cabins": {
-        "interior": 563.3,
-        "oceanView": null,
+        "interior": null,
+        "oceanView": 741.8,
         "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1902275401&sailDate=2026-11-13&shipCode=EX&packageCode=EX05E061&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -49,23 +49,83 @@
       "sailDate": "2026-11-13",
       "endDate": "2026-11-16",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 1001.89,
+      "startingPrice": 1101.89,
       "startingCabin": "Interior",
-      "perNight": 333.96,
+      "perNight": 367.3,
       "cabins": {
-        "interior": 1001.89,
-        "oceanView": 1161.89,
-        "balcony": 1124.39
+        "interior": 1101.89,
+        "oceanView": 1200.39,
+        "balcony": 1181.89
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-13&shipCode=UT&packageCode=UT3BH174&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH174",
+      "bestValue": false,
+      "under100": false
+    },
+    {
+      "id": "HM-2026-11-14-HM07E505",
+      "line": "Royal Caribbean International",
+      "ship": "Harmony of the Seas",
+      "shipCode": "HM",
+      "mmsi": "311000396",
+      "sailDate": "2026-11-14",
+      "endDate": "2026-11-21",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Charlotte Amalie",
+        "Nassau",
+        "Perfect Day at CocoCay"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Nassau \u2192 Perfect Day at CocoCay",
+      "startingPrice": 334.04,
+      "startingCabin": "Interior",
+      "perNight": 47.72,
+      "cabins": {
+        "interior": 334.04,
+        "oceanView": 842.04,
+        "balcony": 794.54
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2026-11-14&shipCode=HM&packageCode=HM07E505&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "HM07E505",
+      "bestValue": true,
+      "under100": true
+    },
+    {
+      "id": "ST-2026-11-15-ST07E490",
+      "line": "Royal Caribbean International",
+      "ship": "Star of the Seas",
+      "shipCode": "ST",
+      "mmsi": "311001551",
+      "sailDate": "2026-11-15",
+      "endDate": "2026-11-22",
+      "nights": 7,
+      "title": "7-Night Perfect Day CocoCay & Caribbean Cruise",
+      "ports": [
+        "Port Canaveral",
+        "Perfect Day at CocoCay",
+        "Charlotte Amalie",
+        "Philipsburg"
+      ],
+      "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
+      "startingPrice": 757.3,
+      "startingCabin": "Interior",
+      "perNight": 108.19,
+      "cabins": {
+        "interior": 757.3,
+        "oceanView": null,
+        "balcony": null
+      },
+      "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2026-11-15&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
+      "packageCode": "ST07E490",
       "bestValue": false,
       "under100": false
     },
@@ -91,7 +151,7 @@
       "cabins": {
         "interior": 398.68,
         "oceanView": null,
-        "balcony": 573.18
+        "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-16&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH346",
@@ -122,7 +182,7 @@
       "cabins": {
         "interior": 600.42,
         "oceanView": 2453.42,
-        "balcony": 1602.92
+        "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX09PCN-1051579084&sailDate=2026-11-18&shipCode=EX&packageCode=EX09D179&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX09D179",
@@ -138,7 +198,7 @@
       "sailDate": "2026-11-20",
       "endDate": "2026-11-23",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -151,7 +211,7 @@
       "cabins": {
         "interior": 1129.86,
         "oceanView": null,
-        "balcony": 1512.36
+        "balcony": 1860.36
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-11-20&shipCode=UT&packageCode=UT3BH175&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH175",
@@ -212,8 +272,8 @@
       "perNight": 176.35,
       "cabins": {
         "interior": 1234.42,
-        "oceanView": null,
-        "balcony": 1434.42
+        "oceanView": 2494.42,
+        "balcony": 2411.42
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2026-11-22&shipCode=ST&packageCode=ST07W723&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W723",
@@ -242,39 +302,10 @@
       "cabins": {
         "interior": 701.68,
         "oceanView": 1190.18,
-        "balcony": 1374.68
+        "balcony": 1572.18
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-11-23&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH346",
-      "bestValue": false,
-      "under100": false
-    },
-    {
-      "id": "EX-2026-11-27-EX05E062",
-      "line": "Royal Caribbean International",
-      "ship": "Explorer of the Seas",
-      "shipCode": "EX",
-      "mmsi": "311316000",
-      "sailDate": "2026-11-27",
-      "endDate": "2026-12-02",
-      "nights": 5,
-      "title": "5-Night Eastern Caribbean Getaway Cruise",
-      "ports": [
-        "Port Canaveral",
-        "Grand Turk",
-        "Puerto Plata"
-      ],
-      "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Puerto Plata",
-      "startingPrice": 642.54,
-      "startingCabin": "Interior",
-      "perNight": 128.51,
-      "cabins": {
-        "interior": 642.54,
-        "oceanView": null,
-        "balcony": null
-      },
-      "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1312851610&sailDate=2026-11-27&shipCode=EX&packageCode=EX05E062&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
-      "packageCode": "EX05E062",
       "bestValue": false,
       "under100": false
     },
@@ -287,7 +318,7 @@
       "sailDate": "2026-11-27",
       "endDate": "2026-11-30",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -354,13 +385,13 @@
         "Philipsburg"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Charlotte Amalie \u2192 Philipsburg",
-      "startingPrice": 887.3,
+      "startingPrice": 1059.3,
       "startingCabin": "Interior",
-      "perNight": 126.76,
+      "perNight": 151.33,
       "cabins": {
-        "interior": 887.3,
-        "oceanView": 987.3,
-        "balcony": null
+        "interior": 1059.3,
+        "oceanView": 1518.3,
+        "balcony": 1300.3
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2026-11-29&shipCode=ST&packageCode=ST07E490&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07E490",
@@ -419,7 +450,7 @@
       "perNight": 111.2,
       "cabins": {
         "interior": 1000.81,
-        "oceanView": 1219.31,
+        "oceanView": 1414.81,
         "balcony": 2058.81
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX09PCN-1772335276&sailDate=2026-12-02&shipCode=EX&packageCode=EX09D180&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -436,18 +467,18 @@
       "sailDate": "2026-12-04",
       "endDate": "2026-12-07",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 611.86,
+      "startingPrice": 561.36,
       "startingCabin": "Interior",
-      "perNight": 203.95,
+      "perNight": 187.12,
       "cabins": {
-        "interior": 611.86,
+        "interior": 561.36,
         "oceanView": 611.86,
         "balcony": 674.36
       },
@@ -509,8 +540,8 @@
       "perNight": 143.58,
       "cabins": {
         "interior": 1005.07,
-        "oceanView": 1175.07,
-        "balcony": 1335.07
+        "oceanView": 1466.07,
+        "balcony": 1415.57
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2026-12-06&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "ST07W709",
@@ -539,7 +570,7 @@
       "cabins": {
         "interior": 480.45,
         "oceanView": 540.95,
-        "balcony": 582.95
+        "balcony": 543.45
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2026-12-07&shipCode=UT&packageCode=UT4BH347&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT4BH347",
@@ -555,7 +586,7 @@
       "sailDate": "2026-12-11",
       "endDate": "2026-12-14",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -567,8 +598,8 @@
       "perNight": 169.32,
       "cabins": {
         "interior": 507.95,
-        "oceanView": 652.45,
-        "balcony": 614.95
+        "oceanView": 557.95,
+        "balcony": 544.95
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-12-11&shipCode=UT&packageCode=UT3BH176&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH176",
@@ -592,12 +623,12 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Charlotte Amalie \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 542.86,
-      "startingCabin": "Interior",
-      "perNight": 77.55,
+      "startingPrice": 642.86,
+      "startingCabin": "Balcony",
+      "perNight": 91.84,
       "cabins": {
-        "interior": 542.86,
-        "oceanView": 742.86,
+        "interior": 720.86,
+        "oceanView": 873.86,
         "balcony": 642.86
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2026-12-12&shipCode=HM&packageCode=HM07E508&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -685,7 +716,7 @@
       "perNight": 145.65,
       "cabins": {
         "interior": null,
-        "oceanView": 864.73,
+        "oceanView": null,
         "balcony": 728.23
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1677965205&sailDate=2026-12-16&shipCode=EX&packageCode=EX05W637&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -702,20 +733,20 @@
       "sailDate": "2026-12-18",
       "endDate": "2026-12-21",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 671.86,
+      "startingPrice": 548.36,
       "startingCabin": "Interior",
-      "perNight": 223.95,
+      "perNight": 182.79,
       "cabins": {
-        "interior": 671.86,
+        "interior": 548.36,
         "oceanView": 921.86,
-        "balcony": 803.86
+        "balcony": 658.36
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT03PCN-3464558580&sailDate=2026-12-18&shipCode=UT&packageCode=UT3BH175&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
       "packageCode": "UT3BH175",
@@ -806,7 +837,7 @@
       "cabins": {
         "interior": 1339.27,
         "oceanView": 1568.27,
-        "balcony": 1655.77
+        "balcony": null
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX07PCN-3258496699&sailDate=2026-12-21&shipCode=EX&packageCode=EX07W724&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX07W724",
@@ -822,18 +853,18 @@
       "sailDate": "2026-12-21",
       "endDate": "2026-12-24",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Nassau \u2192 Perfect Day at CocoCay",
-      "startingPrice": 698.08,
-      "startingCabin": "Ocean View",
-      "perNight": 232.69,
+      "startingPrice": 618.08,
+      "startingCabin": "Interior",
+      "perNight": 206.03,
       "cabins": {
-        "interior": 700.08,
+        "interior": 618.08,
         "oceanView": 698.08,
         "balcony": 703.08
       },
@@ -865,7 +896,7 @@
       "cabins": {
         "interior": 2023.13,
         "oceanView": null,
-        "balcony": 3284.63
+        "balcony": 3345.63
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1431829222&sailDate=2026-12-23&shipCode=HM&packageCode=HM07E521&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E521",
@@ -924,7 +955,7 @@
       "perNight": 259.37,
       "cabins": {
         "interior": 1815.61,
-        "oceanView": 3951.11,
+        "oceanView": 3086.61,
         "balcony": 3727.61
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-1055410459&sailDate=2026-12-27&shipCode=ST&packageCode=ST07E491&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -956,7 +987,7 @@
       "cabins": {
         "interior": 1959.82,
         "oceanView": 2085.32,
-        "balcony": 2881.82
+        "balcony": 3588.32
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX07PCN-696200053&sailDate=2026-12-28&shipCode=EX&packageCode=EX07E502&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX07E502",
@@ -1152,7 +1183,7 @@
       "sailDate": "2027-01-08",
       "endDate": "2027-01-11",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -1194,7 +1225,7 @@
       "perNight": 142.29,
       "cabins": {
         "interior": 996.01,
-        "oceanView": 1332.01,
+        "oceanView": 1419.51,
         "balcony": 1096.01
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-4284516355&sailDate=2027-01-09&shipCode=HM&packageCode=HM07E508&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -1299,7 +1330,7 @@
       "sailDate": "2027-01-15",
       "endDate": "2027-01-18",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -1336,13 +1367,13 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Philipsburg \u2192 San Juan \u2192 Perfect Day at CocoCay",
-      "startingPrice": 1013.63,
-      "startingCabin": "Ocean View",
-      "perNight": 144.8,
+      "startingPrice": 1026.13,
+      "startingCabin": "Interior",
+      "perNight": 146.59,
       "cabins": {
         "interior": 1026.13,
-        "oceanView": 1013.63,
-        "balcony": 1039.13
+        "oceanView": 1225.63,
+        "balcony": 1265.13
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1431829222&sailDate=2027-01-16&shipCode=HM&packageCode=HM07E524&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E524",
@@ -1389,7 +1420,7 @@
       "sailDate": "2027-01-18",
       "endDate": "2027-01-22",
       "nights": 4,
-      "title": "4-Night Bahamas & Perfect Day Cruise",
+      "title": "4-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -1476,7 +1507,7 @@
       "sailDate": "2027-01-22",
       "endDate": "2027-01-25",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -1571,11 +1602,11 @@
         "Nassau"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Nassau",
-      "startingPrice": 648.99,
+      "startingPrice": 579.49,
       "startingCabin": "Interior",
-      "perNight": 162.25,
+      "perNight": 144.87,
       "cabins": {
-        "interior": 648.99,
+        "interior": 579.49,
         "oceanView": 711.99,
         "balcony": 693.99
       },
@@ -1653,7 +1684,7 @@
       "sailDate": "2027-01-29",
       "endDate": "2027-02-01",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -1725,7 +1756,7 @@
       "perNight": 147.87,
       "cabins": {
         "interior": 591.49,
-        "oceanView": 820.49,
+        "oceanView": 976.49,
         "balcony": 761.99
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=UT04PCN-4069341576&sailDate=2027-02-01&shipCode=UT&packageCode=UT4BH346&destinationCode=BAHAM&selectedCurrencyCode=USD&country=USA",
@@ -1783,8 +1814,8 @@
       "perNight": 113.84,
       "cabins": {
         "interior": 569.18,
-        "oceanView": null,
-        "balcony": 851.68
+        "oceanView": 859.68,
+        "balcony": 1262.68
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-2184217661&sailDate=2027-02-05&shipCode=EX&packageCode=EX05E063&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05E063",
@@ -1800,7 +1831,7 @@
       "sailDate": "2027-02-05",
       "endDate": "2027-02-08",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -1931,7 +1962,7 @@
       "cabins": {
         "interior": 438.55,
         "oceanView": 575.55,
-        "balcony": null
+        "balcony": 1054.05
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX05PCN-1161832262&sailDate=2027-02-10&shipCode=EX&packageCode=EX05W638&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX05W638",
@@ -1947,7 +1978,7 @@
       "sailDate": "2027-02-12",
       "endDate": "2027-02-15",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -2122,7 +2153,7 @@
       "sailDate": "2027-02-19",
       "endDate": "2027-02-22",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -2255,7 +2286,7 @@
       "cabins": {
         "interior": 1006.14,
         "oceanView": 1803.64,
-        "balcony": 3265.14
+        "balcony": 3495.64
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX09PCN-2538858863&sailDate=2027-02-24&shipCode=EX&packageCode=EX09D183&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX09D183",
@@ -2300,7 +2331,7 @@
       "sailDate": "2027-02-26",
       "endDate": "2027-03-01",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -2343,7 +2374,7 @@
       "perNight": 179.77,
       "cabins": {
         "interior": 1258.39,
-        "oceanView": 1808.39,
+        "oceanView": 2076.39,
         "balcony": 1900.39
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=ST07PCN-2334033785&sailDate=2027-02-28&shipCode=ST&packageCode=ST07W709&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -2425,11 +2456,11 @@
         "Perfect Day at CocoCay"
       ],
       "portsLabel": "Port Canaveral \u2192 Grand Turk \u2192 Perfect Day at CocoCay",
-      "startingPrice": 669.18,
+      "startingPrice": 545.68,
       "startingCabin": "Interior",
-      "perNight": 133.84,
+      "perNight": 109.14,
       "cabins": {
-        "interior": 669.18,
+        "interior": 545.68,
         "oceanView": 1076.18,
         "balcony": 1102.18
       },
@@ -2447,7 +2478,7 @@
       "sailDate": "2027-03-05",
       "endDate": "2027-03-08",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -2489,8 +2520,8 @@
       "perNight": 124.01,
       "cabins": {
         "interior": 868.06,
-        "oceanView": 1007.56,
-        "balcony": 1021.06
+        "oceanView": 1041.56,
+        "balcony": 1056.56
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1410170128&sailDate=2027-03-06&shipCode=HM&packageCode=HM07E527&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E527",
@@ -2594,7 +2625,7 @@
       "sailDate": "2027-03-12",
       "endDate": "2027-03-15",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -2636,7 +2667,7 @@
       "perNight": 143.66,
       "cabins": {
         "interior": 1005.6,
-        "oceanView": null,
+        "oceanView": 1391.1,
         "balcony": 1100.1
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2764364175&sailDate=2027-03-13&shipCode=HM&packageCode=HM07E525&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -2770,7 +2801,7 @@
       "sailDate": "2027-03-19",
       "endDate": "2027-03-22",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -2812,8 +2843,8 @@
       "perNight": 128.34,
       "cabins": {
         "interior": 898.4,
-        "oceanView": 1011.9,
-        "balcony": 973.4
+        "oceanView": 1521.4,
+        "balcony": 1602.9
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2507154650&sailDate=2027-03-20&shipCode=HM&packageCode=HM07E507&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E507",
@@ -2958,8 +2989,8 @@
       "perNight": 132.59,
       "cabins": {
         "interior": 928.13,
-        "oceanView": 984.13,
-        "balcony": 946.13
+        "oceanView": 1412.63,
+        "balcony": 1484.13
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1431829222&sailDate=2027-03-27&shipCode=HM&packageCode=HM07E524&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E524",
@@ -3092,7 +3123,7 @@
       "sailDate": "2027-04-02",
       "endDate": "2027-04-05",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -3239,7 +3270,7 @@
       "sailDate": "2027-04-09",
       "endDate": "2027-04-12",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -3282,8 +3313,8 @@
       "perNight": 117.91,
       "cabins": {
         "interior": 825.38,
-        "oceanView": 976.38,
-        "balcony": 988.88
+        "oceanView": 1035.88,
+        "balcony": 1110.38
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-884868372&sailDate=2027-04-10&shipCode=HM&packageCode=HM07E526&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E526",
@@ -3308,11 +3339,11 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Puerto Costa Maya \u2192 Roatan \u2192 Cozumel",
-      "startingPrice": 1349.67,
+      "startingPrice": 1151.17,
       "startingCabin": "Interior",
-      "perNight": 192.81,
+      "perNight": 164.45,
       "cabins": {
-        "interior": 1349.67,
+        "interior": 1151.17,
         "oceanView": 1367.67,
         "balcony": 1383.67
       },
@@ -3416,7 +3447,7 @@
       "sailDate": "2027-04-16",
       "endDate": "2027-04-19",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -3563,7 +3594,7 @@
       "sailDate": "2027-04-23",
       "endDate": "2027-04-26",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -3600,13 +3631,13 @@
         "Cozumel"
       ],
       "portsLabel": "Port Canaveral \u2192 Perfect Day at CocoCay \u2192 Falmouth \u2192 Cozumel",
-      "startingPrice": 796.38,
+      "startingPrice": 886.88,
       "startingCabin": "Interior",
-      "perNight": 113.77,
+      "perNight": 126.7,
       "cabins": {
-        "interior": 796.38,
-        "oceanView": 976.88,
-        "balcony": 998.88
+        "interior": 886.88,
+        "oceanView": 1071.38,
+        "balcony": 1149.38
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-701015367&sailDate=2027-04-24&shipCode=HM&packageCode=HM07W788&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07W788",
@@ -3670,11 +3701,11 @@
       "cabins": {
         "interior": 896.92,
         "oceanView": 1119.92,
-        "balcony": 1961.92
+        "balcony": 1795.92
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=EX14PCN-3673175876&sailDate=2027-04-26&shipCode=EX&packageCode=EX14T262&destinationCode=T.ATL&selectedCurrencyCode=USD&country=USA",
       "packageCode": "EX14T262",
-      "bestValue": true,
+      "bestValue": false,
       "under100": true
     },
     {
@@ -3744,7 +3775,7 @@
       "sailDate": "2027-04-30",
       "endDate": "2027-05-03",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -3786,8 +3817,8 @@
       "perNight": 121.16,
       "cabins": {
         "interior": 848.15,
-        "oceanView": 1119.15,
-        "balcony": 1100.65
+        "oceanView": 1159.15,
+        "balcony": 1246.15
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-1055410745&sailDate=2027-05-01&shipCode=HM&packageCode=HM07E541&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07E541",
@@ -3875,7 +3906,7 @@
       "perNight": 97.33,
       "cabins": {
         "interior": 875.98,
-        "oceanView": null,
+        "oceanView": 1605.98,
         "balcony": 1617.98
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=AD09PCN-1772335668&sailDate=2027-05-05&shipCode=AD&packageCode=AD09D158&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
@@ -3892,7 +3923,7 @@
       "sailDate": "2027-05-07",
       "endDate": "2027-05-10",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -3936,7 +3967,7 @@
       "cabins": {
         "interior": 888.23,
         "oceanView": null,
-        "balcony": 1400.73
+        "balcony": 1820.73
       },
       "url": "https://www.royalcaribbean.com/booking/landing?groupId=HM07PCN-2334033947&sailDate=2027-05-08&shipCode=HM&packageCode=HM07W779&destinationCode=CARIB&selectedCurrencyCode=USD&country=USA",
       "packageCode": "HM07W779",
@@ -4040,7 +4071,7 @@
       "sailDate": "2027-05-14",
       "endDate": "2027-05-17",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -4190,7 +4221,7 @@
       "sailDate": "2027-05-21",
       "endDate": "2027-05-24",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -4337,7 +4368,7 @@
       "sailDate": "2027-05-28",
       "endDate": "2027-05-31",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -4511,7 +4542,7 @@
       "sailDate": "2027-06-04",
       "endDate": "2027-06-07",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -4689,7 +4720,7 @@
       "sailDate": "2027-06-11",
       "endDate": "2027-06-14",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -4836,7 +4867,7 @@
       "sailDate": "2027-06-18",
       "endDate": "2027-06-21",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -5012,7 +5043,7 @@
       "sailDate": "2027-06-25",
       "endDate": "2027-06-28",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -5160,7 +5191,7 @@
       "sailDate": "2027-07-02",
       "endDate": "2027-07-05",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -5363,7 +5394,7 @@
       "sailDate": "2027-07-09",
       "endDate": "2027-07-12",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -5510,7 +5541,7 @@
       "sailDate": "2027-07-16",
       "endDate": "2027-07-19",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -5688,7 +5719,7 @@
       "sailDate": "2027-07-23",
       "endDate": "2027-07-26",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -5835,7 +5866,7 @@
       "sailDate": "2027-07-30",
       "endDate": "2027-08-02",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -6011,7 +6042,7 @@
       "sailDate": "2027-08-06",
       "endDate": "2027-08-09",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -6159,7 +6190,7 @@
       "sailDate": "2027-08-13",
       "endDate": "2027-08-16",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -6335,7 +6366,7 @@
       "sailDate": "2027-08-20",
       "endDate": "2027-08-23",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -6482,7 +6513,7 @@
       "sailDate": "2027-08-27",
       "endDate": "2027-08-30",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -6685,7 +6716,7 @@
       "sailDate": "2027-09-03",
       "endDate": "2027-09-06",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -6834,7 +6865,7 @@
       "sailDate": "2027-09-10",
       "endDate": "2027-09-13",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -6982,7 +7013,7 @@
       "sailDate": "2027-09-17",
       "endDate": "2027-09-20",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -7132,7 +7163,7 @@
       "sailDate": "2027-09-24",
       "endDate": "2027-09-27",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -7279,7 +7310,7 @@
       "sailDate": "2027-10-01",
       "endDate": "2027-10-04",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -7428,7 +7459,7 @@
       "sailDate": "2027-10-08",
       "endDate": "2027-10-11",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -7576,7 +7607,7 @@
       "sailDate": "2027-10-15",
       "endDate": "2027-10-18",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -7725,7 +7756,7 @@
       "sailDate": "2027-10-22",
       "endDate": "2027-10-25",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -7872,7 +7903,7 @@
       "sailDate": "2027-10-29",
       "endDate": "2027-11-01",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -8021,7 +8052,7 @@
       "sailDate": "2027-11-05",
       "endDate": "2027-11-08",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -8169,7 +8200,7 @@
       "sailDate": "2027-11-12",
       "endDate": "2027-11-15",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -8318,7 +8349,7 @@
       "sailDate": "2027-11-19",
       "endDate": "2027-11-22",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -8466,7 +8497,7 @@
       "sailDate": "2027-11-26",
       "endDate": "2027-11-29",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -8615,7 +8646,7 @@
       "sailDate": "2027-12-03",
       "endDate": "2027-12-06",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -8763,7 +8794,7 @@
       "sailDate": "2027-12-10",
       "endDate": "2027-12-13",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -8910,7 +8941,7 @@
       "sailDate": "2027-12-17",
       "endDate": "2027-12-20",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -9115,7 +9146,7 @@
       "sailDate": "2027-12-24",
       "endDate": "2027-12-27",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -9264,7 +9295,7 @@
       "sailDate": "2027-12-31",
       "endDate": "2028-01-03",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -9410,7 +9441,7 @@
       "sailDate": "2028-01-07",
       "endDate": "2028-01-10",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -9557,7 +9588,7 @@
       "sailDate": "2028-01-14",
       "endDate": "2028-01-17",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -9760,7 +9791,7 @@
       "sailDate": "2028-01-21",
       "endDate": "2028-01-24",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -9909,7 +9940,7 @@
       "sailDate": "2028-01-28",
       "endDate": "2028-01-31",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -10057,7 +10088,7 @@
       "sailDate": "2028-02-04",
       "endDate": "2028-02-07",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -10206,7 +10237,7 @@
       "sailDate": "2028-02-11",
       "endDate": "2028-02-14",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -10353,7 +10384,7 @@
       "sailDate": "2028-02-18",
       "endDate": "2028-02-21",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -10529,7 +10560,7 @@
       "sailDate": "2028-02-25",
       "endDate": "2028-02-28",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -10676,7 +10707,7 @@
       "sailDate": "2028-03-03",
       "endDate": "2028-03-06",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -10823,7 +10854,7 @@
       "sailDate": "2028-03-10",
       "endDate": "2028-03-13",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -10998,7 +11029,7 @@
       "sailDate": "2028-03-17",
       "endDate": "2028-03-20",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -11145,7 +11176,7 @@
       "sailDate": "2028-03-24",
       "endDate": "2028-03-27",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -11320,7 +11351,7 @@
       "sailDate": "2028-03-31",
       "endDate": "2028-04-03",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -11467,7 +11498,7 @@
       "sailDate": "2028-04-07",
       "endDate": "2028-04-10",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
@@ -11643,7 +11674,7 @@
       "sailDate": "2028-04-14",
       "endDate": "2028-04-17",
       "nights": 3,
-      "title": "3-Night Bahamas & Perfect Day Cruise",
+      "title": "3-Night Perfect Day CocoCay & Bahamas Getaway Cruise",
       "ports": [
         "Port Canaveral",
         "Nassau",
