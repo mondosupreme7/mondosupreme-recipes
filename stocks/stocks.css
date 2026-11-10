@@ -358,3 +358,19 @@ html[data-theme="harbor"] .rule-pill.is-fail,html[data-theme="harbor"] .fact-mar
 html[data-theme="dark"] .rule-pill.is-na,html[data-theme="dark"] .fact-mark.is-na,
 html[data-theme="harbor"] .rule-pill.is-na,html[data-theme="harbor"] .fact-mark.is-na{background:#334155;color:#f8fafc}
 html[data-theme="dark"] .quote-card a,html[data-theme="harbor"] .quote-card a{color:#93c5fd!important}
+.track-record{margin:14px 0;padding:12px;background:var(--surface,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#cbd5e1);border-radius:16px}
+.track-record h2{margin:0 0 6px;font:650 18px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.track-summary{margin:0 0 8px;font:600 14px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.track-list{list-style:none;margin:0;padding:0}
+.track-row{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:4px 0;border:0;border-top:1px solid var(--line,#e2e8f0);background:transparent;color:var(--ink,#0f172a);text-align:left;font:650 15px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.track-name{flex:1;min-width:0}
+.track-return{font-variant-numeric:tabular-nums}
+.track-badge{flex:none;min-width:72px;min-height:28px;display:inline-flex;align-items:center;justify-content:center;padding:0 8px;border-radius:999px;font:700 12px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.track-badge.is-win{background:#14532d;color:#dcfce7}
+.track-badge.is-stop{background:#7f1d1d;color:#fee2e2}
+.track-badge.is-open{background:#334155;color:#f8fafc}
+html[data-theme="light"] .track-badge.is-win{background:#dcfce7;color:#14532d}
+html[data-theme="light"] .track-badge.is-stop{background:#fee2e2;color:#7f1d1d}
+html[data-theme="light"] .track-badge.is-open{background:#e2e8f0;color:#1e293b}
+.track-detail{margin:0 0 8px;font:600 14px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+html[data-theme] .track-record,html[data-theme] .track-record h2,html[data-theme] .track-summary,html[data-theme] .track-row,html[data-theme] .track-detail{background:var(--surface)!important;color:var(--ink)!important}

@@ -1,23 +1,15 @@
 name: Update oversold stock screener
 
-# Prices the S&P 1500, Nasdaq-100, and Russell 2000 from Yahoo Finance and
-# writes stocks/oversold.json. Weekday crons are UTC so they cover 9:30am–4pm
-# Eastern in both EST and EDT: the 13:30 UTC run is the EDT open (and 8:30am
-# EST), and the 21:00 UTC run is the EST close (and 5:00pm EDT). Sunday
-# refreshes the Wikipedia constituent list. A push made with GITHUB_TOKEN does
-# not start the Pages workflow, so this job deploys the site itself when the
-# snapshot changes. A failed fetch keeps the previous file.
+# Full universe scan once after the US cash close, plus the Sunday constituent
+# refresh. 20:30 UTC is 4:30pm EDT and 21:30 UTC is 4:30pm EST. The script
+# skips a run that is still inside the New York session, and it skips a second
+# after-close scan on the same Eastern day. Intraday prices are the quote
+# workflow. A failed fetch keeps the previous file.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - scripts/update-oversold-stocks.py
-      - .github/workflows/stock-screener.yml
   schedule:
-    - cron: '30 13 * * 1-5'
-    - cron: '0,30 14-20 * * 1-5'
-    - cron: '0 21 * * 1-5'
+    - cron: '30 20 * * 1-5'
+    - cron: '30 21 * * 1-5'
     - cron: '15 12 * * 0'
   workflow_dispatch:
 
@@ -47,6 +39,7 @@ jobs:
       - name: Fetch oversold snapshot
         env:
           STOCKS_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+          STOCKS_AFTER_CLOSE: ${{ github.event_name == 'schedule' && github.event.schedule != '15 12 * * 0' && '1' || '0' }}
           STOCKS_REFRESH_UNIVERSE: ${{ (github.event_name == 'workflow_dispatch' || github.event.schedule == '15 12 * * 0') && '1' || '0' }}
           STOCKS_UNIVERSE_ONLY: ${{ github.event.schedule == '15 12 * * 0' && '1' || '0' }}
         run: python3 scripts/update-oversold-stocks.py
@@ -56,7 +49,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add stocks/oversold.json scripts/universe.json
+          git add stocks/oversold.json stocks/picks-history.json scripts/universe.json
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Screener unchanged."

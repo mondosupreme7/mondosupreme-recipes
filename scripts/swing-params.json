@@ -1,0 +1,73 @@
+{
+  "version": "2026-11-10.1",
+  "liquidity": {
+    "minPrice": 5,
+    "minAvgVolume": 250000,
+    "minDollarVolume": 5000000,
+    "minBars": 60
+  },
+  "rsi": {
+    "lookback": 7,
+    "recentMax": 35,
+    "turnBelow": 55,
+    "turningUpWeight": 16,
+    "divergenceWeight": 10
+  },
+  "stochastic": {
+    "crossBelow": 20,
+    "weight": 12
+  },
+  "macd": {
+    "crossWeight": 14,
+    "risingWeight": 8
+  },
+  "bollinger": {
+    "touchTolerance": 1.005,
+    "reclaimTolerance": 0.998,
+    "weight": 10
+  },
+  "context": {
+    "nearLowPct": 0.12,
+    "nearLowWeight": 6,
+    "pullbackFromHigh": 0.88,
+    "pullbackWeight": 4,
+    "uptrendWeight": 8
+  },
+  "ema": {
+    "reclaimWeight": 10,
+    "belowDays": 3
+  },
+  "candle": {
+    "weight": 6
+  },
+  "volume": {
+    "weight": 8,
+    "capitulationMultiple": 1.5
+  },
+  "fallingKnife": {
+    "penalty": 12,
+    "drop21": -12
+  },
+  "gates": {
+    "minConfirmingSignals": 2,
+    "minRawScore": 36,
+    "minAdjustedScore": 36,
+    "minRewardRisk": 2.0,
+    "earningsWindowDays": 7,
+    "below200Penalty": 30,
+    "rewardPenalty": 20,
+    "earningsPenalty": 25,
+    "uiScoreFloor": 20
+  },
+  "trade": {
+    "atrStopMultiple": 1.5,
+    "entryAtrFraction": 0.25,
+    "targetMinLift": 1.002,
+    "secondTargetLift": 1.005
+  },
+  "picks": {
+    "listSize": 5,
+    "fillWindowTradingDays": 5,
+    "maxHoldTradingDays": 20
+  }
+}

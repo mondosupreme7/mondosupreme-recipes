@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=7">
-<link rel="stylesheet" href="stocks.css?v=7">
+<link rel="stylesheet" href="stocks.css?v=8">
 <link rel="stylesheet" href="/readable.css?v=10">
 </head>
 <body>
@@ -128,6 +128,11 @@
   </table>
  </div>
  <p id="empty" class="empty" hidden>No stocks in this snapshot.</p>
+ <section class="track-record" id="trackRecord" aria-labelledby="trackTitle">
+  <h2 id="trackTitle">Track record</h2>
+  <p id="trackSummary" class="track-summary">Loading picks…</p>
+  <ul id="trackList" class="track-list"></ul>
+ </section>
  <section class="quote-card" id="detail" hidden aria-labelledby="detailTitle">
   <div class="quote-card-bar">
    <div class="quote-head-copy">
@@ -175,7 +180,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=8"></script>
+<script src="stocks.js?v=9"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

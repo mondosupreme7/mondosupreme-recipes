@@ -33,6 +33,7 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from http.cookiejar import CookieJar
 from pathlib import Path
 
@@ -96,6 +97,33 @@ DISCLAIMER = (
     "Informational only, not financial advice and not a recommendation to buy or sell. "
     "A stock is listed because it matched a rules-based swing screen."
 )
+PARAMS_PATH = ROOT / "scripts" / "swing-params.json"
+PICKS_PATH = ROOT / "stocks" / "picks-history.json"
+
+
+def load_swing_params():
+    try:
+        data = json.loads(PARAMS_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        data = {}
+    return data if isinstance(data, dict) else {}
+
+
+PARAMS = load_swing_params()
+
+
+def swing_param(path, default):
+    node = PARAMS
+    for key in path.split("."):
+        if not isinstance(node, dict) or key not in node:
+            return default
+        node = node[key]
+    return node
+
+
+def earnings_flag_label():
+    days = int(swing_param("gates.earningsWindowDays", 7))
+    return "Earnings within " + str(days) + " days"
 
 
 def now_utc():
@@ -346,7 +374,14 @@ def swing_bottom(bars):
         return empty
     avg_volume = mean([bar["volume"] for bar in bars[last - 20:last]])
     price = closes[last]
-    liquid = price >= 5 and avg_volume > 0 and (avg_volume >= 250000 or price * avg_volume >= 5000000)
+    liquid = (
+        price >= swing_param("liquidity.minPrice", 5)
+        and avg_volume > 0
+        and (
+            avg_volume >= swing_param("liquidity.minAvgVolume", 250000)
+            or price * avg_volume >= swing_param("liquidity.minDollarVolume", 5000000)
+        )
+    )
     if not liquid:
         return empty
     rsi = wilder_rsi(closes)
@@ -363,39 +398,40 @@ def swing_bottom(bars):
         if qualifies:
             qualifying.append(label)
 
-    recent = [rsi[index] for index in range(last - 7, last) if rsi[index] is not None]
-    if recent and min(recent) <= 35 and rsi[last] > rsi[last - 1] and rsi[last] < 55:
-        add("RSI turning up", 16)
+    lookback = int(swing_param("rsi.lookback", 7))
+    recent = [rsi[index] for index in range(last - lookback, last) if rsi[index] is not None]
+    if recent and min(recent) <= swing_param("rsi.recentMax", 35) and rsi[last] > rsi[last - 1] and rsi[last] < swing_param("rsi.turnBelow", 55):
+        add("RSI turning up", swing_param("rsi.turningUpWeight", 16))
     if rsi_divergence(closes, rsi, last):
-        add("RSI divergence", 10)
+        add("RSI divergence", swing_param("rsi.divergenceWeight", 10))
     k_line, d_line = stochastic_kd(bars)
     if None not in (k_line[last], d_line[last], k_line[last - 1], d_line[last - 1]):
         crossed = k_line[last - 1] <= d_line[last - 1] and k_line[last] > d_line[last]
-        was_low = min(k_line[last - 1], d_line[last - 1], k_line[last]) < 20
+        was_low = min(k_line[last - 1], d_line[last - 1], k_line[last]) < swing_param("stochastic.crossBelow", 20)
         if crossed and was_low:
-            add("Stoch cross", 12)
+            add("Stoch cross", swing_param("stochastic.weight", 12))
     line, signal, hist = macd_parts(closes)
     if None not in (line[last], signal[last], line[last - 1], signal[last - 1]):
         if line[last - 1] <= signal[last - 1] and line[last] > signal[last] and line[last] < 0:
-            add("MACD cross", 14)
+            add("MACD cross", swing_param("macd.crossWeight", 14))
         elif None not in (hist[last], hist[last - 1], hist[last - 2]) and hist[last - 1] < 0 and hist[last] > hist[last - 1] and hist[last - 1] >= hist[last - 2]:
-            add("MACD rising", 8)
+            add("MACD rising", swing_param("macd.risingWeight", 8))
     touched = False
     for index in range(max(19, last - 2), last + 1):
         band = lower_band_at(closes, index)
-        if band and bars[index]["low"] <= band * 1.005:
+        if band and bars[index]["low"] <= band * swing_param("bollinger.touchTolerance", 1.005):
             touched = True
     band_now = lower_band_at(closes, last)
     mid_now = mean(closes[last - 19:last + 1])
-    if touched and band_now and closes[last] >= band_now * 0.998 and closes[last] <= mid_now:
-        add("Lower BB bounce", 10)
+    if touched and band_now and closes[last] >= band_now * swing_param("bollinger.reclaimTolerance", 0.998) and closes[last] <= mid_now:
+        add("Lower BB bounce", swing_param("bollinger.weight", 10))
     year = bars[max(0, last - 251):last + 1]
     low52 = min(bar["low"] for bar in year)
-    if low52 > 0 and (closes[last] - low52) / low52 <= 0.12:
-        add("Near 52w low", 6, qualifies=False)
+    if low52 > 0 and (closes[last] - low52) / low52 <= swing_param("context.nearLowPct", 0.12):
+        add("Near 52w low", swing_param("context.nearLowWeight", 6), qualifies=False)
     high63 = max(closes[max(0, last - 62):last + 1])
-    if high63 > 0 and closes[last] <= high63 * 0.88:
-        add("Pullback from high", 4, qualifies=False)
+    if high63 > 0 and closes[last] <= high63 * swing_param("context.pullbackFromHigh", 0.88):
+        add("Pullback from high", swing_param("context.pullbackWeight", 4), qualifies=False)
     ema10 = ema_series(closes, 10)
     ema20 = ema_series(closes, 20)
     below = 0
@@ -403,40 +439,45 @@ def swing_bottom(bars):
         if ema10[index] is not None and closes[index] < ema10[index]:
             below += 1
     reclaimed = False
-    if below >= 3 and ema10[last] is not None and ema10[last - 1] is not None and closes[last] > ema10[last] and closes[last - 1] <= ema10[last - 1]:
+    below_days = int(swing_param("ema.belowDays", 3))
+    if below >= below_days and ema10[last] is not None and ema10[last - 1] is not None and closes[last] > ema10[last] and closes[last - 1] <= ema10[last - 1]:
         reclaimed = True
-    if below >= 3 and ema20[last] is not None and ema20[last - 1] is not None and closes[last] > ema20[last] and closes[last - 1] <= ema20[last - 1]:
+    if below >= below_days and ema20[last] is not None and ema20[last - 1] is not None and closes[last] > ema20[last] and closes[last - 1] <= ema20[last - 1]:
         reclaimed = True
     if reclaimed:
-        add("EMA reclaim", 10)
+        add("EMA reclaim", swing_param("ema.reclaimWeight", 10))
     if is_hammer(bars[last]) or (last >= 1 and bullish_engulfing(bars[last - 1], bars[last])):
-        add("Reversal candle", 6)
+        add("Reversal candle", swing_param("candle.weight", 6))
     up = closes[last] > closes[last - 1]
     capitulation = False
     for index in range(max(1, last - 5), last + 1):
         down = bars[index]["close"] < bars[index - 1]["close"]
-        if down and bars[index]["volume"] >= 1.5 * avg_volume:
+        if down and bars[index]["volume"] >= swing_param("volume.capitulationMultiple", 1.5) * avg_volume:
             capitulation = True
     volume_up = bars[last]["volume"] >= avg_volume and up
     obv = obv_series(bars)
     obv_up = obv[last] > obv[last - 3] and up
     if capitulation and (volume_up or (up and bars[last]["volume"] >= bars[last - 1]["volume"])):
-        add("Volume reversal", 8)
+        add("Volume reversal", swing_param("volume.weight", 8))
     elif obv_up and volume_up:
-        add("Volume reversal", 8)
+        add("Volume reversal", swing_param("volume.weight", 8))
     sma_now = sma_at(closes, last, 200)
     sma_then = sma_at(closes, last - 20, 200) if last >= 220 else None
     if qualifying and sma_now and sma_then and closes[last] > sma_now and sma_now >= sma_then:
-        add("Uptrend pullback", 8, qualifies=False)
+        add("Uptrend pullback", swing_param("context.uptrendWeight", 8), qualifies=False)
     drop21 = (closes[last] / closes[last - 21] - 1.0) * 100 if last >= 21 else None
-    if sma_now and sma_then and closes[last] < sma_now and sma_now < sma_then and ((drop21 is not None and drop21 <= -12) or not up):
-        points -= 12
+    if sma_now and sma_then and closes[last] < sma_now and sma_now < sma_then and ((drop21 is not None and drop21 <= swing_param("fallingKnife.drop21", -12)) or not up):
+        points -= swing_param("fallingKnife.penalty", 12)
     score = round(max(0, min(100, points)), 1)
     above = bool(sma_now and closes[last] > sma_now)
     return {
         "score": score,
         "signals": signals,
-        "eligible": bool(above and len(qualifying) >= 2 and score >= 36),
+        "eligible": bool(
+            above
+            and len(qualifying) >= int(swing_param("gates.minConfirmingSignals", 2))
+            and score >= swing_param("gates.minRawScore", 36)
+        ),
     }
 
 
@@ -456,22 +497,24 @@ def finalize_swing(row):
     qualifying = [label for label in signals if label not in SWING_CONTEXT]
     score = base
     if not row.get("above200"):
-        score -= 30
+        score -= swing_param("gates.below200Penalty", 30)
     reward = row.get("rewardRisk")
-    if not isinstance(reward, (int, float)) or reward < 2:
-        score -= 20
+    min_reward = swing_param("gates.minRewardRisk", 2.0)
+    if not isinstance(reward, (int, float)) or reward < min_reward:
+        score -= swing_param("gates.rewardPenalty", 20)
     flags = row.get("flags") or []
-    if "Earnings within 7 days" in flags:
-        score -= 25
+    earnings = earnings_flag_label()
+    if earnings in flags:
+        score -= swing_param("gates.earningsPenalty", 25)
     score = round(max(0, min(100, score)), 1)
     row["swingScore"] = score
     row["swingEligible"] = bool(
         row.get("above200")
-        and len(qualifying) >= 2
-        and score >= 36
+        and len(qualifying) >= int(swing_param("gates.minConfirmingSignals", 2))
+        and score >= swing_param("gates.minAdjustedScore", 36)
         and isinstance(reward, (int, float))
-        and reward >= 2
-        and "Earnings within 7 days" not in flags
+        and reward >= min_reward
+        and earnings not in flags
     )
 
 
@@ -776,19 +819,23 @@ def analyze(symbol, bars, name, exchange):
     distance = ((close - lower) / lower) * 100 if lower else 0.0
     atr = wilder_atr(bars)
     entry_high = close
-    entry_low = close - 0.25 * atr if atr else close
+    entry_fraction = swing_param("trade.entryAtrFraction", 0.25)
+    stop_multiple = swing_param("trade.atrStopMultiple", 1.5)
+    entry_low = close - entry_fraction * atr if atr else close
     if lower < close and atr and lower > close - atr:
         entry_low = min(entry_low, lower)
-    stop = close - 1.5 * atr if atr else None
+    stop = close - stop_multiple * atr if atr else None
     target = None
     target_label = ""
-    if sma20 and sma20 > close * 1.002:
+    lift = swing_param("trade.targetMinLift", 1.002)
+    second_lift = swing_param("trade.secondTargetLift", 1.005)
+    if sma20 and sma20 > close * lift:
         target = sma20
         target_label = "the 20-day average"
-    elif middle > close * 1.002:
+    elif middle > close * lift:
         target = middle
         target_label = "the mid Bollinger Band"
-    target2 = upper if upper > close * 1.002 and (target is None or upper > target * 1.005) else None
+    target2 = upper if upper > close * lift and (target is None or upper > target * second_lift) else None
     reward = None
     if target and stop and close > stop:
         reward = (target - close) / (close - stop)
@@ -999,7 +1046,7 @@ class YahooSession:
         }
         upcoming = []
         for moment in earnings_moments(result.get("calendarEvents") or {}):
-            if now_utc() <= moment <= now_utc() + timedelta(days=7):
+            if now_utc() <= moment <= now_utc() + timedelta(days=int(swing_param("gates.earningsWindowDays", 7))):
                 upcoming.append(moment)
         facts["earningsSoon"] = stamp(min(upcoming)) if upcoming else ""
         return {key: value for key, value in facts.items() if value not in ("", None)}
@@ -1247,7 +1294,7 @@ def build_flags(row, facts):
     if row["rsi"] < 28 and not row["uptick"] and not row["hammer"] and row["drop5"] is not None and row["drop5"] <= -8:
         flags.append("Falling knife")
     if facts.get("earningsSoon"):
-        flags.append("Earnings within 7 days")
+        flags.append(earnings_flag_label())
     debt = facts.get("debtToEquity")
     high_debt = debt is not None and (debt >= 2 if facts.get("source") == "Nasdaq" else debt >= 200)
     if high_debt:
@@ -1437,7 +1484,7 @@ def build_copy(row, facts):
         rank -= 8
     if "Downtrend" in flags:
         rank -= 6
-    if "Earnings within 7 days" in flags:
+    if earnings_flag_label() in flags:
         rank -= 6
     row["rankScore"] = round(max(0, min(100, rank)), 1)
     finalize_swing(row)
@@ -1448,15 +1495,20 @@ def build_copy(row, facts):
     return row
 
 
-def fetch_chart(symbol, gate, opener):
+def fetch_bars(symbol, gate, opener, span="2y", min_bars=60, allow_etf=False):
     gate.wait()
-    url = CHART.format(symbol=urllib.parse.quote(symbol))
+    url = (
+        "https://query1.finance.yahoo.com/v8/finance/chart/"
+        + urllib.parse.quote(symbol)
+        + "?range=" + span + "&interval=1d&includePrePost=false"
+    )
     payload = json.loads(read_url(opener, url, 30, attempts=4))
     result = ((payload.get("chart") or {}).get("result") or [None])[0]
     if not isinstance(result, dict):
         raise RuntimeError("empty chart")
     meta = result.get("meta") or {}
-    if meta.get("instrumentType") not in (None, "EQUITY"):
+    allowed = {None, "EQUITY", "ETF"} if allow_etf else {None, "EQUITY"}
+    if meta.get("instrumentType") not in allowed:
         raise RuntimeError("not an equity")
     if meta.get("currency") not in (None, "USD"):
         raise RuntimeError("not USD")
@@ -1482,13 +1534,18 @@ def fetch_chart(symbol, gate, opener):
             "close": close,
             "volume": volume,
         })
-    if len(bars) < 60:
+    if len(bars) < min_bars:
         raise RuntimeError("not enough bars")
     name = meta.get("shortName") or meta.get("longName") or symbol
     if not isinstance(name, str):
         name = symbol
     exchange = meta.get("exchangeName") if isinstance(meta.get("exchangeName"), str) else ""
-    return analyze(symbol, bars, " ".join(name.split())[:64], exchange[:24])
+    return bars, " ".join(name.split())[:64], exchange[:24]
+
+
+def fetch_chart(symbol, gate, opener):
+    bars, name, exchange = fetch_bars(symbol, gate, opener, "2y", int(swing_param("liquidity.minBars", 60)))
+    return analyze(symbol, bars, name, exchange)
 
 
 def scan_once(symbols, gap):
@@ -1780,8 +1837,326 @@ def patch_swing_scores():
         print("Missed " + str(len(failures)) + ": " + ", ".join(failures[:12]))
 
 
+EASTERN = ZoneInfo("America/New_York")
+
+
+def eastern_now():
+    return datetime.now(EASTERN)
+
+
+def trading_date(moment):
+    return datetime.fromtimestamp(moment, EASTERN).date().isoformat()
+
+
+def page_top(rows):
+    size = int(swing_param("picks.listSize", 5))
+
+    def swing_pick(row):
+        score = row.get("swingScore")
+        return bool(row.get("swingEligible") and isinstance(score, (int, float)) and score >= swing_param("gates.uiScoreFloor", 20))
+
+    def best(row):
+        if isinstance(row.get("rankScore"), (int, float)):
+            return row["rankScore"]
+        return row.get("score") or 0
+
+    ordered = sorted(rows, key=lambda row: (0 if swing_pick(row) else 1, -best(row), row.get("symbol") or ""))
+    return ordered[:size]
+
+
+def load_picks():
+    document = load_json(PICKS_PATH)
+    picks = document.get("picks") if isinstance(document, dict) else None
+    if not isinstance(picks, list):
+        picks = []
+    return {"picks": picks}
+
+
+def save_picks(document):
+    PICKS_PATH.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
+
+
+def record_picks(rows, market=None, picked_on=None):
+    """Append the top 5. A ticker that already has an open pick is not opened again."""
+    document = load_picks()
+    open_symbols = {pick.get("symbol") for pick in document["picks"] if pick.get("status") == "open"}
+    today = picked_on or eastern_now().date().isoformat()
+    added = 0
+    for rank, row in enumerate(page_top(rows), start=1):
+        symbol = row.get("symbol")
+        if not symbol or symbol in open_symbols or symbol in EXCLUDE:
+            continue
+        signals = list(row.get("swingSignals") or [])
+        confirming = [label for label in signals if label not in SWING_CONTEXT]
+        document["picks"].append({
+            "id": today + "-" + symbol,
+            "pickedOn": today,
+            "paramVersion": PARAMS.get("version") or "unversioned",
+            "rank": rank,
+            "symbol": symbol,
+            "name": row.get("name") or symbol,
+            "priceAtPick": row.get("price"),
+            "entryLow": row.get("entryLow"),
+            "entryHigh": row.get("entryHigh"),
+            "stop": row.get("stop"),
+            "target": row.get("target"),
+            "rewardRisk": row.get("rewardRisk"),
+            "score": row.get("rankScore") if row.get("rankScore") is not None else row.get("score"),
+            "swingScore": row.get("swingScore"),
+            "swingEligible": bool(row.get("swingEligible")),
+            "signals": signals,
+            "gates": {
+                "above200": bool(row.get("above200")),
+                "confirming": confirming,
+                "adjustedScore": row.get("swingScore"),
+                "rewardRisk": row.get("rewardRisk"),
+                "earningsClear": earnings_flag_label() not in (row.get("flags") or []),
+            },
+            "sector": row.get("sector") or "",
+            "market": market or {},
+            "status": "open",
+            "outcome": None,
+            "filledOn": None,
+            "closedOn": None,
+            "daysHeld": None,
+            "returnPct": None,
+            "mfePct": None,
+            "maePct": None,
+            "lastPrice": row.get("price"),
+            "evaluatedAt": stamp(now_utc()),
+        })
+        open_symbols.add(symbol)
+        added += 1
+    save_picks(document)
+    print("Recorded " + str(added) + " new top-5 picks. Open book " + str(len(open_symbols)) + ".", flush=True)
+    return document
+
+
+def session_day(bar):
+    return trading_date(bar["time"])
+
+
+def evaluate_picks(bars_by_symbol):
+    document = load_picks()
+    fill_window = int(swing_param("picks.fillWindowTradingDays", 5))
+    hold_window = int(swing_param("picks.maxHoldTradingDays", 20))
+    changed = 0
+    for pick in document["picks"]:
+        if pick.get("status") != "open":
+            continue
+        bars = bars_by_symbol.get(pick.get("symbol")) or []
+        if not bars or not isinstance(pick.get("priceAtPick"), (int, float)):
+            continue
+        after = [bar for bar in bars if session_day(bar) >= pick.get("pickedOn")]
+        if not after:
+            continue
+        entry_low = pick.get("entryLow")
+        entry_high = pick.get("entryHigh")
+        stop = pick.get("stop")
+        target = pick.get("target")
+        if not all(isinstance(value, (int, float)) for value in (entry_low, entry_high, stop, target)):
+            continue
+        filled_index = None
+        for index, bar in enumerate(after[:fill_window]):
+            if bar["low"] <= entry_high and bar["high"] >= entry_low:
+                filled_index = index
+                break
+        pick["lastPrice"] = round(after[-1]["close"], 2)
+        pick["evaluatedAt"] = stamp(now_utc())
+        if filled_index is None:
+            if len(after) >= fill_window:
+                pick["status"] = "closed"
+                pick["outcome"] = "never filled"
+                pick["closedOn"] = session_day(after[fill_window - 1])
+                pick["daysHeld"] = 0
+                pick["returnPct"] = None
+                changed += 1
+            continue
+        held = after[filled_index:filled_index + hold_window]
+        pick["filledOn"] = session_day(after[filled_index])
+        entry = pick["priceAtPick"]
+        favorable = entry
+        adverse = entry
+        outcome = None
+        exit_price = None
+        exit_day = None
+        for offset, bar in enumerate(held):
+            favorable = max(favorable, bar["high"])
+            adverse = min(adverse, bar["low"])
+            hit_stop = bar["low"] <= stop
+            hit_target = bar["high"] >= target
+            if hit_stop and hit_target:
+                outcome = "stopped out"
+                exit_price = stop
+            elif hit_stop:
+                outcome = "stopped out"
+                exit_price = stop
+            elif hit_target:
+                outcome = "target hit"
+                exit_price = target
+            if outcome:
+                exit_day = session_day(bar)
+                pick["daysHeld"] = offset + 1
+                break
+        pick["mfePct"] = round((favorable - entry) / entry * 100, 2) if entry else None
+        pick["maePct"] = round((adverse - entry) / entry * 100, 2) if entry else None
+        if outcome:
+            pick["status"] = "closed"
+            pick["outcome"] = outcome
+            pick["closedOn"] = exit_day
+            pick["returnPct"] = round((exit_price - entry) / entry * 100, 2)
+            changed += 1
+        elif len(held) >= hold_window:
+            last = held[-1]
+            pick["status"] = "closed"
+            pick["outcome"] = "expired"
+            pick["closedOn"] = session_day(last)
+            pick["daysHeld"] = hold_window
+            pick["returnPct"] = round((last["close"] - entry) / entry * 100, 2)
+            changed += 1
+    save_picks(document)
+    print("Updated " + str(changed) + " pick outcomes.", flush=True)
+    return document
+
+
+def pull_bars(symbols, span, min_bars, allow_etf=False):
+    gate = Gate(CHART_GAP)
+    local = threading.local()
+    found = {}
+    failures = []
+    lock = threading.Lock()
+
+    def opener_for():
+        if not hasattr(local, "opener"):
+            local.opener = urllib.request.build_opener()
+        return local.opener
+
+    def one(symbol):
+        bars, _name, _exchange = fetch_bars(symbol, gate, opener_for(), span, min_bars, allow_etf=allow_etf)
+        return bars
+
+    with ThreadPoolExecutor(max_workers=CHART_WORKERS) as pool:
+        futures = {pool.submit(one, symbol): symbol for symbol in symbols}
+        for future in as_completed(futures):
+            symbol = futures[future]
+            try:
+                bars = future.result()
+            except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, RuntimeError, KeyError, ZeroDivisionError, ValueError) as error:
+                with lock:
+                    failures.append(symbol + " (" + str(error).splitlines()[0][:80] + ")")
+            else:
+                with lock:
+                    found[symbol] = bars
+    return found, failures
+
+
+def spy_context():
+    try:
+        found, _failures = pull_bars(["SPY"], "2y", 200, allow_etf=True)
+    except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, RuntimeError):
+        return {}
+    bars = found.get("SPY") or []
+    if len(bars) < 200:
+        return {}
+    closes = [bar["close"] for bar in bars]
+    last = len(closes) - 1
+    sma50 = sma_at(closes, last, 50)
+    sma200 = sma_at(closes, last, 200)
+    price = closes[last]
+    return {
+        "symbol": "SPY",
+        "price": round(price, 2),
+        "vsSma50": round((price / sma50 - 1.0) * 100, 2) if sma50 else None,
+        "vsSma200": round((price / sma200 - 1.0) * 100, 2) if sma200 else None,
+    }
+
+
+def in_market_hours(moment):
+    if moment.weekday() >= 5:
+        return False
+    minutes = moment.hour * 60 + moment.minute
+    return (9 * 60 + 30) <= minutes <= (16 * 60 + 5)
+
+
+def after_close_due():
+    moment = eastern_now()
+    if moment.weekday() >= 5:
+        return False
+    if moment.hour * 60 + moment.minute < 16 * 60 + 15:
+        return False
+    previous = load_json(OUT_PATH)
+    fetched = previous.get("fetchedAt") if isinstance(previous, dict) else ""
+    try:
+        scanned = datetime.strptime(fetched, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).astimezone(EASTERN)
+    except (TypeError, ValueError):
+        return True
+    return not (scanned.date() == moment.date() and scanned.hour * 60 + scanned.minute >= 16 * 60 + 15)
+
+
+def refresh_published_quotes():
+    if os.environ.get("STOCKS_FORCE") != "1" and not in_market_hours(eastern_now()):
+        print("Outside New York market hours. Skipping the quote refresh.")
+        return
+    previous = load_json(OUT_PATH)
+    stocks = previous.get("stocks") if isinstance(previous, dict) else None
+    if not isinstance(stocks, list) or not stocks:
+        print("No published snapshot to refresh.")
+        return
+    history = load_picks()
+    open_symbols = [pick.get("symbol") for pick in history["picks"] if pick.get("status") == "open" and pick.get("symbol")]
+    published = [row.get("symbol") for row in stocks if row.get("symbol")]
+    light = [symbol for symbol in published if symbol not in open_symbols]
+    print("Refreshing " + str(len(light)) + " quotes and " + str(len(open_symbols)) + " open picks.", flush=True)
+    light_bars, light_failures = pull_bars(light, "5d", 2) if light else ({}, [])
+    open_bars, open_failures = pull_bars(open_symbols, "6mo", 5) if open_symbols else ({}, [])
+    updated = 0
+    by_symbol = {row.get("symbol"): row for row in stocks}
+    for symbol, bars in light_bars.items():
+        row = by_symbol.get(symbol)
+        if not row or len(bars) < 2:
+            continue
+        last = bars[-1]["close"]
+        prior = bars[-2]["close"]
+        if prior <= 0 or last <= 0:
+            continue
+        row["price"] = round(last, 2)
+        row["dayChange"] = round((last / prior - 1.0) * 100, 2)
+        updated += 1
+    for symbol, bars in open_bars.items():
+        row = by_symbol.get(symbol)
+        if not row or len(bars) < 2:
+            continue
+        last = bars[-1]["close"]
+        prior = bars[-2]["close"]
+        if prior <= 0 or last <= 0:
+            continue
+        row["price"] = round(last, 2)
+        row["dayChange"] = round((last / prior - 1.0) * 100, 2)
+        updated += 1
+    needed = len(published)
+    if needed and updated < max(1, math.ceil(needed * MIN_PRICED_RATIO)):
+        print("Only " + str(updated) + " of " + str(needed) + " quotes refreshed. Keeping the previous snapshot.")
+    else:
+        write_doc(
+            stocks,
+            stamp(now_utc()),
+            previous.get("universeCount") or 0,
+            previous.get("priced") or 0,
+            previous.get("candidates") or 0,
+        )
+        print("Updated " + str(updated) + " prices.", flush=True)
+    if open_bars:
+        evaluate_picks(open_bars)
+    if light_failures or open_failures:
+        missed = (light_failures + open_failures)[:12]
+        print("Missed " + str(len(light_failures) + len(open_failures)) + ": " + ", ".join(missed))
+
+
 def main():
     self_test()
+    if os.environ.get("STOCKS_QUOTES") == "1":
+        refresh_published_quotes()
+        return
     if os.environ.get("STOCKS_SWING_ONLY") == "1":
         patch_swing_scores()
         return
@@ -1789,6 +2164,9 @@ def main():
         os.environ["STOCKS_REFRESH_UNIVERSE"] = "1"
         symbols = load_universe()
         print("Universe only: " + str(len(symbols)) + " symbols. RCL excluded: " + str("RCL" not in symbols) + ".")
+        return
+    if os.environ.get("STOCKS_AFTER_CLOSE") == "1" and os.environ.get("STOCKS_FORCE") != "1" and not after_close_due():
+        print("After-close scan is not due in New York. Skipping.")
         return
     previous = load_json(OUT_PATH)
     if fresh_enough(previous):
@@ -1840,6 +2218,7 @@ def main():
         print("Only " + str(len(published)) + " swing candidates. Keeping the previous snapshot.")
         return
     write_doc(published, stamp(now_utc()), len(symbols), len(rows), len(chosen))
+    record_picks(published, spy_context())
     deep = sum(1 for row in published if row["zone"] == "deep")
     print(
         "Saved "

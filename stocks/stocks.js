@@ -693,7 +693,93 @@
     var scope = universeCount
       ? rows.length + ' swing candidates from ' + (pricedCount || universeCount) + ' priced names in a universe of ' + universeCount + '.'
       : rows.length + ' names.';
-    box.textContent = 'Market data timestamp ' + localTime(fetchedAt) + '. ' + scope + ' Daily bars, not a live quote. Informational only, not financial advice.';
+    box.textContent = 'Prices as of ' + pricesAsOf(fetchedAt) + '. ' + scope + ' Daily bars, not a live quote. Informational only, not financial advice.';
+  }
+  function pricesAsOf(iso) {
+    var time = Date.parse(iso);
+    if (!Number.isFinite(time)) return 'an unknown time';
+    var clock = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(new Date(time));
+    return clock + ' ET';
+  }
+  function outcomeLabel(pick) {
+    if (pick.outcome === 'target hit') return 'Target';
+    if (pick.outcome === 'stopped out') return 'Stopped';
+    if (pick.outcome === 'never filled') return 'No fill';
+    if (pick.outcome === 'expired') return 'Expired';
+    return 'Open';
+  }
+  function outcomeClass(pick) {
+    if (pick.outcome === 'target hit') return 'is-win';
+    if (pick.outcome === 'stopped out') return 'is-stop';
+    return 'is-open';
+  }
+  function renderTrack(history) {
+    var summary = document.getElementById('trackSummary');
+    var list = document.getElementById('trackList');
+    if (!summary || !list) return;
+    var picks = history && Array.isArray(history.picks) ? history.picks.slice() : [];
+    if (!picks.length) {
+      summary.textContent = 'No tracked picks yet. The after-close scan records the top 5.';
+      list.replaceChildren();
+      return;
+    }
+    var closed = picks.filter(function (pick) {
+      return pick.outcome === 'target hit' || pick.outcome === 'stopped out' || pick.outcome === 'expired';
+    });
+    var wins = closed.filter(function (pick) { return pick.outcome === 'target hit'; });
+    var returns = closed.map(function (pick) { return pick.returnPct; }).filter(function (value) { return typeof value === 'number'; });
+    var average = returns.length ? returns.reduce(function (sum, value) { return sum + value; }, 0) / returns.length : null;
+    var openCount = picks.filter(function (pick) { return pick.status === 'open'; }).length;
+    summary.textContent = 'Win rate ' + (closed.length ? Math.round((wins.length / closed.length) * 100) + '%' : '—')
+      + ' · avg ' + (average == null ? '—' : (average > 0 ? '+' : '') + average.toFixed(1) + '%')
+      + ' · ' + openCount + ' open · ' + (picks.length - openCount) + ' closed';
+    picks.sort(function (a, b) {
+      return String(b.pickedOn || '').localeCompare(String(a.pickedOn || '')) || (a.rank || 0) - (b.rank || 0);
+    });
+    list.replaceChildren();
+    picks.slice(0, 10).forEach(function (pick) {
+      var item = document.createElement('li');
+      var button = el('button', '', 'track-row');
+      button.type = 'button';
+      button.setAttribute('aria-expanded', 'false');
+      var label = el('span', outcomeLabel(pick), 'track-badge ' + outcomeClass(pick));
+      var name = el('span', (pick.symbol || '') + '  ' + (pick.pickedOn || ''), 'track-name');
+      var ret = el('span', typeof pick.returnPct === 'number' ? ((pick.returnPct > 0 ? '+' : '') + pick.returnPct.toFixed(1) + '%') : '—', 'track-return');
+      button.append(label, name, ret);
+      var detail = el('div', '', 'track-detail');
+      detail.hidden = true;
+      var bits = [];
+      if (typeof pick.priceAtPick === 'number') bits.push('Picked ' + money(pick.priceAtPick));
+      if (typeof pick.entryLow === 'number' && typeof pick.entryHigh === 'number') bits.push('Buy ' + money(pick.entryLow) + '–' + money(pick.entryHigh));
+      if (typeof pick.stop === 'number') bits.push('Stop ' + money(pick.stop));
+      if (typeof pick.target === 'number') bits.push('Target ' + money(pick.target));
+      if (typeof pick.rewardRisk === 'number') bits.push(pick.rewardRisk.toFixed(1) + ':1');
+      if (typeof pick.daysHeld === 'number') bits.push(pick.daysHeld + ' days');
+      if (typeof pick.mfePct === 'number') bits.push('MFE ' + (pick.mfePct > 0 ? '+' : '') + pick.mfePct.toFixed(1) + '%');
+      if (typeof pick.maePct === 'number') bits.push('MAE ' + pick.maePct.toFixed(1) + '%');
+      if (pick.sector) bits.push(pick.sector);
+      var market = pick.market || {};
+      if (typeof market.vsSma200 === 'number') bits.push('SPY vs 200d ' + (market.vsSma200 > 0 ? '+' : '') + market.vsSma200.toFixed(1) + '%');
+      if (pick.signals && pick.signals.length) bits.push(pick.signals.slice(0, 4).join(', '));
+      detail.textContent = bits.join(' · ');
+      button.addEventListener('click', function () {
+        var open = detail.hidden;
+        detail.hidden = !open;
+        button.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      item.append(button, detail);
+      list.appendChild(item);
+    });
+  }
+  function loadPicks() {
+    return fetch('picks-history.json?t=' + Date.now(), { cache: 'no-store' }).then(function (response) {
+      if (!response.ok) throw new Error('picks');
+      return response.json();
+    }).then(renderTrack, function () { renderTrack({ picks: [] }); });
   }
 
   function savePin(symbol, note, target) {
@@ -930,6 +1016,7 @@
       universeCount = data && data.universeCount || 0;
       pricedCount = data && data.priced || 0;
       paintFresh();
+      loadPicks();
       paintTape();
       paintSwing();
       retryPrices();
