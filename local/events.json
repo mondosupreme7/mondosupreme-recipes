@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T04:03:34Z",
+ "updated": "2026-11-10T05:06:44Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 11
+   "count": 10
   },
   {
    "name": "City of Titusville",
@@ -59,13 +59,14 @@
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 30
+   "count": 27
   },
   {
    "name": "Launch Library 2",
    "url": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=20",
-   "ok": true,
-   "count": 2
+   "ok": false,
+   "count": 0,
+   "error": "TimeoutError"
   }
  ],
  "events": [
@@ -95,62 +96,6 @@
    "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "4e83374196587ff5",
-   "title": "Disney Wish in port",
-   "start": "2026-11-09T11:00:00Z",
-   "end": "2026-11-09T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "3ddcd2eb5af16eca",
-   "title": "Utopia of the Seas in port",
-   "start": "2026-11-09T11:30:00Z",
-   "end": "2026-11-09T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "d34277eb9776e214",
-   "title": "Carnival Glory in port",
-   "start": "2026-11-09T12:00:00Z",
-   "end": "2026-11-09T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT3",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "572fb80bccc3f49f",
-   "title": "Affordable Housing Advisory Committee Special Meeting",
-   "start": "2026-11-09T21:30:00Z",
-   "end": "2026-11-10T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Harry T. Moore Social Services Center</p><p>725 South DeLeon Avenue</p><p>Titusville, FL 32780</p> - Harry T. Moore S",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2840",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -390,20 +335,6 @@
    "source": "City of Titusville",
    "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
-  },
-  {
-   "id": "99ff4eb43701830e",
-   "title": "Vulcan VC6L | Amazon Leo (LV-01)",
-   "start": "2026-11-13T17:54:00Z",
-   "end": "2026-11-13T18:24:00Z",
-   "town": "Port Canaveral",
-   "venue": "Space Launch Complex 41",
-   "category": "Launches",
-   "url": "https://ll.thespacedevs.com/2.2.0/launch/ef9850ad-1096-425b-9d27-f7bbd186e61a/",
-   "description": "Go for Launch \u00b7 United Launch Alliance \u00b7 Vulcan VC6L \u00b7 Space Launch Complex 41",
-   "source": "Launch Library 2",
-   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
-   "kind": "launch"
   },
   {
    "id": "11ed3146a0a0809a",
@@ -880,20 +811,6 @@
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
-  },
-  {
-   "id": "d19b86d56b8cfdda",
-   "title": "Falcon 9 Block 5 | Cygnus CRS-2 NG-25",
-   "start": "2026-11-29T15:49:00Z",
-   "end": "2026-11-29T16:49:00Z",
-   "town": "Port Canaveral",
-   "venue": "Space Launch Complex 40",
-   "category": "Launches",
-   "url": "https://ll.thespacedevs.com/2.2.0/launch/d74afbc7-0de5-491c-be05-4e9c31f736ac/",
-   "description": "Go for Launch \u00b7 SpaceX \u00b7 Falcon 9 \u00b7 Space Launch Complex 40",
-   "source": "Launch Library 2",
-   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
-   "kind": "launch"
   }
  ]
 }
