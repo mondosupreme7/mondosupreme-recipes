@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
-<link rel="stylesheet" href="mmo.css?v=2">
+<link rel="stylesheet" href="mmo.css?v=3">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
@@ -91,60 +91,57 @@
    <button id="enterWorld" class="btn primary" type="button">Enter World</button>
   </section>
   <section id="play" hidden>
-   <p id="zoneLabel" class="zone-label">Elwynn / Goldhaven Shire <span id="zoneSub">Lv 1–4</span></p>
-   <div class="frames">
-    <div id="playerFrame" class="frame">
-     <canvas id="playerPortrait" width="40" height="40" aria-hidden="true"></canvas>
-     <div>
-      <div><strong id="playerName">Hero</strong><span id="playerLevel" class="lv">1</span></div>
-      <div class="track" aria-label="Health"><i id="playerHp" class="fill p100"></i></div>
-      <div class="track" aria-label="Resource"><i id="playerRes" class="fill rage p0"></i></div>
-      <div class="track" aria-label="Experience"><i id="xpFill" class="fill xp p0"></i></div>
-     </div>
+   <div class="hud-top">
+    <div class="zone-row">
+     <p id="zoneLabel" class="zone-label">Elwynn / Goldhaven Shire <span id="zoneSub">Lv 1–4</span></p>
+     <button type="button" class="btn" id="menuBtn" aria-expanded="false">Menu</button>
     </div>
-    <div id="targetFrame" class="frame">
-     <canvas id="targetPortrait" width="40" height="40" aria-hidden="true"></canvas>
-     <div>
-      <div><strong id="targetName">No target</strong><span id="targetLevel" class="lv"></span></div>
-      <div class="track" aria-label="Target health"><i id="targetHp" class="fill p0"></i></div>
-      <div id="targetMeta">Select a creature, hero, or quest giver.</div>
+    <div class="frames">
+     <div id="playerFrame" class="frame">
+      <canvas id="playerPortrait" width="40" height="40" aria-hidden="true"></canvas>
+      <div class="frame-bars">
+       <div><strong id="playerName">Hero</strong><span id="playerLevel" class="lv">1</span></div>
+       <div class="track" aria-label="Health"><i id="playerHp" class="fill p100"></i></div>
+       <div class="track" aria-label="Resource"><i id="playerRes" class="fill rage p0"></i></div>
+       <div class="track" aria-label="Experience"><i id="xpFill" class="fill xp p0"></i></div>
+      </div>
+     </div>
+     <div id="targetFrame" class="frame">
+      <canvas id="targetPortrait" width="40" height="40" aria-hidden="true"></canvas>
+      <div class="frame-bars">
+       <div><strong id="targetName">No target</strong><span id="targetLevel" class="lv"></span></div>
+       <div class="track" aria-label="Target health"><i id="targetHp" class="fill p0"></i></div>
+       <div id="targetMeta">Tap a foe.</div>
+      </div>
      </div>
     </div>
    </div>
    <div class="stage">
     <canvas id="world" width="640" height="420" aria-label="Game world"></canvas>
-    <canvas id="joy" width="128" height="128" aria-label="Virtual joystick"></canvas>
+    <canvas id="joy" width="128" height="128" aria-label="Virtual joystick" hidden></canvas>
    </div>
    <p id="yell" hidden>BY FIRE BE PURGED!</p>
    <p id="peek" class="peek" aria-live="polite"></p>
    <div class="slots" role="toolbar" aria-label="Action bar">
+    <button type="button" class="slot act" id="actBtn">Talk</button>
     <button type="button" class="slot" id="ab0"><span class="key">1</span><span class="nm">Ability</span><i class="cd p0"></i></button>
     <button type="button" class="slot" id="ab1"><span class="key">2</span><span class="nm">Ability</span><i class="cd p0"></i></button>
     <button type="button" class="slot" id="ab2"><span class="key">3</span><span class="nm">Ability</span><i class="cd p0"></i></button>
     <button type="button" class="slot" id="ab3"><span class="key">4</span><span class="nm">Ability</span><i class="cd p0"></i></button>
-    <button type="button" class="slot" id="autoBtn" aria-pressed="false"><span class="key">Space</span><span class="nm">Auto</span></button>
-    <button type="button" class="slot" id="potionBtn"><span class="key">5</span><span class="nm">Potion 5</span><i class="cd p0"></i></button>
    </div>
-   <div class="panel-actions">
-    <button type="button" class="btn" id="talkBtn" hidden>Talk</button>
-    <button type="button" class="btn" id="questBtn">Quest Log</button>
-    <button type="button" class="btn" id="charBtn">Character</button>
-    <button type="button" class="btn" id="chatBtn">Chat Log</button>
-    <button type="button" class="btn" id="hallBtn">Hall of Fame</button>
-    <button type="button" class="btn" id="reroll">New Hero</button>
-   </div>
-   <p class="hint"><span class="desk">WASD or click to move. Click a creature to target. Keys 1–4 cast, 5 is a potion, F talks.</span><span class="touch">Drag the stick or tap the ground. Tap a creature to target.</span></p>
-   <div id="questDialog" class="quest-dialog" hidden>
-    <h3 id="questTitle"></h3>
-    <p id="questText"></p>
-    <p id="questObj"></p>
-    <p id="questReward"></p>
+   <div id="menuSheet" hidden>
     <div class="panel-actions">
-     <button type="button" class="btn primary" id="questAccept">Accept</button>
-     <button type="button" class="btn primary" id="questComplete">Complete Quest</button>
-     <button type="button" class="btn" id="questClose">Close</button>
+     <button type="button" class="btn" id="talkBtn" hidden>Talk</button>
+     <button type="button" class="slot" id="autoBtn" aria-pressed="false"><span class="key">Space</span><span class="nm">Auto</span></button>
+     <button type="button" class="slot" id="potionBtn"><span class="key">5</span><span class="nm">Potion</span><i class="cd p0"></i></button>
+     <button type="button" class="btn" id="questBtn">Quest Log</button>
+     <button type="button" class="btn" id="charBtn">Character</button>
+     <button type="button" class="btn" id="chatBtn">Chat Log</button>
+     <button type="button" class="btn" id="hallBtn">Hall of Fame</button>
+     <button type="button" class="btn" id="reroll">New Hero</button>
+     <button type="button" class="btn" id="menuClose">Close</button>
     </div>
-   </div>
+    <p class="hint"><span class="desk">WASD or click the ground to move. Click a foe to chase and attack. Keys 1–4 cast, 5 drinks a potion, F talks.</span><span class="touch">Tap the ground to walk. Tap a foe to chase and attack. The bottom button talks or enters.</span></p>
    <section id="panelQuest" class="panel" hidden>
     <h2>Quest Log</h2>
     <div id="questList"></div>
@@ -171,6 +168,18 @@
     </div>
     <div id="hallList"></div>
    </section>
+   </div>
+   <div id="questDialog" class="quest-dialog" hidden>
+    <h3 id="questTitle"></h3>
+    <p id="questText"></p>
+    <p id="questObj"></p>
+    <p id="questReward"></p>
+    <div class="panel-actions">
+     <button type="button" class="btn primary" id="questAccept">Accept</button>
+     <button type="button" class="btn primary" id="questComplete">Complete Quest</button>
+     <button type="button" class="btn" id="questClose">Close</button>
+    </div>
+   </div>
   </section>
  </div>
 </main>
@@ -194,7 +203,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/mondo-juice.js?v=1"></script>
-<script src="mmo.js?v=3"></script>
+<script src="mmo.js?v=4"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
