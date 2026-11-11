@@ -135,6 +135,7 @@ const state = {
   selected: null
 };
 let seq = [];
+let renderedRoom = '';
 let padPuzzle = null;
 let padValue = '';
 let audio = null;
@@ -287,7 +288,14 @@ function renderArt() {
   door.appendChild(document.createElement('i'));
   art.append(pane, rain, door);
 }
+function clearEndingCopy() {
+  $('#endingTitle').textContent = '';
+  $('#endingLine').textContent = '';
+  $('#endingTime').textContent = '';
+}
 function render() {
+  if (renderedRoom && renderedRoom !== state.room) $('#hintOut').textContent = '';
+  renderedRoom = state.room;
   const room = ROOMS[state.room];
   $('#roomTitle').textContent = room.title;
   $('#roomLine').textContent = room.line;
@@ -342,6 +350,8 @@ function showEnding() {
   $('#splash').hidden = true;
   $('#play').hidden = true;
   closeSheets();
+  $('#endingTitle').textContent = 'The house lets you go.';
+  $('#endingLine').textContent = 'The lantern takes the flame. Rain thins. The road is only water and moonlight, and it is enough.';
   $('#ending').hidden = false;
   $('#endingTime').textContent = 'You were in the dark for ' + formatDuration(state.endedElapsed) + '.';
 }
@@ -357,7 +367,9 @@ function freshStart() {
   state.paintings = {};
   state.selected = null;
   seq = [];
+  renderedRoom = '';
   $('#hintOut').textContent = '';
+  clearEndingCopy();
   say('The mat takes your weight.');
   save();
   showPlay();
@@ -380,6 +392,8 @@ function resetAll() {
   $('#resume').hidden = true;
   $('#wipe').hidden = true;
   $('#hintOut').textContent = '';
+  renderedRoom = '';
+  clearEndingCopy();
 }
 
 function openPad(puzzle, title, width) {
@@ -437,9 +451,16 @@ async function tryPad() {
 }
 
 function examine(id) {
-  if (id === 'coat') return openSheet('Wool, still damp. A collar tag reads Row 2.');
-  if (id === 'hook') return openSheet('Four hooks. The fourth holds a black umbrella, and a small 4 is cut into the brass.');
-  if (id === 'mat') return openSheet('You lift the mat. The rubber is stamped with a 9.');
+  if (id === 'coat' || id === 'hook' || id === 'mat') {
+    const text = id === 'coat'
+      ? 'Wool, still damp. A collar tag reads Row 2.'
+      : id === 'hook'
+        ? 'Four hooks. The fourth holds a black umbrella, and a small 4 is cut into the brass.'
+        : 'You lift the mat. The rubber is stamped with a 9.';
+    addNote(text);
+    save();
+    return openSheet(text);
+  }
   if (id === 'clock') {
     addNote('The clockmaker’s plate reads 19.');
     save();
@@ -750,6 +771,7 @@ function boot() {
     if (audio && audio.ctx && audio.ctx.resume) audio.ctx.resume();
   });
   if (raw && raw.finale) { showEnding(); return; }
+  clearEndingCopy();
   bootSplash(raw);
 }
 document.addEventListener('DOMContentLoaded', boot);

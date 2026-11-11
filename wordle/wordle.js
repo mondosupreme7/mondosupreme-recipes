@@ -14,6 +14,8 @@
   var today = easternDate(new Date());
   var owner = false;
   var remoteRows = null;
+  var revealToken = 0;
+  var revealing = false;
 
   function $(id) { return document.getElementById(id); }
   function blank() {
@@ -58,9 +60,23 @@
     }
     return h >>> 0;
   }
+  /* Dates before this keep the original hash, so already published days stay put.
+     From this date on, a blocked proper noun or brand is re-picked with hash(date + '#' + n). */
+  var DAILY_FILTER_FROM = '2026-11-18';
+  var DAILY_BLOCK = ('aaron adams adobe alice allan allen annie april barry betty blair blake brian bruce carol chris cindy cisco david diana diane ellen emily frank helen henry honda india intel italy jacob james janet japan jason jenny jesse jesus jimmy jones joyce julie karen kathy keith kelly kerry kevin kodak larry laura lewis linda logan louis maria marie mario miami moses nancy oscar paris perry peter ralph randy roger sally sarah scott simon smith steve susan terry texas tokyo tommy tracy tyler wayne wendy xerox yahoo').split(' ').reduce(function (map, word) {
+    map[word] = 1;
+    return map;
+  }, Object.create(null));
   function dailyWord(dateStr) {
     if (!lists.solutions.length) return 'crane';
-    return lists.solutions[hash(dateStr) % lists.solutions.length];
+    function pickIndex(key) { return lists.solutions[hash(key) % lists.solutions.length]; }
+    var word = pickIndex(dateStr);
+    if (dateStr < DAILY_FILTER_FROM || !DAILY_BLOCK[word]) return word;
+    for (var n = 1; n <= 12; n++) {
+      word = pickIndex(dateStr + '#' + n);
+      if (!DAILY_BLOCK[word]) return word;
+    }
+    return word;
   }
   function pick(list, avoid) {
     if (!list.length) return 'crane';
@@ -176,9 +192,14 @@
   function tile(row, col) {
     return document.querySelector('.tile[data-row="' + row + '"][data-col="' + col + '"]');
   }
+  function prefersReduced() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
   function paint(animate) {
+    var token = ++revealToken;
     var game = current();
     var answer = secret();
+    var reduce = prefersReduced();
     var r, c, guess, marks, cell;
     for (r = 0; r < 6; r++) {
       guess = game.guesses[r] || (r === game.guesses.length ? game.draft : '');
@@ -189,31 +210,49 @@
         var letter = guess.charAt(c) || '';
         cell.textContent = letter;
         if (marks) {
-          cell.dataset.state = marks[c];
-          if (animate && r === game.guesses.length - 1) {
+          if (animate && !reduce && r === game.guesses.length - 1) {
+            cell.removeAttribute('data-state');
             (function (node, delay, mark) {
-              node.dataset.state = '';
               setTimeout(function () {
-                node.dataset.state = mark;
+                if (token !== revealToken) return;
                 node.classList.add('flip');
+                setTimeout(function () {
+                  if (token !== revealToken) return;
+                  node.dataset.state = mark;
+                  node.setAttribute('aria-label', (node.textContent || 'empty') + ' ' + mark);
+                }, 225);
               }, delay);
             })(cell, c * 160, marks[c]);
-          }
+          } else cell.dataset.state = marks[c];
         } else {
-          delete cell.dataset.state;
+          cell.removeAttribute('data-state');
           if (letter) cell.classList.add('is-filled');
         }
-        cell.setAttribute('aria-label', (letter || 'empty') + (marks ? ' ' + marks[c] : ''));
+        var holdMark = marks && animate && !reduce && r === game.guesses.length - 1;
+        cell.setAttribute('aria-label', (letter || 'empty') + (marks && !holdMark ? ' ' + marks[c] : ''));
       }
     }
-    paintKeys();
+    var delayKeys = animate && !reduce;
+    paintKeys(delayKeys);
     paintChrome();
+    if (delayKeys) {
+      setTimeout(function () {
+        if (token !== revealToken) return;
+        paintKeys(false);
+        if (!revealing) return;
+        revealing = false;
+        paintChrome();
+        if (current().status === 'won') celebrate();
+      }, 4 * 160 + 450);
+    }
   }
-  function paintKeys() {
+  function paintKeys(skipNewest) {
     var best = Object.create(null);
     var game = current();
     var answer = secret();
-    game.guesses.forEach(function (guess) {
+    var guesses = game.guesses || [];
+    if (skipNewest && guesses.length) guesses = guesses.slice(0, -1);
+    guesses.forEach(function (guess) {
       var marks = score(guess, answer);
       for (var i = 0; i < 5; i++) {
         var ch = guess.charAt(i);
@@ -223,7 +262,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('.key'), function (key) {
       var ch = key.dataset.key;
       if (best[ch]) key.dataset.state = best[ch];
-      else delete key.dataset.state;
+      else key.removeAttribute('data-state');
     });
   }
   function paintChrome() {
@@ -238,6 +277,7 @@
     $('modeTheme').setAttribute('aria-pressed', state.mode === 'theme' ? 'true' : 'false');
     $('wordNew').hidden = state.mode === 'daily';
     $('wordShare').disabled = game.status === 'play';
+    if (revealing) return paintStats();
     if (game.status === 'won') setMsg(state.mode === 'daily' ? 'Solved in ' + game.guesses.length + '/6.' : 'Got it in ' + game.guesses.length + '/6.');
     else if (game.status === 'lost') setMsg('The word was ' + secret().toUpperCase() + '.');
     else if (!$('wordMsg').dataset.lock) setMsg('Six tries. Green is the right spot. Gold is in the word. Gray tiles are out, and those keys turn red.');
@@ -285,30 +325,7 @@
     }, 360);
   }
   function celebrate() {
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var box = document.createElement('canvas');
-    box.width = window.innerWidth;
-    box.height = window.innerHeight;
-    box.setAttribute('aria-hidden', 'true');
-    box.style.cssText = 'position:fixed;inset:0;z-index:60;pointer-events:none';
-    document.body.appendChild(box);
-    var g = box.getContext('2d');
-    var bits = [];
-    var colors = ['#0f766e', '#1d4ed8', '#b45309', '#be123c', '#f8fafc'];
-    for (var i = 0; i < 90; i++) bits.push({ x: Math.random() * box.width, y: -10 - Math.random() * 120, v: 2 + Math.random() * 4, c: colors[i % colors.length], s: 4 + Math.random() * 5 });
-    var frame = 0;
-    function tick() {
-      g.clearRect(0, 0, box.width, box.height);
-      bits.forEach(function (bit) {
-        bit.y += bit.v;
-        g.fillStyle = bit.c;
-        g.fillRect(bit.x, bit.y, bit.s, bit.s * 0.55);
-      });
-      frame += 1;
-      if (frame < 80) requestAnimationFrame(tick);
-      else if (box.parentNode) box.parentNode.removeChild(box);
-    }
-    tick();
+    if (window.MONDO_JUICE) window.MONDO_JUICE.confetti();
   }
   function onKey(key) {
     var game = current();
@@ -348,18 +365,22 @@
     game.guesses.push(word);
     game.draft = '';
     var answer = secret();
-    if (word === answer) {
+    var won = word === answer;
+    var lost = !won && game.guesses.length >= 6;
+    var reduce = prefersReduced();
+    if (won) {
       game.status = 'won';
       game.ended = Date.now();
-      celebrate();
       if (state.mode === 'daily') recordDaily(true);
-    } else if (game.guesses.length >= 6) {
+    } else if (lost) {
       game.status = 'lost';
       game.ended = Date.now();
       if (state.mode === 'daily') recordDaily(false);
     }
+    revealing = (won || lost) && !reduce;
     save();
     paint(true);
+    if (won && reduce) celebrate();
   }
   function recordDaily(won) {
     var game = state.daily;
@@ -428,6 +449,8 @@
     setMsg('New word. Six tries.');
   }
   function setMode(mode) {
+    revealing = false;
+    revealToken += 1;
     state.mode = mode;
     $('wordMsg').dataset.lock = '';
     if (mode !== 'daily' && !valid[current().answer]) newBonus();

@@ -5,7 +5,7 @@ const W = 360, H = 520;
 const HOW = {
   seas: 'Dodge islands, rogue waves, and whirlpools. Collect stars, passengers, and port bonuses. Speed climbs every level.',
   kitchen: 'Catch the ingredients for the dish on the order. Dodge burnt toast and bombs. Combos multiply the score.',
-  breaker: 'Move the paddle. A or Space launches the ball and fires lasers. Grab multi-ball, wide paddle, and laser drops.'
+  breaker: 'Move the paddle. Space or Enter launches the ball and fires lasers. A and D move left and right. Grab multi-ball, wide paddle, and laser drops.'
 };
 const NAMES = { seas: 'High Seas Cruiser', kitchen: 'Supreme Kitchen Rush', breaker: 'Cyber Brick Breaker 1999' };
 const DISHES = [
@@ -38,7 +38,23 @@ function saveStore(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } ca
 function cleanName(v) {
   return String(v || '').toUpperCase().replace(/[^A-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 12);
 }
+function juice() { return window.MONDO_JUICE || null; }
+function audible() {
+  return soundOn && !(window.MONDO_AUDIO && MONDO_AUDIO.muted && MONDO_AUDIO.muted());
+}
+function syncSoundButton() {
+  const btn = $('#soundBtn');
+  if (!btn) return;
+  const on = audible();
+  btn.textContent = on ? 'Mute' : 'Sound';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+}
 function beep(freq, dur, type) {
+  const kit = juice();
+  if (kit) {
+    kit.play(type === 'sawtooth' ? 'hurt' : 'hit', { localOn: soundOn, pitch: freq, dur: dur, type: type || 'square' });
+    return;
+  }
   if (!soundOn) return;
   try {
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -57,6 +73,32 @@ function beep(freq, dur, type) {
     o.start(t);
     o.stop(t + dur);
   } catch { /* sound is optional */ }
+}
+function feel(kind, x, y, color) {
+  const kit = juice();
+  if (!kit) return;
+  if (kind === 'hurt') {
+    kit.shake(6, 180);
+    kit.hitstop(120);
+    kit.vibrate([16, 28, 16]);
+    return;
+  }
+  if (kind === 'break') {
+    kit.burst(x, y, { n: 8, color: color || '#fff', speed: 110, life: 0.42, gravity: 240, size: 3 });
+    kit.shake(2.5, 110);
+    kit.vibrate(10);
+    return;
+  }
+  if (kind === 'catch') {
+    kit.burst(x, y, { n: 6, color: color || '#fff7ed', speed: 70, life: 0.32, gravity: -30, size: 3 });
+    kit.vibrate(8);
+    return;
+  }
+  if (kind === 'win') {
+    kit.shake(3, 160);
+    kit.confetti();
+    kit.vibrate([10, 20, 10]);
+  }
 }
 function toast(m) {
   const t = $('#toast');
@@ -95,6 +137,7 @@ function hurt() {
   run.ship.inv = 1.25;
   run.flash = 0.15;
   beep(90, 0.18, 'sawtooth');
+  feel('hurt');
   return run.ship.lives <= 0;
 }
 
@@ -163,9 +206,9 @@ function stepSeas(dt) {
   for (const it of run.stuff) {
     if (it.y > H + 40) continue;
     const near = Math.abs(it.x - ship.x) < it.r + 16 && Math.abs(it.y - ship.y) < it.r + 22;
-    if (it.kind === 'star' && near) { run.score += 25; pop('+25', it.x, it.y); beep(880, 0.05); continue; }
-    if (it.kind === 'guest' && near) { run.score += 50; pop('+50', it.x, it.y); beep(660, 0.06); continue; }
-    if (it.kind === 'port' && near) { run.score += 150 + run.level * 25; pop('PORT', it.x, it.y); beep(520, 0.1); continue; }
+    if (it.kind === 'star' && near) { run.score += 25; pop('+25', it.x, it.y); beep(880, 0.05); feel('catch', it.x, it.y, '#ffe14a'); continue; }
+    if (it.kind === 'guest' && near) { run.score += 50; pop('+50', it.x, it.y); beep(660, 0.06); feel('catch', it.x, it.y, '#ff7ad9'); continue; }
+    if (it.kind === 'port' && near) { run.score += 150 + run.level * 25; pop('PORT', it.x, it.y); beep(520, 0.1); feel('catch', it.x, it.y, '#ffe14a'); continue; }
     if (it.kind === 'island' && near && hurt()) return finish();
     if (it.kind === 'island' && near) continue;
     if (it.kind === 'whirl' && Math.abs(it.x - ship.x) < 18 && Math.abs(it.y - ship.y) < 18 && hurt()) return finish();
@@ -194,6 +237,7 @@ function newKitchen() {
 function stepKitchen(dt) {
   run.t += dt;
   run.ship.inv = Math.max(0, run.ship.inv - dt);
+  run.ship.squash = Math.max(0, (run.ship.squash || 0) - dt);
   run.flash = Math.max(0, run.flash - dt);
   steer(dt, H - 80, H - 46);
   const vy = 130 + run.level * 16;
@@ -231,8 +275,10 @@ function stepKitchen(dt) {
       run.combo += 1;
       const add = 15 * mult;
       run.score += add;
+      run.ship.squash = 0.1;
       pop('+' + add, it.x, it.y);
       beep(740, 0.05);
+      feel('catch', it.x, it.y, '#fff7ed');
       if (orderDone(run.order)) {
         const bonus = 200 * run.level;
         run.score += bonus;
@@ -240,11 +286,14 @@ function stepKitchen(dt) {
         pop('DISH +' + bonus, W / 2, 80);
         beep(523, 0.08);
         beep(784, 0.12);
+        feel('win', W / 2, 80);
         run.order = orderFrom(run.level);
       }
     } else {
       run.score += 5;
+      run.ship.squash = 0.08;
       pop('+5', it.x, it.y);
+      feel('catch', it.x, it.y, '#fff');
     }
   }
   run.stuff = keep;
@@ -338,11 +387,13 @@ function stepBreaker(dt) {
         b.x += Math.sign(b.vx || 1) * 1.5;
         b.y += Math.sign(b.vy || 1) * 1.5;
         run.score += 20 * run.level;
-        beep(620, 0.03);
+        beep(620 + Math.min(6, run.level) * 24, 0.03);
+        feel('break', brick.x + brick.w / 2, brick.y + brick.h / 2, brick.color);
         if (Math.random() < 0.2) {
           const types = ['multi', 'wide', 'laser'];
           run.drops.push({ type: types[Math.floor(Math.random() * 3)], x: brick.x + brick.w / 2, y: brick.y, vy: 90 });
         }
+        break;
       }
     });
   }
@@ -381,6 +432,7 @@ function stepBreaker(dt) {
     run.lives -= 1;
     run.flash = 0.15;
     beep(90, 0.16, 'sawtooth');
+    feel('hurt');
     if (run.lives <= 0) return finish();
     stickBall(run);
   }
@@ -545,6 +597,11 @@ function drawKitchen() {
   });
   const x = run ? run.ship.x : W / 2 + Math.sin(last / 500) * 40;
   const y = run ? run.ship.y : H - 58;
+  const squash = run && run.ship.squash > 0 ? 0.8 : 1;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(1, squash);
+  ctx.translate(-x, -y);
   ctx.fillStyle = '#c0c0c0';
   ctx.beginPath();
   ctx.ellipse(x, y, 42, 14, 0, 0, Math.PI * 2);
@@ -553,6 +610,7 @@ function drawKitchen() {
   ctx.beginPath();
   ctx.ellipse(x, y, 28, 8, 0, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
   ctx.strokeStyle = '#9ad';
   ctx.lineWidth = 4;
   ctx.beginPath();
@@ -609,25 +667,36 @@ function drawBreaker() {
   }
 }
 function draw() {
+  if (!canvas) return;
+  const kit = juice();
+  if (kit) ctx = kit.placeCanvas(canvas, W, H, canvas.parentElement);
   if (!ctx) return;
+  const off = kit ? kit.shakeOffset() : { x: 0, y: 0 };
   ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(off.x, off.y);
   if (current === 'seas') drawSeas();
   else if (current === 'kitchen') drawKitchen();
   else drawBreaker();
+  if (kit) kit.drawParticles(ctx);
   if (phase === 'attract') {
     ctx.fillStyle = 'rgba(0,0,0,.25)';
     ctx.fillRect(0, 0, W, H);
   }
+  ctx.restore();
 }
 function frame(ts) {
   if (!raf || document.hidden) { raf = 0; return; }
-  const dt = Math.min(0.033, last ? (ts - last) / 1000 : 0.016);
+  const raw = Math.min(0.033, last ? (ts - last) / 1000 : 0.016);
+  const kit = juice();
+  const dt = kit ? kit.timeScale(raw) : raw;
   last = ts;
   if (phase === 'play' && run) {
     if (current === 'seas') stepSeas(dt);
     else if (current === 'kitchen') stepKitchen(dt);
     else stepBreaker(dt);
   }
+  if (kit) kit.stepParticles(raw);
   draw();
   raf = requestAnimationFrame(frame);
 }
@@ -643,6 +712,9 @@ function startArcade() {
 function startGame() {
   phase = 'play';
   finalScore = 0;
+  if (!loadStore().muted) soundOn = true;
+  syncSoundButton();
+  if (juice()) juice().unlock();
   if (current === 'seas') run = newSeas();
   else if (current === 'kitchen') run = newKitchen();
   else run = newBreaker();
@@ -900,11 +972,20 @@ function init() {
     if (document.body.classList.contains('is-playing')) e.preventDefault();
   }, { passive: false });
   $('#soundBtn').onclick = () => {
-    soundOn = !soundOn;
-    $('#soundBtn').textContent = soundOn ? 'Mute' : 'Sound';
-    $('#soundBtn').setAttribute('aria-pressed', soundOn ? 'true' : 'false');
-    if (soundOn) beep(660, 0.08);
+    if (audible()) soundOn = false;
+    else {
+      soundOn = true;
+      if (window.MONDO_AUDIO && MONDO_AUDIO.muted && MONDO_AUDIO.muted()) MONDO_AUDIO.setMuted(false);
+      if (juice()) juice().unlock();
+    }
+    const stored = loadStore();
+    stored.muted = !soundOn;
+    saveStore(stored);
+    syncSoundButton();
+    if (audible()) beep(660, 0.08);
   };
+  document.addEventListener('mondo-audio', syncSoundButton);
+  syncSoundButton();
   $('#ownerBtn').onclick = () => {
     if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) { toast('Shared sign-in is not available yet'); return; }
     const user = firebase.auth().currentUser;
@@ -939,7 +1020,8 @@ function init() {
       startArcade();
       return;
     }
-    if (soundOn && audioCtx && audioCtx.resume) audioCtx.resume();
+    if (soundOn && juice()) juice().unlock();
+    else if (soundOn && audioCtx && audioCtx.resume) audioCtx.resume();
     startArcade();
   });
   connectArcade();

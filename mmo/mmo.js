@@ -165,6 +165,7 @@
   var lastSay = 0;
   var loopOn = false;
   var canvas, ctx, joyCanvas, joyCtx;
+  var viewW = 640, viewH = 420;
 
   function freshQuests() {
     return {
@@ -941,10 +942,14 @@
   function resize() {
     if (!canvas) return;
     var rect = canvas.getBoundingClientRect();
-    var w = Math.max(320, Math.floor(rect.width));
-    var h = Math.max(220, Math.floor(rect.height));
-    if (canvas.width !== w) canvas.width = w;
-    if (canvas.height !== h) canvas.height = h;
+    if (rect.width < 2 || rect.height < 2) return;
+    viewW = Math.max(1, Math.floor(rect.width));
+    viewH = Math.max(1, Math.floor(rect.height));
+    if (window.MONDO_JUICE) window.MONDO_JUICE.sharpCanvas(canvas, viewW, viewH);
+    else {
+      if (canvas.width !== viewW) canvas.width = viewW;
+      if (canvas.height !== viewH) canvas.height = viewH;
+    }
   }
   function drawActor(x, y, kind, faction, cls) {
     var sx = Math.round(x - cam.x);
@@ -1030,8 +1035,9 @@
   }
   function render() {
     if (!ctx || !world || !player) return;
-    var w = canvas.width;
-    var h = canvas.height;
+    if (window.MONDO_JUICE) window.MONDO_JUICE.sharpCanvas(canvas, viewW, viewH);
+    var w = viewW;
+    var h = viewH;
     var maxX = Math.max(0, world.w * TILE - w);
     var maxY = Math.max(0, world.h * TILE - h);
     cam.x = clamp(player.x - w / 2, 0, maxX);
@@ -1150,6 +1156,7 @@
     });
     for (var i = floats.length - 1; i >= 0; i--) if (t - floats[i].born > 900) floats.splice(i, 1);
     if (joyCanvas && joyCtx && joyCanvas.offsetParent !== null) {
+      if (window.MONDO_JUICE) window.MONDO_JUICE.sharpCanvas(joyCanvas, 128, 128);
       joyCtx.clearRect(0, 0, 128, 128);
       joyCtx.strokeStyle = '#c9a227';
       joyCtx.lineWidth = 3;
@@ -1205,6 +1212,7 @@
   }
   function drawPortrait(cv, kind, faction) {
     if (!cv) return;
+    if (window.MONDO_JUICE) window.MONDO_JUICE.sharpCanvas(cv, 40, 40);
     var c = cv.getContext('2d');
     c.fillStyle = '#1a120c';
     c.fillRect(0, 0, 40, 40);
@@ -1297,8 +1305,8 @@
   function worldPoint(ev) {
     var rect = canvas.getBoundingClientRect();
     return {
-      x: (ev.clientX - rect.left) * (canvas.width / rect.width) + cam.x,
-      y: (ev.clientY - rect.top) * (canvas.height / rect.height) + cam.y
+      x: (ev.clientX - rect.left) * (viewW / rect.width) + cam.x,
+      y: (ev.clientY - rect.top) * (viewH / rect.height) + cam.y
     };
   }
   function pickWorld(ev) {
@@ -1681,14 +1689,16 @@
         });
         return best ? { id: best.id, x: best.x, y: best.y, hp: best.hp, name: best.name } : null;
       },
-      goto: function (x, y) { if (player) { player.x = x; player.y = y; dest = null; } },
-      targetId: function (id) { targetId = id; },
       quest: function (id) { return player && player.quests[id]; },
       inWorld: function () { return playing; },
       realm: function () { return realmLive ? 'live' : 'solo'; },
       bots: function () { return bots.length; },
       logText: function () { return logs.map(function (l) { return l.text; }).join('\n'); }
     };
+    if (/[?&]debug=1(?:&|$)/.test(location.search)) {
+      window.MONDO_MMO.goto = function (x, y) { if (player) { player.x = x; player.y = y; dest = null; } };
+      window.MONDO_MMO.targetId = function (id) { targetId = id; };
+    }
   }
   function aimJoy(e) {
     var rect = joyCanvas.getBoundingClientRect();
