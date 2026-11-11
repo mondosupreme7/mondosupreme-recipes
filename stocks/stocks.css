@@ -402,3 +402,29 @@ html[data-theme] .track-record,html[data-theme] .track-record h2,html[data-theme
 html[data-theme] .setup-title,html[data-theme] .swing-empty,html[data-theme] .research-card,html[data-theme] .research-card summary,html[data-theme] .research-note,html[data-theme] .research-row,html[data-theme] .size-helper,html[data-theme] .size-helper label,html[data-theme] .size-help,html[data-theme] .size-out{background:transparent!important;color:var(--ink)!important}
 html[data-theme] .research-card{background:var(--surface)!important;border-color:var(--line)!important}
 html[data-theme] .size-helper input{background:var(--surface)!important;color:var(--ink)!important;font-size:max(1rem,1em)}
+/* Phone: the fixed header and tab bar cover the viewport edges. Scroll-padding has to live on the scroll container. Safe-area insets stay 0 in Firefox for iOS, so --vv-top/--vv-bottom (measured from the visual viewport in stocks.js) cover that browser's toolbars. */
+@media (max-width:900px){
+  html,body{
+    scroll-padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px) + 16px);
+    scroll-padding-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 32px)
+  }
+  body{
+    padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px));
+    padding-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 32px)
+  }
+  .studio-nav{top:var(--vv-top, 0px)}
+  .studio-dock{bottom:var(--vv-bottom, 0px)}
+  input,textarea,select,button,.btn{
+    scroll-margin-top:12px;
+    scroll-margin-bottom:calc(var(--vv-keyboard, 0px) + 12px)
+  }
+  #detail,.rules-list li{scroll-margin-top:8px}
+  /* The watchlist heading sits just after the card. Leave room for it when the card or its actions scroll into view. */
+  #detail,#pinForm,#pinSave,#pinRemove{
+    scroll-margin-bottom:calc(var(--vv-keyboard, 0px) + 8rem)
+  }
+  #watchTitle,.quote-watch{
+    scroll-margin-top:12px;
+    scroll-margin-bottom:calc(var(--vv-keyboard, 0px) + 16px)
+  }
+}
