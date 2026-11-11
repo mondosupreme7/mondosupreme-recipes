@@ -129,6 +129,9 @@
   var recoil = 0;
   var walkPhase = 0;
   var hurtFlash = 0;
+  var hitMark = { until: 0, kill: false };
+  var VIEW_W = 320;
+  var VIEW_H = 180;
   var hazardAcc = 0;
   var looping = false;
   var lastT = 0;
@@ -361,6 +364,37 @@
         else if (ch === 'D') { doors.push({ x: x, y: y, open: false }); }
       }
     }
+    sites = clusterSites(sites);
+  }
+
+  function clusterSites(points) {
+    var used = [];
+    var groups = [];
+    var labels = 'ABCDEFGH';
+    var i, j, k, group, sx, sy;
+    for (i = 0; i < points.length; i++) {
+      if (used[i]) continue;
+      group = [points[i]];
+      used[i] = true;
+      for (k = 0; k < group.length; k++) {
+        for (j = 0; j < points.length; j++) {
+          if (used[j]) continue;
+          if (Math.abs(points[j].x - group[k].x) <= 1.01 && Math.abs(points[j].y - group[k].y) <= 1.01) {
+            used[j] = true;
+            group.push(points[j]);
+          }
+        }
+      }
+      sx = 0;
+      sy = 0;
+      group.forEach(function (p) { sx += p.x; sy += p.y; });
+      groups.push({
+        x: sx / group.length,
+        y: sy / group.length,
+        label: labels.charAt(groups.length) || 'A'
+      });
+    }
+    return groups;
   }
 
   function makeMonster(kind, x, y) {
@@ -628,6 +662,7 @@
     $('play').hidden = true;
     $('lobby').hidden = true;
     $('browser').hidden = false;
+    if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
     $('buy').hidden = true;
     document.body.classList.remove('fps-live', 'is-playing');
     paintStats();
@@ -674,14 +709,20 @@
     });
   }
 
-  function damageEnt(ent, dmg, weapon) {
+  function noteHit(kill) {
+    hitMark.until = performance.now() + (kill ? 260 : 120);
+    hitMark.kill = !!kill;
+  }
+  function damageEnt(ent, dmg, weapon, fromPlayer) {
     if (!ent || ent.hp <= 0) return;
     dmg = Math.max(1, Math.round(dmg));
     if (ent.kind === 'remote') {
       ent.hp -= dmg;
-      ent.hurtUntil = Date.now() + 1200;
+      ent.hurtUntil = Date.now() + 140;
+      if (ent.hp <= 0 && !ent.deadAt) ent.deadAt = Date.now();
       queueHit(ent.uid, dmg);
       floatText(ent.x, ent.y, String(dmg), '#ffd24a');
+      if (fromPlayer) noteHit(ent.hp <= 0);
       if (ent.hp <= 0 && !ent.credited) {
         ent.credited = true;
         addFrag(ent.name || 'Rival', weapon);
@@ -689,9 +730,11 @@
       return;
     }
     ent.hp -= dmg;
+    ent.hurtUntil = Date.now() + 140;
     floatText(ent.x, ent.y, String(dmg), ent.team === player.team ? '#7ec8ff' : '#ffd24a');
     if (ent.hp <= 0) {
       ent.hp = 0;
+      if (!ent.deadAt) ent.deadAt = Date.now();
       if (ent.kind !== 'sentry') addFrag(ent.name || 'Target', weapon);
       if (ent.hasBomb && bomb && !bomb.planted) {
         bomb.carrier = null;
@@ -703,9 +746,10 @@
       if (state.mode === 'cs') checkRound();
       if (state.mode === 'hl') checkLabs();
     }
+    if (fromPlayer) noteHit(ent.hp <= 0);
   }
 
-  function hurtPlayer(dmg, src) {
+  function hurtPlayer(dmg, src, weapon) {
     if (!player || player.hp <= 0 || player.invul > 0 || state.phase !== 'play') return;
     dmg = Math.max(1, Math.round(dmg));
     if (player.armor > 0) {
@@ -725,17 +769,17 @@
     noise(0.05, 0.03);
     if (player.hp <= 0) {
       player.hp = 0;
-      die(src || 'World');
+      die(src || 'World', weapon || 'shot');
     }
   }
 
-  function die(src) {
+  function die(src, weapon) {
     if (!player || player.dying) return;
     player.dying = true;
     player.hp = 0;
     profile.deaths += 1;
     saveProfile();
-    feedLine(src, 'pistol', profile.name);
+    feedLine(src, weapon || 'shot', profile.name);
     if (bomb && bomb.carrier === 'player' && !bomb.planted) {
       bomb.carrier = null;
       bomb.x = player.x;
@@ -838,7 +882,7 @@
     bots.forEach(consider);
     sentries.forEach(consider);
     remotes.forEach(consider);
-    if (best) damageEnt(best, dmg, weapon);
+    if (best) damageEnt(best, dmg, weapon, true);
     return !!best;
   }
 
@@ -876,7 +920,7 @@
     bots.forEach(consider);
     sentries.forEach(consider);
     remotes.forEach(consider);
-    if (best) damageEnt(best, dmg, weapon);
+    if (best) damageEnt(best, dmg, weapon, true);
     else floatText(player.x + dx * Math.min(bestT, 4), player.y + dy * Math.min(bestT, 4), '·', '#ffffff');
   }
 
@@ -905,8 +949,8 @@
       if (d > r.splash) return;
       var amount = Math.round(r.dmg * (1 - d / r.splash) * (self ? 0.45 : 1));
       if (amount < 1) return;
-      if (self) hurtPlayer(amount, 'Rocket');
-      else if (isEnemy(ent) || ent.kind === 'sentry') damageEnt(ent, amount, 'rocket');
+      if (self) hurtPlayer(amount, 'Rocket', 'rocket');
+      else if (isEnemy(ent) || ent.kind === 'sentry') damageEnt(ent, amount, 'rocket', true);
     }
     splash(player, true);
     monsters.forEach(function (e) { splash(e, false); });
@@ -1110,17 +1154,17 @@
         if (see) steer(m, player.x, player.y, sp, dt);
         if (dist < m.range && m.cool <= 0) {
           m.cool = 0.8;
-          hurtPlayer(m.dmg, m.name);
+          hurtPlayer(m.dmg, m.name, 'crowbar');
         }
       } else if (m.speed > 0) {
         if (see && dist > 3.2) steer(m, player.x, player.y, m.speed, dt);
         if (see && dist < m.range && m.cool <= 0) {
           m.cool = 0.75;
-          if (Math.random() < 0.75) hurtPlayer(m.dmg, m.name);
+          if (Math.random() < 0.75) hurtPlayer(m.dmg, m.name, 'mp5');
         }
       } else if (see && dist < m.range && m.cool <= 0) {
         m.cool = 0.42;
-        hurtPlayer(m.dmg, m.name);
+        hurtPlayer(m.dmg, m.name, 'shot');
         noise(0.04, 0.03);
       }
     }
@@ -1138,6 +1182,8 @@
             b.y = spot.y;
             b.hp = b.maxHp;
             b.deadFor = 0;
+            b.deadAt = 0;
+            b.hurtUntil = 0;
             b.hasBomb = false;
           }
         }
@@ -1184,7 +1230,7 @@
       if (!hunting || dist > 4) steer(b, targetX, targetY, speed, dt);
       if (hunting && dist < 8 && b.cool <= 0 && player.invul <= 0) {
         b.cool = 0.62;
-        if (Math.random() < 0.6) hurtPlayer(state.mode === 'tfc' ? 8 : 9, b.name);
+        if (Math.random() < 0.6) hurtPlayer(state.mode === 'tfc' ? 8 : 9, b.name, state.mode === 'tfc' ? 'shot' : (b.team === 't' ? 'ak' : 'm4'));
       }
     }
   }
@@ -1209,7 +1255,7 @@
       remotes.forEach(look);
       if (!best) continue;
       s.cool = 0.34;
-      if (best === player) hurtPlayer(8, 'Sentry');
+      if (best === player) hurtPlayer(8, 'Sentry', 'mini');
       else damageEnt(best, 8, 'shot');
       noise(0.03, 0.03);
     }
@@ -1289,7 +1335,7 @@
     var here = cellAt(player.x, player.y);
     if (here === '~') {
       hazardAcc += dt;
-      if (hazardAcc > 0.45) { hazardAcc = 0; hurtPlayer(6, 'Hazard'); }
+      if (hazardAcc > 0.45) { hazardAcc = 0; hurtPlayer(6, 'Hazard', 'shot'); }
     }
     if (here === '+' && player.hp < player.maxHp && state.mode === 'hl') {
       player.hp = Math.min(player.maxHp, player.hp + 28 * dt);
@@ -1310,7 +1356,7 @@
     if (bomb.planted) {
       bomb.timer -= dt;
       if (bomb.timer <= 0) {
-        if (Math.hypot(player.x - bomb.x, player.y - bomb.y) < 7) hurtPlayer(120, 'C4');
+        if (Math.hypot(player.x - bomb.x, player.y - bomb.y) < 7) hurtPlayer(120, 'C4', 'rocket');
         for (var i = 0; i < bots.length; i++) {
           if (bots[i].hp > 0 && Math.hypot(bots[i].x - bomb.x, bots[i].y - bomb.y) < 7) damageEnt(bots[i], 200, 'ak');
         }
@@ -1460,10 +1506,9 @@
     var tx = invDet * (cam.dirY * dx - cam.dirX * dy);
     var ty = invDet * (-cam.planeY * dx + cam.planeX * dy);
     if (ty <= 0.08) return null;
-    var view = $('view');
     return {
-      x: Math.floor((view.width / 2) * (1 + tx / ty)),
-      y: Math.floor(view.height / 2 + pitch),
+      x: Math.floor((VIEW_W / 2) * (1 + tx / ty)),
+      y: Math.floor(VIEW_H / 2 + pitch),
       ty: ty,
       tx: tx
     };
@@ -1489,9 +1534,11 @@
   function render() {
     var view = $('view');
     if (!view || !player) return;
-    var ctx = view.getContext('2d');
-    var w = view.width;
-    var h = view.height;
+    var ctx = window.MONDO_JUICE
+      ? window.MONDO_JUICE.placeCanvas(view, VIEW_W, VIEW_H, $('stage'))
+      : view.getContext('2d');
+    var w = VIEW_W;
+    var h = VIEW_H;
     updateCam();
     var horizon = h / 2 + pitch;
     var sky = ctx.createLinearGradient(0, 0, 0, Math.max(1, horizon));
@@ -1576,8 +1623,18 @@
     }
     var sprites = [];
     function pushSprite(ent, color, size, label) {
-      if (!ent || ent.hp <= 0) return;
-      sprites.push({ x: ent.x, y: ent.y, color: color, size: size || 1, label: label || '', hp: ent.hp, maxHp: ent.maxHp || ent.hp });
+      if (!ent) return;
+      if (ent.hp <= 0 && !(ent.deadAt && Date.now() - ent.deadAt < 650)) return;
+      sprites.push({
+        x: ent.x,
+        y: ent.y,
+        color: color,
+        size: size || 1,
+        label: ent.hp > 0 ? (label || '') : '',
+        hp: ent.hp,
+        maxHp: ent.maxHp || ent.hp,
+        ent: ent
+      });
     }
     monsters.forEach(function (m) {
       var color = m.kind === 'headcrab' ? '#e0c04a' : m.kind === 'turret' ? '#b5b5b5' : '#6fbf4a';
@@ -1597,7 +1654,7 @@
       var color = d.kind === 'health' ? '#3ddc6a' : d.kind === 'suit' ? '#4ab0ff' : '#cc3333';
       sprites.push({ x: d.x, y: d.y, color: color, size: d.kind === 'hazard' ? 0.35 : 0.5, label: '' });
     });
-    sites.forEach(function (s) { sprites.push({ x: s.x, y: s.y, color: '#ff9900', size: 0.35, label: 'A' }); });
+    sites.forEach(function (s) { sprites.push({ x: s.x, y: s.y, color: '#ff9900', size: 0.35, label: s.label || 'A' }); });
     if (bomb && (bomb.planted || !bomb.carrier)) sprites.push({ x: bomb.x, y: bomb.y, color: '#ff6600', size: 0.45, label: 'C4' });
     if (flags.red) sprites.push({ x: flags.red.x, y: flags.red.y, color: '#e02020', size: 0.8, label: 'RED' });
     if (flags.blue) sprites.push({ x: flags.blue.x, y: flags.blue.y, color: '#2060e8', size: 0.8, label: 'BLU' });
@@ -1614,9 +1671,14 @@
       var screenX = Math.floor((w / 2) * (1 + tx / ty));
       var spriteH = Math.abs(Math.floor(h / ty)) * sp.size;
       var spriteW = spriteH * 0.55;
-      var y0 = Math.floor(h / 2 - spriteH / 2 + pitch);
+      var ent = sp.ent;
+      var age = ent && ent.hp <= 0 && ent.deadAt ? (Date.now() - ent.deadAt) / 600 : 0;
+      var sink = reduceMotion ? 0 : age * spriteH * 0.35;
+      var y0 = Math.floor(h / 2 - spriteH / 2 + pitch + sink);
       var x0 = Math.floor(screenX - spriteW / 2);
-      ctx.globalAlpha = Math.max(0.45, 1 - ty / 16);
+      var flashing = !!(ent && ((ent.hurtUntil && Date.now() < ent.hurtUntil) || (ent.hp <= 0 && age < 0.18)));
+      var fade = age > 0 ? Math.max(0, 1 - age) : 1;
+      ctx.globalAlpha = Math.max(0.2, 1 - ty / 16) * fade;
       for (var stripe = Math.max(0, x0); stripe < Math.min(w, x0 + spriteW); stripe++) {
         if (ty >= zbuf[stripe]) continue;
         var local = (stripe - x0) / spriteW;
@@ -1625,10 +1687,10 @@
         if (!torso) continue;
         var top = head ? y0 : y0 + spriteH * 0.22;
         var tall = head ? spriteH : spriteH * 0.78;
-        ctx.fillStyle = head ? '#1c1917' : '#111827';
+        ctx.fillStyle = flashing ? '#f8fafc' : (head ? '#1c1917' : '#111827');
         ctx.fillRect(stripe, top, 1, tall);
         if (local > 0.34 && local < 0.66) {
-          ctx.fillStyle = sp.color;
+          ctx.fillStyle = flashing ? '#ffffff' : sp.color;
           ctx.fillRect(stripe, top + tall * 0.18, 1, tall * 0.5);
         }
         if (Math.abs(local - 0.5) < 0.06) {
@@ -1680,6 +1742,19 @@
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(w / 2 - 5, hy, 10, 1);
       ctx.fillRect(w / 2, hy - 5, 1, 10);
+    }
+    if (hitMark.until > performance.now()) {
+      var hx = w / 2;
+      var hy2 = h / 2 + pitch * 0.15;
+      var s = hitMark.kill ? 8 : 5;
+      ctx.strokeStyle = hitMark.kill ? '#ff4040' : '#ffffff';
+      ctx.lineWidth = hitMark.kill ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(hx - s, hy2 - s);
+      ctx.lineTo(hx + s, hy2 + s);
+      ctx.moveTo(hx + s, hy2 - s);
+      ctx.lineTo(hx - s, hy2 + s);
+      ctx.stroke();
     }
     drawStick();
   }
@@ -1781,9 +1856,10 @@
   function drawStick() {
     var c = $('stick');
     if (!c) return;
+    if (window.MONDO_JUICE) window.MONDO_JUICE.sharpCanvas(c, 100, 100);
     var g = c.getContext('2d');
-    var w = c.width;
-    var h = c.height;
+    var w = 100;
+    var h = 100;
     g.clearRect(0, 0, w, h);
     g.fillStyle = 'rgba(0, 0, 0, 0.35)';
     g.beginPath();
@@ -1918,6 +1994,8 @@
         if (Number(v.hp) > 40 && ent.credited) ent.credited = false;
         ent.hp = Number(v.hp);
       } else ent.hp = Math.min(ent.hp, Number(v.hp));
+      if (ent.hp <= 0) { if (!ent.deadAt) ent.deadAt = Date.now(); }
+      else ent.deadAt = 0;
       ent.maxHp = 100;
       next.push(ent);
     });
@@ -2023,7 +2101,7 @@
     net.inboxOn = true;
     firebase.database().ref('fps/inbox/' + net.uid).on('child_added', function (snap) {
       var v = snap.val();
-      if (v && v.mode === state.mode && player && state.phase === 'play') hurtPlayer(v.dmg || 1, 'Rival');
+      if (v && v.mode === state.mode && player && state.phase === 'play') hurtPlayer(v.dmg || 1, 'Rival', 'pistol');
       snap.ref.remove().catch(function () {});
     }, function () {});
   }
@@ -2120,21 +2198,41 @@
     }
     var view = $('view');
     view.addEventListener('pointerdown', function (e) {
+      if (!state.live || $('play').hidden) return;
       if (e.pointerType === 'mouse' && e.button === 2) { toggleScope(); return; }
+      if (e.pointerType === 'mouse') {
+        if (document.pointerLockElement === view) {
+          if (e.button === 0) { fireHeld = true; pullTrigger(); }
+          return;
+        }
+        look.on = true;
+        look.x = e.clientX;
+        look.y = e.clientY;
+        look.id = e.pointerId;
+        if (view.requestPointerLock) {
+          var lock = view.requestPointerLock();
+          if (lock && lock.catch) lock.catch(function () {});
+        }
+        return;
+      }
       look.on = true;
       look.x = e.clientX;
       look.y = e.clientY;
       look.id = e.pointerId;
-      view.setPointerCapture(e.pointerId);
-      if (e.pointerType === 'mouse' && e.button === 0) { fireHeld = true; pullTrigger(); }
+      try { view.setPointerCapture(e.pointerId); } catch (err) { /* touch already ended */ }
     });
     view.addEventListener('pointermove', function (e) {
+      if (!player) return;
+      if (document.pointerLockElement === view) {
+        player.ang += (e.movementX || 0) * 0.005;
+        pitch = Math.max(-80, Math.min(80, pitch - (e.movementY || 0) * 0.35));
+        return;
+      }
       if (!look.on || e.pointerId !== look.id) return;
       var dx = e.clientX - look.x;
       var dy = e.clientY - look.y;
       look.x = e.clientX;
       look.y = e.clientY;
-      if (!player) return;
       player.ang += dx * 0.005;
       pitch = Math.max(-80, Math.min(80, pitch - dy * 0.35));
     });
@@ -2142,15 +2240,19 @@
       look.on = false;
       if (e.pointerType === 'mouse') fireHeld = false;
     });
+    view.addEventListener('pointercancel', function () { look.on = false; fireHeld = false; });
+    document.addEventListener('pointerlockchange', function () {
+      if (document.pointerLockElement !== view) { fireHeld = false; look.on = false; }
+    });
     view.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     view.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
     var stickCv = $('stick');
     function stickAt(e) {
       var rect = stickCv.getBoundingClientRect();
-      var x = ((e.clientX - rect.left) / rect.width) * stickCv.width;
-      var y = ((e.clientY - rect.top) / rect.height) * stickCv.height;
-      var dx = (x - stickCv.width / 2) / 28;
-      var dy = (y - stickCv.height / 2) / 28;
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      var dx = (x - 50) / 28;
+      var dy = (y - 50) / 28;
       var m = Math.hypot(dx, dy) || 1;
       if (m > 1) { dx /= m; dy /= m; }
       stick.x = dx;

@@ -1147,7 +1147,18 @@ function frame(ts) {
   frames += 1;
   if (ts - fpsStamp > 1000) { fps = frames; frames = 0; fpsStamp = ts; }
   stepWorld(reduceMotion ? dt * 0.65 : dt);
-  if (ctx) {
+  if (ctx && canvas) {
+    if (window.MONDO_JUICE) window.MONDO_JUICE.sharpCanvas(canvas, W, H);
+    else {
+      var petDpr = Math.min(window.devicePixelRatio || 1, 3);
+      var petW = Math.round(W * petDpr);
+      var petH = Math.round(H * petDpr);
+      if (canvas.width !== petW || canvas.height !== petH) {
+        canvas.width = petW;
+        canvas.height = petH;
+      }
+      ctx.setTransform(petDpr, 0, 0, petDpr, 0, 0);
+    }
     ctx.clearRect(0, 0, W, H);
     drawScene();
   }

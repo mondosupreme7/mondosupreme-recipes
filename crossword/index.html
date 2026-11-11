@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
-<link rel="stylesheet" href="crossword.css">
+<link rel="stylesheet" href="crossword.css?v=3">
 <link rel="stylesheet" href="/readable.css?v=14">
 </head>
 <body>
@@ -70,6 +70,10 @@
   <p class="clock" id="clock" aria-live="polite">00:00</p>
   <p class="msg" id="msg" role="status"></p>
  </section>
+ <div class="clue-live">
+  <button type="button" id="dirBtn" aria-pressed="false">Across</button>
+  <p id="clueBar" class="clue-bar" aria-live="polite"></p>
+ </div>
  <div id="grid" class="xw-grid" role="group" aria-label="Crossword grid"></div>
  <div class="xw-actions">
   <button id="checkBtn" class="btn" type="button">Check</button>
@@ -106,6 +110,6 @@
 <script src="/members.js?v=5"></script>
 <script src="/shell.js?v=12"></script>
 <script src="/backup.js"></script>
-<script src="crossword.js"></script>
+<script src="crossword.js?v=3"></script>
 </body>
 </html>

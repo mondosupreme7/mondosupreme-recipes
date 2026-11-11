@@ -51,6 +51,7 @@ const TRIVIA = [
 ];
 const $ = s => document.querySelector(s);
 let puzzle, letters, started = 0, clockTimer = 0, active = 0, uid = '', saveState;
+let dir = 'across', gridDone = false, gridRevealed = false;
 
 function todayKey() {
   const d = new Date();
@@ -66,13 +67,6 @@ function loadState() {
 }
 function writeState() {
   try { localStorage.setItem(KEY, JSON.stringify(saveState)); } catch { /* full */ }
-}
-function cells() {
-  const list = [];
-  puzzle.grid.forEach((row, r) => {
-    for (let c = 0; c < 5; c++) if (row[c] !== '#') list.push(r * 5 + c);
-  });
-  return list;
 }
 function numbers() {
   const nums = Array.from({ length: 5 }, () => Array(5).fill(0));
@@ -110,7 +104,8 @@ function paintGrid() {
         input.setAttribute('aria-label', 'Row ' + (r + 1) + ' column ' + (c + 1));
         input.dataset.i = String(r * 5 + c);
         input.value = letters[r * 5 + c] || '';
-        input.addEventListener('focus', () => { active = r * 5 + c; });
+        input.addEventListener('focus', () => { active = r * 5 + c; markWord(); });
+        input.addEventListener('pointerdown', () => { if (document.activeElement === input) toggleDir(); });
         input.addEventListener('input', () => onType(input));
         input.addEventListener('keydown', e => onKey(e, input));
         wrap.appendChild(input);
@@ -120,42 +115,123 @@ function paintGrid() {
   }
 }
 function focusIndex(index) {
+  active = index;
   const input = document.querySelector('#grid input[data-i="' + index + '"]');
   if (input) input.focus();
+  markWord();
 }
+function wordCells(index, direction) {
+  const r = Math.floor(index / 5);
+  const c = index % 5;
+  const out = [];
+  if (puzzle.grid[r][c] === '#') return out;
+  if (direction === 'down') {
+    let y = r;
+    while (y > 0 && puzzle.grid[y - 1][c] !== '#') y--;
+    for (; y < 5 && puzzle.grid[y][c] !== '#'; y++) out.push(y * 5 + c);
+  } else {
+    let x = c;
+    while (x > 0 && puzzle.grid[r][x - 1] !== '#') x--;
+    for (; x < 5 && puzzle.grid[r][x] !== '#'; x++) out.push(r * 5 + x);
+  }
+  return out;
+}
+function moveCell(index, dr, dc) {
+  let r = Math.floor(index / 5) + dr;
+  let c = (index % 5) + dc;
+  while (r >= 0 && r < 5 && c >= 0 && c < 5) {
+    if (puzzle.grid[r][c] !== '#') return r * 5 + c;
+    r += dr;
+    c += dc;
+  }
+  return index;
+}
+function toggleDir() {
+  dir = dir === 'down' ? 'across' : 'down';
+  markWord();
+}
+function clueText(index, direction) {
+  const span = wordCells(index, direction);
+  if (!span.length) return '';
+  const start = span[0];
+  const nums = numbers();
+  const n = nums[Math.floor(start / 5)][start % 5];
+  const list = direction === 'down' ? puzzle.down : puzzle.across;
+  const found = list.filter(clue => clue[0] === n)[0];
+  const label = direction === 'down' ? 'Down' : 'Across';
+  return found ? label + ' ' + found[0] + '. ' + found[1] : label;
+}
+function markWord() {
+  document.querySelectorAll('#grid .cell').forEach(cell => cell.classList.remove('is-word', 'is-active'));
+  if (!puzzle) return;
+  const span = wordCells(active, dir);
+  span.forEach(i => {
+    const input = document.querySelector('#grid input[data-i="' + i + '"]');
+    if (input) input.parentNode.classList.add('is-word');
+  });
+  const current = document.querySelector('#grid input[data-i="' + active + '"]');
+  if (current) current.parentNode.classList.add('is-active');
+  const bar = $('#clueBar');
+  if (bar) bar.textContent = clueText(active, dir);
+  const btn = $('#dirBtn');
+  if (btn) {
+    const down = dir === 'down';
+    btn.textContent = down ? 'Down' : 'Across';
+    btn.setAttribute('aria-pressed', down ? 'true' : 'false');
+  }
+  document.querySelectorAll('.clues button').forEach(node => node.removeAttribute('aria-current'));
+  if (!span.length) return;
+  const nums = numbers();
+  const n = nums[Math.floor(span[0] / 5)][span[0] % 5];
+  const host = dir === 'down' ? $('#down') : $('#across');
+  if (!host) return;
+  host.querySelectorAll('button').forEach(node => {
+    if (node.dataset.n === String(n)) node.setAttribute('aria-current', 'true');
+  });
+}
+function stopClock() {
+  if (clockTimer) clearInterval(clockTimer);
+  clockTimer = 0;
+}
+function dayStamp() { return todayKey() + ':' + (puzzle ? puzzle.id : ''); }
 function ensureClock() {
-  if (started) return;
+  if (started || gridDone || gridRevealed) return;
   started = Date.now();
   tickClock();
   clockTimer = setInterval(tickClock, 250);
 }
 function onType(input) {
+  if (gridDone) return;
   ensureClock();
   const i = Number(input.dataset.i);
   letters[i] = (input.value || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 1);
   input.value = letters[i];
   input.parentNode.classList.remove('bad', 'good');
-  const order = cells();
-  const pos = order.indexOf(i);
-  if (letters[i] && pos >= 0 && pos < order.length - 1) focusIndex(order[pos + 1]);
+  const span = wordCells(i, dir);
+  const pos = span.indexOf(i);
+  if (letters[i] && pos >= 0 && pos < span.length - 1) focusIndex(span[pos + 1]);
   saveState.letters = letters;
   saveState.puzzle = puzzle.id;
   writeState();
-  if (solved()) finishGrid();
+  if (!gridRevealed && saveState.revealed !== dayStamp() && solved()) finishGrid();
 }
 function onKey(e, input) {
-  const order = cells();
   const i = Number(input.dataset.i);
-  const pos = order.indexOf(i);
+  if (e.key === ' ') { e.preventDefault(); toggleDir(); return; }
   if (/^[a-zA-Z]$/.test(e.key)) ensureClock();
+  const span = wordCells(i, dir);
+  const pos = span.indexOf(i);
   if (e.key === 'Backspace' && !input.value && pos > 0) {
-    letters[order[pos - 1]] = '';
-    focusIndex(order[pos - 1]);
-    const prev = document.querySelector('#grid input[data-i="' + order[pos - 1] + '"]');
-    if (prev) prev.value = '';
+    const prev = span[pos - 1];
+    letters[prev] = '';
+    focusIndex(prev);
+    const node = document.querySelector('#grid input[data-i="' + prev + '"]');
+    if (node) node.value = '';
     e.preventDefault();
-  } else if (e.key === 'ArrowRight' && pos < order.length - 1) focusIndex(order[pos + 1]);
-  else if (e.key === 'ArrowLeft' && pos > 0) focusIndex(order[pos - 1]);
+  } else if (e.key === 'ArrowRight') { dir = 'across'; focusIndex(moveCell(i, 0, 1)); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft') { dir = 'across'; focusIndex(moveCell(i, 0, -1)); e.preventDefault(); }
+  else if (e.key === 'ArrowDown') { dir = 'down'; focusIndex(moveCell(i, 1, 0)); e.preventDefault(); }
+  else if (e.key === 'ArrowUp') { dir = 'down'; focusIndex(moveCell(i, -1, 0)); e.preventDefault(); }
 }
 function solved() {
   for (let r = 0; r < 5; r++) {
@@ -187,6 +263,11 @@ function markStreak(kind) {
   return saveState.streak;
 }
 function finishGrid() {
+  if (gridDone || gridRevealed || saveState.revealed === dayStamp()) return;
+  gridDone = true;
+  saveState.gridDone = dayStamp();
+  writeState();
+  stopClock();
   document.querySelectorAll('#grid .cell').forEach(cell => cell.classList.add('good'));
   const streak = markStreak('gridDay');
   const ms = started ? Date.now() - started : 0;
@@ -206,10 +287,18 @@ function checkGrid() {
   $('#msg').textContent = wrong ? wrong + (wrong === 1 ? ' letter' : ' letters') + ' to rethink.' : (solved() ? 'That is the grid.' : 'Keep going.');
 }
 function revealGrid() {
+  if (gridDone) return;
   for (let r = 0; r < 5; r++) {
     for (let c = 0; c < 5; c++) if (puzzle.grid[r][c] !== '#') letters[r * 5 + c] = puzzle.grid[r][c];
   }
+  gridRevealed = true;
+  saveState.letters = letters;
+  saveState.puzzle = puzzle.id;
+  saveState.revealed = dayStamp();
+  writeState();
+  stopClock();
   paintGrid();
+  markWord();
   $('#msg').textContent = 'Revealed. The streak stays with a solve you typed.';
 }
 function paintClues() {
@@ -217,16 +306,19 @@ function paintClues() {
   const down = $('#down');
   across.replaceChildren();
   down.replaceChildren();
-  puzzle.across.forEach(clue => across.appendChild(clueButton(clue)));
-  puzzle.down.forEach(clue => down.appendChild(clueButton(clue)));
+  puzzle.across.forEach(clue => across.appendChild(clueButton(clue, 'across')));
+  puzzle.down.forEach(clue => down.appendChild(clueButton(clue, 'down')));
 }
-function clueButton(clue) {
+function clueButton(clue, direction) {
   const btn = document.createElement('button');
   btn.type = 'button';
+  btn.dataset.n = String(clue[0]);
+  btn.dataset.dir = direction;
   btn.textContent = clue[0] + '. ' + clue[1];
   btn.addEventListener('click', () => {
+    dir = direction;
     const nums = numbers();
-    for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) if (nums[r][c] === clue[0]) focusIndex(r * 5 + c);
+    for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) if (nums[r][c] === clue[0]) { focusIndex(r * 5 + c); return; }
   });
   return btn;
 }
@@ -234,13 +326,19 @@ function setPuzzle(next, keep) {
   puzzle = next;
   const saved = saveState.puzzle === next.id && Array.isArray(saveState.letters) ? saveState.letters : [];
   letters = keep && saved.length === 25 ? saved.slice() : Array(25).fill('');
+  const mark = todayKey() + ':' + next.id;
+  gridDone = !!(keep && saveState.gridDone === mark);
+  gridRevealed = !!(keep && saveState.revealed === mark);
+  dir = 'across';
+  active = 0;
   started = 0;
-  if (clockTimer) clearInterval(clockTimer);
+  stopClock();
   tickClock();
   $('#puzzleName').textContent = next.title + ' · ' + todayKey();
   paintGrid();
   paintClues();
-  $('#msg').textContent = 'Type a letter. The cursor jumps to the next white square.';
+  markWord();
+  $('#msg').textContent = gridDone ? 'Filled.' : (gridRevealed ? 'Revealed. The streak stays with a solve you typed.' : 'Type a letter. The highlight shows the Across or Down word.');
 }
 function paintArchives() {
   const host = $('#archives');
@@ -261,7 +359,14 @@ function triviaSet() {
     const j = Math.floor(rand() * (i + 1));
     const swap = bag[i]; bag[i] = bag[j]; bag[j] = swap;
   }
-  return bag.slice(0, 5);
+  return bag.slice(0, 5).map(q => {
+    const choices = q[1].map((text, i) => ({ text, ok: i === q[2] }));
+    for (let i = choices.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      const swap = choices[i]; choices[i] = choices[j]; choices[j] = swap;
+    }
+    return [q[0], choices];
+  });
 }
 function mulberry(seed) {
   let a = seed >>> 0;
@@ -283,18 +388,26 @@ function paintTrivia() {
     const p = document.createElement('p');
     p.textContent = (qi + 1) + '. ' + q[0];
     box.appendChild(p);
-    q[1].forEach((choice, ci) => {
+    q[1].forEach(choice => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'btn choice';
-      btn.textContent = choice;
+      btn.textContent = choice.text;
+      if (choice.ok) btn.dataset.ok = '1';
       btn.addEventListener('click', () => {
         if (box.dataset.done) return;
         box.dataset.done = '1';
         answered++;
-        const ok = ci === q[2];
-        if (ok) score++;
-        btn.textContent = choice + (ok ? ' ✓' : ' ×');
+        if (choice.ok) {
+          score++;
+          btn.classList.add('is-right');
+          btn.textContent = choice.text + ' ✓';
+        } else {
+          btn.classList.add('is-wrong');
+          btn.textContent = choice.text + ' ×';
+          const right = box.querySelector('[data-ok="1"]');
+          if (right) right.classList.add('is-right');
+        }
         if (answered === quiz.length) {
           const streak = markStreak('triviaDay');
           $('#triviaMsg').textContent = score + ' / 5. Streak ' + streak + '.';
@@ -370,6 +483,8 @@ function init() {
   paintTrivia();
   $('#checkBtn').onclick = checkGrid;
   $('#revealBtn').onclick = revealGrid;
+  const dirBtn = $('#dirBtn');
+  if (dirBtn) dirBtn.onclick = toggleDir;
   bootFirebase();
 }
 document.addEventListener('DOMContentLoaded', init);

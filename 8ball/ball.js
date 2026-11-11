@@ -397,7 +397,7 @@
     rememberQuota(quota);
   }
   function playSound() {
-    if (muted() || document.hidden || reduceMotion()) return;
+    if (muted() || document.hidden) return;
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     try {
@@ -438,7 +438,7 @@
     });
   }
   function unlockAudio() {
-    if (muted() || reduceMotion()) return;
+    if (muted()) return;
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     try {

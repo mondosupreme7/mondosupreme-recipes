@@ -8,6 +8,14 @@
 .cell.black{background:#000080}
 .cell.bad input{background:#ffd0d0}
 .cell.good input{background:#d8ffd0}
+.clue-live{display:flex;gap:8px;align-items:center;max-width:520px;margin:8px auto}
+.clue-live button{min-height:44px;min-width:92px}
+.clue-bar{margin:0;font-weight:700;flex:1}
+.xw-grid .cell.is-word{box-shadow:inset 0 0 0 999px rgba(37,99,235,.18)}
+.xw-grid .cell.is-active{box-shadow:inset 0 0 0 3px #1d4ed8, inset 0 0 0 999px rgba(37,99,235,.18)}
+.clues button[aria-current="true"]{border-color:#1d4ed8;box-shadow:inset 4px 0 0 #1d4ed8}
+.choice.is-right{box-shadow:inset 4px 0 0 #15803d}
+.choice.is-wrong{box-shadow:inset 4px 0 0 #b91c1c}
 .clues{display:grid;grid-template-columns:1fr;gap:8px}
 @media(min-width:700px){.clues{grid-template-columns:1fr 1fr}}
 .clues h2{margin:0 0 4px;font-size:1rem;background:#000080;color:#fff;padding:3px 8px}
