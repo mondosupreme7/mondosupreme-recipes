@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-11T11:16:25Z",
+ "updated": "2026-11-11T12:42:02Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -64,9 +64,8 @@
   {
    "name": "Launch Library 2",
    "url": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=20",
-   "ok": false,
-   "count": 0,
-   "error": "TimeoutError"
+   "ok": true,
+   "count": 2
   }
  ],
  "events": [
@@ -293,6 +292,20 @@
    "source": "City of Titusville",
    "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
+  },
+  {
+   "id": "99ff4eb43701830e",
+   "title": "Vulcan VC6L | Amazon Leo (LV-01)",
+   "start": "2026-11-13T17:54:00Z",
+   "end": "2026-11-13T18:24:00Z",
+   "town": "Port Canaveral",
+   "venue": "Space Launch Complex 41",
+   "category": "Launches",
+   "url": "https://ll.thespacedevs.com/2.2.0/launch/ef9850ad-1096-425b-9d27-f7bbd186e61a/",
+   "description": "Go for Launch \u00b7 United Launch Alliance \u00b7 Vulcan VC6L \u00b7 Space Launch Complex 41",
+   "source": "Launch Library 2",
+   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
+   "kind": "launch"
   },
   {
    "id": "11ed3146a0a0809a",
@@ -909,6 +922,20 @@
    "source": "City of Cocoa Beach",
    "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
    "kind": "event"
+  },
+  {
+   "id": "d19b86d56b8cfdda",
+   "title": "Falcon 9 Block 5 | Cygnus CRS-2 NG-25",
+   "start": "2026-11-29T15:49:00Z",
+   "end": "2026-11-29T16:49:00Z",
+   "town": "Port Canaveral",
+   "venue": "Space Launch Complex 40",
+   "category": "Launches",
+   "url": "https://ll.thespacedevs.com/2.2.0/launch/d74afbc7-0de5-491c-be05-4e9c31f736ac/",
+   "description": "Go for Launch \u00b7 SpaceX \u00b7 Falcon 9 \u00b7 Space Launch Complex 40",
+   "source": "Launch Library 2",
+   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
+   "kind": "launch"
   }
  ]
 }
