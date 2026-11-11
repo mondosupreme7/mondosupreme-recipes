@@ -30,7 +30,7 @@
 #ownerDialog label { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; font-weight: 700; }
 .owner-error { color: #900; }
 
-body.fps-live { overflow: hidden; height: calc(100dvh - var(--task-h)); width: 100%; background: #000; }
+body.fps-live { overflow: hidden; width: 100%; background: #000; }
 body.fps-live .ticker,
 body.fps-live .site-header,
 body.fps-live .site-footer,
@@ -38,40 +38,75 @@ body.fps-live .era-top,
 body.fps-live .era-foot,
 body.fps-live #themeSprites,
 body.fps-live .sync-banner { display: none !important; }
-body.fps-page.fps-live main.wrap {
-  max-width: none !important;
+html body.fps-page.fps-live {
+  position: fixed !important;
+  top: var(--vv-top, 0px) !important;
+  left: 0 !important;
+  right: 0 !important;
   width: 100% !important;
-  height: calc(100dvh - var(--task-h)) !important;
+  height: var(--vv-h, 100svh) !important;
+  min-height: 0 !important;
+  max-height: var(--vv-h, 100svh) !important;
+  margin: 0 !important;
+  padding: var(--fps-nav, 44px) 0 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  background: #000 !important;
+}
+html body.fps-page.fps-live .studio-nav {
+  position: fixed !important;
+  top: var(--vv-top, 0px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  min-height: 44px !important;
+  height: auto !important;
+  padding-top: 0 !important;
+  z-index: 30;
+}
+html body.fps-page.fps-live .studio-dock { display: none !important; }
+html body.fps-page.fps-live main.wrap {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
-  flex-direction: column;
+  flex-direction: column !important;
+  overflow: hidden !important;
   border: 0 !important;
   background: #000 !important;
 }
-#play { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #000; color: #eee; }
+#play { position: relative; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; background: #000; color: #eee; overflow: hidden; }
 #play[hidden] { display: none !important; }
-#playbar { display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: #0c0c0c; color: #d5d5d5; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
-#playbar span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#playbar { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; padding: 4px 8px; background: #0c0c0c; color: #d5d5d5; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+#playbar span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #playbar button, #touch button, #replay, #buy .btn, #buy-grid button { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
 #playbar button { min-height: 44px; min-width: 44px; background: #222; color: #eee; border: 1px solid #666; padding: 4px 8px; }
-#stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; background: #000; touch-action: none; overflow: hidden; }
+#hudline { display: flex; align-items: baseline; gap: 8px; flex: 0 0 auto; min-width: 0; padding: 2px 8px 0; }
+#stage { position: relative; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; background: #000; touch-action: none; overflow: hidden; }
 #view { display: block; max-width: 100%; max-height: 100%; aspect-ratio: 16 / 9; image-rendering: pixelated; image-rendering: crisp-edges; background: #000; touch-action: none; }
 #stick {
-  position: absolute;
-  left: 8px;
-  bottom: 8px;
-  width: 108px;
-  height: 108px;
-  z-index: 3;
+  position: relative;
+  left: auto;
+  bottom: auto;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 100%;
+  height: 100%;
+  min-height: 92px;
+  z-index: 1;
   touch-action: none;
 }
-#matchInfo, #ammoLine, #feed { pointer-events: none; margin: 0; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; text-shadow: 1px 1px 0 #000, 0 0 6px #000; }
-#matchInfo { position: absolute; top: 6px; left: 8px; right: 8px; text-align: center; font-size: 16px; letter-spacing: 0.5px; color: #f2f2f2; }
-#stage.mode-hl #matchInfo { color: #ffbf1f; font-size: 18px; letter-spacing: 1px; }
-#ammoLine { position: absolute; right: 10px; bottom: 8px; font-size: 14px; color: #f4e2a0; }
-#feed { position: absolute; top: 32px; right: 8px; list-style: none; padding: 0; text-align: right; max-width: 70%; }
-#feed li { background: rgba(0, 0, 0, 0.45); margin: 0 0 3px; padding: 2px 4px; font-size: 13px; }
+#matchInfo, #ammoLine, #feed { pointer-events: none; position: static; margin: 0; max-width: none; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; text-shadow: none; }
+#matchInfo { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; font-size: 14px; letter-spacing: 0; color: #f2f2f2; }
+#stage.mode-hl #matchInfo { color: #ffbf1f; font-size: 14px; letter-spacing: 0; }
+#ammoLine { flex: 0 0 auto; font-size: 13px; color: #f4e2a0; }
+#feed { display: flex; flex-wrap: wrap; justify-content: flex-end; align-content: flex-start; gap: 4px; flex: 0 0 auto; list-style: none; padding: 0 8px 4px; max-height: 2.8em; overflow: hidden; text-align: right; }
+#feed li { background: rgba(0, 0, 0, 0.45); margin: 0; padding: 1px 4px; font-size: 12px; }
 .wico { display: inline-block; width: 16px; height: 8px; margin: 0 4px; vertical-align: middle; background: #ccc; }
 .w-crowbar, .w-knife, .w-wrench { background: #e23b2f; }
 .w-pistol, .w-deagle { background: #d0d0d0; }
@@ -96,12 +131,13 @@ body.fps-page.fps-live main.wrap {
   font-size: 16px;
 }
 #buy {
-  position: absolute;
-  z-index: 5;
+  position: fixed;
+  z-index: 40;
   left: 8px;
   right: 8px;
-  top: 8px;
-  max-height: calc(100% - 16px);
+  top: calc(var(--vv-top, 0px) + var(--fps-nav, 44px) + 8px);
+  bottom: calc(100vh - var(--vv-top, 0px) - var(--vv-h, 100vh) + 8px);
+  max-height: none;
   overflow: auto;
   background: #c0c0c0;
   color: #111;
@@ -120,13 +156,15 @@ body.fps-page.fps-live main.wrap {
 .buy-grid button.is-poor span { color: #800; }
 #touch {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  padding: 6px;
-  padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  grid-template-columns: 104px repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(44px, auto);
+  gap: 4px;
+  flex: 0 0 auto;
+  padding: 4px;
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
   background: #141414;
 }
-#touch button { min-height: 48px; font-size: 13px; font-weight: 700; background: #2a2a2a; color: #f0f0f0; border: 2px solid #666; border-bottom-color: #111; border-right-color: #111; }
+#touch button { min-height: 44px; min-width: 0; font-size: 12px; font-weight: 700; line-height: 1.15; padding: 4px; background: #2a2a2a; color: #f0f0f0; border: 2px solid #666; border-bottom-color: #111; border-right-color: #111; }
 #btnFire { background: #6a1a14; color: #fff; }
 #toast { position: fixed; left: 8px; bottom: calc(var(--task-h) + 8px); background: #111; color: #fff; padding: 8px 10px; z-index: 8; margin: 0; }
 body.fps-live #toast { bottom: 120px; }
@@ -136,9 +174,13 @@ body.fps-live #toast { bottom: 120px; }
   .srv { grid-template-columns: 1fr 1fr; }
   .srv-map { grid-column: 1 / -1; font-size: 12px; }
   .pick-row, .buy-grid { grid-template-columns: 1fr; }
-  #matchInfo { font-size: 14px; }
-  #stick { width: 96px; height: 96px; }
+  #matchInfo { font-size: 13px; }
 }
-@media (pointer: fine) and (min-width: 900px) {
-  #touch button { min-height: 44px; }
+@media (max-width: 900px) {
+  #stage { align-items: flex-start; }
+}
+@media (hover: hover) and (min-width: 900px) {
+  #touch { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #stick { display: none; }
+  #touch button { min-height: 44px; font-size: 13px; }
 }

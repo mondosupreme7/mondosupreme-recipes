@@ -592,6 +592,25 @@
     pushPresence(true);
   }
 
+  function syncPlayViewport() {
+    var root = document.documentElement;
+    if (!document.body.classList.contains('fps-live')) {
+      root.style.removeProperty('--vv-top');
+      root.style.removeProperty('--vv-h');
+      root.style.removeProperty('--fps-nav');
+      return;
+    }
+    var vv = window.visualViewport;
+    var top = vv ? vv.offsetTop : 0;
+    var h = vv ? vv.height : window.innerHeight;
+    root.style.setProperty('--vv-top', Math.round(top) + 'px');
+    root.style.setProperty('--vv-h', Math.round(h) + 'px');
+    var nav = document.querySelector('.studio-nav');
+    var navH = nav ? Math.ceil(nav.getBoundingClientRect().height) : 44;
+    if (navH < 36) navH = 44;
+    root.style.setProperty('--fps-nav', navH + 'px');
+  }
+
   function showPlay() {
     document.body.classList.add('fps-live', 'is-playing');
     $('browser').hidden = true;
@@ -603,6 +622,7 @@
     $('stage').classList.remove('mode-hl', 'mode-cs', 'mode-tfc');
     $('stage').classList.add('mode-' + state.mode);
     $('btnSpecial').textContent = state.mode === 'cs' ? 'BUY' : (state.mode === 'tfc' ? 'CLASS' : 'CROWBAR');
+    syncPlayViewport();
     var view = $('view');
     if (view && view.focus) view.focus();
   }
@@ -616,6 +636,7 @@
     $('lobby').classList.toggle('mode-tfc', state.mode === 'tfc');
     $('lobbyTitle').textContent = MAPS[state.mode].title;
     if (!resume) document.body.classList.remove('fps-live', 'is-playing');
+    syncPlayViewport();
     paintPicks();
   }
 
@@ -665,6 +686,7 @@
     if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
     $('buy').hidden = true;
     document.body.classList.remove('fps-live', 'is-playing');
+    syncPlayViewport();
     paintStats();
   }
 
@@ -2290,6 +2312,11 @@
       if (e.code === 'KeyE') useHeld = false;
     });
     window.addEventListener('blur', function () { keys = {}; fireHeld = false; useHeld = false; stickOff(); });
+    window.addEventListener('resize', syncPlayViewport);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncPlayViewport);
+      window.visualViewport.addEventListener('scroll', syncPlayViewport);
+    }
     $('ownerBtn').addEventListener('click', function () {
       if (net.user && net.user.email) {
         firebase.auth().signOut().then(function () { return firebase.auth().signInAnonymously(); }).catch(function () {});

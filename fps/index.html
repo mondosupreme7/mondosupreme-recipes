@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
-<link rel="stylesheet" href="fps.css?v=3">
+<link rel="stylesheet" href="fps.css?v=4">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
@@ -136,12 +136,13 @@
    <button type="button" id="sndPlay" aria-pressed="false">Sound off</button>
    <button type="button" id="disc">Disconnect</button>
   </div>
-  <div id="stage">
-   <canvas id="view" width="320" height="180" aria-hidden="true"></canvas>
-   <canvas id="stick" width="100" height="100" aria-label="Move"></canvas>
+  <div id="hudline">
    <p id="matchInfo" role="status"></p>
    <p id="ammoLine"></p>
-   <ul id="feed" aria-label="Kill feed"></ul>
+  </div>
+  <ul id="feed" aria-label="Kill feed"></ul>
+  <div id="stage">
+   <canvas id="view" width="320" height="180" aria-hidden="true"></canvas>
    <button type="button" id="replay" hidden>Play the sector again</button>
    <div id="buy" hidden>
     <h2>[B] Buy Menu</h2>
@@ -160,6 +161,7 @@
    </div>
   </div>
   <div id="touch">
+   <canvas id="stick" width="100" height="100" aria-label="Move"></canvas>
    <button type="button" id="btnFire">FIRE</button>
    <button type="button" id="btnAim">AIM / SCOPE</button>
    <button type="button" id="btnReload">RELOAD</button>
@@ -189,7 +191,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/mondo-juice.js?v=1"></script>
-<script src="fps.js?v=3"></script>
+<script src="fps.js?v=4"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
