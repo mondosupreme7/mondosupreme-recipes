@@ -29,8 +29,10 @@
     "marketValue": 0,
     "equity": 1000,
     "openRiskUsd": 19.5,
-    "asOf": "2026-11-10T21:35:01-05:00",
-    "markSource": "no fills yet"
+    "asOf": "2026-11-11T16:05:00-05:00",
+    "markSource": "Yahoo Finance public daily chart, regular session",
+    "versusStartUsd": 0,
+    "goalProgressPct": 0.1
   },
   "marketAtOpen": {
     "symbol": "SPY",
@@ -95,6 +97,12 @@
       "type": "order_placed",
       "symbol": "ZD",
       "detail": "Working buy limit 5 shares of ZD at 46.65 (zone 46.09–46.65), stop 42.75, target 55.81. First eligible session 2026-11-11. Risk $19.50 (1.95%) if filled at the limit. Older official journal names (KRT, HALO, PAYS, and the rest of the Nov 9–10 lists) are not eligible under the current gates and were not taken."
+    },
+    {
+      "at": "2026-11-11T16:05:00-05:00",
+      "session": "2026-11-11",
+      "type": "mark",
+      "detail": "Marked 2026-11-11. Equity $1,000.00, cash $1,000.00, reserved $233.25, available $766.75, market value $0.00, open risk $19.50. Versus start $0.00. Goal progress 0.10%."
     }
   ],
   "skippedFromJournal": [
