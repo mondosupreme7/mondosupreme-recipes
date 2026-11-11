@@ -851,7 +851,7 @@
     page.forEach(function (symbol) {
       var pin = watch[symbol];
       var item = document.createElement('li');
-      var button = el('button', symbol, 'btn');
+      var button = el('button', symbol, 'btn watch-symbol');
       button.type = 'button';
       button.addEventListener('click', function () { openDetail(symbol); });
       item.appendChild(button);
@@ -882,12 +882,23 @@
       if (at) meta.append(at);
       meta.append(now);
       item.appendChild(meta);
+      var remove = el('button', 'Remove', 'btn ghost watch-remove');
+      remove.type = 'button';
+      remove.setAttribute('aria-label', 'Remove ' + symbol);
+      item.appendChild(remove);
+      remove.addEventListener('click', function () {
+        removePin(symbol);
+        if (selected === symbol) {
+          var status = document.getElementById('pinStatus');
+          if (status) status.textContent = 'Removed from the watchlist.';
+        }
+      });
       list.appendChild(item);
     });
-    if (!symbols.length) list.appendChild(el('li', 'No pins yet.'));
+    if (!symbols.length) list.appendChild(el('li', 'No pins yet.', 'watch-empty'));
     var count = document.getElementById('watchCount');
     if (count) {
-      count.hidden = symbols.length === 0;
+      count.hidden = symbols.length === 0 || page.length >= symbols.length;
       count.textContent = symbols.length ? 'Showing ' + page.length + ' of ' + symbols.length : '';
     }
     if (more) {
