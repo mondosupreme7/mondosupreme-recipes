@@ -6,9 +6,14 @@ taken from the Nasdaq Trader symbol directories. ETFs, ETNs, warrants, units,
 rights, preferreds, and test issues are left out. RCL is left out on purpose.
 The list is written to scripts/universe.json.
 RCL is left out on purpose. Daily bars come from Yahoo's public chart endpoint.
-Fundamentals, for names that pass the swing screen, come from Yahoo quoteSummary
-(summaryProfile, summaryDetail, financialData, defaultKeyStatistics,
-calendarEvents) after the public crumb handshake. No key.
+The published file keeps a wide oversold research list. Only names that pass the
+hard swing gates are swing candidates, and only those can be journaled.
+Fundamentals annotate a card. They do not choose the headline or the journal.
+Official fills are recorded on the next session, never on the signal close.
+Fundamentals, for names on the research shortlist and every provisional swing
+setup, come from Yahoo quoteSummary (summaryProfile, summaryDetail,
+financialData, defaultKeyStatistics, calendarEvents) after the public crumb
+handshake. No key.
 
 A failed run, or a run that prices less than 65% of the universe, leaves the
 previous snapshot in place. Set STOCKS_FORCE=1 to refresh even when the
@@ -79,28 +84,27 @@ CHART_GAP = 0.28
 FUND_GAP = 1.1
 
 ABOUT = (
-    "Swing screen of US common stocks listed on Nasdaq, the NYSE, and NYSE American. "
+    "Two lists of US common stocks on Nasdaq, the NYSE, and NYSE American. "
     "ETFs, ETNs, warrants, units, rights, preferreds, and test issues are left out, "
-    "as are names under $3 or under $2 million of average daily dollar volume. A name is published when "
-    "the daily chart shows an oversold RSI, a lower Bollinger touch or re-entry, or a pullback "
-    "while price is still above the 200-day average. RSI is Wilder's 14-day RSI. Bollinger Bands "
-    "are the 20-day average plus and minus two population standard deviations. ATR is Wilder's "
-    "14-day average true range. The stop sketch is 1.5 times ATR under the last close. Targets are "
-    "the 20-day average or the mid band, then the upper band, when those levels sit above the last "
-    "close. Swing bottom score is a separate 0-100 read of a turn off the lows. Points come from "
-    "RSI turning up or diverging, a stochastic cross from below 20, MACD turning up under zero, "
-    "a lower Bollinger bounce, a 10- or 20-day average reclaim, volume on the reversal, and a "
-    "hammer or bullish engulfing. A high score needs at least two of those confirming signals. "
-    "Price under the 200-day average, earnings inside 7 days, or reward-to-risk under 2:1 is "
-    "down-ranked and is not a swing candidate. A name under $5, or with thin share and dollar "
-    "volume, scores 0. The rank mixes the older setup score with fundamentals. "
-    "Yahoo quoteSummary is tried first. If that "
-    "crumb is blocked, Nasdaq's public quote, annual financials, analyst target, and earnings "
-    "calendar are used instead: sector, industry, market cap, revenue growth, profit margin, free "
-    "cash flow, debt-to-equity, forward P/E when Yahoo returns it, and the analyst target or "
-    "consensus. Every sentence uses a fetched "
-    "number. This is why a name screens as a swing candidate, not a guarantee and not financial "
-    "advice. fetchedAt is when this file was last filled. A failed fetch keeps the previous rows."
+    "as are names under $3 or under $2 million of average daily dollar volume. "
+    "The research list is the wide oversold screen: a low RSI, a lower Bollinger touch, or a pullback. "
+    "A swing candidate is separate and smaller. It has to clear hard gates: no single session down "
+    "about 9% or more in the last 8 sessions (still being above the 200-day does not waive that), "
+    "no earnings inside 7 days, average daily dollar volume of at least $20 million, a rising 200-day "
+    "average with the close at least 5% above it, a 21-session pullback that is not a 15% or worse slide, "
+    "volume confirmation, at least two reversal signals, a swing score of at least 36, and reward-to-risk "
+    "of at least 2:1 measured from the planned entry. The entry is a limit at structure under the close, "
+    "or a next-session reclaim of the signal high. It is not today's close. After a shock bar the plan "
+    "is skipped, so a pre-crash 20-day average is not reused as a target and a gap-inflated ATR is not "
+    "the stop. The headline rank and the journal use the swing score only. Fundamentals are notes on the "
+    "card and do not promote a name. The journal does not fill leftover slots with names that failed the "
+    "gates, keeps one name per sector, and records no new official picks when SPY is under its 200-day. "
+    "RSI is Wilder's 14-day RSI. Bollinger Bands are the 20-day average plus and minus two population "
+    "standard deviations. ATR is Wilder's 14-day average true range, with the stop distance capped so one "
+    "wide bar cannot set it. Yahoo quoteSummary is tried first. If that crumb is blocked, Nasdaq's public "
+    "quote, annual financials, analyst target, and earnings calendar are used instead. Every sentence uses "
+    "a fetched number. This is a rules screen, not a guarantee and not financial advice. fetchedAt is when "
+    "this file was last filled. A failed fetch keeps the previous rows."
 )
 DISCLAIMER = (
     "Informational only, not financial advice and not a recommendation to buy or sell. "
@@ -211,6 +215,157 @@ def wilder_atr(bars, length=14):
     for item in true_ranges[length:]:
         atr = ((atr * (length - 1)) + item) / length
     return atr if atr > 0 else None
+
+
+def robust_atr(bars, length=14):
+    """ATR for the stop sketch, with the widest bar in the window capped.
+
+    A single gap otherwise inflates Wilder's ATR and parks the stop as if the
+    crash were a normal pullback.
+    """
+    if len(bars) <= length:
+        return wilder_atr(bars)
+    true_ranges = []
+    for index in range(1, len(bars)):
+        high = bars[index]["high"]
+        low = bars[index]["low"]
+        prev = bars[index - 1]["close"]
+        true_ranges.append(max(high - low, abs(high - prev), abs(low - prev)))
+    window = true_ranges[-length:]
+    ordered = sorted(window)
+    median = ordered[len(ordered) // 2]
+    if median <= 0:
+        return wilder_atr(bars)
+    cap = median * 2.5
+    return mean([min(value, cap) for value in window])
+
+
+def shock_stats(bars):
+    """A large down session in the recent window, measured off the prior close.
+
+    The close or the open has to be about 9% or more below the prior close.
+    A wick alone does not count. Being above a lagging 200-day average does
+    not clear the event.
+    """
+    last = len(bars) - 1
+    lookback = int(swing_param("shock.lookback", 8))
+    threshold = float(swing_param("shock.minDownPct", 9))
+    worst = 0.0
+    found = False
+    if last < 1:
+        return False, None
+    for index in range(max(1, last - lookback + 1), last + 1):
+        prev = bars[index - 1]["close"]
+        if prev <= 0:
+            continue
+        drop = min(
+            (bars[index]["close"] / prev - 1.0) * 100,
+            (bars[index]["open"] / prev - 1.0) * 100,
+        )
+        if drop < worst:
+            worst = drop
+        if drop <= -threshold:
+            found = True
+    return found, (round(worst, 2) if last else None)
+
+
+def choose_target(entry, close, sma20, middle, upper):
+    """First target is a nearby mean, not a pre-crash average far overhead."""
+    lift = float(swing_param("trade.targetMinLift", 1.002))
+    stretch = float(swing_param("trade.maxTargetStretch", 0.12))
+    ceiling = close * (1.0 + stretch)
+    found = []
+    if sma20 and sma20 > entry * lift and sma20 <= ceiling:
+        found.append((sma20, "the 20-day average"))
+    if middle and middle > entry * lift and middle <= ceiling:
+        found.append((middle, "the mid Bollinger Band"))
+    if not found:
+        return None, ""
+    found.sort(key=lambda item: item[0])
+    return found[0]
+
+
+def build_trade_plan(bars, atr, lower, middle, upper, sma20):
+    """Entry from structure or a next-session reclaim. Never the signal close.
+
+    A shock bar returns an empty plan so the journal cannot keep the pre-crash
+    20-day average as a target.
+    """
+    last = len(bars) - 1
+    close = bars[last]["close"]
+    shock, shock_pct = shock_stats(bars)
+    empty = {
+        "entryLow": None,
+        "entryHigh": None,
+        "stop": None,
+        "target": None,
+        "targetLabel": "",
+        "target2": None,
+        "rewardRisk": None,
+        "planStyle": "none",
+        "shock": shock,
+        "shockPct": shock_pct,
+        "planNote": "Recent shock bar. No pullback plan until the range rebuilds." if shock else "No entry away from the close.",
+    }
+    if shock or not atr or atr <= 0 or last < 1:
+        return empty
+    stop_atr = robust_atr(bars) or atr
+    prior = bars[max(0, last - 8):last]
+    supports = []
+    for level in (
+        min(bar["low"] for bar in prior) if prior else None,
+        bars[last - 1]["low"],
+        lower,
+    ):
+        if isinstance(level, (int, float)) and level < close * 0.998:
+            supports.append(level)
+    width = max(stop_atr * float(swing_param("trade.entryAtrFraction", 0.25)), close * 0.004)
+    if supports:
+        entry_high = min(max(supports), close * 0.995)
+        entry_low = entry_high - width
+        stop = entry_low - float(swing_param("trade.atrStopMultiple", 1.5)) * stop_atr
+        style = "limit"
+    else:
+        entry_high = bars[last]["high"]
+        entry_low = entry_high
+        stop = bars[last]["low"] - 0.1 * stop_atr
+        style = "confirm"
+        if not (entry_high > close + 0.004 and stop < entry_high):
+            return empty
+    if not (isinstance(stop, (int, float)) and stop < entry_high):
+        return empty
+    target, target_label = choose_target(entry_high, close, sma20, middle, upper)
+    target2 = None
+    second_lift = float(swing_param("trade.secondTargetLift", 1.005))
+    stretch2 = float(swing_param("trade.secondTargetStretch", 0.18))
+    if (
+        target
+        and upper
+        and upper > target * second_lift
+        and upper <= close * (1.0 + stretch2)
+    ):
+        target2 = upper
+    reward = None
+    if target and entry_high > stop:
+        reward = (target - entry_high) / (entry_high - stop)
+    note = (
+        "Next session has to trade through the signal high."
+        if style == "confirm"
+        else "Limit under the close, at the nearest structure."
+    )
+    return {
+        "entryLow": round_num(entry_low, 2),
+        "entryHigh": round_num(entry_high, 2),
+        "stop": round_num(stop, 2),
+        "target": round_num(target, 2) if target else None,
+        "targetLabel": target_label,
+        "target2": round_num(target2, 2) if target2 else None,
+        "rewardRisk": round_num(reward, 2) if reward and reward > 0 else None,
+        "planStyle": style,
+        "shock": False,
+        "shockPct": shock_pct,
+        "planNote": note,
+    }
 
 
 def round_num(value, places):
@@ -372,9 +527,10 @@ def swing_bottom(bars):
     MACD cross below zero 14 or a rising negative histogram 8, lower Bollinger
     bounce 10, within 12% of the 52-week low 6, 10/20-day EMA reclaim 10,
     uptrend pullback 8, volume reversal 8, hammer or bullish engulfing 6.
-    A close under a falling 200-day average loses 12. The total is capped at 100.
-    Eligibility is decided later: several confirming signals, price above the
-    200-day average, reward at least 2:1, and no earnings inside 7 days.
+    A close under a falling 200-day average loses 12. A shock bar of about 9%
+    or worse in the last 8 sessions loses 12 even when price is still above the
+    200-day average. The total is capped at 100. Hard eligibility is decided
+    later and does not use the fundamentals sheet.
     """
     empty = {"score": 0.0, "signals": [], "eligible": False}
     closes = [bar["close"] for bar in bars]
@@ -475,15 +631,21 @@ def swing_bottom(bars):
     if qualifying and sma_now and sma_then and closes[last] > sma_now and sma_now >= sma_then:
         add("Uptrend pullback", swing_param("context.uptrendWeight", 8), qualifies=False)
     drop21 = (closes[last] / closes[last - 21] - 1.0) * 100 if last >= 21 else None
+    shock, shock_pct = shock_stats(bars)
     if sma_now and sma_then and closes[last] < sma_now and sma_now < sma_then and ((drop21 is not None and drop21 <= swing_param("fallingKnife.drop21", -12)) or not up):
+        points -= swing_param("fallingKnife.penalty", 12)
+    if shock:
         points -= swing_param("fallingKnife.penalty", 12)
     score = round(max(0, min(100, points)), 1)
     above = bool(sma_now and closes[last] > sma_now)
     return {
         "score": score,
         "signals": signals,
+        "shock": shock,
+        "shockPct": shock_pct,
         "eligible": bool(
             above
+            and not shock
             and len(qualifying) >= int(swing_param("gates.minConfirmingSignals", 2))
             and score >= swing_param("gates.minRawScore", 36)
         ),
@@ -493,13 +655,31 @@ def swing_bottom(bars):
 SWING_CONTEXT = {"Near 52w low", "Pullback from high", "Uptrend pullback"}
 
 
-def finalize_swing(row):
-    """Apply the trade rules that a chart score cannot see by itself.
+def entry_is_planned(row):
+    """The buy zone has to sit away from the signal close."""
+    price = row.get("price")
+    high = row.get("entryHigh")
+    style = row.get("planStyle") or ""
+    if not isinstance(price, (int, float)) or not isinstance(high, (int, float)):
+        return style not in ("limit", "confirm", "none")
+    if style == "none":
+        return False
+    if style == "confirm":
+        return high > price + 0.004
+    if style == "limit":
+        return high < price - 0.004
+    return abs(high - price) > 0.02
 
-    Rule 1: a bottom entry is a pullback above the 200-day, not a falling knife.
-    Rule 2: at least two confirming reversal signals, and a score of 36 or more.
-    Rule 3: earnings inside 7 days knocks the name out.
-    Rule 5: reward versus the sketched stop must be at least 2:1.
+
+def finalize_swing(row):
+    """Hard gates for anything that can be called a swing candidate or journaled.
+
+    Research rows can fail these and stay on the wider list. A pass needs:
+    no shock bar, earnings outside 7 days, promoted dollar volume, a rising
+    200-day with at least a 5% cushion, a limited 21-session pullback, volume
+    confirmation, two or more reversal signals, a swing score of 36 or more,
+    reward at least 2:1, and an entry that is not the signal close.
+    Fundamentals are not an input.
     """
     base = row.get("swingBase", row.get("swingScore") or 0)
     signals = list(row.get("swingSignals") or [])
@@ -511,19 +691,37 @@ def finalize_swing(row):
     min_reward = swing_param("gates.minRewardRisk", 2.0)
     if not isinstance(reward, (int, float)) or reward < min_reward:
         score -= swing_param("gates.rewardPenalty", 20)
-    flags = row.get("flags") or []
+    flags = list(row.get("flags") or [])
     earnings = earnings_flag_label()
     if earnings in flags:
         score -= swing_param("gates.earningsPenalty", 25)
     score = round(max(0, min(100, score)), 1)
     row["swingScore"] = score
+    cushion = row.get("vsSma200")
+    drop21 = row.get("drop21")
+    dollar = row.get("avgDollarVolume")
+    min_cushion = float(swing_param("gates.minAbove200Pct", 5))
+    max_pullback = float(swing_param("gates.maxPullback21Pct", -15))
+    min_dollar = float(swing_param("liquidity.minPromotedDollarVolume", 20000000))
     row["swingEligible"] = bool(
-        row.get("above200")
+        row.get("planStyle") != "none"
+        and not row.get("shock")
+        and "Falling knife" not in flags
+        and row.get("above200")
+        and row.get("sma200Rising") is True
+        and isinstance(cushion, (int, float))
+        and cushion >= min_cushion
+        and isinstance(drop21, (int, float))
+        and drop21 > max_pullback
+        and isinstance(dollar, (int, float))
+        and dollar >= min_dollar
+        and "Volume reversal" in signals
         and len(qualifying) >= int(swing_param("gates.minConfirmingSignals", 2))
         and score >= swing_param("gates.minAdjustedScore", 36)
         and isinstance(reward, (int, float))
         and reward >= min_reward
         and earnings not in flags
+        and entry_is_planned(row)
     )
 
 
@@ -868,32 +1066,13 @@ def analyze(symbol, bars, name, exchange):
     range52 = ((close - low52) / span) * 100 if span else 50.0
     distance = ((close - lower) / lower) * 100 if lower else 0.0
     atr = wilder_atr(bars)
-    entry_high = close
-    entry_fraction = swing_param("trade.entryAtrFraction", 0.25)
-    stop_multiple = swing_param("trade.atrStopMultiple", 1.5)
-    entry_low = close - entry_fraction * atr if atr else close
-    if lower < close and atr and lower > close - atr:
-        entry_low = min(entry_low, lower)
-    stop = close - stop_multiple * atr if atr else None
-    target = None
-    target_label = ""
-    lift = swing_param("trade.targetMinLift", 1.002)
-    second_lift = swing_param("trade.secondTargetLift", 1.005)
-    if sma20 and sma20 > close * lift:
-        target = sma20
-        target_label = "the 20-day average"
-    elif middle > close * lift:
-        target = middle
-        target_label = "the mid Bollinger Band"
-    target2 = upper if upper > close * lift and (target is None or upper > target * second_lift) else None
-    reward = None
-    if target and stop and close > stop:
-        reward = (target - close) / (close - stop)
+    plan = build_trade_plan(bars, atr, lower, middle, upper, sma20)
     above200 = bool(sma200 and close > sma200)
+    sma200_prev = sma_at(closes, last - 20, 200) if last >= 219 else None
+    sma200_rising = None if sma200 is None or sma200_prev is None else bool(sma200 >= sma200_prev)
     swing = swing_bottom(bars)
     zone = "deep" if rsi < 30 else "watch" if rsi <= 40 else ""
     ready = rsi <= 40 and (uptick or hammer) and (close <= lower * 1.015 or score >= 45)
-    strong = score >= 60 and rsi <= 35 and (uptick or hammer) and above200
     pullback = above200 and (rsi < 45 or (sma20 is not None and close < sma20))
     start = max(0, last - SERIES + 1)
     series_c, series_u, series_m, series_l, series_r = [], [], [], [], []
@@ -929,6 +1108,7 @@ def analyze(symbol, bars, name, exchange):
         "vsSma50": round_num((close / sma50 - 1.0) * 100, 2) if sma50 else None,
         "vsSma200": round_num((close / sma200 - 1.0) * 100, 2) if sma200 else None,
         "above200": above200,
+        "sma200Rising": sma200_rising,
         "drop5": round_num(drop5, 2),
         "drop21": round_num(drop21, 2),
         "range52": round(range52, 1),
@@ -943,17 +1123,21 @@ def analyze(symbol, bars, name, exchange):
         "swingScore": swing["score"],
         "swingSignals": swing["signals"],
         "swingEligible": False,
-        "strongBounce": strong,
+        "strongBounce": False,
         "ready": ready,
         "pullback": pullback,
+        "shock": bool(plan["shock"] or swing.get("shock")),
+        "shockPct": plan.get("shockPct") if plan.get("shockPct") is not None else swing.get("shockPct"),
+        "planStyle": plan["planStyle"],
+        "planNote": plan.get("planNote") or "",
         "atr": round_num(atr, 2),
-        "entryLow": round_num(entry_low, 2),
-        "entryHigh": round_num(entry_high, 2),
-        "stop": round_num(stop, 2),
-        "target": round_num(target, 2),
-        "targetLabel": target_label,
-        "target2": round_num(target2, 2),
-        "rewardRisk": round_num(reward, 2),
+        "entryLow": plan["entryLow"],
+        "entryHigh": plan["entryHigh"],
+        "stop": plan["stop"],
+        "target": plan["target"],
+        "targetLabel": plan["targetLabel"],
+        "target2": plan["target2"],
+        "rewardRisk": plan["rewardRisk"],
         "yahoo": "https://finance.yahoo.com/quote/" + symbol,
         "tradingview": "https://www.tradingview.com/chart/?symbol=" + tradingview_symbol(symbol, exchange),
         "series": {"c": series_c, "u": series_u, "m": series_m, "l": series_l, "r": series_r},
@@ -1338,12 +1522,12 @@ def quality_score(facts, price):
 
 def build_flags(row, facts):
     flags = []
+    if row.get("shock"):
+        flags.append("Falling knife")
     if row["sma200"] and not row["above200"]:
         flags.append("Below the 200-day")
     if row["sma50"] and row["sma200"] and row["price"] < row["sma50"] and row["sma50"] < row["sma200"]:
         flags.append("Downtrend")
-    if row["rsi"] < 28 and not row["uptick"] and not row["hammer"] and row["drop5"] is not None and row["drop5"] <= -8:
-        flags.append("Falling knife")
     if facts.get("earningsSoon"):
         flags.append(earnings_flag_label())
     debt = facts.get("debtToEquity")
@@ -1359,6 +1543,8 @@ def join_bits(bits):
 
 def build_copy(row, facts):
     flags = build_flags(row, facts)
+    row["flags"] = flags
+    finalize_swing(row)
     tech = "RSI(14) is " + format(row["rsi"], ".1f")
     if row["uptick"]:
         tech += " and the last close turned up."
@@ -1391,17 +1577,28 @@ def build_copy(row, facts):
         trend_bits.append("Volume is " + format(row["volumeRatio"], ".1f") + "× the prior 20-session average.")
     trend_sentence = " ".join(trend_bits)
     levels = []
-    if row["atr"] and row["entryLow"] is not None and row["entryHigh"] is not None:
-        levels.append(
-            "Using ATR(14) of "
-            + money(row["atr"])
-            + ", the sketched entry zone is "
-            + money(row["entryLow"])
-            + " to "
-            + money(row["entryHigh"])
-        )
-    if row["stop"] is not None:
-        levels.append("a stop sketch " + money(row["stop"]) + " (1.5× ATR under the last close)")
+    if row.get("planStyle") == "none":
+        levels.append(row.get("planNote") or "No entry, stop, or target is sketched after a recent shock bar")
+    elif row["atr"] and row["entryLow"] is not None and row["entryHigh"] is not None:
+        if row.get("planStyle") == "confirm":
+            levels.append(
+                "Using ATR(14) of "
+                + money(row["atr"])
+                + ", the sketched entry is a next-session reclaim of "
+                + money(row["entryHigh"])
+            )
+        else:
+            levels.append(
+                "Using ATR(14) of "
+                + money(row["atr"])
+                + ", the sketched entry zone is "
+                + money(row["entryLow"])
+                + " to "
+                + money(row["entryHigh"])
+                + ", under the last close"
+            )
+    if row.get("planStyle") != "none" and row["stop"] is not None:
+        levels.append("a stop sketch " + money(row["stop"]) + " (1.5× capped ATR under the planned entry)")
     if row["target"] is not None and row["targetLabel"]:
         levels.append(row["targetLabel"] + " at " + money(row["target"]))
     if row["target2"] is not None:
@@ -1476,8 +1673,12 @@ def build_copy(row, facts):
             "Nasdaq's earnings calendar lists a report on " + str(facts["earningsSoon"])[:10] + ".",
         ])
     caution = ("Caution: " + "; ".join(flags) + ".") if flags else ""
+    if row.get("swingEligible"):
+        lead = row["name"] + " (" + row["symbol"] + ") passes the swing setup on this pass, not as a guarantee."
+    else:
+        lead = row["name"] + " (" + row["symbol"] + ") is on the oversold research list on this pass, not a swing setup and not a guarantee."
     why = join_bits([
-        row["name"] + " (" + row["symbol"] + ") screens as a swing candidate on this pass, not as a guarantee.",
+        lead,
         tech,
         trend_sentence,
         level_sentence,
@@ -1519,26 +1720,8 @@ def build_copy(row, facts):
         "setup": " · ".join(setup_bits),
         "risk": " · ".join(risk_bits),
     }
-    row["flags"] = flags
-    quality = quality_score(facts, row["price"])
-    setup = row["score"]
-    if row["uptick"] and row["rsi"] <= 40:
-        setup = min(100, setup + 6)
-    if row["above200"] and row["rsi"] < 45:
-        setup = min(100, setup + 6)
-    if not row["above200"]:
-        setup = max(0, setup - 8)
-    rank = 0.58 * setup + 0.42 * (quality if quality is not None else 42)
-    if "Falling knife" in flags:
-        rank -= 14
-    if "Below the 200-day" in flags:
-        rank -= 8
-    if "Downtrend" in flags:
-        rank -= 6
-    if earnings_flag_label() in flags:
-        rank -= 6
-    row["rankScore"] = round(max(0, min(100, rank)), 1)
-    finalize_swing(row)
+    row["qualityScore"] = quality_score(facts, row["price"])
+    row["rankScore"] = row["swingScore"]
     if facts.get("sector"):
         row["sector"] = facts["sector"]
     if facts.get("industry"):
@@ -1706,11 +1889,22 @@ def fresh_enough(previous):
     return (now_utc() - moment).total_seconds() < MAX_AGE_HOURS * 3600
 
 
-def write_doc(rows, fetched_at, universe_count, priced, candidates):
-    rows = sorted(rows, key=lambda row: (-row.get("rankScore", 0), row["symbol"]))
+def write_doc(rows, fetched_at, universe_count, priced, candidates, market=None):
+    rows = sorted(
+        rows,
+        key=lambda row: (
+            0 if row.get("swingEligible") else 1,
+            -(row.get("swingScore") or 0),
+            -(row.get("score") or 0),
+            row["symbol"],
+        ),
+    )
+    swing_count = sum(1 for row in rows if row.get("swingEligible"))
     document = {
         "about": ABOUT,
         "disclaimer": DISCLAIMER,
+        "paramVersion": PARAMS.get("version") or "",
+        "market": market or {},
         "source": (
             "Yahoo Finance public daily chart API (https://query1.finance.yahoo.com/v8/finance/chart). "
             "Fundamentals come from Yahoo quoteSummary (summaryProfile, summaryDetail, financialData, "
@@ -1723,6 +1917,8 @@ def write_doc(rows, fetched_at, universe_count, priced, candidates):
         "universeCount": universe_count,
         "priced": priced,
         "candidates": candidates,
+        "researchCount": len(rows),
+        "swingCandidates": swing_count,
         "fetchedAt": fetched_at,
         "count": len(rows),
         "stocks": rows,
@@ -1778,11 +1974,20 @@ def self_test():
     ], "Test Co", "NMS")
     sample["price"] = sample["price"]
     build_copy(sample, {})
-    assert "screens as a swing candidate" in sample["why"]
-    assert "not as a guarantee" in sample["why"]
+    assert "oversold research list" in sample["why"]
+    assert "not a swing setup" in sample["why"]
+    assert "not a guarantee" in sample["why"]
     assert "revenue" not in sample["why"].lower()
     assert "Fundamentals sheet missing" in sample["chips"]["value"]
     assert isinstance(sample["flags"], list)
+    assert sample["swingEligible"] is False
+    assert sample["rankScore"] == sample["swingScore"]
+    if sample["planStyle"] == "limit":
+        assert sample["entryHigh"] < sample["price"]
+    elif sample["planStyle"] == "confirm":
+        assert sample["entryHigh"] > sample["price"]
+    else:
+        assert sample["target"] is None
     rich = dict(sample)
     build_copy(rich, {
         "sector": "Technology",
@@ -1799,6 +2004,9 @@ def self_test():
     assert "revenue growth +12%" in rich["why"]
     assert "forward P/E 28.4" in rich["why"]
     assert "sector average" not in rich["why"].lower()
+    assert rich["rankScore"] == rich["swingScore"]
+    assert rich["qualityScore"] is not None
+    assert rich["qualityScore"] != rich["rankScore"] or rich["swingEligible"]
     assert "swingScore" in sample and isinstance(sample["swingSignals"], list)
     thin = []
     for index in range(260):
@@ -1832,9 +2040,52 @@ def self_test():
     thin_rr = dict(above200=True, rewardRisk=1.2, swingBase=60, swingSignals=["RSI turning up", "Stoch cross"], flags=[])
     finalize_swing(thin_rr)
     assert thin_rr["swingEligible"] is False
-    clear = dict(above200=True, rewardRisk=2.4, swingBase=48, swingSignals=["RSI turning up", "Lower BB bounce", "Uptrend pullback"], flags=[])
+    clear = dict(
+        above200=True,
+        sma200Rising=True,
+        vsSma200=8.0,
+        drop21=-6.0,
+        avgDollarVolume=25_000_000,
+        rewardRisk=2.4,
+        swingBase=48,
+        swingSignals=["RSI turning up", "Lower BB bounce", "Volume reversal", "Uptrend pullback"],
+        flags=[],
+        shock=False,
+        planStyle="limit",
+        price=50.0,
+        entryHigh=47.5,
+        entryLow=46.8,
+        stop=44.0,
+    )
     finalize_swing(clear)
     assert clear["swingEligible"] is True
+    thin_dollar = dict(clear)
+    thin_dollar["avgDollarVolume"] = 7_400_000
+    finalize_swing(thin_dollar)
+    assert thin_dollar["swingEligible"] is False
+    crash = dict(clear)
+    crash["shock"] = True
+    crash["flags"] = ["Falling knife"]
+    crash["above200"] = True
+    crash["vsSma200"] = 3.6
+    finalize_swing(crash)
+    assert crash["swingEligible"] is False
+    shallow = dict(clear)
+    shallow["vsSma200"] = 3.6
+    finalize_swing(shallow)
+    assert shallow["swingEligible"] is False
+    slide = dict(clear)
+    slide["drop21"] = -27.6
+    finalize_swing(slide)
+    assert slide["swingEligible"] is False
+    quiet = dict(clear)
+    quiet["swingSignals"] = ["RSI turning up", "Lower BB bounce", "Uptrend pullback"]
+    finalize_swing(quiet)
+    assert quiet["swingEligible"] is False
+    close_entry = dict(clear)
+    close_entry["entryHigh"] = close_entry["price"]
+    finalize_swing(close_entry)
+    assert close_entry["swingEligible"] is False
     knife = []
     for index in range(260):
         price = 80.0 - index * 0.18
@@ -1846,6 +2097,183 @@ def self_test():
             "volume": 800000,
         })
     assert swing_bottom(knife)["score"] <= turned["score"]
+    trend = []
+    for index in range(240):
+        price = 50.0 + index * 0.35
+        trend.append({
+            "time": index,
+            "open": price,
+            "high": price + 0.8,
+            "low": price - 0.8,
+            "close": price,
+            "volume": 400000,
+        })
+    sma_before = sma_at([bar["close"] for bar in trend], len(trend) - 1, 200)
+    prev_close = trend[-1]["close"]
+    landed = sma_before * 1.04
+    assert landed <= prev_close * 0.91
+    trend.append({
+        "time": 240,
+        "open": landed,
+        "high": landed + 0.4,
+        "low": landed - 0.6,
+        "close": landed,
+        "volume": 2500000,
+    })
+    bounced = landed * 1.01
+    trend.append({
+        "time": 241,
+        "open": landed + 0.1,
+        "high": bounced + 0.3,
+        "low": landed - 0.2,
+        "close": bounced,
+        "volume": 1800000,
+    })
+    crashed = analyze("KRT", trend, "Karat Packaging", "NMS")
+    build_copy(crashed, {
+        "sector": "Industrials",
+        "industry": "Packaging",
+        "marketCap": 2e9,
+        "revenueGrowth": 0.18,
+        "profitMargins": 0.12,
+        "freeCashflow": 5e7,
+        "source": "Yahoo",
+    })
+    assert crashed["shock"] is True
+    assert crashed["above200"] is True
+    assert "Falling knife" in crashed["flags"]
+    assert crashed["swingEligible"] is False
+    assert crashed["planStyle"] == "none"
+    assert crashed["target"] is None
+    assert crashed["stop"] is None
+    assert crashed["rankScore"] == crashed["swingScore"]
+    assert "research list" in crashed["why"]
+    calm = []
+    for index in range(230):
+        price = 70.0 + index * 0.08
+        calm.append({
+            "time": index,
+            "open": price + 0.2,
+            "high": price + 0.6,
+            "low": price - 0.5,
+            "close": price,
+            "volume": 500000,
+        })
+    for index in range(6):
+        price = calm[-1]["close"] - 0.45
+        calm.append({
+            "time": 230 + index,
+            "open": price + 0.3,
+            "high": price + 0.45,
+            "low": price - 0.35,
+            "close": price,
+            "volume": 500000,
+        })
+    planned = analyze("SU", calm, "Suncor Energy", "NYSE")
+    assert planned["shock"] is False
+    assert planned["planStyle"] in ("limit", "confirm")
+    assert planned["entryHigh"] != planned["price"]
+    if planned["planStyle"] == "limit":
+        assert planned["entryHigh"] < planned["price"]
+    else:
+        assert planned["entryHigh"] > planned["price"]
+    bull = {"symbol": "SPY", "vsSma50": 1.2, "vsSma200": 4.0}
+    bear = {"symbol": "SPY", "vsSma50": -2.0, "vsSma200": -1.5}
+    book = [
+        {"symbol": "PAYS", "swingEligible": False, "swingScore": 4, "rankScore": 90, "sector": "Financials"},
+        {"symbol": "SU", "swingEligible": True, "swingScore": 52, "sector": "Energy", "industry": "Oil"},
+        {"symbol": "CNQ", "swingEligible": True, "swingScore": 50, "sector": "Energy", "industry": "Oil"},
+        {"symbol": "AAA", "swingEligible": True, "swingScore": 47, "sector": "Health", "industry": "Biotech"},
+    ]
+    picked = [row["symbol"] for row in official_picks(book, bull)]
+    assert picked == ["SU", "AAA"]
+    assert official_picks(book, bear) == []
+    assert regime_slots(bear) == 0
+    signal = int(datetime(2026, 11, 10, 16, 0, tzinfo=EASTERN).timestamp())
+    sessions = [
+        datetime(2026, 11, 11, 16, 0, tzinfo=EASTERN),
+        datetime(2026, 11, 12, 16, 0, tzinfo=EASTERN),
+        datetime(2026, 11, 13, 16, 0, tzinfo=EASTERN),
+    ]
+    pays_bars = [{
+        "time": signal,
+        "open": 12.0,
+        "high": 13.5,
+        "low": 9.4,
+        "close": 10.0,
+        "volume": 1000000,
+    }]
+    pays_bars.append({
+        "time": int(sessions[0].timestamp()),
+        "open": 10.4,
+        "high": 10.8,
+        "low": 9.7,
+        "close": 10.2,
+        "volume": 800000,
+    })
+    pays_bars.append({
+        "time": int(sessions[1].timestamp()),
+        "open": 10.2,
+        "high": 11.0,
+        "low": 10.0,
+        "close": 10.6,
+        "volume": 700000,
+    })
+    pays = {
+        "status": "open",
+        "symbol": "PAYS",
+        "pickedOn": "2026-11-10",
+        "filledOn": "2026-11-10",
+        "priceAtPick": 10.0,
+        "entryLow": 9.5,
+        "entryHigh": 10.0,
+        "stop": 8.0,
+        "target": 14.0,
+        "entryStyle": "limit",
+        "mfePct": 26.6,
+        "maePct": -5.0,
+    }
+    evaluated = evaluate_picks({"PAYS": pays_bars}, {"picks": [pays]}, save=False)
+    filled = evaluated["picks"][0]
+    assert filled["filledOn"] == "2026-11-11"
+    assert filled["fillPrice"] == 10.0
+    assert filled["status"] == "open"
+    assert filled["mfePct"] is not None and filled["mfePct"] < 15
+    assert filled["mfePct"] > 0
+    stalled = []
+    hold_days = [
+        "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16",
+        "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20",
+    ]
+    for day in hold_days:
+        stalled.append({
+            "time": int(datetime.fromisoformat(day + "T16:00:00").replace(tzinfo=EASTERN).timestamp()),
+            "open": 10.2,
+            "high": 10.5,
+            "low": 9.9,
+            "close": 10.1,
+            "volume": 500000,
+        })
+    expired = evaluate_picks(
+        {"WAIT": stalled},
+        {"picks": [{
+            "status": "open",
+            "symbol": "WAIT",
+            "pickedOn": "2026-11-10",
+            "priceAtPick": 10.0,
+            "entryLow": 9.5,
+            "entryHigh": 10.0,
+            "stop": 8.0,
+            "target": 14.0,
+            "entryStyle": "limit",
+        }]},
+        save=False,
+    )
+    closed = expired["picks"][0]
+    assert closed["outcome"] == "time stop"
+    assert closed["status"] == "closed"
+    assert closed["filledOn"] == "2026-11-11"
+    assert closed["returnPct"] is not None
 
 
 def patch_swing_scores():
@@ -1870,10 +2298,12 @@ def patch_swing_scores():
             "drop5", "drop21", "range52", "high52", "low52", "volumeRatio", "hammer", "uptick",
             "atr", "entryLow", "entryHigh", "stop", "target", "targetLabel", "target2", "rewardRisk",
             "series", "swingBase", "swingScore", "swingSignals", "swingEligible",
+            "shock", "shockPct", "planStyle", "planNote", "sma200Rising",
         ):
             if key in fresh:
                 row[key] = fresh[key]
         finalize_swing(row)
+        row["rankScore"] = row.get("swingScore")
         why = row.get("why") or ""
         if why and fresh.get("rsi") is not None:
             row["why"] = re.sub(r"RSI\(14\) is [0-9.]+", "RSI(14) is " + format(fresh["rsi"], ".1f"), why, count=1)
@@ -1883,6 +2313,7 @@ def patch_swing_scores():
         previous.get("universeCount") or 0,
         previous.get("priced") or 0,
         previous.get("candidates") or 0,
+        previous.get("market") if isinstance(previous.get("market"), dict) else None,
     )
     ranked = sorted(
         [row for row in stocks if row.get("swingEligible")],
@@ -1911,20 +2342,71 @@ def trading_date(moment):
     return datetime.fromtimestamp(moment, EASTERN).date().isoformat()
 
 
-def page_top(rows):
+def regime_slots(market):
+    """How many official picks this session may log.
+
+    SPY under its 200-day logs none. SPY under its 50-day, or an unknown
+    regime, logs a shorter list. A bullish regime can use the full list.
+    """
     size = int(swing_param("picks.listSize", 5))
+    cautious = int(swing_param("picks.cautiousListSize", 2))
+    if not isinstance(market, dict) or not isinstance(market.get("vsSma200"), (int, float)):
+        return min(cautious, size)
+    if market["vsSma200"] < 0:
+        return 0
+    vs50 = market.get("vsSma50")
+    if isinstance(vs50, (int, float)) and vs50 < 0:
+        return min(cautious, size)
+    return size
 
-    def swing_pick(row):
-        score = row.get("swingScore")
-        return bool(row.get("swingEligible") and isinstance(score, (int, float)) and score >= swing_param("gates.uiScoreFloor", 20))
 
-    def best(row):
-        if isinstance(row.get("rankScore"), (int, float)):
-            return row["rankScore"]
-        return row.get("score") or 0
+def regime_label(market):
+    if not isinstance(market, dict) or not isinstance(market.get("vsSma200"), (int, float)):
+        return "unknown"
+    if market["vsSma200"] < 0:
+        return "below 200-day"
+    if isinstance(market.get("vsSma50"), (int, float)) and market["vsSma50"] < 0:
+        return "below 50-day"
+    return "above 50-day and 200-day"
 
-    ordered = sorted(rows, key=lambda row: (0 if swing_pick(row) else 1, -best(row), row.get("symbol") or ""))
-    return ordered[:size]
+
+def concentration_keys(row):
+    sector = (row.get("sector") or "").strip() or "Unknown"
+    industry = (row.get("industry") or "").strip()
+    keys = ["sector:" + sector]
+    if industry:
+        keys.append("industry:" + industry)
+    return keys
+
+
+def official_picks(rows, market=None):
+    """Actionable names only, ranked by swing score, one name per sector.
+
+    Ineligible rows are not used to fill empty slots, even when their
+    fundamental rank is higher.
+    """
+    limit = regime_slots(market)
+    if limit <= 0:
+        return []
+    cap = max(1, int(swing_param("picks.sectorCap", 1)))
+    eligible = [row for row in rows if row.get("swingEligible")]
+    eligible.sort(key=lambda row: (-(row.get("swingScore") or 0), row.get("symbol") or ""))
+    chosen = []
+    counts = {}
+    for row in eligible:
+        keys = concentration_keys(row)
+        if any(counts.get(key, 0) >= cap for key in keys):
+            continue
+        for key in keys:
+            counts[key] = counts.get(key, 0) + 1
+        chosen.append(row)
+        if len(chosen) >= limit:
+            break
+    return chosen
+
+
+def page_top(rows, market=None):
+    return official_picks(rows, market)
 
 
 def load_picks():
@@ -1940,14 +2422,21 @@ def save_picks(document):
 
 
 def record_picks(rows, market=None, picked_on=None):
-    """Append the top 5. A ticker that already has an open pick is not opened again."""
+    """Append official setups. Names that failed the gates are not backfilled.
+
+    A ticker that already has an open pick is not opened again. The rank stored
+    on the pick is the swing score, not a fundamentals blend.
+    """
     document = load_picks()
     open_symbols = {pick.get("symbol") for pick in document["picks"] if pick.get("status") == "open"}
     today = picked_on or eastern_now().date().isoformat()
+    context = dict(market or {})
+    context["regime"] = regime_label(market)
+    context["officialSlots"] = regime_slots(market)
     added = 0
-    for rank, row in enumerate(page_top(rows), start=1):
+    for rank, row in enumerate(official_picks(rows, market), start=1):
         symbol = row.get("symbol")
-        if not symbol or symbol in open_symbols or symbol in EXCLUDE:
+        if not symbol or symbol in open_symbols or symbol in EXCLUDE or not row.get("swingEligible"):
             continue
         signals = list(row.get("swingSignals") or [])
         confirming = [label for label in signals if label not in SWING_CONTEXT]
@@ -1961,25 +2450,35 @@ def record_picks(rows, market=None, picked_on=None):
             "priceAtPick": row.get("price"),
             "entryLow": row.get("entryLow"),
             "entryHigh": row.get("entryHigh"),
+            "entryStyle": row.get("planStyle") or "limit",
             "stop": row.get("stop"),
             "target": row.get("target"),
             "rewardRisk": row.get("rewardRisk"),
-            "score": row.get("rankScore") if row.get("rankScore") is not None else row.get("score"),
+            "score": row.get("swingScore"),
             "swingScore": row.get("swingScore"),
-            "swingEligible": bool(row.get("swingEligible")),
+            "swingEligible": True,
             "signals": signals,
             "gates": {
                 "above200": bool(row.get("above200")),
+                "cushionPct": row.get("vsSma200"),
+                "sma200Rising": row.get("sma200Rising") is True,
                 "confirming": confirming,
+                "volume": "Volume reversal" in signals,
                 "adjustedScore": row.get("swingScore"),
                 "rewardRisk": row.get("rewardRisk"),
                 "earningsClear": earnings_flag_label() not in (row.get("flags") or []),
+                "shock": bool(row.get("shock")),
+                "avgDollarVolume": row.get("avgDollarVolume"),
+                "drop21": row.get("drop21"),
+                "entryStyle": row.get("planStyle") or "",
             },
             "sector": row.get("sector") or "",
-            "market": market or {},
+            "industry": row.get("industry") or "",
+            "market": context,
             "status": "open",
             "outcome": None,
             "filledOn": None,
+            "fillPrice": None,
             "closedOn": None,
             "daysHeld": None,
             "returnPct": None,
@@ -1991,7 +2490,10 @@ def record_picks(rows, market=None, picked_on=None):
         open_symbols.add(symbol)
         added += 1
     save_picks(document)
-    print("Recorded " + str(added) + " new top-5 picks. Open book " + str(len(open_symbols)) + ".", flush=True)
+    print(
+        "Recorded " + str(added) + " official picks (" + context["regime"] + "). Open book " + str(len(open_symbols)) + ".",
+        flush=True,
+    )
     return document
 
 
@@ -1999,85 +2501,168 @@ def session_day(bar):
     return trading_date(bar["time"])
 
 
-def evaluate_picks(bars_by_symbol):
-    document = load_picks()
+def planned_fill(bar, entry_low, entry_high, style):
+    """Fill price on a bar after the signal. None when the plan is not touched."""
+    if style == "confirm":
+        if bar["high"] < entry_high:
+            return None
+        if bar["open"] >= entry_high:
+            return bar["open"]
+        return entry_high
+    if bar["high"] < entry_low or bar["low"] > entry_high:
+        return None
+    if bar["open"] <= entry_high:
+        return bar["open"]
+    return entry_high
+
+
+def bar_exit(bar, stop, target, from_above):
+    """Stop first when both could fill. A limit-from-above bar does not use its high."""
+    if from_above:
+        hit_stop = bar["low"] <= stop
+        hit_target = bar["close"] >= target
+    else:
+        hit_stop = bar["low"] <= stop
+        hit_target = bar["high"] >= target
+    if hit_stop:
+        exit_price = bar["open"] if bar["open"] <= stop else stop
+        return "stopped out", exit_price
+    if hit_target:
+        exit_price = bar["open"] if bar["open"] >= target else target
+        return "target hit", exit_price
+    return None, None
+
+
+def apply_excursion(favorable, adverse, fill_price, bar, from_above):
+    if from_above:
+        favorable = max(favorable, fill_price, bar["close"])
+        adverse = min(adverse, fill_price, bar["low"])
+    else:
+        favorable = max(favorable, fill_price, bar["high"])
+        adverse = min(adverse, fill_price, bar["low"])
+    return favorable, adverse
+
+
+def clear_same_bar_fill(pick):
+    """Drop a fill that was recorded on the signal day. Closed picks stay as written."""
+    filled = pick.get("filledOn")
+    picked = pick.get("pickedOn")
+    if pick.get("status") != "open" or not filled or not picked or filled > picked:
+        return False
+    pick["filledOn"] = None
+    pick["fillPrice"] = None
+    pick["mfePct"] = None
+    pick["maePct"] = None
+    pick["daysHeld"] = None
+    pick["returnPct"] = None
+    pick["outcome"] = None
+    pick["closedOn"] = None
+    return True
+
+
+def evaluate_picks(bars_by_symbol, document=None, save=True):
+    """Mark next-session fills. Excursions start at the fill, not the signal bar.
+
+    Rule 9 closes a trade that is still open after 8 trading days (inside the
+    published 5–10 day window). Closed history is left untouched.
+    """
+    if document is None:
+        document = load_picks()
     fill_window = int(swing_param("picks.fillWindowTradingDays", 5))
-    hold_window = int(swing_param("picks.maxHoldTradingDays", 20))
+    time_stop = int(swing_param("picks.timeStopTradingDays", 8))
     changed = 0
     for pick in document["picks"]:
         if pick.get("status") != "open":
             continue
+        cleared = clear_same_bar_fill(pick)
         bars = bars_by_symbol.get(pick.get("symbol")) or []
         if not bars or not isinstance(pick.get("priceAtPick"), (int, float)):
+            if cleared:
+                changed += 1
             continue
-        after = [bar for bar in bars if session_day(bar) >= pick.get("pickedOn")]
+        after = [bar for bar in bars if session_day(bar) > (pick.get("pickedOn") or "")]
         if not after:
+            if cleared:
+                pick["evaluatedAt"] = stamp(now_utc())
+                changed += 1
             continue
         entry_low = pick.get("entryLow")
         entry_high = pick.get("entryHigh")
         stop = pick.get("stop")
         target = pick.get("target")
         if not all(isinstance(value, (int, float)) for value in (entry_low, entry_high, stop, target)):
+            if cleared:
+                changed += 1
             continue
+        style = pick.get("entryStyle") or "limit"
         filled_index = None
+        fill_price = None
+        from_above = False
         for index, bar in enumerate(after[:fill_window]):
-            if bar["low"] <= entry_high and bar["high"] >= entry_low:
-                filled_index = index
-                break
+            price = planned_fill(bar, entry_low, entry_high, style)
+            if price is None:
+                continue
+            filled_index = index
+            fill_price = price
+            from_above = style != "confirm" and bar["open"] > entry_high
+            break
         pick["lastPrice"] = round(after[-1]["close"], 2)
         pick["evaluatedAt"] = stamp(now_utc())
         if filled_index is None:
             if len(after) >= fill_window:
                 pick["status"] = "closed"
                 pick["outcome"] = "never filled"
-                pick["closedOn"] = session_day(after[fill_window - 1])
+                pick["closedOn"] = session_day(after[min(fill_window, len(after)) - 1])
                 pick["daysHeld"] = 0
                 pick["returnPct"] = None
+                pick["filledOn"] = None
+                pick["fillPrice"] = None
+                pick["mfePct"] = None
+                pick["maePct"] = None
+                changed += 1
+            elif cleared:
                 changed += 1
             continue
-        held = after[filled_index:filled_index + hold_window]
+        held = after[filled_index:filled_index + time_stop]
         pick["filledOn"] = session_day(after[filled_index])
-        entry = pick["priceAtPick"]
-        favorable = entry
-        adverse = entry
+        pick["fillPrice"] = round(fill_price, 2)
+        favorable = fill_price
+        adverse = fill_price
         outcome = None
         exit_price = None
         exit_day = None
         for offset, bar in enumerate(held):
-            favorable = max(favorable, bar["high"])
-            adverse = min(adverse, bar["low"])
-            hit_stop = bar["low"] <= stop
-            hit_target = bar["high"] >= target
-            if hit_stop and hit_target:
-                outcome = "stopped out"
-                exit_price = stop
-            elif hit_stop:
-                outcome = "stopped out"
-                exit_price = stop
-            elif hit_target:
-                outcome = "target hit"
-                exit_price = target
+            if offset == 0:
+                favorable, adverse = apply_excursion(favorable, adverse, fill_price, bar, from_above)
+                outcome, exit_price = bar_exit(bar, stop, target, from_above)
+            else:
+                favorable = max(favorable, bar["high"])
+                adverse = min(adverse, bar["low"])
+                outcome, exit_price = bar_exit(bar, stop, target, False)
+            if not outcome and offset + 1 >= time_stop:
+                outcome = "time stop"
+                exit_price = bar["close"]
             if outcome:
                 exit_day = session_day(bar)
                 pick["daysHeld"] = offset + 1
                 break
-        pick["mfePct"] = round((favorable - entry) / entry * 100, 2) if entry else None
-        pick["maePct"] = round((adverse - entry) / entry * 100, 2) if entry else None
+        pick["mfePct"] = round((favorable - fill_price) / fill_price * 100, 2) if fill_price else None
+        pick["maePct"] = round((adverse - fill_price) / fill_price * 100, 2) if fill_price else None
         if outcome:
             pick["status"] = "closed"
             pick["outcome"] = outcome
             pick["closedOn"] = exit_day
-            pick["returnPct"] = round((exit_price - entry) / entry * 100, 2)
+            pick["returnPct"] = round((exit_price - fill_price) / fill_price * 100, 2) if fill_price else None
             changed += 1
-        elif len(held) >= hold_window:
-            last = held[-1]
-            pick["status"] = "closed"
-            pick["outcome"] = "expired"
-            pick["closedOn"] = session_day(last)
-            pick["daysHeld"] = hold_window
-            pick["returnPct"] = round((last["close"] - entry) / entry * 100, 2)
-            changed += 1
-    save_picks(document)
+        else:
+            pick["status"] = "open"
+            pick["outcome"] = None
+            pick["returnPct"] = None
+            pick["daysHeld"] = len(held)
+            if cleared:
+                changed += 1
+    if save:
+        save_picks(document)
     print("Updated " + str(changed) + " pick outcomes.", flush=True)
     return document
 
@@ -2206,6 +2791,7 @@ def refresh_published_quotes():
             previous.get("universeCount") or 0,
             previous.get("priced") or 0,
             previous.get("candidates") or 0,
+            previous.get("market") if isinstance(previous.get("market"), dict) else None,
         )
         print("Updated " + str(updated) + " prices.", flush=True)
     if open_bars:
@@ -2266,8 +2852,18 @@ def main():
     strict = [row for row in rows if is_candidate(row, loose=False)]
     chosen = strict if len(strict) >= 24 else [row for row in rows if is_candidate(row, loose=True)]
     chosen.sort(key=lambda row: (-row["score"], row["rsi"], row["symbol"]))
-    shortlist = chosen[:FUND_CAP]
-    print("Swing candidates " + str(len(chosen)) + "; fundamentals for " + str(len(shortlist)) + ".", flush=True)
+    provisional = [row for row in chosen if row.get("swingEligible")]
+    provisional.sort(key=lambda row: (-(row.get("swingScore") or 0), row["symbol"]))
+    provisional = provisional[:120]
+    provisional_ids = {id(row) for row in provisional}
+    rest = [row for row in chosen if id(row) not in provisional_ids]
+    shortlist = provisional + rest[:max(0, FUND_CAP - len(provisional))]
+    print(
+        "Research list " + str(len(chosen))
+        + " (" + str(len(provisional)) + " passed swing gates before the earnings check); fundamentals for "
+        + str(len(shortlist)) + ".",
+        flush=True,
+    )
     print("Cooling down before the fundamentals sheet.", flush=True)
     time.sleep(25)
     session = YahooSession()
@@ -2284,31 +2880,33 @@ def main():
             if "why" not in row:
                 build_copy(row, {})
     technical = chosen[:PUBLISH_CAP]
+    eligible_now = [row for row in chosen if row.get("swingEligible")]
     for row in technical:
         if "why" not in row:
             build_copy(row, {})
-    published = sorted(technical, key=lambda row: (-row.get("rankScore", 0), row["symbol"]))[:PUBLISH_CAP]
-    swing_pool = [row for row in technical if row.get("swingEligible")]
-    if swing_pool:
-        best_swing = max(swing_pool, key=lambda row: (row.get("swingScore") or 0, row["symbol"]))
-        if best_swing not in published:
-            published = [best_swing] + published[:PUBLISH_CAP - 1]
+    for row in eligible_now:
+        if "why" not in row:
+            build_copy(row, {})
+    eligible_ids = {id(row) for row in eligible_now}
+    published = eligible_now + [row for row in technical if id(row) not in eligible_ids]
+    published = published[:PUBLISH_CAP]
     if len(published) < 8:
-        print("Only " + str(len(published)) + " swing candidates. Keeping the previous snapshot.")
+        print("Only " + str(len(published)) + " research names. Keeping the previous snapshot.")
         return
-    write_doc(published, stamp(now_utc()), len(symbols), priced_count, len(chosen))
-    record_picks(published, spy_context())
-    deep = sum(1 for row in published if row["zone"] == "deep")
+    market = spy_context()
+    write_doc(published, stamp(now_utc()), len(symbols), priced_count, len(chosen), market)
+    record_picks(published, market)
+    swing_count = sum(1 for row in published if row.get("swingEligible"))
     print(
         "Saved "
         + str(len(published))
-        + " swing candidates from "
+        + " research names ("
+        + str(swing_count)
+        + " swing candidates) from "
         + str(len(rows))
         + " priced / "
         + str(len(symbols))
-        + " universe. RSI<30 on the list: "
-        + str(deep)
-        + "."
+        + " universe."
     )
     if failures:
         print("Missed " + str(len(failures)) + ": " + ", ".join(failures[:12]))
