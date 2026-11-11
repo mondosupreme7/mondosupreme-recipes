@@ -1,0 +1,98 @@
+name: Settle paper book
+
+# Weekday settlement of stocks/paper/ledger.json from that session's daily OHLC.
+# Quotes are the same public Yahoo Finance daily chart the screener uses.
+# Crons are UTC so one of them is 4:30 p.m. America/New_York in both EST and EDT:
+# 20:30 UTC is 4:30 p.m. EDT (and 3:30 p.m. EST); 21:30 UTC is 4:30 p.m. EST
+# (and 5:30 p.m. EDT). The script settles a session only at or after 4:30 p.m.
+# New York, so the early winter run does not use a still-open bar, and the
+# second same-day run finds the mark already posted and does not add another.
+# A quote failure or a missing bar exits non-zero and does not write the ledger.
+# Push does not settle. The first live session is the scheduled run, or a
+# workflow_dispatch, after this workflow is on the default branch and the
+# cash session has closed.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - scripts/paper_settlement.py
+      - scripts/test_paper_settlement.py
+      - .github/workflows/paper-settlement.yml
+      - stocks/paper/ledger.json
+  schedule:
+    - cron: '30 20 * * 1-5'
+    - cron: '30 21 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Test paper settlement
+        run: python3 -m unittest scripts/test_paper_settlement.py
+
+  settle:
+    needs: test
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: paper-settlement
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Settle the paper book
+        run: python3 scripts/paper_settlement.py
+
+      - name: Commit ledger
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stocks/paper/ledger.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Paper book unchanged."
+            exit 0
+          fi
+          git commit -m "Settle paper book"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Configure Pages
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: .
+          include-hidden-files: true
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
