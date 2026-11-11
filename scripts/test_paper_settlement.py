@@ -33,11 +33,7 @@ def quiet(day):
 
 
 def load_book():
-    book = json.loads(PRODUCTION_TEXT)
-    # The live ledger is marked through the last settled session. Scenarios
-    # replay that session, so they start from the book before those marks.
-    book["events"] = [event for event in book["events"] if event.get("type") != "mark"]
-    return book
+    return json.loads(PRODUCTION_TEXT)
 
 
 def types(book):
@@ -453,7 +449,7 @@ class PaperSettlementTest(unittest.TestCase):
     def test_quote_failure_and_a_bad_bar_do_not_write(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "ledger.json"
-            path.write_text(settle.dumps(self.book()), encoding="utf-8")
+            path.write_text(PRODUCTION_TEXT, encoding="utf-8")
             before = path.read_bytes()
             real_fetch = settle.fetch_yahoo
 
@@ -503,9 +499,7 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertEqual(book["workingOrders"][0]["firstEligibleSession"], "2026-11-11")
         self.assertEqual(book["openPositions"], [])
         self.assertEqual(book["closedTrades"], [])
-        self.assertEqual(types(book), ["account_opened", "order_placed", "mark"])
-        self.assertEqual(book["events"][2]["session"], "2026-11-11")
-        self.assertNotIn("fill", types(book))
+        self.assertEqual(types(book), ["account_opened", "order_placed"])
         self.assertEqual(settle.dumps(book), PRODUCTION_TEXT)
 
     def filled(self):
