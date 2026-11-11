@@ -1,6 +1,6 @@
 body.board-page{
   min-height:0;
-  height:100dvh !important;
+  height:calc(100dvh / var(--page-scale, 1)) !important;
   padding:var(--nav-h, 64px) 0 0 !important;
   display:flex;
   flex-direction:column;
@@ -21,7 +21,7 @@ body.board-page main.paint-app{
   background:#e7e5e4;
 }
 @media (max-width:768px){
-  body.board-page{height:calc(100dvh - var(--dock-h, 72px)) !important}
+  body.board-page{height:calc((100dvh / var(--page-scale, 1)) - var(--dock-h, 72px)) !important}
 }
 .board-stage{position:absolute;inset:0;touch-action:none;background:transparent;overflow:hidden}
 .board-stage canvas{display:block;width:100%;height:100%;touch-action:none}
@@ -68,7 +68,7 @@ body.board-page main.paint-app{
 #colorChip{display:block;width:18px;height:18px;border-radius:50%;background:#1c1917;border:1px solid rgba(15,23,42,.35)}
 .paint-pop{
   position:absolute;left:8px;right:8px;bottom:76px;z-index:6;
-  max-height:min(46dvh, 360px);overflow:auto;overscroll-behavior:contain;touch-action:pan-y;
+  max-height:min((46dvh / var(--page-scale, 1)), 360px);overflow:auto;overscroll-behavior:contain;touch-action:pan-y;
   padding:10px;border-radius:16px;background:#fff;color:#0f172a;
   border:1px solid #e2e8f0;box-shadow:0 10px 28px rgba(15,23,42,.18);
 }

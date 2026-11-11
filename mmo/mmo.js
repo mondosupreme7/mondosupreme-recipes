@@ -1100,12 +1100,14 @@
     var vv = window.visualViewport;
     var top = vv ? vv.offsetTop : 0;
     var h = vv ? vv.height : window.innerHeight;
-    root.style.setProperty('--vv-top', Math.round(top) + 'px');
-    root.style.setProperty('--vv-h', Math.round(h) + 'px');
+    var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : Math.round;
+    root.style.setProperty('--vv-top', cssPx(top) + 'px');
+    root.style.setProperty('--vv-h', cssPx(h) + 'px');
     var nav = document.querySelector('.studio-nav');
-    var navH = nav ? Math.ceil(nav.getBoundingClientRect().height) : 44;
-    if (navH < 36) navH = 44;
-    root.style.setProperty('--mmo-nav', navH + 'px');
+    var navH = nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;
+    var fromScreen = navH >= 36;
+    if (!fromScreen) navH = 44;
+    root.style.setProperty('--mmo-nav', (fromScreen ? cssPx(navH) : navH) + 'px');
     resize();
   }
   function rowsFor(kind, cls, frame) {

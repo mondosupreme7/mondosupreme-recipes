@@ -620,7 +620,10 @@
   }
   function fitPlay() {
     var height = visibleHeight();
-    if (height) document.documentElement.style.setProperty('--app-h', height + 'px');
+    if (height) {
+      var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : Math.round;
+      document.documentElement.style.setProperty('--app-h', cssPx(height) + 'px');
+    }
   }
   function watchViewport() {
     fitPlay();

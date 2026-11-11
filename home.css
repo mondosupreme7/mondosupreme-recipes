@@ -262,7 +262,7 @@ body.home-page .gb-box{margin-top:4px}
 /* Guestbook. Compact on the phone; Win98 chrome stays on the retro theme. */
 body.home-page #guestbook{
   content-visibility:auto;contain-intrinsic-size:auto 440px;
-  scroll-margin-top:calc(var(--nav-h, 48px) + env(safe-area-inset-top, 0px) + 8px)
+  scroll-margin-top:calc(var(--nav-h, 48px) + (env(safe-area-inset-top, 0px) / var(--page-scale, 1)) + 8px)
 }
 body.home-page .gb-box{margin-top:4px}
 body.home-page #gbNote{

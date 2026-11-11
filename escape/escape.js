@@ -329,15 +329,17 @@ function syncViewport() {
   const vv = window.visualViewport;
   const top = vv ? vv.offsetTop : 0;
   const h = vv ? vv.height : window.innerHeight;
-  root.style.setProperty('--vv-top', Math.round(top) + 'px');
-  root.style.setProperty('--vv-h', Math.round(h) + 'px');
+  var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : Math.round;
+  root.style.setProperty('--vv-top', cssPx(top) + 'px');
+  root.style.setProperty('--vv-h', cssPx(h) + 'px');
   const nav = document.querySelector('.studio-nav');
   let navH = nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;
-  if (navH < 36) {
+  const fromScreen = navH >= 36;
+  if (!fromScreen) {
     const css = parseFloat(getComputedStyle(root).getPropertyValue('--nav-h'));
     navH = css || 48;
   }
-  root.style.setProperty('--latch-nav', navH + 'px');
+  root.style.setProperty('--latch-nav', (fromScreen ? cssPx(navH) : Math.round(navH)) + 'px');
 }
 
 function fill(ctx, x, y, w, h, color) {

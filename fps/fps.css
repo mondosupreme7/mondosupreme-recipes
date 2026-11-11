@@ -44,9 +44,9 @@ html body.fps-page.fps-live {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  height: var(--vv-h, 100svh) !important;
+  height: var(--vv-h, calc(100svh / var(--page-scale, 1))) !important;
   min-height: 0 !important;
-  max-height: var(--vv-h, 100svh) !important;
+  max-height: var(--vv-h, calc(100svh / var(--page-scale, 1))) !important;
   margin: 0 !important;
   padding: var(--fps-nav, 44px) 0 0 !important;
   overflow: hidden !important;
@@ -136,7 +136,7 @@ html body.fps-page.fps-live main.wrap {
   left: 8px;
   right: 8px;
   top: calc(var(--vv-top, 0px) + var(--fps-nav, 44px) + 8px);
-  bottom: calc(100vh - var(--vv-top, 0px) - var(--vv-h, 100vh) + 8px);
+  bottom: calc((100vh / var(--page-scale, 1)) - var(--vv-top, 0px) - var(--vv-h, (100vh / var(--page-scale, 1))) + 8px);
   max-height: none;
   overflow: auto;
   background: #c0c0c0;
@@ -161,7 +161,7 @@ html body.fps-page.fps-live main.wrap {
   gap: 4px;
   flex: 0 0 auto;
   padding: 4px;
-  padding-bottom: max(4px, env(safe-area-inset-bottom));
+  padding-bottom: max(4px, (env(safe-area-inset-bottom) / var(--page-scale, 1)));
   background: #141414;
 }
 #touch button { min-height: 44px; min-width: 0; font-size: 12px; font-weight: 700; line-height: 1.15; padding: 4px; background: #2a2a2a; color: #f0f0f0; border: 2px solid #666; border-bottom-color: #111; border-right-color: #111; }
