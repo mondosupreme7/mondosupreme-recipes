@@ -26,11 +26,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/landing.css">
-<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro.css?v=2">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="/readable.css?v=14">
-<link rel="stylesheet" href="/home.css?v=6">
+<link rel="stylesheet" href="/home.css?v=7">
 </head>
 <body class="home-page">
 <div class="ticker"><div class="ticker-track">
@@ -121,27 +121,74 @@
   </form>
   <section class="gb-box" id="guestbook" aria-labelledby="gbTitle">
    <h2 id="gbTitle">Guestbook</h2>
-   <p class="gb-lead">Leave a name and a short note. The book stays for the next visitor.</p>
-   <p id="gbStatus" class="gb-lead" hidden></p>
-   <form id="gbForm" class="gb-form">
-    <div class="gb-stamps" role="radiogroup" aria-label="Pixel stamp">
-     <label><input type="radio" name="stamp" value="sun" checked> Cool Sun</label>
-     <label><input type="radio" name="stamp" value="alien"> Alien</label>
-     <label><input type="radio" name="stamp" value="ship"> Ship</label>
-     <label><input type="radio" name="stamp" value="chef"> Chef Hat</label>
-     <label><input type="radio" name="stamp" value="flame"> Flame</label>
-     <label><input type="radio" name="stamp" value="cat"> Cyber Cat</label>
-    </div>
-    <label>Name<input id="gbName" name="name" maxlength="24" required autocomplete="nickname"></label>
-    <label>Homepage (optional)<input id="gbHome" name="homepage" type="url" inputmode="url" maxlength="200" placeholder="https://"></label>
-    <label>Location (optional)<input id="gbWhere" name="location" maxlength="40"></label>
-    <label>Note<textarea id="gbNote" name="note" maxlength="280" required rows="3"></textarea></label>
+   <p class="gb-lead">Leave a name and a short note.</p>
+   <p id="gbStatus" class="gb-status" role="status" hidden></p>
+   <form id="gbForm" class="gb-form" aria-labelledby="gbTitle">
+    <fieldset class="gb-stamps">
+     <legend>Stamp · <span id="gbStampName">Cool Sun</span></legend>
+     <div class="gb-stamp-row">
+      <label class="gb-stamp"><input type="radio" name="stamp" value="sun" checked><span>Cool Sun</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="alien"><span>Alien</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="ship"><span>Ship</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="chef"><span>Chef Hat</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="flame"><span>Flame</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="cat"><span>Cyber Cat</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="moon"><span>Moon</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="star"><span>Star</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="heart"><span>Heart</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="fish"><span>Fish</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="palm"><span>Palm</span></label>
+      <label class="gb-stamp"><input type="radio" name="stamp" value="rocket"><span>Rocket</span></label>
+     </div>
+    </fieldset>
+    <label class="gb-field" for="gbName">Name
+     <input id="gbName" name="name" maxlength="24" required pattern="[A-Za-z0-9_][A-Za-z0-9_ ]{0,23}" title="Letters, numbers, underscores, and spaces." autocomplete="nickname" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="next">
+    </label>
+    <label class="gb-field" for="gbNote">Note
+     <textarea id="gbNote" name="note" maxlength="280" required rows="2" enterkeyhint="send"></textarea>
+    </label>
+    <details class="gb-more" id="gbMore">
+     <summary>More options</summary>
+     <div class="gb-more-body">
+      <fieldset class="gb-moods">
+       <legend>Mood</legend>
+       <div class="gb-mood-row">
+        <label class="gb-mood"><input type="radio" name="mood" value="" checked><span>Skip</span></label>
+        <label class="gb-mood" data-mood="chill"><input type="radio" name="mood" value="chill"><span><i aria-hidden="true"></i>Chill</span></label>
+        <label class="gb-mood" data-mood="hype"><input type="radio" name="mood" value="hype"><span><i aria-hidden="true"></i>Hype</span></label>
+        <label class="gb-mood" data-mood="cozy"><input type="radio" name="mood" value="cozy"><span><i aria-hidden="true"></i>Cozy</span></label>
+        <label class="gb-mood" data-mood="wow"><input type="radio" name="mood" value="wow"><span><i aria-hidden="true"></i>Wow</span></label>
+       </div>
+      </fieldset>
+      <label class="gb-field" for="gbHome"><span>Homepage <span class="gb-opt">(optional)</span></span>
+       <input id="gbHome" name="homepage" type="url" inputmode="url" maxlength="200" placeholder="https://" autocomplete="url" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next">
+      </label>
+      <label class="gb-field" for="gbWhere"><span>Location <span class="gb-opt">(optional)</span></span>
+       <input id="gbWhere" name="location" maxlength="40" autocomplete="off" enterkeyhint="done">
+      </label>
+     </div>
+    </details>
     <div class="gb-actions">
-     <button class="btn primary" type="submit">Sign the book</button>
+     <button class="btn primary" id="gbSign" type="submit">Sign the book</button>
      <button id="gbClear" class="btn danger" type="button" hidden>Clear guestbook</button>
     </div>
    </form>
-   <div id="gbList" class="gb-list" aria-live="polite"></div>
+   <search class="gb-tools" aria-label="Browse the book">
+    <label for="gbSort">Sort
+     <select id="gbSort">
+      <option value="new">Newest</option>
+      <option value="old">Oldest</option>
+     </select>
+    </label>
+    <label for="gbFilter">Stamp
+     <select id="gbFilter">
+      <option value="">All stamps</option>
+     </select>
+    </label>
+   </search>
+   <p id="gbCount" class="visually-hidden" role="status"></p>
+   <p id="gbEmpty" class="gb-empty" hidden>No notes yet.</p>
+   <div id="gbList" class="gb-list"></div>
   </section>
 </main>
 <footer class="site-footer"><div class="wrap">
@@ -161,7 +208,7 @@
 <script src="/8ball/oracle.js"></script>
 <script src="/toys.js"></script>
 <script src="/quotes.js"></script>
-<script src="/guestbook.js"></script>
+<script src="/guestbook.js?v=2"></script>
 <script src="/backup.js"></script>
 </body>
 </html>

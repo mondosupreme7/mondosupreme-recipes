@@ -218,7 +218,7 @@ html[data-theme="retro"] .home-quote-text{font-family:Tahoma,Verdana,sans-serif;
 html[data-theme="retro"] .home-app .app-pixel svg,
 html[data-theme="retro"] .home-chip .app-pixel svg,
 html[data-theme="retro"] .home-row .app-pixel svg{width:28px;height:28px}
-body.home-page .gb-box{margin-top:8px}
+body.home-page .gb-box{margin-top:4px}
 @media (min-width:700px){
   body.home-page main.wrap,
   body.home-page .site-footer .wrap{
@@ -257,4 +257,109 @@ body.home-page .gb-box{margin-top:8px}
 }
 @media (prefers-reduced-motion:reduce){
   .home-chip,.home-row,.home-app,.home-quote{transition:none}
+}
+
+/* Guestbook. Compact on the phone; Win98 chrome stays on the retro theme. */
+body.home-page #guestbook{
+  content-visibility:auto;contain-intrinsic-size:auto 440px;
+  scroll-margin-top:calc(var(--nav-h, 48px) + env(safe-area-inset-top, 0px) + 8px)
+}
+body.home-page .gb-box{margin-top:4px}
+body.home-page #gbNote{
+  min-height:3.75rem;
+  padding:8px 10px;
+  line-height:1.35;
+  scroll-margin-bottom:calc(var(--kb, 0px) + 128px)
+}
+body.home-page #gbSign{scroll-margin-bottom:calc(var(--kb, 0px) + 12px);min-height:44px}
+body.home-page #gbClear{margin-top:4px}
+body.home-page #gbClear[hidden]{display:none !important}
+html:not([data-theme="retro"]) body.home-page .gb-box{padding:10px 12px 12px}
+html:not([data-theme="retro"]) body.home-page .gb-box h2{
+  padding:0 !important;margin:0 0 2px !important;
+  font-size:1.125rem !important;line-height:1.2 !important
+}
+html:not([data-theme="retro"]) body.home-page :is(.gb-lead,.gb-empty){
+  margin:0 0 6px;color:var(--ink-muted);font:500 .875rem/1.3 var(--font-ui)
+}
+html:not([data-theme="retro"]) body.home-page .gb-status:not([hidden]){
+  margin:0 0 6px;color:var(--ink);font:600 .875rem/1.3 var(--font-ui)
+}
+html:not([data-theme="retro"]) body.home-page .gb-status.is-error{color:var(--danger)}
+html[data-theme="retro"] body.home-page .gb-status.is-error{color:#7f1d1d !important}
+html:not([data-theme="retro"]) body.home-page .gb-form{padding:0;gap:6px}
+html:not([data-theme="retro"]) body.home-page :is(.gb-field,.gb-stamps legend,.gb-moods legend,.gb-tools label,.gb-more summary){
+  color:var(--ink);font-family:var(--font-ui)
+}
+html:not([data-theme="retro"]) body.home-page .gb-opt{color:var(--ink-muted);font-weight:500}
+html:not([data-theme="retro"]) body.home-page .gb-stamp{
+  border:1px solid #64748b;border-radius:12px;background:#c5ccd6
+}
+html:not([data-theme="retro"]) body.home-page .gb-stamp:has(input:checked){
+  border-style:solid;border-color:var(--ink);background:#dfe4ec;
+  box-shadow:inset 0 0 0 2px var(--ink)
+}
+html:not([data-theme="retro"]) body.home-page .gb-stamp:focus-within,
+html:not([data-theme="retro"]) body.home-page .gb-mood:focus-within,
+html:not([data-theme="retro"]) body.home-page .gb-more summary:focus-visible{
+  outline:2px solid var(--focus);outline-offset:2px
+}
+html:not([data-theme="retro"]) body.home-page .gb-mark{
+  border:1px solid #64748b;border-radius:8px;background:#c5ccd6
+}
+html:not([data-theme="retro"]) body.home-page .gb-more{
+  border:1px solid var(--line-strong);border-radius:12px;background:var(--surface-2);color:var(--ink)
+}
+html:not([data-theme="retro"]) body.home-page .gb-mood{
+  border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);color:var(--ink);font-family:var(--font-ui);
+  width:auto;flex:0 0 auto
+}
+html:not([data-theme="retro"]) body.home-page :is(.gb-mood i,.gb-mood-read i){border-radius:50%}
+html:not([data-theme="retro"]) body.home-page .gb-mood:has(input:checked){
+  border-style:solid;border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)
+}
+html:not([data-theme="retro"]) body.home-page .gb-entry{
+  background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:12px
+}
+html:not([data-theme="retro"]) body.home-page .gb-meta{
+  color:var(--ink-muted);font:500 .8125rem/1.35 var(--font-ui)
+}
+html:not([data-theme="retro"]) body.home-page .gb-meta strong{color:var(--ink);font-weight:700}
+html:not([data-theme="retro"]) body.home-page .gb-note{
+  color:var(--ink);font:400 .9375rem/1.35 var(--font-ui)
+}
+html:not([data-theme="retro"]) body.home-page .gb-actions .btn.primary{width:100%}
+html[data-theme="dark"] body.home-page :is(.gb-stamp,.gb-mark),
+html[data-theme="harbor"] body.home-page :is(.gb-stamp,.gb-mark){
+  background:#c5ccd6 !important;color:#111827 !important
+}
+html[data-theme="dark"] body.home-page .gb-stamp:has(input:checked),
+html[data-theme="harbor"] body.home-page .gb-stamp:has(input:checked){
+  background:#e2e8f0 !important;border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)
+}
+html[data-theme="dark"] body.home-page :is(.gb-mood[data-mood="chill"],.gb-mood-read[data-mood="chill"]),
+html[data-theme="harbor"] body.home-page :is(.gb-mood[data-mood="chill"],.gb-mood-read[data-mood="chill"]){--mood:#93c5fd}
+html[data-theme="dark"] body.home-page :is(.gb-mood[data-mood="hype"],.gb-mood-read[data-mood="hype"]),
+html[data-theme="harbor"] body.home-page :is(.gb-mood[data-mood="hype"],.gb-mood-read[data-mood="hype"]){--mood:#fdba74}
+html[data-theme="dark"] body.home-page :is(.gb-mood[data-mood="cozy"],.gb-mood-read[data-mood="cozy"]),
+html[data-theme="harbor"] body.home-page :is(.gb-mood[data-mood="cozy"],.gb-mood-read[data-mood="cozy"]){--mood:#fcd34d}
+html[data-theme="dark"] body.home-page :is(.gb-mood[data-mood="wow"],.gb-mood-read[data-mood="wow"]),
+html[data-theme="harbor"] body.home-page :is(.gb-mood[data-mood="wow"],.gb-mood-read[data-mood="wow"]){--mood:#d8b4fe}
+html[data-theme="retro"] body.home-page .gb-box{
+  background:#d4d0c8 !important;color:#111827 !important;border:2px solid #404040 !important;
+  border-radius:0 !important;box-shadow:none !important;padding:8px !important
+}
+html[data-theme="retro"] body.home-page .gb-box h2{
+  background:transparent !important;color:#000080 !important;border:0 !important;
+  padding:0 !important;margin:0 0 2px !important;
+  font:700 18px/1.2 Tahoma,Verdana,sans-serif !important
+}
+html[data-theme="retro"] body.home-page .gb-form{padding:0 !important}
+html[data-theme="retro"] body.home-page .gb-entry,
+html[data-theme="retro"] body.home-page .gb-entry p{background:#fff;color:#111827}
+html[data-theme="retro"] body.home-page .gb-entry{background:#fff !important;color:#111827 !important}
+html[data-theme="retro"] body.home-page .gb-form input:not([type="radio"]),
+html[data-theme="retro"] body.home-page .gb-form textarea,
+html[data-theme="retro"] body.home-page .gb-tools select{
+  background:#fff !important;color:#111827 !important;border:2px inset #808080 !important
 }
