@@ -39,7 +39,7 @@
     { kind: 'Game', title: "Half-Strike — Sector C Labs", href: '/fps/', text: 'fps half-life labs crowbar' },
     { kind: 'Game', title: 'Half-Strike — de_sandstorm', href: '/fps/', text: 'fps counter-strike bomb sandstorm' },
     { kind: 'Game', title: "Half-Strike — 2Fort_99", href: '/fps/', text: 'fps team fortress sentry 2fort' },
-    { kind: 'Game', title: 'ASH_HOUSE.EXE', href: '/escape/', text: 'escape room door' }
+    { kind: 'Game', title: 'CINDERLATCH', href: '/escape/', text: 'cinderlatch escape room door' }
   ];
 
   function addItem(list, item) {
@@ -451,7 +451,7 @@
     { title: 'Mystic 8-Ball', href: '/8ball/', icon: 'ball', group: 'Game Studio', text: 'magic 8-ball mystic oracle fortune eight ball' },
     { title: 'Craft', href: '/mmo/', icon: 'sword', group: 'Game Studio', text: 'craft mmo mondocraft faction class goldhaven realm' },
     { title: "Half-Strike '99", href: '/fps/', icon: 'gun', group: 'Game Studio', text: 'half-strike fps fortress shooter labs' },
-    { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door', group: 'Game Studio', text: 'ash house escape door locked room begin' }
+    { title: 'CINDERLATCH', href: '/escape/', icon: 'door', group: 'Game Studio', text: 'cinderlatch escape door locked room begin' }
   ];
   var toyLinks = [
     { title: '56k Dial-Up', href: '/#dialup', icon: 'modem' },
@@ -823,7 +823,7 @@
       ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Planting', 'Tropics']],
       ['Finance & Search', ['Stocks', 'Search', 'Wiki']],
       ['Community', ['Bulletin Forum', 'Chat', 'Paint', 'Marketplace', 'Radio']],
-      ['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
+      ['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', "Half-Strike '99", 'CINDERLATCH']]
     ];
     groups.forEach(function (group) {
       var block = document.createElement('section');

@@ -9,37 +9,36 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mondosupreme">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
-<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#100c09">
+<meta name="color-scheme" content="dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<title>ASH_HOUSE.EXE</title>
+<title>CINDERLATCH</title>
 <meta name="description" content="A door in the house that does not introduce itself.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&family=VT323&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
-<link rel="stylesheet" href="escape.css?v=3">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="/readable.css?v=14">
+<link rel="stylesheet" href="escape.css?v=4">
 </head>
-<body class="night">
+<body class="night latch-page">
 <div class="ticker"><div class="ticker-track">
- <p><span class="flame" aria-hidden="true"></span> ASH_HOUSE.EXE is loading · do not turn around · the door remembers you · insert the night and press any key ·</p>
- <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ASH_HOUSE.EXE is loading · do not turn around · the door remembers you · insert the night and press any key ·</p>
+ <p><span class="flame" aria-hidden="true"></span> CINDERLATCH is loading · do not turn around · the door remembers you · insert the night and press any key ·</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> CINDERLATCH is loading · do not turn around · the door remembers you · insert the night and press any key ·</p>
 </div></div>
 <header class="site-header"><div class="wrap hdr">
  <a href="/launches/">Launches</a>
   <a href="/grocery/">Grocery List</a>
   <a href="/radio/">Radio</a>
   <a href="/crossword/">Crossword</a>
-  <a href="/escape/" class="brand"><span class="logo" aria-hidden="true">🚪</span><span>ASH_HOUSE.EXE</span></a>
+  <a href="/escape/" class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><rect x="2" y="3" width="12" height="11" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="1" width="2" height="4" fill="currentColor"/><circle cx="8" cy="9" r="1.4" fill="currentColor"/></svg></span><span>CINDERLATCH</span></a>
  <nav class="site-nav" aria-label="Site">
   <a href="/">Home</a>
   <a href="/recipes/">Recipes</a>
@@ -59,35 +58,41 @@
   <a href="/8ball/">8-Ball</a>
   <a href="/mmo/">MMO</a>
   <a href="/fps/">FPS</a>
-  <a href="/escape/" aria-current="page" aria-label="ASH_HOUSE.EXE">ASH_HOUSE.EXE</a>
+  <a href="/escape/" aria-current="page" aria-label="CINDERLATCH">CINDERLATCH</a>
  </nav>
 </div></header>
 <main class="night-main" id="app">
  <section id="splash" class="splash">
-  <p class="kicker">Ash House</p>
-  <h1>ASH_HOUSE.EXE</h1>
-  <p>The last road is under the tide. A note on the mat says the house will let you out only if you follow the night's order.</p>
-  <p>You are at the door. This is the beginning, before anything inside has happened.</p>
+  <div class="crt" role="img" aria-label="A shut door in the rain, with a note on the mat.">
+   <canvas id="splashArt" width="120" height="72"></canvas>
+   <div class="latch-vig" aria-hidden="true"></div>
+   <div class="latch-scan" aria-hidden="true"></div>
+   <div class="latch-flicker" aria-hidden="true"></div>
+   <div class="latch-glitch" aria-hidden="true"></div>
+  </div>
+  <h1>CINDERLATCH</h1>
+  <p>The last road is under the tide. A note on the mat says the house lets you out only if you follow the night's order. You are at the door, before anything inside has happened.</p>
   <div class="splash-actions">
-   <button type="button" id="begin" class="night-btn">Step inside</button>
-   <button type="button" id="resume" class="night-btn" hidden>Continue</button>
+   <button type="button" id="begin" class="night-btn primary">Step inside</button>
+   <button type="button" id="resume" class="night-btn primary" hidden>Continue</button>
    <button type="button" id="wipe" class="night-btn quiet" hidden>Forget the night</button>
   </div>
  </section>
  <section id="play" hidden>
-  <div class="hud">
+  <div class="latch-top">
+   <h1 id="roomTitle">The Foyer</h1>
    <span id="timer" aria-label="Time in the house">0:00</span>
-   <button type="button" id="sound" class="night-btn quiet" aria-pressed="false">Sound off</button>
-   <button type="button" id="hint" class="night-btn quiet">Hint</button>
-   <button type="button" id="notesBtn" class="night-btn quiet">Notes</button>
-   <button type="button" id="reset" class="night-btn quiet">Reset</button>
+   <button type="button" id="menuBtn" class="night-btn" aria-expanded="false" aria-controls="menu">Menu</button>
   </div>
-  <p id="hintOut" class="hint-out"></p>
-  <h1 id="roomTitle">The Foyer</h1>
   <p id="roomLine" class="room-line"></p>
-  <div id="art" class="art" aria-hidden="true"></div>
+  <div class="crt" id="playCrt" role="img" aria-label="The room">
+   <canvas id="roomArt" width="120" height="72"></canvas>
+   <div class="latch-vig" aria-hidden="true"></div>
+   <div class="latch-scan" aria-hidden="true"></div>
+   <div class="latch-flicker" aria-hidden="true"></div>
+   <div class="latch-glitch" aria-hidden="true"></div>
+  </div>
   <div id="sconces" class="sconces" hidden>
-   <p>The wall sconces</p>
    <div class="sconce-row">
     <button type="button" class="night-btn" data-sconce="bell" aria-label="Bell sconce">Bell</button>
     <button type="button" class="night-btn" data-sconce="star" aria-label="Star sconce">Star</button>
@@ -98,29 +103,44 @@
   </div>
   <div id="objects" class="objects"></div>
   <p id="status" class="status" role="status"></p>
+  <p id="hintOut" class="hint-out"></p>
   <div class="inv-bar">
-   <span class="inv-label">Pockets</span>
-   <div id="inventory" class="inventory"></div>
+   <span class="inv-label" id="invLabel">Pockets</span>
+   <div id="inventory" class="inventory" role="group" aria-labelledby="invLabel"></div>
   </div>
  </section>
  <section id="ending" class="ending" hidden>
-  <p class="kicker">The door</p>
+  <div class="crt" role="img" aria-label="The door open onto a wet road and moonlight.">
+   <canvas id="endArt" width="120" height="72"></canvas>
+   <div class="latch-vig" aria-hidden="true"></div>
+   <div class="latch-scan" aria-hidden="true"></div>
+   <div class="latch-flicker" aria-hidden="true"></div>
+   <div class="latch-glitch" aria-hidden="true"></div>
+  </div>
   <h1 id="endingTitle"></h1>
   <p id="endingLine"></p>
   <p id="endingTime" class="ending-time"></p>
-  <button type="button" id="again" class="night-btn">Forget the night and begin again</button>
+  <button type="button" id="again" class="night-btn primary">Forget the night and begin again</button>
  </section>
+ <p class="visually-hidden">Room pictures are drawn for this page. The monitor letters are VT323, SIL Open Font License.</p>
 </main>
-<div id="sheet" class="sheet" hidden>
+<div id="menu" class="sheet menu-sheet" role="dialog" aria-label="Menu" hidden>
+ <button type="button" id="sound" class="night-btn quiet" aria-pressed="false">Sound off</button>
+ <button type="button" id="hint" class="night-btn quiet">Hint</button>
+ <button type="button" id="notesBtn" class="night-btn quiet">Notes</button>
+ <button type="button" id="reset" class="night-btn quiet">Reset</button>
+ <button type="button" id="menuClose" class="night-btn">Close</button>
+</div>
+<div id="sheet" class="sheet" role="dialog" aria-label="Look closer" hidden>
  <div id="sheetBody"></div>
  <button type="button" id="sheetClose" class="night-btn">Close</button>
 </div>
-<div id="notes" class="sheet" hidden>
- <h2>Notes</h2>
+<div id="notes" class="sheet" role="dialog" aria-labelledby="notesTitle" hidden>
+ <h2 id="notesTitle">Notes</h2>
  <ul id="noteList"></ul>
  <button type="button" id="notesClose" class="night-btn">Close</button>
 </div>
-<div id="pad" class="sheet" hidden>
+<div id="pad" class="sheet" role="dialog" aria-labelledby="padTitle" hidden>
  <p id="padTitle"></p>
  <p id="padDigits" class="pad-digits" aria-live="polite"></p>
  <div class="keys">
@@ -135,11 +155,12 @@
   <button type="button" class="night-btn key" data-key="9">9</button>
   <button type="button" class="night-btn key" data-key="back" aria-label="Delete digit">⌫</button>
   <button type="button" class="night-btn key" data-key="0">0</button>
-  <button type="button" class="night-btn key" id="padOk">Try</button>
+  <button type="button" class="night-btn key primary" id="padOk">Try</button>
  </div>
  <button type="button" id="padClose" class="night-btn quiet">Close</button>
 </div>
-<script src="escape.js?v=3"></script>
+<script src="/mondo-juice.js"></script>
+<script src="escape.js?v=4"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>
@@ -147,7 +168,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=13"></script>
+<script src="/shell.js?v=14"></script>
 <script src="/backup.js"></script>
 </body>
 </html>
