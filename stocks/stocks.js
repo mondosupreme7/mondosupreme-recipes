@@ -527,9 +527,9 @@
     now.style.left = at(price) + '%';
     track.append(zone, stopMark, targetMark, now);
     var labels = el('div', null, 'ladder-labels');
-    labels.appendChild(el('span', 'Stop ' + money(stop)));
+    labels.appendChild(el('span', 'Stop ' + money(stop), 'is-stop'));
     labels.appendChild(el('span', 'Now ' + money(price)));
-    labels.appendChild(el('span', 'Target ' + money(target)));
+    labels.appendChild(el('span', 'Target ' + money(target), 'is-target'));
     ladder.append(track, labels);
     box.appendChild(ladder);
     var grid = el('div', null, 'plan-grid');
@@ -967,10 +967,24 @@
   function stillOpenPick(pick) {
     return !resultedPick(pick) && pick.outcome !== 'never filled';
   }
-  function trackFact(label, value, wide) {
-    var wrap = el('div', null, wide ? 'track-fact is-wide' : 'track-fact');
+  function trackKind(label) {
+    if (label === 'Fill' || label === 'Filled' || label === 'Entry') return 'entry';
+    if (label === 'Stop') return 'stop';
+    if (label === 'Target') return 'target';
+    if (label === 'R:R') return 'metric';
+    if (label === 'MFE') return 'gain';
+    if (label === 'MAE') return 'loss';
+    return '';
+  }
+  function pctTone(value) {
+    if (typeof value !== 'number' || !isFinite(value) || value === 0) return '';
+    return value > 0 ? 'is-up' : 'is-down';
+  }
+  function trackFact(label, value, wide, tone) {
+    var kind = trackKind(label);
+    var wrap = el('div', null, 'track-fact' + (wide ? ' is-wide' : '') + (kind ? ' is-' + kind : ''));
     wrap.appendChild(el('dt', label));
-    wrap.appendChild(el('dd', value));
+    wrap.appendChild(el('dd', value, tone || ''));
     return wrap;
   }
   function trackCount(label, count) {
@@ -1049,7 +1063,7 @@
       head.appendChild(el('span', outcomeLabel(pick), 'track-badge ' + outcomeClass(pick)));
       head.appendChild(el('span', pick.symbol || '', 'track-name'));
       if (pick.pickedOn) head.appendChild(el('span', pick.pickedOn, 'track-when'));
-      head.appendChild(el('span', typeof pick.returnPct === 'number' ? signed(pick.returnPct) : '—', 'track-return'));
+      head.appendChild(el('span', typeof pick.returnPct === 'number' ? signed(pick.returnPct) : '—', 'track-return' + (typeof pick.returnPct === 'number' && pick.returnPct ? (pick.returnPct > 0 ? ' is-up' : ' is-down') : '')));
       var facts = el('dl', null, 'track-facts');
       if (typeof pick.fillPrice === 'number') facts.appendChild(trackFact('Fill', money(pick.fillPrice) + (pick.filledOn ? ' · ' + pick.filledOn : ''), true));
       else if (typeof pick.priceAtPick === 'number') facts.appendChild(trackFact('Signal', money(pick.priceAtPick)));
@@ -1059,8 +1073,8 @@
       if (typeof pick.target === 'number') facts.appendChild(trackFact('Target', money(pick.target)));
       if (typeof pick.rewardRisk === 'number') facts.appendChild(trackFact('R:R', pick.rewardRisk.toFixed(1) + ':1'));
       if (typeof pick.daysHeld === 'number') facts.appendChild(trackFact('Days', String(pick.daysHeld)));
-      if (typeof pick.mfePct === 'number') facts.appendChild(trackFact('MFE', signed(pick.mfePct)));
-      if (typeof pick.maePct === 'number') facts.appendChild(trackFact('MAE', signed(pick.maePct)));
+      if (typeof pick.mfePct === 'number') facts.appendChild(trackFact('MFE', signed(pick.mfePct), false, pctTone(pick.mfePct)));
+      if (typeof pick.maePct === 'number') facts.appendChild(trackFact('MAE', signed(pick.maePct), false, pctTone(pick.maePct)));
       if (pick.paramVersion) facts.appendChild(trackFact('Version', pick.paramVersion, true));
       item.append(head, facts);
       var extra = [];
@@ -1527,9 +1541,48 @@
     });
   }
 
+  function tonePaperStrip() {
+    var meta = document.getElementById('paperMeta');
+    if (!meta) return;
+    var text = meta.textContent || '';
+    if (meta.getAttribute('data-tone-src') === text) return;
+    meta.setAttribute('data-tone-src', text);
+    var lead = text.match(/^([+-]\$[0-9,]+\.\d{2})/);
+    var closed = text.match(/closed ([+-]\$[0-9,]+\.\d{2})/);
+    meta.replaceChildren();
+    var cursor = 0;
+    if (lead) {
+      meta.appendChild(el('span', lead[1], lead[1].charAt(0) === '+' ? 'is-up' : 'is-down'));
+      cursor = lead[1].length;
+    }
+    if (closed) {
+      var at = text.indexOf(closed[0], cursor);
+      if (at >= cursor) {
+        meta.appendChild(document.createTextNode(text.slice(cursor, at + 'closed '.length)));
+        meta.appendChild(el('span', closed[1], closed[1].charAt(0) === '+' ? 'is-up' : 'is-down'));
+        cursor = at + closed[0].length;
+      }
+    }
+    meta.appendChild(document.createTextNode(text.slice(cursor)));
+  }
+  function watchPaperStrip() {
+    var meta = document.getElementById('paperMeta');
+    if (!meta || meta.getAttribute('data-tone-watch') === '1') return;
+    meta.setAttribute('data-tone-watch', '1');
+    var painting = false;
+    new MutationObserver(function () {
+      if (painting) return;
+      painting = true;
+      tonePaperStrip();
+      painting = false;
+    }).observe(meta, { childList: true, characterData: true, subtree: true });
+    tonePaperStrip();
+  }
+
   watch = readWatch();
   renderWatch();
   watchAuth();
+  watchPaperStrip();
   loadSnapshot();
   setInterval(function () {
     if (!document.hidden) loadSnapshot();

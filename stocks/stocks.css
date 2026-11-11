@@ -1,3 +1,46 @@
+/* Trade levels, named once per theme. Ink is for text (AA on the tint and on the page). Line is the border and ladder mark. Tint is a light wash, not a fill. Gain reuses the target ink; loss reuses the stop ink. */
+html{
+  --stk-entry-ink:#0f4c5c;--stk-entry-line:#0e7490;--stk-entry-tint:#e2eef2;
+  --stk-stop-ink:#991b1b;--stk-stop-line:#b91c1c;--stk-stop-tint:#f7e4e4;
+  --stk-target-ink:#166534;--stk-target-line:#15803d;--stk-target-tint:#e3f0e8;
+  --stk-metric-ink:#3f3f46;--stk-metric-line:#52525b;--stk-metric-tint:#eaeaeb;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink);--stk-track:#e2e8f0
+}
+html[data-theme="light"]{
+  --stk-entry-ink:#0f4c5c;--stk-entry-line:#0e7490;--stk-entry-tint:#e2eef2;
+  --stk-stop-ink:#991b1b;--stk-stop-line:#b91c1c;--stk-stop-tint:#f7e4e4;
+  --stk-target-ink:#166534;--stk-target-line:#15803d;--stk-target-tint:#e3f0e8;
+  --stk-metric-ink:#3f3f46;--stk-metric-line:#52525b;--stk-metric-tint:#eaeaeb;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink);--stk-track:#e2e8f0
+}
+html[data-theme="warm"]{
+  --stk-entry-ink:#0f4c5c;--stk-entry-line:#0e7490;--stk-entry-tint:#e2eae7;
+  --stk-stop-ink:#991b1b;--stk-stop-line:#b91c1c;--stk-stop-tint:#f7dfd9;
+  --stk-target-ink:#166534;--stk-target-line:#15803d;--stk-target-tint:#e3ebdd;
+  --stk-metric-ink:#3f3f46;--stk-metric-line:#52525b;--stk-metric-tint:#eae6e1;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink);--stk-track:#e7e5e4
+}
+html[data-theme="dark"]{
+  --stk-entry-ink:#5eead4;--stk-entry-line:#2dd4bf;--stk-entry-tint:#18323e;
+  --stk-stop-ink:#fca5a5;--stk-stop-line:#f87171;--stk-stop-tint:#302634;
+  --stk-target-ink:#86efac;--stk-target-line:#4ade80;--stk-target-tint:#1b3336;
+  --stk-metric-ink:#e7e5e4;--stk-metric-line:#a8a29e;--stk-metric-tint:#272c3a;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink);--stk-track:#334155
+}
+html[data-theme="harbor"]{
+  --stk-entry-ink:#7dd3fc;--stk-entry-line:#38bdf8;--stk-entry-tint:#183844;
+  --stk-stop-ink:#fca5a5;--stk-stop-line:#f87171;--stk-stop-tint:#2f2f33;
+  --stk-target-ink:#86efac;--stk-target-line:#4ade80;--stk-target-tint:#1a3c35;
+  --stk-metric-ink:#e7e5e4;--stk-metric-line:#a8a29e;--stk-metric-tint:#263539;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink);--stk-track:#2a4a50
+}
+html[data-theme="retro"]{
+  --stk-entry-ink:#000080;--stk-entry-line:#000080;--stk-entry-tint:#d6dff7;
+  --stk-stop-ink:#800000;--stk-stop-line:#800000;--stk-stop-tint:#f3d6d6;
+  --stk-target-ink:#0a4a0a;--stk-target-line:#0a4a0a;--stk-target-tint:#d7ecd7;
+  --stk-metric-ink:#111827;--stk-metric-line:#000;--stk-metric-tint:#ffffcc;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink);--stk-track:#d4d0c8
+}
 .quote-tape{background:#001400;color:#86efac;border-bottom:3px solid #39ff14}
 .quote-tape .ticker-track{animation-duration:48s}
 .quote-tape p{color:#86efac;font:700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;text-shadow:0 0 6px #39ff14}
@@ -90,10 +133,8 @@ html[data-theme]:not([data-theme="retro"]) .quote-card canvas{border:1px solid v
 .watch-when{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .watch-at,.watch-now{flex:0 0 auto;white-space:nowrap;font-variant-numeric:tabular-nums}
 .watch-now{margin-left:auto}
-.watch-up{color:#166534}
-.watch-down{color:#991b1b}
-html[data-theme="dark"] .watch-up,html[data-theme="harbor"] .watch-up{color:#86efac}
-html[data-theme="dark"] .watch-down,html[data-theme="harbor"] .watch-down{color:#fca5a5}
+.watch-up{color:var(--stk-gain,#166534)}
+.watch-down{color:var(--stk-loss,#991b1b)}
 .quote-disclaimer{font-size:.9rem;color:#374151;background:#fff;border:2px solid #000;padding:8px}
 .stocks-more{display:block;width:100%;min-height:44px;margin:10px 0 0}
 .swing-watch{
@@ -118,7 +159,8 @@ button.swing-card[hidden]{display:none !important}
 }
 .swing-score{
   flex:none;margin-left:auto;min-width:36px;height:28px;padding:0 8px;border-radius:999px;
-  background:var(--ink,#0f172a);color:var(--surface,#fff);
+  background:var(--stk-metric-tint,#eaeaeb);color:var(--stk-metric-ink,#3f3f46);
+  box-shadow:inset 0 0 0 1px var(--stk-metric-line,#52525b);
   font:700 13px/28px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-align:center
 }
 .swing-chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -147,7 +189,10 @@ a.rule-chip{text-decoration:none;color:#111827}
 td.quote-row{display:flex;align-items:center;gap:8px;min-height:44px;width:100%}
 .quote-line{display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
 .quote-px,.quote-chg,.quote-score{font:650 15px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
-.quote-score{margin-left:auto;color:var(--ink,#0f172a)}
+.quote-score{
+  margin-left:auto;color:var(--stk-metric-ink,#3f3f46);background:var(--stk-metric-tint,#eaeaeb);
+  box-shadow:inset 0 0 0 1px var(--stk-metric-line,#52525b);border-radius:4px
+}
 .watch-btn{
   flex:0 0 auto;min-width:72px;min-height:44px;padding:0 10px;border-radius:12px;
   border:1px solid var(--line-strong,#64748b);background:var(--surface,#fff);color:var(--ink,#0f172a);
@@ -322,35 +367,42 @@ html[data-theme="harbor"] .rules-foot{color:#E2E8F0!important}
 .detail-verdict{margin:0 0 10px;font:600 16px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
 .trade-plan{margin:0 0 12px}
 .plan-state{margin:0 0 8px;min-height:44px;display:flex;align-items:center;padding:8px 12px;border-radius:12px;font:700 18px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.plan-state.is-in{background:#dcfce7;color:#14532d}
-.plan-state.is-stop{background:#fee2e2;color:#7f1d1d}
-.plan-state.is-target{background:#dbeafe;color:#1e3a8a}
-.plan-state.is-wait{background:#fef3c7;color:#78350f}
+.plan-state.is-in{background:var(--stk-entry-tint,#e2eef2);color:var(--stk-entry-ink,#0f4c5c);box-shadow:inset 4px 0 0 var(--stk-entry-line,#0e7490)}
+.plan-state.is-stop{background:var(--stk-stop-tint,#f7e4e4);color:var(--stk-stop-ink,#991b1b);box-shadow:inset 4px 0 0 var(--stk-stop-line,#b91c1c)}
+.plan-state.is-target{background:var(--stk-target-tint,#e3f0e8);color:var(--stk-target-ink,#166534);box-shadow:inset 4px 0 0 var(--stk-target-line,#15803d)}
+.plan-state.is-wait{background:#fef3c7;color:#78350f;box-shadow:inset 4px 0 0 #b45309}
 .trade-alerts{margin:0 0 8px;padding:8px 10px;border-radius:10px;background:#14532d;color:#dcfce7;font:650 14px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .trade-flag{flex:none;padding:2px 8px;border-radius:999px;font:700 12px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.trade-flag.is-buy{background:#14532d;color:#dcfce7}
-.trade-flag.is-stop{background:#7f1d1d;color:#fee2e2}
-.trade-flag.is-target{background:#1e3a8a;color:#dbeafe}
+.trade-flag.is-buy{background:var(--stk-entry-tint,#e2eef2);color:var(--stk-entry-ink,#0f4c5c);box-shadow:inset 0 0 0 1px var(--stk-entry-line,#0e7490)}
+.trade-flag.is-stop{background:var(--stk-stop-tint,#f7e4e4);color:var(--stk-stop-ink,#991b1b);box-shadow:inset 0 0 0 1px var(--stk-stop-line,#b91c1c)}
+.trade-flag.is-target{background:var(--stk-target-tint,#e3f0e8);color:var(--stk-target-ink,#166534);box-shadow:inset 0 0 0 1px var(--stk-target-line,#15803d)}
 .watch-flag{margin-left:6px}
 .plan-missing{margin:0;font:600 15px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .ladder{margin:0 0 10px}
-.ladder-track{position:relative;height:18px;border-radius:999px;background:#e2e8f0}
-.ladder-zone{position:absolute;top:0;bottom:0;border-radius:999px;background:#86efac}
+.ladder-track{position:relative;height:18px;border-radius:999px;background:var(--stk-track,#e2e8f0)}
+.ladder-zone{position:absolute;top:0;bottom:0;border-radius:999px;background:var(--stk-entry-line,#0e7490)}
 .ladder-stop,.ladder-target,.ladder-now{position:absolute;top:-4px;width:4px;height:26px;border-radius:2px;transform:translateX(-50%)}
-.ladder-stop{background:#b91c1c}
-.ladder-target{background:#1d4ed8}
+.ladder-stop{background:var(--stk-stop-line,#b91c1c)}
+.ladder-target{background:var(--stk-target-line,#15803d)}
 .ladder-now{width:14px;height:14px;top:2px;border-radius:50%;background:#0f172a;border:2px solid #fff}
 .ladder-labels{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font:600 12px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
 .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .plan-tile{min-height:64px;padding:8px 10px;border-radius:12px;background:var(--surface,#fff);border:1px solid var(--line,#cbd5e1);display:flex;flex-direction:column;gap:2px}
 .plan-k{font:700 12px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.04em;text-transform:uppercase}
 .plan-v{font:700 16px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;color:var(--ink,#0f172a)}
-.plan-hint{font:600 12px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink-muted,#334155)}
-.plan-buy{border-left:4px solid #15803d;background:#f0fdf4}
-.plan-stop{border-left:4px solid #b91c1c;background:#fef2f2}
-.plan-target{border-left:4px solid #1d4ed8;background:#eff6ff;grid-column:1 / -1}
-.plan-rr{border-left:4px solid #64748b}
-.plan-rr.is-fail{border-left-color:#b91c1c}
+.plan-hint{font:600 12px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.plan-buy .plan-k{color:var(--stk-entry-ink,#0f4c5c)}
+.plan-stop .plan-k,.plan-stop .plan-hint{color:var(--stk-stop-ink,#991b1b)}
+.plan-target .plan-k{color:var(--stk-target-ink,#166534)}
+.plan-rr .plan-k{color:var(--stk-metric-ink,#3f3f46)}
+.plan-rr.is-fail .plan-k{color:var(--stk-stop-ink,#991b1b)}
+.ladder-labels .is-stop{color:var(--stk-stop-ink,#991b1b)}
+.ladder-labels .is-target{color:var(--stk-target-ink,#166534)}
+.plan-buy{border-left:4px solid var(--stk-entry-line,#0e7490);background:var(--stk-entry-tint,#e2eef2)}
+.plan-stop{border-left:4px solid var(--stk-stop-line,#b91c1c);background:var(--stk-stop-tint,#f7e4e4)}
+.plan-target{border-left:4px solid var(--stk-target-line,#15803d);background:var(--stk-target-tint,#e3f0e8);grid-column:1 / -1}
+.plan-rr{border-left:4px solid var(--stk-metric-line,#52525b);background:var(--stk-metric-tint,#eaeaeb)}
+.plan-rr.is-fail{border-left-color:var(--stk-stop-line,#b91c1c)}
 .rule-strip{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
 .rule-pill{display:inline-flex;align-items:center;min-height:36px;padding:4px 10px;border-radius:999px;font:700 13px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;border:1px solid transparent}
 .rule-pill.is-pass,.fact-mark.is-pass{background:#dcfce7;color:#14532d}
@@ -395,17 +447,8 @@ html[data-theme] .quote-card .ladder-labels,
 html[data-theme] .quote-card .detail-more summary,
 html[data-theme] .quote-card .why-box p,
 html[data-theme] .quote-card .more-metrics{background:transparent!important;color:var(--ink)!important;border-left:0!important}
-html[data-theme="dark"] .plan-state.is-in,html[data-theme="harbor"] .plan-state.is-in{background:#14532d;color:#dcfce7}
-html[data-theme="dark"] .plan-state.is-stop,html[data-theme="harbor"] .plan-state.is-stop{background:#7f1d1d;color:#fee2e2}
-html[data-theme="dark"] .plan-state.is-target,html[data-theme="harbor"] .plan-state.is-target{background:#1e3a8a;color:#dbeafe}
-html[data-theme="dark"] .plan-state.is-wait,html[data-theme="harbor"] .plan-state.is-wait{background:#78350f;color:#fef3c7}
-html[data-theme="dark"] .plan-buy,html[data-theme="harbor"] .plan-buy{background:#052e16;color:#dcfce7;border-color:#166534}
-html[data-theme="dark"] .plan-stop,html[data-theme="harbor"] .plan-stop{background:#450a0a;color:#fee2e2;border-color:#b91c1c}
-html[data-theme="dark"] .plan-target,html[data-theme="harbor"] .plan-target{background:var(--surface);color:var(--ink);border-color:#93c5fd;border-left-color:#93c5fd}
-html[data-theme="dark"] .plan-k,html[data-theme="harbor"] .plan-k,
-html[data-theme="dark"] .plan-v,html[data-theme="harbor"] .plan-v,
-html[data-theme="dark"] .plan-hint,html[data-theme="harbor"] .plan-hint{color:inherit!important}
-html[data-theme="dark"] .ladder-track,html[data-theme="harbor"] .ladder-track{background:#334155}
+html[data-theme="dark"] .quote-card .plan-state.is-wait,
+html[data-theme="harbor"] .quote-card .plan-state.is-wait{background:#78350f!important;color:#fef3c7!important;box-shadow:inset 4px 0 0 #fde68a}
 html[data-theme="dark"] .ladder-now,html[data-theme="harbor"] .ladder-now{background:#f8fafc;border-color:#0f172a}
 html[data-theme="dark"] .rule-pill.is-pass,html[data-theme="dark"] .fact-mark.is-pass,
 html[data-theme="harbor"] .rule-pill.is-pass,html[data-theme="harbor"] .fact-mark.is-pass{background:#14532d;color:#dcfce7}
@@ -430,6 +473,13 @@ html[data-theme="dark"] .quote-card a,html[data-theme="harbor"] .quote-card a{co
 .track-name{flex:0 1 auto;min-width:0;font:700 16px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .track-when{flex:0 1 auto;min-width:0;font:600 16px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink-muted,#334155)}
 .track-return{margin-left:auto;font:700 16px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.track-return.is-up,.track-fact dd.is-up{color:var(--stk-gain,#166534)}
+.track-return.is-down,.track-fact dd.is-down{color:var(--stk-loss,#991b1b)}
+.track-fact.is-entry dt{color:var(--stk-entry-ink,#0f4c5c)}
+.track-fact.is-stop dt{color:var(--stk-stop-ink,#991b1b)}
+.track-fact.is-target dt,.track-fact.is-gain dt{color:var(--stk-gain,#166534)}
+.track-fact.is-metric dt{color:var(--stk-metric-ink,#3f3f46)}
+.track-fact.is-loss dt{color:var(--stk-loss,#991b1b)}
 .track-badge{flex:none;min-height:28px;display:inline-flex;align-items:center;justify-content:center;padding:2px 8px;border-radius:999px;font:700 16px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:nowrap}
 .track-badge.is-win{background:#14532d;color:#dcfce7}
 .track-badge.is-stop{background:#7f1d1d;color:#fee2e2}
@@ -560,3 +610,64 @@ html[data-theme="retro"] .pin-form label,
 html[data-theme="retro"] #watchLead,
 html[data-theme="retro"] .watch-meta,
 html[data-theme="retro"] .watch-empty{color:#111827!important}
+
+/* Role colors win over theme sheets that paint quote-card text, table numbers, and the paper strip one color. */
+html[data-theme] .quote-card .plan-buy .plan-k,
+html[data-theme] .quote-card .plan-state.is-in{color:var(--stk-entry-ink)!important}
+html[data-theme] .quote-card .plan-stop .plan-k,
+html[data-theme] .quote-card .plan-stop .plan-hint,
+html[data-theme] .quote-card .plan-state.is-stop,
+html[data-theme] .quote-card .plan-rr.is-fail .plan-k,
+html[data-theme] .quote-card .ladder-labels .is-stop{color:var(--stk-stop-ink)!important}
+html[data-theme] .quote-card .plan-target .plan-k,
+html[data-theme] .quote-card .plan-state.is-target,
+html[data-theme] .quote-card .ladder-labels .is-target{color:var(--stk-target-ink)!important}
+html[data-theme] .quote-card .plan-rr .plan-k{color:var(--stk-metric-ink)!important}
+html[data-theme] .quote-card .plan-v,
+html[data-theme] .quote-card .ladder-labels > span:not(.is-stop):not(.is-target){color:var(--ink)!important}
+html[data-theme] .quote-line .num-up,
+html[data-theme] .swing-change.num-up,
+html[data-theme] .watch-list .watch-up,
+html[data-theme] .track-return.is-up,
+html[data-theme] .track-fact dd.is-up{color:var(--stk-gain)!important}
+html[data-theme] .quote-line .num-down,
+html[data-theme] .swing-change.num-down,
+html[data-theme] .watch-list .watch-down,
+html[data-theme] .track-return.is-down,
+html[data-theme] .track-fact dd.is-down{color:var(--stk-loss)!important}
+html[data-theme] .track-fact.is-entry dt{color:var(--stk-entry-ink)!important}
+html[data-theme] .track-fact.is-stop dt{color:var(--stk-stop-ink)!important}
+html[data-theme] .track-fact.is-target dt,
+html[data-theme] .track-fact.is-gain dt{color:var(--stk-gain)!important}
+html[data-theme] .track-fact.is-metric dt{color:var(--stk-metric-ink)!important}
+html[data-theme] .track-fact.is-loss dt{color:var(--stk-loss)!important}
+html[data-theme] .quote-line .quote-score,
+html[data-theme] .swing-score{color:var(--stk-metric-ink)!important;background:var(--stk-metric-tint)!important;box-shadow:inset 0 0 0 1px var(--stk-metric-line)}
+html[data-theme] .trade-flag.is-buy{color:var(--stk-entry-ink)!important;background:var(--stk-entry-tint)!important;box-shadow:inset 0 0 0 1px var(--stk-entry-line)}
+html[data-theme] .trade-flag.is-stop{color:var(--stk-stop-ink)!important;background:var(--stk-stop-tint)!important;box-shadow:inset 0 0 0 1px var(--stk-stop-line)}
+html[data-theme] .trade-flag.is-target{color:var(--stk-target-ink)!important;background:var(--stk-target-tint)!important;box-shadow:inset 0 0 0 1px var(--stk-target-line)}
+html[data-theme="retro"] .quote-table .num-up{color:#86efac!important}
+html[data-theme="retro"] .quote-table .num-down{color:#fca5a5!important}
+html[data-theme] main a#paperStrip .paper-meta .is-up{color:var(--stk-gain)!important;background:transparent!important}
+html[data-theme] main a#paperStrip .paper-meta .is-down{color:var(--stk-loss)!important;background:transparent!important}
+html[data-theme="retro"] .plan-tile,
+html[data-theme="retro"] .plan-state,
+html[data-theme="retro"] .trade-flag,
+html[data-theme="retro"] .ladder-track,
+html[data-theme="retro"] .ladder-zone,
+html[data-theme="retro"] .ladder-stop,
+html[data-theme="retro"] .ladder-target,
+html[data-theme="retro"] .ladder-now,
+html[data-theme="retro"] .swing-score,
+html[data-theme="retro"] .quote-score{border-radius:0}
+@media (forced-colors: active){
+  .plan-tile,.plan-state,.trade-flag,.quote-score,.swing-score{background:Canvas;color:CanvasText;box-shadow:none;border-color:CanvasText}
+  .plan-buy,.plan-state.is-in,.trade-flag.is-buy{border-color:LinkText;border-left-color:LinkText;color:LinkText}
+  .plan-stop,.plan-state.is-stop,.trade-flag.is-stop{border-color:CanvasText;border-left-color:CanvasText}
+  .plan-target,.plan-state.is-target,.trade-flag.is-target{border-color:Highlight;border-left-color:Highlight}
+  .plan-rr,.swing-score,.quote-score{border-color:GrayText}
+  .ladder-zone{background:LinkText}
+  .ladder-stop{background:CanvasText}
+  .ladder-target{background:Highlight}
+  .ladder-now{background:CanvasText;border-color:Canvas}
+}
