@@ -3,7 +3,7 @@
 const KEY = 'mondosupreme.wiki.v1';
 const LIMITS = { title: 200, body: 100000, tag: 40, tags: 30, id: 64, pages: 500 };
 const STOCK_EDITED = '2026-10-01T12:00:00.000Z';
-const WELCOME = [
+const PREVIOUS_WELCOME = [
   'This is a shared notebook. Anyone can add a page. Only the owner can edit, rename, delete, or restore an older copy. **Export** still makes a backup.',
   '',
   '## Write',
@@ -40,6 +40,66 @@ const WELCOME = [
   '',
   'New pages show up for everyone once server sync is on. Until then, this browser keeps a local copy. A page named [[Kitchen notes]] links by title, and the bottom of each page lists what links here.'
 ].join('\n');
+const WELCOME = [
+  'This is a shared notebook of notes and how-tos. Pages are read-only unless you are an admin. Export still makes a backup.',
+  '',
+  '```infobox',
+  'Kind: Shared notes and how-tos',
+  'Read: Anyone',
+  'Changes: Admin only',
+  'Local cache: mondosupreme.wiki.v1',
+  'Sync: Firebase Realtime Database',
+  'History: Last five saves',
+  '```',
+  '',
+  '## Write',
+  '',
+  '![Home screen icon, 192 by 192 pixels](/icon-192.png)',
+  '',
+  'An admin taps **New page**. The title is the page name. Write the note in Markdown, then tap **Preview** to check it while you edit.',
+  '',
+  '- **bold** and *italic*',
+  '- lists and checklists',
+  '- `inline code`',
+  '- links such as [Recipes](/recipes/)',
+  '',
+  '```',
+  'code stays as you typed it',
+  '```',
+  '',
+  '- [x] Export a backup after you add something you want to keep',
+  '- [ ] Try a checklist of your own',
+  '',
+  '## Link another page',
+  '',
+  'Write [[Kitchen notes]] to link a page by its title. A custom label looks like [[Kitchen notes|the kitchen]]. A link to a page that is not here yet is marked as missing. Tap it, fill the new page in, and save it.',
+  '',
+  '## Find and rename',
+  '',
+  'Search covers every title, tag, and the text of every page. Home also lists all pages and the ones edited recently. Add tags in the editor, separated by commas.',
+  '',
+  'To rename a page, edit it and change the title. Links written as [[the old title]] are updated to the new name.',
+  '',
+  '## Print',
+  '',
+  'Open a page and tap **Print** when you want a paper copy.',
+  '',
+  '## Shared pages',
+  '',
+  'Pages are stored for everyone once server sync is on. Until board/database.rules.json is published, this browser keeps a local copy under `mondosupreme.wiki.v1`. The same Firebase project is used for recipes, the board, and chat.[^1]',
+  '',
+  'The bottom of each page lists what links here.',
+  '',
+  '## See also',
+  '',
+  '- [Recipes](/recipes/)',
+  '- [Board](/board/)',
+  '- [Chat](/chat/)',
+  '- [Search](/search/)',
+  '- [Forum](/forum/)',
+  '',
+  '[^1]: [Site notes](/README.md). Shared notes and how-tos, stored with recipes, the board, and chat. Local cache key mondosupreme.wiki.v1 until board/database.rules.json is published.'
+].join('\n');
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -75,6 +135,7 @@ function safeHref(raw) {
   if (typeof raw !== 'string') return '';
   const trimmed = raw.trim();
   if (!trimmed || trimmed.length > 2000 || /[\u0000-\u001f\u007f\s"'<>\\`]/.test(trimmed)) return '';
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//') && trimmed.indexOf('..') < 0 && trimmed.indexOf('\\') < 0) return trimmed;
   let url;
   try { url = new URL(trimmed); } catch { return ''; }
   if (url.protocol !== 'https:') return '';
@@ -86,12 +147,15 @@ function safeImage(raw) {
   const trimmed = raw.trim();
   const href = safeHref(trimmed);
   if (href.startsWith('https://') && href.length <= 2000) return href;
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//') && trimmed.indexOf('..') < 0 && trimmed.indexOf('\\') < 0 && !/[\u0000-\u001f\u007f\s"'<>`]/.test(trimmed) && trimmed.length <= 2000) return trimmed;
   if (/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(trimmed) && trimmed.length <= 140000) return trimmed;
   return '';
 }
 function safeHash(raw) {
   if (typeof raw !== 'string' || raw.length > 500) return '';
   if (/^#\/page\/[A-Za-z0-9_-]{1,64}$/.test(raw)) return raw;
+  if (/^#ref-[A-Za-z0-9_-]{1,40}$/.test(raw)) return raw;
+  if (/^#cite-[A-Za-z0-9_-]{1,48}$/.test(raw)) return raw;
   const made = raw.match(/^#\/new\/([A-Za-z0-9._~%!$&'()*+,;=:@/-]{1,400})$/);
   if (!made) return '';
   try {
@@ -151,6 +215,22 @@ function renderInline(text, ctx) {
           i = end + 2;
           continue;
         }
+      }
+    }
+    if (allow && text.startsWith('[^', i)) {
+      const note = text.slice(i).match(/^\[\^([A-Za-z0-9_-]{1,32})\]/);
+      if (note) {
+        flush();
+        const id = note[1];
+        const list = ctx.notes || [];
+        const idx = list.findIndex(n => n.id === id);
+        const num = idx >= 0 ? String(idx + 1) : '?';
+        if (!ctx.citeCount) ctx.citeCount = {};
+        ctx.citeCount[id] = (ctx.citeCount[id] || 0) + 1;
+        const cite = ctx.citeCount[id] === 1 ? 'cite-' + id : 'cite-' + id + '-' + ctx.citeCount[id];
+        html += '<sup class="wiki-fn" id="' + esc(cite) + '"><a href="#ref-' + esc(id) + '">[' + esc(num) + ']</a></sup>';
+        i += note[0].length;
+        continue;
       }
     }
     if (allow && text[i] === '[') {
@@ -245,6 +325,18 @@ function renderBlocks(lines, ctx) {
       html += '<pre><code>' + esc(buf.join('\n')) + '</code></pre>';
       continue;
     }
+    const imgLine = line.trim().match(/^!\[([^\]\n]*)\]\(([^)\s]+)\)\s*$/);
+    if (imgLine) {
+      const href = safeImage(imgLine[2]);
+      const label = imgLine[1].trim();
+      if (href) {
+        html += label
+          ? '<figure class="wiki-thumb"><img alt="" src="' + esc(href) + '"><figcaption>' + esc(label) + '</figcaption></figure>'
+          : '<img alt="" src="' + esc(href) + '">';
+        i += 1;
+        continue;
+      }
+    }
     const heading = line.match(/^(#{1,6})\s+(\S.*)$/);
     if (heading) {
       const level = heading[1].length;
@@ -290,16 +382,44 @@ function renderBlocks(lines, ctx) {
   }
   return html;
 }
-function renderMarkdown(src, pageList) {
+function renderMarkdown(src, pageList, notes) {
   const text = String(src || '').replace(/\r\n?/g, '\n');
-  return renderBlocks(text.split('\n'), { pages: Array.isArray(pageList) ? pageList : [], links: true });
+  return renderBlocks(text.split('\n'), {
+    pages: Array.isArray(pageList) ? pageList : [],
+    links: true,
+    notes: Array.isArray(notes) ? notes : [],
+    citeCount: {}
+  });
+}
+function splitArticle(src) {
+  const lines = String(src || '').replace(/\r\n?/g, '\n').split('\n');
+  const infobox = [];
+  const notes = [];
+  const body = [];
+  let fence = false;
+  let info = false;
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!fence && /^```infobox\s*$/.test(trimmed)) { info = true; fence = true; continue; }
+    if (info) {
+      if (/^```\s*$/.test(trimmed)) { info = false; fence = false; continue; }
+      const row = line.match(/^\s*([^:\n]{1,80}):\s*(.*)$/);
+      if (row && row[1].trim()) infobox.push({ label: row[1].trim(), value: row[2].trim() });
+      continue;
+    }
+    const def = !fence && line.match(/^\[\^([A-Za-z0-9_-]{1,32})\]:\s*(\S.*)$/);
+    if (def) { notes.push({ id: def[1], text: def[2].trim() }); continue; }
+    if (/^```/.test(trimmed)) fence = !fence;
+    body.push(line);
+  }
+  return { body: body.join('\n'), infobox, notes };
 }
 function sanitizedTree(html) {
   const doc = document.implementation.createHTMLDocument('');
   const wrap = doc.createElement('div');
   wrap.innerHTML = html;
   const out = doc.createElement('div');
-  const allowed = new Set(['A', 'P', 'BR', 'STRONG', 'EM', 'DEL', 'CODE', 'PRE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'HR', 'IMG', 'INPUT']);
+  const allowed = new Set(['A', 'P', 'BR', 'STRONG', 'EM', 'DEL', 'CODE', 'PRE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'HR', 'IMG', 'INPUT', 'FIGURE', 'FIGCAPTION', 'SUP']);
   function copy(node, parent) {
     node.childNodes.forEach(child => {
       if (child.nodeType === 3) { parent.appendChild(doc.createTextNode(child.textContent)); return; }
@@ -342,6 +462,12 @@ function sanitizedTree(html) {
       }
       const el = doc.createElement(tag.toLowerCase());
       if (tag === 'LI' && child.classList.contains('task')) el.classList.add('task');
+      if (tag === 'FIGURE' && child.classList.contains('wiki-thumb')) el.classList.add('wiki-thumb');
+      if (tag === 'SUP' && child.classList.contains('wiki-fn')) el.classList.add('wiki-fn');
+      if (tag === 'SUP') {
+        const sid = child.getAttribute('id') || '';
+        if (/^cite-[A-Za-z0-9_-]{1,48}$/.test(sid)) el.id = sid;
+      }
       if (/^H[1-3]$/.test(tag)) {
         const id = child.getAttribute('id') || '';
         if (/^sec-\d{1,4}$/.test(id)) el.setAttribute('id', id);
@@ -355,7 +481,7 @@ function sanitizedTree(html) {
 }
 function paintMarkdown(el, md, list, opts) {
   if (!el) return;
-  const tree = sanitizedTree(renderMarkdown(md, list));
+  const tree = sanitizedTree(renderMarkdown(md, list, opts && opts.notes));
   el.replaceChildren();
   [...tree.childNodes].forEach(node => el.appendChild(document.importNode(node, true)));
   el.classList.toggle('can-check', !!(opts && opts.checkable));
@@ -550,7 +676,7 @@ let fellBack = false, listening = false;
 function isStock(p) {
   if (!p || p.id !== 'welcome' || cleanTitle(p.title) !== 'Welcome') return false;
   const b = String(p.body || '');
-  return b === WELCOME || b.includes('Pages in this wiki stay in this browser') || b.includes('## Saved on this device');
+  return b === WELCOME || b === PREVIOUS_WELCOME || b.includes('Pages in this wiki stay in this browser') || b.includes('## Saved on this device');
 }
 function canMutate() { return !!isOwner; }
 function isAdminNow() { return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner()); }
@@ -856,7 +982,22 @@ function load() {
     return;
   }
   pages = data.filter(p => p && typeof p === 'object' && !Array.isArray(p) && typeof p.id === 'string' && typeof p.title === 'string');
-  pages.forEach(p => { if (isStock(p)) { p.created = STOCK_EDITED; p.updated = STOCK_EDITED; } });
+  let upgraded = false;
+  pages.forEach(p => {
+    if (!isStock(p)) return;
+    if (p.body !== WELCOME) { p.body = WELCOME; p.tags = ['start']; upgraded = true; }
+    p.created = STOCK_EDITED;
+    p.updated = STOCK_EDITED;
+  });
+  if (upgraded) save();
+}
+function editedSentence(iso) {
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return '';
+  let when = '';
+  try { when = new Date(t).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' }); }
+  catch { when = new Date(t).toLocaleString(); }
+  return 'This page was last edited on ' + when + '.';
 }
 function editedLabel(iso) {
   const t = Date.parse(iso);
@@ -968,6 +1109,178 @@ function showHome() {
   renderHome();
   window.scrollTo(0, 0);
 }
+function wideSections() {
+  return window.matchMedia('(min-width: 880px)').matches;
+}
+function sectionShell(h2) {
+  const section = document.createElement('section');
+  section.className = 'wiki-section';
+  const label = (h2.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  if (label === 'see also') section.classList.add('wiki-see-also');
+  if (label === 'references') section.classList.add('wiki-references');
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'wiki-section-toggle';
+  btn.textContent = (h2.textContent || '').replace(/\s+/g, ' ').trim() || 'Section';
+  const panel = document.createElement('div');
+  panel.className = 'wiki-section-panel';
+  if (!h2.id) h2.id = 'sec-' + Math.random().toString(36).slice(2, 8);
+  panel.id = h2.id + '-panel';
+  btn.setAttribute('aria-controls', panel.id);
+  btn.setAttribute('aria-expanded', 'true');
+  h2.replaceChildren(btn);
+  section.appendChild(h2);
+  section.appendChild(panel);
+  return { section, panel };
+}
+function foldSections(root) {
+  const kids = [...root.childNodes];
+  const frag = document.createDocumentFragment();
+  let panel = null;
+  kids.forEach(node => {
+    if (node.nodeType === 1 && node.tagName === 'H2') {
+      const made = sectionShell(node);
+      panel = made.panel;
+      frag.appendChild(made.section);
+      return;
+    }
+    if (panel) panel.appendChild(node);
+    else frag.appendChild(node);
+  });
+  root.replaceChildren();
+  [...frag.childNodes].forEach(node => root.appendChild(node));
+}
+function applySectionState(root) {
+  const open = wideSections();
+  root.querySelectorAll('.wiki-section-panel').forEach(panel => {
+    const toggle = panel.parentElement ? panel.parentElement.querySelector('.wiki-section-toggle') : null;
+    panel.hidden = open ? false : 'until-found';
+    if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+}
+function openPanel(panel) {
+  if (!panel) return;
+  panel.hidden = false;
+  const toggle = panel.parentElement ? panel.parentElement.querySelector('.wiki-section-toggle') : null;
+  if (toggle) toggle.setAttribute('aria-expanded', 'true');
+}
+function placeToc(root) {
+  const heads = [...root.querySelectorAll('h2, h3')].filter(h => h.id);
+  if (heads.length < 2) return;
+  const nav = document.createElement('nav');
+  nav.className = 'wiki-toc';
+  nav.setAttribute('aria-label', 'Contents');
+  const details = document.createElement('details');
+  details.open = true;
+  const summary = document.createElement('summary');
+  summary.textContent = 'Contents';
+  details.appendChild(summary);
+  const list = document.createElement('ol');
+  heads.forEach(h => {
+    const li = document.createElement('li');
+    li.className = h.tagName === 'H3' ? 'toc-3' : 'toc-2';
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = (h.textContent || '').replace(/\s+/g, ' ').trim() || 'Section';
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.getElementById(h.id);
+      if (!target) return;
+      openPanel(target.closest('.wiki-section-panel'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+  details.appendChild(list);
+  nav.appendChild(details);
+  const first = root.querySelector('.wiki-section');
+  if (first) root.insertBefore(nav, first);
+  else root.appendChild(nav);
+}
+function buildInfobox(rows, title) {
+  const aside = document.createElement('aside');
+  aside.className = 'wiki-infobox';
+  const scroll = document.createElement('div');
+  scroll.className = 'wiki-scroll';
+  scroll.tabIndex = 0;
+  scroll.setAttribute('role', 'region');
+  const capId = 'wikiInfoCap';
+  scroll.setAttribute('aria-labelledby', capId);
+  const table = document.createElement('table');
+  const cap = document.createElement('caption');
+  cap.id = capId;
+  cap.textContent = title || 'Details';
+  table.appendChild(cap);
+  const body = document.createElement('tbody');
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+    const th = document.createElement('th');
+    th.scope = 'row';
+    th.textContent = row.label;
+    const td = document.createElement('td');
+    td.textContent = row.value;
+    tr.appendChild(th);
+    tr.appendChild(td);
+    body.appendChild(tr);
+  });
+  table.appendChild(body);
+  scroll.appendChild(table);
+  aside.appendChild(scroll);
+  return aside;
+}
+function buildReferences(notes, list) {
+  const section = document.createElement('section');
+  section.className = 'wiki-section wiki-references';
+  const h2 = document.createElement('h2');
+  h2.id = 'references';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'wiki-section-toggle';
+  btn.textContent = 'References';
+  const panel = document.createElement('div');
+  panel.className = 'wiki-section-panel';
+  panel.id = 'references-panel';
+  btn.setAttribute('aria-controls', panel.id);
+  btn.setAttribute('aria-expanded', 'true');
+  h2.appendChild(btn);
+  const ol = document.createElement('ol');
+  ol.className = 'wiki-refs';
+  notes.forEach((note, i) => {
+    const li = document.createElement('li');
+    li.id = 'ref-' + note.id;
+    const span = document.createElement('span');
+    const tree = sanitizedTree(renderInline(note.text, { pages: list, links: true, notes: [] }));
+    [...tree.childNodes].forEach(node => span.appendChild(document.importNode(node, true)));
+    li.appendChild(span);
+    li.appendChild(document.createTextNode(' '));
+    const back = document.createElement('a');
+    back.className = 'wiki-back';
+    back.href = '#cite-' + note.id;
+    back.textContent = 'back';
+    li.appendChild(back);
+    ol.appendChild(li);
+    li.value = i + 1;
+  });
+  panel.appendChild(ol);
+  section.appendChild(h2);
+  section.appendChild(panel);
+  return section;
+}
+function fillArticle(host, md, list, title, opts) {
+  const parts = splitArticle(md);
+  host.replaceChildren();
+  if (parts.infobox.length) host.appendChild(buildInfobox(parts.infobox, title));
+  const prose = document.createElement('div');
+  prose.className = 'wiki-prose';
+  paintMarkdown(prose, parts.body, list, { notes: parts.notes, checkable: !!(opts && opts.checkable) });
+  foldSections(prose);
+  if (parts.notes.length) prose.appendChild(buildReferences(parts.notes, list));
+  placeToc(prose);
+  applySectionState(prose);
+  host.appendChild(prose);
+}
 function showPage(id, keepScroll) {
   editingId = null;
   editHash = '';
@@ -977,69 +1290,151 @@ function showPage(id, keepScroll) {
   $('#pageView').hidden = false;
   document.body.classList.add('show-page');
   const el = $('#pageView');
+  el.replaceChildren();
+  const suggest = $('#wikiSuggest');
+  if (suggest) suggest.hidden = true;
   if (!p) {
-    document.title = 'Mondosupreme Wiki';
-    el.innerHTML = '<p class="empty">That page is not here. <a href="#/">All pages</a></p>';
+    document.title = 'Wiki';
+    const missing = document.createElement('p');
+    missing.className = 'empty';
+    missing.append('That page is not here. ');
+    const back = document.createElement('a');
+    back.href = '#/';
+    back.textContent = 'All pages';
+    missing.appendChild(back);
+    el.appendChild(missing);
     if (!keepScroll) window.scrollTo(0, 0);
     return;
   }
   document.title = p.title + ' · Wiki';
   pushHistory(p);
-  const tags = (p.tags || []).map(t => '<span class="tag">#' + esc(t) + '</span>').join('');
-  const when = editedLabel(p.updated);
   const own = canMutate();
+  const article = document.createElement('article');
+  article.className = 'wiki-article';
+  const crumbs = document.createElement('nav');
+  crumbs.className = 'wiki-crumbs';
+  crumbs.setAttribute('aria-label', 'Breadcrumb');
+  const crumbList = document.createElement('ol');
+  const crumbHome = document.createElement('li');
+  const crumbA = document.createElement('a');
+  crumbA.href = '#/';
+  crumbA.textContent = 'Wiki';
+  crumbHome.appendChild(crumbA);
+  const crumbHere = document.createElement('li');
+  crumbHere.setAttribute('aria-current', 'page');
+  crumbHere.textContent = p.title;
+  crumbList.appendChild(crumbHome);
+  crumbList.appendChild(crumbHere);
+  crumbs.appendChild(crumbList);
+  article.appendChild(crumbs);
+  const tools = document.createElement('div');
+  tools.className = 'wiki-tools no-print';
+  const all = document.createElement('a');
+  all.className = 'btn ghost';
+  all.href = '#/';
+  all.textContent = 'All pages';
+  tools.appendChild(all);
+  if (own) {
+    const edit = document.createElement('a');
+    edit.className = 'btn ghost';
+    edit.href = '#/edit/' + p.id;
+    edit.textContent = 'Edit';
+    tools.appendChild(edit);
+    const hist = document.createElement('button');
+    hist.type = 'button';
+    hist.className = 'btn ghost';
+    hist.id = 'btnHistory';
+    hist.textContent = 'History';
+    tools.appendChild(hist);
+  }
+  const printBtn = document.createElement('button');
+  printBtn.type = 'button';
+  printBtn.className = 'btn ghost';
+  printBtn.id = 'btnPrint';
+  printBtn.textContent = 'Print';
+  tools.appendChild(printBtn);
+  if (own) {
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'btn danger';
+    del.id = 'btnDelete';
+    del.textContent = 'Delete';
+    tools.appendChild(del);
+  }
+  const h1 = document.createElement('h1');
+  h1.id = 'wikiTitle';
+  h1.tabIndex = -1;
+  h1.textContent = p.title;
+  article.appendChild(h1);
+  const edited = editedSentence(p.updated);
+  if (edited) {
+    const meta = document.createElement('p');
+    meta.className = 'wiki-edited';
+    meta.textContent = edited;
+    article.appendChild(meta);
+  }
+  if (!isOwner) {
+    const note = document.createElement('p');
+    note.className = 'lock-note';
+    note.textContent = 'This page is read-only. Only an admin can change it.';
+    article.appendChild(note);
+  }
+  article.appendChild(tools);
+  const body = document.createElement('div');
+  body.className = 'wiki-body';
+  body.id = 'wikiBody';
+  article.appendChild(body);
+  fillArticle(body, p.body, pages, p.title, { checkable: own });
+  const tags = p.tags || [];
+  if (tags.length) {
+    const cats = document.createElement('nav');
+    cats.className = 'wiki-cats';
+    cats.setAttribute('aria-label', 'Categories');
+    const heading = document.createElement('h2');
+    heading.textContent = 'Categories';
+    cats.appendChild(heading);
+    const ul = document.createElement('ul');
+    ul.setAttribute('role', 'list');
+    tags.forEach(name => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#/tag/' + encodeURIComponent(name);
+      a.textContent = name;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    cats.appendChild(ul);
+    article.appendChild(cats);
+  }
   const links = backlinkPages(pages, p);
-  el.innerHTML = '<article class="detail wiki-article"><div class="detail-inner"><div class="dbar no-print">' +
-    '<a class="btn ghost" href="#/">← All pages</a>' +
-    (own ? '<a class="btn ghost" href="#/edit/' + esc(p.id) + '">Edit</a><button type="button" class="btn ghost" id="btnHistory">History</button>' : '') +
-    '<button type="button" class="btn ghost" id="btnPrint">Print</button>' +
-    (own ? '<button type="button" class="btn danger" id="btnDelete">Delete</button>' : '') +
-    '</div>' +
-    (!isOwner ? '<p class="lock-note">This page is read-only. Only an admin can change it.</p>' : '') +
-    '<h1>' + esc(p.title) + '</h1>' +
-    (when ? '<p class="meta">Edited ' + esc(when) + '</p>' : '') +
-    (tags ? '<div class="tags">' + tags + '</div>' : '') +
-    '<div id="wikiToc"></div>' +
-    '<div class="wiki-body" id="wikiBody"></div>' +
-    '<section class="wiki-backlinks"><h2>What links here</h2>' +
-    (links.length
-      ? links.map(other => '<a href="#/page/' + esc(other.id) + '">' + esc(other.title) + '</a>').join('')
-      : '<p class="meta">No pages link here yet.</p>') +
-    '</section></div></article>';
-  paintMarkdown($('#wikiBody'), p.body, pages, { checkable: own });
-  fillToc($('#wikiToc'), headingList(p.body));
+  const linked = document.createElement('section');
+  linked.className = 'wiki-backlinks';
+  const linkedHead = document.createElement('h2');
+  linkedHead.textContent = 'What links here';
+  linked.appendChild(linkedHead);
+  if (links.length) {
+    const ul = document.createElement('ul');
+    links.forEach(other => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#/page/' + other.id;
+      a.textContent = other.title;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    linked.appendChild(ul);
+  } else {
+    const none = document.createElement('p');
+    none.className = 'meta';
+    none.textContent = 'No pages link here yet.';
+    linked.appendChild(none);
+  }
+  article.appendChild(linked);
+  el.appendChild(article);
   $('#btnPrint').onclick = () => window.print();
   if ($('#btnDelete')) $('#btnDelete').onclick = () => deletePage(p);
   if ($('#btnHistory')) $('#btnHistory').onclick = () => openHistory(p);
   if (!keepScroll) window.scrollTo(0, 0);
-}
-function fillToc(box, headings) {
-  if (!box) return;
-  box.replaceChildren();
-  if (!headings || headings.length < 2) return;
-  const details = document.createElement('details');
-  details.className = 'wiki-toc';
-  details.open = true;
-  const summary = document.createElement('summary');
-  summary.textContent = 'Table of Contents';
-  details.appendChild(summary);
-  const list = document.createElement('ol');
-  headings.forEach((h, i) => {
-    const li = document.createElement('li');
-    li.className = 'toc-' + h.level;
-    const a = document.createElement('a');
-    a.href = '#sec-' + (i + 1);
-    a.textContent = h.text || 'Section';
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const target = document.getElementById('sec-' + (i + 1));
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    li.appendChild(a);
-    list.appendChild(li);
-  });
-  details.appendChild(list);
-  box.appendChild(details);
 }
 function openHistory(page) {
   const box = $('#historyList');
@@ -1137,7 +1532,9 @@ function previewPages() {
 function updatePreview() {
   const title = cleanTitle($('#title').value) || 'Untitled';
   $('#previewTitle').textContent = title;
-  paintMarkdown($('#previewBody'), $('#body').value, previewPages());
+  const host = $('#previewBody');
+  host.classList.add('wiki-body');
+  fillArticle(host, $('#body').value, previewPages(), title);
 }
 function setPreview(on) {
   previewOn = on;
@@ -1316,7 +1713,50 @@ function route() {
   if (hash === '#/new') { showEditor(null); return; }
   m = hash.match(/^#\/new\/(.+)$/);
   if (m) { createFromTitle(m[1]); return; }
+  m = hash.match(/^#\/tag\/([^?#]+)$/);
+  if (m) {
+    let name = '';
+    try { name = decodeURIComponent(m[1]); } catch { name = ''; }
+    tag = clipStr(name, LIMITS.tag).toLowerCase();
+    query = '';
+    const search = $('#search');
+    if (search) search.value = '';
+    const box = $('#wikiSuggest');
+    if (box) box.hidden = true;
+    showHome();
+    return;
+  }
   showHome();
+}
+function paintSuggest() {
+  const box = $('#wikiSuggest');
+  if (!box) return;
+  const q = query.trim().toLowerCase();
+  box.replaceChildren();
+  if (!q || ($('#homeView') && $('#homeView').hidden && $('#editorView') && !$('#editorView').hidden)) { box.hidden = true; return; }
+  const hits = pages.filter(p => [p.title, p.body, ...(p.tags || [])].join('\n').toLowerCase().includes(q)).slice(0, 8);
+  if (!hits.length) {
+    const empty = document.createElement('p');
+    empty.className = 'wiki-suggest-empty';
+    const a = document.createElement('a');
+    a.href = '/search/?q=' + encodeURIComponent(query.trim());
+    a.textContent = 'No wiki pages match. Search the site';
+    empty.appendChild(a);
+    box.appendChild(empty);
+    box.hidden = false;
+    return;
+  }
+  const ul = document.createElement('ul');
+  hits.forEach(page => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#/page/' + page.id;
+    a.textContent = page.title;
+    li.appendChild(a);
+    ul.appendChild(li);
+  });
+  box.appendChild(ul);
+  box.hidden = false;
 }
 const TEMPLATES = {
   blank: '',
@@ -1431,7 +1871,43 @@ function init() {
     if (e.target.files[0]) importJSON(e.target.files[0]);
     e.target.value = '';
   });
-  $('#search').addEventListener('input', e => { query = e.target.value; if (hlpMode === 'history') hlpMode = 'find'; renderHome(); });
+  $('#search').addEventListener('input', e => {
+    query = e.target.value;
+    if (query.trim()) tag = '';
+    if (hlpMode === 'history') hlpMode = 'find';
+    paintSuggest();
+    if ($('#homeView') && !$('#homeView').hidden) renderHome();
+  });
+  $('#search').addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const box = $('#wikiSuggest');
+    if (box) box.hidden = true;
+  });
+  const searchForm = $('#wikiSearchForm');
+  if (searchForm) searchForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    const hits = pages.filter(p => [p.title, p.body, ...(p.tags || [])].join('\n').toLowerCase().includes(q.toLowerCase()));
+    if (!hits.length) {
+      location.href = '/search/?q=' + encodeURIComponent(q);
+      return;
+    }
+    tag = '';
+    const box = $('#wikiSuggest');
+    if (box) box.hidden = true;
+    if ($('#homeView') && !$('#homeView').hidden && (location.hash === '#/' || location.hash === '' || location.hash === '#')) renderHome();
+    else location.hash = '#/';
+  });
+  const word = document.querySelector('.wiki-word');
+  if (word) word.addEventListener('click', () => {
+    query = '';
+    tag = '';
+    const search = $('#search');
+    if (search) search.value = '';
+    const box = $('#wikiSuggest');
+    if (box) box.hidden = true;
+  });
   document.querySelectorAll('.hlp-tabs [data-mode]').forEach(button => {
     button.addEventListener('click', () => setHlp(button.dataset.mode));
   });
@@ -1439,8 +1915,39 @@ function init() {
     const button = e.target.closest('[data-tag]');
     if (!button) return;
     tag = tag === button.dataset.tag ? '' : button.dataset.tag;
+    query = '';
+    const search = $('#search');
+    if (search) search.value = '';
+    const box = $('#wikiSuggest');
+    if (box) box.hidden = true;
     renderHome();
   });
+  document.addEventListener('click', e => {
+    const btn = e.target.closest && e.target.closest('.wiki-section-toggle');
+    if (!btn) return;
+    const panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!panel) return;
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    panel.hidden = open ? 'until-found' : false;
+    btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+  });
+  document.addEventListener('beforematch', e => {
+    const panel = e.target;
+    if (!panel.classList || !panel.classList.contains('wiki-section-panel')) return;
+    const toggle = panel.parentElement ? panel.parentElement.querySelector('.wiki-section-toggle') : null;
+    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+  });
+  const wideMedia = window.matchMedia('(min-width: 880px)');
+  const onWide = () => {
+    document.querySelectorAll('.wiki-section-panel').forEach(panel => {
+      const toggle = panel.parentElement ? panel.parentElement.querySelector('.wiki-section-toggle') : null;
+      const open = wideMedia.matches;
+      panel.hidden = open ? false : 'until-found';
+      if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  };
+  if (wideMedia.addEventListener) wideMedia.addEventListener('change', onWide);
+  else if (wideMedia.addListener) wideMedia.addListener(onWide);
   $('#btnPreview').onclick = () => setPreview(!previewOn);
   $('#body').addEventListener('input', () => { if (previewOn) updatePreview(); });
   $('#title').addEventListener('input', () => { if (previewOn) updatePreview(); });
@@ -1522,6 +2029,6 @@ function init() {
 }
 if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', init);
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { renderMarkdown, parseWikiBackup, rewriteWikiLinks, safeHref, safeImage, cleanTitle, toggleTask, headingList, backlinkPages, pageLinkNames };
+  module.exports = { renderMarkdown, parseWikiBackup, rewriteWikiLinks, safeHref, safeImage, cleanTitle, toggleTask, headingList, backlinkPages, pageLinkNames, splitArticle };
 }
 })();
