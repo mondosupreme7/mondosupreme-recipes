@@ -7,7 +7,7 @@ const HOW = {
   kitchen: 'Catch the ingredients for the dish on the order. Dodge burnt toast and bombs. Combos multiply the score.',
   breaker: 'Move the paddle. Space or Enter launches the ball and fires lasers. A and D move left and right. Grab multi-ball, wide paddle, and laser drops.'
 };
-const NAMES = { seas: 'High Seas Cruiser', kitchen: 'Supreme Kitchen Rush', breaker: 'Cyber Brick Breaker 1999' };
+const NAMES = { seas: 'High Seas Cruiser', kitchen: 'Supreme Kitchen Rush', breaker: 'Cyber Brick Breaker' };
 const DISHES = [
   { name: 'Pasta', need: { tomato: 2, noodle: 1 } },
   { name: 'Omelette', need: { egg: 2, herb: 1 } },

@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Mondosupreme Arcade</title>
-<meta name="description" content="Mondosupreme Arcade — High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker 1999.">
+<meta name="description" content="Arcade — High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
@@ -26,13 +26,13 @@
 <link rel="stylesheet" href="arcade.css?v=4">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
-<link rel="stylesheet" href="/shell.css?v=9">
+<link rel="stylesheet" href="/shell.css?v=10">
 <link rel="stylesheet" href="/readable.css?v=15">
 </head>
 <body>
 <div class="ticker"><div class="ticker-track">
- <p><span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Arcade ~*~ ★ Insert coin ★ High Seas Cruiser · Supreme Kitchen Rush · Cyber Brick Breaker 1999 ★</p>
- <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Arcade ~*~ ★ Insert coin ★ High Seas Cruiser · Supreme Kitchen Rush · Cyber Brick Breaker 1999 ★</p>
+ <p><span class="flame" aria-hidden="true"></span> Arcade ★ Insert coin ★ High Seas Cruiser · Supreme Kitchen Rush · Cyber Brick Breaker ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> Arcade ★ Insert coin ★ High Seas Cruiser · Supreme Kitchen Rush · Cyber Brick Breaker ★</p>
 </div></div>
 <header class="site-header"><div class="wrap hdr">
  <a href="/arcade/" class="brand"><span class="logo">🕹️</span><span>Mondosupreme <em>Arcade</em></span></a>
@@ -54,7 +54,7 @@
   <a href="/market/">Market</a>
   <a href="/8ball/">8-Ball</a>
   <a href="/mmo/">MMO</a>
-  <a href="/fps/">FPS</a>
+  <a href="/fps/" aria-label="Half Strike Fortress">Half Strike Fortress</a>
   <a href="/cinderwell/">Cinderwell</a>
   <a href="/launches/">Launches</a>
   <a href="/grocery/">Grocery List</a>
@@ -70,11 +70,11 @@
 <main class="wrap">
  <p id="syncBanner" class="sync-banner" role="status" hidden>Shared high scores waiting on updated Firebase rules — your best is saved on this device</p>
  <div class="cabinet">
-  <div class="marquee"><span>MONDO ARCADE 1999</span></div>
+  <div class="marquee"><span>INSERT COIN</span></div>
   <div class="carts" role="group" aria-label="Cartridges">
    <button type="button" class="cart" data-cart="seas" aria-pressed="true">High Seas Cruiser</button>
    <button type="button" class="cart" data-cart="kitchen" aria-pressed="false">Supreme Kitchen Rush</button>
-   <button type="button" class="cart" data-cart="breaker" aria-pressed="false">Cyber Brick Breaker 1999</button>
+   <button type="button" class="cart" data-cart="breaker" aria-pressed="false">Cyber Brick Breaker</button>
   </div>
   <p id="hud" class="hud" aria-live="polite">Score 0</p>
   <div class="crt">
@@ -135,11 +135,11 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/mondo-juice.js?v=1"></script>
-<script src="arcade.js?v=3"></script>
+<script src="arcade.js?v=4"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=16"></script>
+<script src="/shell.js?v=17"></script>
 <script src="/backup.js"></script>
 </body>
 </html>
