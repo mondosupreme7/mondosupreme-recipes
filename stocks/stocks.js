@@ -30,6 +30,36 @@
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
+  function syncVisibleChrome() {
+    var vv = window.visualViewport;
+    var top = 0;
+    var bottom = 0;
+    if (vv) {
+      top = Math.max(0, Math.round(vv.offsetTop));
+      bottom = Math.max(0, Math.round(window.innerHeight - vv.offsetTop - vv.height));
+    }
+    /* A large overlap is the software keyboard. The shell hides the tab bar for that.
+       Keep it out of --vv-bottom so the toolbar inset is not applied twice. */
+    var keyboard = 0;
+    if (bottom > 80) {
+      keyboard = bottom;
+      top = 0;
+      bottom = 0;
+    }
+    var root = document.documentElement;
+    root.style.setProperty('--vv-top', top + 'px');
+    root.style.setProperty('--vv-bottom', bottom + 'px');
+    root.style.setProperty('--vv-keyboard', keyboard + 'px');
+  }
+  syncVisibleChrome();
+  window.addEventListener('resize', syncVisibleChrome);
+  window.addEventListener('orientationchange', syncVisibleChrome);
+  window.addEventListener('pageshow', syncVisibleChrome);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncVisibleChrome);
+    window.visualViewport.addEventListener('scroll', syncVisibleChrome);
+  }
+
   function el(tag, text, className) {
     var node = document.createElement(tag);
     if (className) node.className = className;
