@@ -219,8 +219,41 @@ html[data-theme="retro"] .home-app .app-pixel svg,
 html[data-theme="retro"] .home-chip .app-pixel svg,
 html[data-theme="retro"] .home-row .app-pixel svg{width:28px;height:28px}
 body.home-page .gb-box{margin-top:8px}
-@media (min-width:720px){
+@media (min-width:700px){
+  body.home-page main.wrap,
+  body.home-page .site-footer .wrap{
+    width:min(960px, calc(100% - 48px));
+    max-width:960px;
+    margin-left:auto;
+    margin-right:auto
+  }
   .home-apps{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .home-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+}
+@media (max-height:720px) and (max-width:900px){
+  body.home-page main.wrap{padding-top:4px;padding-bottom:8px}
+  .home-apps{gap:8px 6px;margin-bottom:10px}
+  .home-app .app-tile{width:46px;height:46px}
+  .home-chip,.home-row{min-height:52px}
+  .home-now,.home-chips,.home-stock{margin-bottom:8px}
+}
+.feed-pending{
+  color:transparent !important;
+  border-radius:6px;
+  background:linear-gradient(90deg, var(--surface-2,#e2e8f0) 25%, var(--line,#cbd5e1) 37%, var(--surface-2,#e2e8f0) 63%);
+  background-size:400% 100%;
+  animation:shimmer 1.2s ease infinite;
+  min-height:1em
+}
+.feed-error{color:#9f1239 !important}
+.feed-retry{min-height:44px;min-width:44px;margin-left:4px;padding:0 10px;border:1px solid #9f1239;border-radius:999px;background:#fff;color:#9f1239;font:650 13px/1 var(--font-ui,Inter,sans-serif)}
+.feed-empty{color:var(--ink-muted)}
+.feed-card.is-loading strong{color:transparent;border-radius:6px;background:linear-gradient(90deg, var(--surface-2,#e2e8f0) 25%, var(--line,#cbd5e1) 37%, var(--surface-2,#e2e8f0) 63%);background-size:400% 100%;animation:shimmer 1.2s ease infinite}
+.feed-card.is-missing strong{color:var(--ink-muted)}
+.feed-card.is-error strong{color:#9f1239}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){
+  .feed-pending,.feed-card.is-loading strong{animation:none;color:var(--ink-muted) !important;background:none}
 }
 @media (prefers-reduced-motion:reduce){
   .home-chip,.home-row,.home-app,.home-quote{transition:none}

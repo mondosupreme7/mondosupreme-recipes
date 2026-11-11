@@ -19,9 +19,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
-<link rel="stylesheet" href="/shell.css?v=7">
+<link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="/coast.css">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/readable.css?v=14">
 </head>
 <body>
 <header class="site-header"><div class="wrap hdr">
@@ -29,6 +29,11 @@
  <nav class="site-nav" aria-label="Site"><a href="/">Home</a><a href="/connections/" aria-current="page">Puzzles</a></nav>
 </div></header>
 <main class="wrap">
+ <div class="puzzle-switch" role="tablist" aria-label="Puzzle">
+  <button type="button" id="tabConn" role="tab" aria-selected="true" aria-controls="connPanel">Connections</button>
+  <button type="button" id="tabSudo" role="tab" aria-selected="false" aria-controls="sudoPanel">Sudoku</button>
+ </div>
+ <section id="connPanel">
  <header class="coast-hero">
   <h1>Connections</h1>
   <p class="coast-lead">Find four groups of four. The same board is up for every visitor today. <span id="connDate"></span></p>
@@ -43,6 +48,8 @@
   <button class="btn" id="connShare" type="button">Share grid</button>
  </div>
  <p id="connMsg" class="coast-note" role="status"></p>
+ </section>
+ <section id="sudoPanel" hidden>
  <header class="coast-hero">
   <h1>Daily sudoku</h1>
   <p class="coast-lead">A 6×6 mini or a 9×9 board from today’s date. Notes, a timer, and a share line that leaves the digits out.</p>
@@ -60,6 +67,7 @@
  <div id="digits" class="row-actions"></div>
  <p id="sudoMsg" class="coast-note" role="status"></p>
  <pre id="shareOut" class="coast-note"></pre>
+ </section>
 </main>
 <footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme</div></footer>
 <script src="/retro-theme.js"></script>
@@ -69,8 +77,8 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=12"></script>
 <script src="/backup.js"></script>
-<script src="connections.js"></script>
+<script src="connections.js?v=2"></script>
 </body>
 </html>

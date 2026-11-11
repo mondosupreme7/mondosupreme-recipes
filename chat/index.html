@@ -24,8 +24,8 @@
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
-<link rel="stylesheet" href="/shell.css?v=7">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/shell.css?v=8">
+<link rel="stylesheet" href="/readable.css?v=14">
 <link rel="stylesheet" href="chat.css">
 </head>
 <body class="chat-page">
@@ -92,6 +92,7 @@
  </div>
  </div>
  <form id="composer" class="chat-compose">
+  <p class="trust-note">This room is public. Messages show your display name, not your email. Don’t share a phone number, address, or payment. The owner can remove a line. Report flags one on this phone.</p>
   <p class="chat-as">Chatting as <strong id="asName">Guest</strong> <button type="button" id="changeName">Change</button></p>
   <div class="compose-row">
    <input id="text" class="text" maxlength="500" autocomplete="off" enterkeyhint="send" aria-label="Message" placeholder="Message" required>
@@ -127,11 +128,11 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="chat.js"></script>
+<script src="chat.js?v=2"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=12"></script>
 <script src="/backup.js"></script>
 </body>
 </html>

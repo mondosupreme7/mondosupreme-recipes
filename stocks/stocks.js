@@ -1084,7 +1084,17 @@
         if (first) openDetail(first.symbol, false);
       }
     }).catch(function () {
-      document.getElementById('fresh').textContent = 'The saved screener could not be loaded. The last good snapshot stays on the server when a fetch fails.';
+      var fresh = document.getElementById('fresh');
+      fresh.textContent = 'The screener did not load. ';
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'btn';
+      retry.textContent = 'Retry';
+      retry.addEventListener('click', function () {
+        fresh.textContent = 'Loading the screener…';
+        loadSnapshot();
+      });
+      fresh.appendChild(retry);
     });
   }
 

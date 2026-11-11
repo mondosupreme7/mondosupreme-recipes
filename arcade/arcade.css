@@ -10,7 +10,7 @@
 .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;text-align:center;background:#000080;z-index:2}
 .overlay[hidden]{display:none!important}
 .cab-title,.overlay h2{margin:0;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#fde047;text-shadow:none}
-.blink{color:#86efac;font:700 1rem "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;animation:blink 1s steps(2) infinite}
+.blink{color:#ffffff;font:800 1.05rem "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;letter-spacing:.14em;animation:blink 1.2s steps(2) infinite}
 .how,.hint,.best-line{color:#111827;font-size:.92rem}
 .overlay .how,.overlay .hint,.overlay .best-line,.overlay label{color:#fff}
 .how{max-width:34ch}
@@ -41,5 +41,5 @@ body.is-playing .wrap{max-width:none;padding:0}
 body.is-playing .cabinet{min-height:calc(100dvh - var(--task-h));max-width:none;margin:0;box-shadow:none}
 body.is-playing .crt{height:calc(100dvh - var(--task-h) - 168px);min-height:0}
 .controls{padding-bottom:env(safe-area-inset-bottom)}
-@keyframes blink{50%{opacity:0}}
+@keyframes blink{50%{opacity:.85}}
 @media (prefers-reduced-motion: reduce){.blink{animation:none}}

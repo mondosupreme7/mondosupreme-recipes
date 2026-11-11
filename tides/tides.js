@@ -22,7 +22,20 @@
       return res.json();
     });
   }
-  function setText(id, text) { var n = $(id); if (n) n.textContent = text; }
+  function setText(id, text, state) {
+    var n = $(id);
+    if (!n) return;
+    n.textContent = text;
+    var card = n.closest('article');
+    if (!card) return;
+    card.classList.remove('is-loading', 'is-missing', 'is-error');
+    if (state) card.classList.add(state);
+  }
+  function settleOpen() {
+    document.querySelectorAll('.coast-card.is-loading strong').forEach(function (node) {
+      setText(node.id, 'Not available', 'is-missing');
+    });
+  }
   function paintChart(points, extremes) {
     var svg = $('tideChart');
     if (!svg) return;
@@ -97,14 +110,15 @@
       var periods = sea.hourly && sea.hourly.wave_period || [];
       var sst = sea.hourly && sea.hourly.sea_surface_temperature || [];
       var i = 0;
-      setText('waveHeight', waves.length ? Number(waves[i]).toFixed(1) + ' ft' : '—');
-      setText('wavePeriod', periods.length ? Math.round(periods[i]) + ' s' : '—');
+      setText('waveHeight', waves.length ? Number(waves[i]).toFixed(1) + ' ft' : 'Not available', waves.length ? '' : 'is-missing');
+      setText('wavePeriod', periods.length ? Math.round(periods[i]) + ' s' : 'Not available', periods.length ? '' : 'is-missing');
       var wind = wx.current || {};
-      setText('wind', wind.wind_speed_10m != null ? Math.round(wind.wind_speed_10m) + ' mph' : '—');
-      setText('uv', wind.uv_index != null ? String(Math.round(wind.uv_index)) : (wx.daily && wx.daily.uv_index_max ? String(Math.round(wx.daily.uv_index_max[0])) : '—'));
+      setText('wind', wind.wind_speed_10m != null ? Math.round(wind.wind_speed_10m) + ' mph' : 'Not available', wind.wind_speed_10m != null ? '' : 'is-missing');
+      var uv = wind.uv_index != null ? String(Math.round(wind.uv_index)) : (wx.daily && wx.daily.uv_index_max ? String(Math.round(wx.daily.uv_index_max[0])) : '');
+      setText('uv', uv || 'Not available', uv ? '' : 'is-missing');
       if (wx.daily && wx.daily.sunrise) setText('sunrise', new Date(wx.daily.sunrise[0]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }));
       if (wx.daily && wx.daily.sunset) setText('sunset', new Date(wx.daily.sunset[0]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }));
-      if (sst.length && $('waterTemp').textContent === '—') setText('waterTemp', Math.round(sst[0]) + '°');
+      if (sst.length && $('waterTemp') && $('waterTemp').textContent === 'Loading') setText('waterTemp', Math.round(sst[0]) + '°');
     });
   }
   function boot() {
@@ -134,12 +148,25 @@
       if (level) setText('waterLevel', Number(level.v).toFixed(2) + ' ft');
       var temp = (parts[3].data || [])[0];
       if (temp && temp.v != null) setText('waterTemp', Math.round(Number(temp.v)) + '°');
-      setText('tideNote', 'Station 8721604, Trident Pier. Heights are MLLW. The curve covers the next 48 hours.');
+      setText('tideNote', 'Station 8721604, Trident Pier. Heights are MLLW. The curve covers the next 48 hours. Updated ' + new Date().toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) + '.');
+      settleOpen();
     }).catch(function () {
-      setText('tideNote', 'NOAA tide predictions did not load. Surf and sky data may still appear below.');
+      setText('tideNote', 'NOAA tide predictions did not load.');
+      ['nextHigh', 'nextLow', 'waterLevel'].forEach(function (id) {
+        var node = $(id);
+        if (node && node.textContent === 'Loading') setText(id, 'Didn’t load', 'is-error');
+      });
+      var again = document.createElement('button');
+      again.type = 'button';
+      again.className = 'btn';
+      again.textContent = 'Retry tides';
+      again.addEventListener('click', function () { location.reload(); });
+      var note = $('tideNote');
+      if (note && !note.nextElementSibling) note.after(again);
     });
-    loadMarine().catch(function () {
+    loadMarine().then(settleOpen).catch(function () {
       setText('tideNote', ($('tideNote').textContent || '') + ' Marine weather did not load.');
+      settleOpen();
     });
     var year = $('yr');
     if (year) year.textContent = String(new Date().getFullYear());

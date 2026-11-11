@@ -79,7 +79,12 @@ body.wordle-page main.word-main{
 .kb-row:last-child{margin-bottom:0}
 .key{flex:1 1 0;min-width:0;box-sizing:border-box;height:var(--key,44px);min-height:40px;padding:0 1px;background:var(--surface,#fff);color:var(--ink,#0f172a);border:1px solid var(--line-strong,#7c8799);border-radius:8px;box-shadow:none;font:700 13px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .key.wide{flex:1.45 1 0;font-size:11px}
+.key{position:relative}
 .key[data-state="correct"]{background:#538d4e;color:#fff}
+.key[data-state="correct"]::after,.key[data-state="present"]::after,.key[data-state="absent"]::after{position:absolute;top:1px;right:3px;font:700 10px/1 Inter,sans-serif}
+.key[data-state="correct"]::after{content:"✓"}
+.key[data-state="present"]::after{content:"•"}
+.key[data-state="absent"]::after{content:"×"}
 .key[data-state="present"]{background:#c9b458;color:#111}
 .key[data-state="absent"]{background:#c62828;color:#fff;border-color:#8e1c1c}
 html[data-theme] #wordKeys button.key[data-state="correct"]{background:#3d7a38!important;color:#fff!important;border-color:#214d1e!important}

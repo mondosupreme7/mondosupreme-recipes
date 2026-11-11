@@ -19,9 +19,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
-<link rel="stylesheet" href="/shell.css?v=7">
+<link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="/coast.css">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/readable.css?v=14">
 </head>
 <body>
 <header class="site-header"><div class="wrap hdr">
@@ -34,16 +34,16 @@
   <p class="coast-lead">Live predictions for NOAA station 8721604, Trident Pier at Port Canaveral, plus Cocoa Beach swell, wind, UV, and the sun.</p>
  </header>
  <div class="coast-grid">
-  <article class="coast-card"><b>Next high</b><strong id="nextHigh">—</strong></article>
-  <article class="coast-card"><b>Next low</b><strong id="nextLow">—</strong></article>
-  <article class="coast-card"><b>Water level</b><strong id="waterLevel">—</strong></article>
-  <article class="coast-card"><b>Water temp</b><strong id="waterTemp">—</strong></article>
-  <article class="coast-card"><b>Wave height</b><strong id="waveHeight">—</strong></article>
-  <article class="coast-card"><b>Wave period</b><strong id="wavePeriod">—</strong></article>
-  <article class="coast-card"><b>Wind</b><strong id="wind">—</strong></article>
-  <article class="coast-card"><b>UV index</b><strong id="uv">—</strong></article>
-  <article class="coast-card"><b>Sunrise</b><strong id="sunrise">—</strong></article>
-  <article class="coast-card"><b>Sunset</b><strong id="sunset">—</strong></article>
+  <article class="coast-card is-loading"><b>Next high</b><strong id="nextHigh">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Next low</b><strong id="nextLow">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Water level</b><strong id="waterLevel">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Water temp</b><strong id="waterTemp">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Wave height</b><strong id="waveHeight">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Wave period</b><strong id="wavePeriod">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Wind</b><strong id="wind">Loading</strong></article>
+  <article class="coast-card is-loading"><b>UV index</b><strong id="uv">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Sunrise</b><strong id="sunrise">Loading</strong></article>
+  <article class="coast-card is-loading"><b>Sunset</b><strong id="sunset">Loading</strong></article>
  </div>
  <svg id="tideChart" class="tide-chart" viewBox="0 0 640 240" role="img" aria-label="48 hour tide curve"></svg>
  <p class="tide-legend"><span>Teal marks highs.</span><span>Amber marks lows.</span></p>
@@ -57,8 +57,8 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=12"></script>
 <script src="/backup.js"></script>
-<script src="tides.js"></script>
+<script src="tides.js?v=2"></script>
 </body>
 </html>
