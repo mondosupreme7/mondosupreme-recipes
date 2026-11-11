@@ -24,9 +24,9 @@
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
-<link rel="stylesheet" href="/shell.css?v=7">
+<link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="stocks.css?v=10">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/readable.css?v=14">
 </head>
 <body>
 <div class="ticker quote-tape" aria-hidden="true"><div class="ticker-track" id="tapeTrack"></div></div>
@@ -84,7 +84,7 @@
   <p class="rules-foot">General education, not financial advice.</p>
  </details>
  <div class="quote-main">
- <p id="fresh" class="quote-fresh">Loading the screener…</p>
+ <p id="fresh" class="quote-fresh" aria-busy="true">Loading the screener…</p>
  <section id="swingWatch" class="swing-watch" hidden>
   <h2>Top stock to watch</h2>
   <p id="swingEmpty" class="swing-empty" hidden>No name passes the swing rules on this pass.</p>
@@ -195,12 +195,12 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=11"></script>
+<script src="stocks.js?v=12"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=12"></script>
 <script src="/backup.js"></script>
 </body>
 </html>

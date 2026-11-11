@@ -833,6 +833,7 @@
 
   function paintFresh() {
     var box = document.getElementById('fresh');
+    box.removeAttribute('aria-busy');
     if (!rows.length) {
       box.textContent = 'The screener snapshot has not been fetched yet.';
       return;
@@ -1266,7 +1267,19 @@
         else document.getElementById('detail').hidden = true;
       }
     }).catch(function () {
-      document.getElementById('fresh').textContent = 'The saved screener could not be loaded. The last good snapshot stays on the server when a fetch fails.';
+      var fresh = document.getElementById('fresh');
+      fresh.removeAttribute('aria-busy');
+      fresh.textContent = 'The screener did not load. ';
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'btn';
+      retry.textContent = 'Retry';
+      retry.addEventListener('click', function () {
+        fresh.textContent = 'Loading the screener…';
+        fresh.setAttribute('aria-busy', 'true');
+        loadSnapshot();
+      });
+      fresh.appendChild(retry);
     });
   }
 

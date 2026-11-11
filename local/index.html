@@ -19,9 +19,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
-<link rel="stylesheet" href="/shell.css?v=7">
+<link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="/coast.css">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/readable.css?v=14">
 <link rel="stylesheet" href="local.css">
 </head>
 <body class="local-page">
@@ -57,9 +57,12 @@
    <p id="evStatus" role="status"></p>
   </form>
  </section>
+ <details class="pet-fold" id="placeFilters">
+  <summary>Filter places</summary>
  <label>Search <input id="q" type="search" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Pier, trivia, village"></label>
  <div id="towns" class="filter-row" role="group" aria-label="Town"></div>
  <div id="cats" class="filter-row" role="group" aria-label="Category"></div>
+ </details>
  <p id="placeCount" class="coast-note"></p>
  <div id="places" class="place-list"></div>
  <p id="tipNote" class="coast-note">Tips are read-only. Only an admin can add one.</p>
@@ -82,7 +85,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=12"></script>
 <script src="/backup.js"></script>
 <script src="local.js"></script>
 <script src="events.js"></script>

@@ -486,6 +486,14 @@
   function ownsItem(item) {
     return !!(user && item && item.author && item.author === user.uid);
   }
+  function reported(id) {
+    try { return localStorage.getItem('mondosupreme.report.market.' + id) === '1'; }
+    catch (e) { return false; }
+  }
+  function rememberReport(kind, id) {
+    try { localStorage.setItem('mondosupreme.report.' + kind + '.' + id, '1'); }
+    catch (e) {}
+  }
   function ownerButtons(parent, item) {
     var own = ownsItem(item);
     if (!isOwner && !own) return;
@@ -637,9 +645,26 @@
     share.setAttribute('data-act', 'share');
     share.setAttribute('data-id', id);
     share.textContent = 'Share';
+    var report = document.createElement('button');
+    report.type = 'button';
+    report.className = 'btn';
+    report.textContent = reported(id) ? 'Flagged on this phone' : 'Report';
+    report.setAttribute('aria-pressed', reported(id) ? 'true' : 'false');
+    report.addEventListener('click', function () {
+      rememberReport('market', id);
+      report.textContent = 'Flagged on this phone';
+      report.setAttribute('aria-pressed', 'true');
+      var note = view.querySelector('.trust-note');
+      if (note) note.textContent = 'Flagged on this phone. Only the signed-in owner can delete a public listing. Meet in public and don’t pay first.';
+    });
     back.appendChild(backLink);
     back.appendChild(share);
+    back.appendChild(report);
     view.appendChild(back);
+    var safety = document.createElement('p');
+    safety.className = 'trust-note';
+    safety.textContent = 'Public listing. Your email is not shown. Meet in a public place. Mondosupreme does not take payment. Report flags it on this phone; the owner deletes from the signed-in tools.';
+    view.appendChild(safety);
     if (!item) {
       var missing = document.createElement('p');
       missing.textContent = 'That listing is gone.';

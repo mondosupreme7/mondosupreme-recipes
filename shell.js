@@ -29,32 +29,7 @@
     return appsReady();
   }
 
-  var sections = [
-    { group: 'Home', title: 'Home', href: '/', text: 'landing mondosupreme' },
-    { group: 'Home', title: 'Search', href: '/search/', text: 'ask mondo jeeves search engine cyber butler altavista yahoo' },
-    { group: 'Kitchen', title: 'Recipes', href: '/recipes/', text: 'kitchen cookbook food' },
-    { group: 'Kitchen', title: 'Grocery List', href: '/grocery/', text: 'mondorecipe grocery list recipes servings aisle shopping' },
-    { group: 'Kitchen', title: 'Recipe TV', href: '/daily-recipe/', text: 'daily recipe youtube mondotv realplayer chef' },
-    { group: 'Harbor', title: 'Cruises', href: '/cruises/', text: 'ships harbor royal caribbean' },
-    { group: 'Harbor', title: 'Weather', href: '/weather/', text: 'weather radar doppler forecast cocoa port canaveral local on the 8s' },
-    { group: 'Harbor', title: 'Launches', href: '/launches/', text: 'cape canaveral kennedy rocket falcon artemis starship countdown 32927' },
-    { group: 'Harbor', title: 'Stocks', href: '/stocks/', text: 'mondoquote oversold rsi swing screen stocks' },
-    { group: 'Notes', title: 'Wiki', href: '/wiki/', text: 'notes wiki' },
-    { group: 'Notes', title: 'Forum', href: '/forum/', text: 'bulletin posts forum' },
-    { group: 'Shop', title: 'Market', href: '/market/', text: 'ebay classifieds market mondobay for sale' },
-    { group: 'Play', title: 'Word Game', href: '/wordle/', text: 'mondoword daily wordle puzzle five letter cyber' },
-    { group: 'Play', title: 'Crossword', href: '/crossword/', text: 'mini crossword trivia daily five by five clues' },
-    { group: 'Play', title: '8-Ball', href: '/8ball/', text: 'magic 8-ball mystic oracle fortune sphere' },
-    { group: 'Play', title: 'Paint', href: '/board/', text: 'drawing whiteboard paint board' },
-    { group: 'Play', title: 'Chat', href: '/chat/', text: 'chat room talk' },
-    { group: 'Play', title: 'Arcade', href: '/arcade/', text: 'games arcade' },
-    { group: 'Play', title: 'Pet', href: '/pet/', text: 'virtual pet egg mondogotchi habitat' },
-    { group: 'Play', title: 'Radio', href: '/radio/', text: 'mondofm radio soundboard winamp somafm synth' },
-    { group: 'Play', title: 'MMO', href: '/mmo/', text: 'world of mondocraft' },
-    { group: 'Play', title: 'FPS', href: '/fps/', text: 'half-strike fortress' },
-    { group: 'Play', title: 'ASH_HOUSE.EXE', href: '/escape/', text: 'escape door locked room' },
-    { group: 'Home', title: 'Privacy', href: '/privacy/', text: 'privacy delete my data account' }
-  ];
+  /* Find reads the same program list as All Apps. Keywords live on each program. */
   var games = [
     { kind: 'Game', title: 'High Seas Cruiser', href: '/arcade/', text: 'arcade seas cruise cart' },
     { kind: 'Game', title: 'Supreme Kitchen Rush', href: '/arcade/', text: 'arcade kitchen cart' },
@@ -145,9 +120,16 @@
   }
   function catalog() {
     var list = [];
-    sections.forEach(function (item) {
-      addItem(list, { kind: 'Section', title: item.title, href: item.href, text: item.group + ' ' + item.text });
+    addItem(list, { kind: 'Section', title: 'Home', href: '/', text: 'home landing mondosupreme portal dashboard launcher' });
+    programs.forEach(function (item) {
+      addItem(list, {
+        kind: 'Section',
+        title: item.title,
+        href: item.href,
+        text: [item.group, item.title, item.text].join(' ')
+      });
     });
+    addItem(list, { kind: 'Section', title: 'Privacy', href: '/privacy/', text: 'privacy delete my data account policy' });
     games.forEach(function (item) { addItem(list, item); });
     return list.concat(localItems(), remote);
   }
@@ -357,7 +339,7 @@
     title.id = 'shellFindTitle';
     title.textContent = 'Find';
     var label = document.createElement('label');
-    label.textContent = 'Search recipes, ships, notes, posts, listings, and games';
+    label.textContent = 'Search apps, recipes, ships, notes, posts, listings, and games';
     var input = document.createElement('input');
     input.id = 'shellFindInput';
     input.type = 'search';
@@ -366,7 +348,7 @@
     input.spellcheck = false;
     input.setAttribute('autocapitalize', 'off');
     input.setAttribute('autocorrect', 'off');
-    input.placeholder = 'Try pasta, Oasis, fortress, or 8-ball';
+    input.placeholder = 'Try tide, pasta, local, or 8-ball';
     input.setAttribute('aria-label', 'Search the site');
     label.appendChild(input);
     var results = document.createElement('ul');
@@ -443,32 +425,32 @@
   var AUDIO_KEY = 'mondosupreme.audio.v1';
   var FX_KEY = 'mondosupreme.fx.v1';
   var programs = [
-    { title: 'Search', href: '/search/', icon: 'search' },
-    { title: 'Recipes', href: '/recipes/', icon: 'pot' },
-    { title: 'Grocery List', href: '/grocery/', icon: 'meal' },
-    { title: "Recipe TV", href: '/daily-recipe/', icon: 'tv' },
-    { title: 'Cruises', href: '/cruises/', icon: 'ship' },
-    { title: "Weather", href: '/weather/', icon: 'radar' },
-    { title: "Launch Control", href: '/launches/', icon: 'rocket' },
-    { title: 'Tide & Surf', href: '/tides/', icon: 'tide' },
-    { title: 'Connections', href: '/connections/', icon: 'puzzle' },
-    { title: 'Local Guide', href: '/local/', icon: 'pin' },
-    { title: 'Tropics', href: '/tropics/', icon: 'storm' },
-    { title: "Stocks", href: '/stocks/', icon: 'chart' },
-    { title: "Word Game", href: '/wordle/', icon: 'word' },
-    { title: "Mini Crossword", href: '/crossword/', icon: 'cross' },
-    { title: 'Wiki', href: '/wiki/', icon: 'book' },
-    { title: 'Paint', href: '/board/', icon: 'paint' },
-    { title: 'Chat', href: '/chat/', icon: 'aim' },
-    { title: 'Arcade', href: '/arcade/', icon: 'joy' },
-    { title: 'Virtual Pet', href: '/pet/', icon: 'egg' },
-    { title: "Radio", href: '/radio/', icon: 'radio' },
-    { title: 'Bulletin Forum', href: '/forum/', icon: 'forum' },
-    { title: "Marketplace", href: '/market/', icon: 'gavel' },
-    { title: "Mystic 8-Ball", href: '/8ball/', icon: 'ball' },
-    { title: 'Craft', href: '/mmo/', icon: 'sword' },
-    { title: "Half-Strike '99", href: '/fps/', icon: 'gun' },
-    { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door' }
+    { title: 'Search', href: '/search/', icon: 'search', group: 'Finance & Search', text: 'ask mondo search engine cyber butler find' },
+    { title: 'Recipes', href: '/recipes/', icon: 'pot', group: 'Kitchen & Food', text: 'kitchen cookbook food cooking pasta dinner' },
+    { title: 'Grocery List', href: '/grocery/', icon: 'meal', group: 'Kitchen & Food', text: 'grocery list shopping aisle servings cart' },
+    { title: 'Recipe TV', href: '/daily-recipe/', icon: 'tv', group: 'Kitchen & Food', text: 'daily recipe youtube show realplayer chef television' },
+    { title: 'Cruises', href: '/cruises/', icon: 'ship', group: 'Space Coast & Travel', text: 'ships harbor cruise royal caribbean port canaveral sailing' },
+    { title: 'Weather', href: '/weather/', icon: 'radar', group: 'Space Coast & Travel', text: 'weather radar doppler forecast cocoa port canaveral temperature rain' },
+    { title: 'Launch Control', href: '/launches/', icon: 'rocket', group: 'Space Coast & Travel', text: 'launch launches cape canaveral kennedy rocket falcon artemis starship countdown' },
+    { title: 'Tide & Surf', href: '/tides/', icon: 'tide', group: 'Space Coast & Travel', text: 'tide tides surf wave waves swell beach ocean port canaveral trident pier marine' },
+    { title: 'Local Guide', href: '/local/', icon: 'pin', group: 'Space Coast & Travel', text: 'local guide events calendar cocoa merritt island cocoa beach brevard town happening' },
+    { title: 'Tropics', href: '/tropics/', icon: 'storm', group: 'Space Coast & Travel', text: 'tropics tropical hurricane hurricanes storm storms atlantic basin cyclone nhc' },
+    { title: 'Connections', href: '/connections/', icon: 'puzzle', group: 'Game Studio', text: 'connections sudoku puzzle groups four daily mini' },
+    { title: 'Stocks', href: '/stocks/', icon: 'chart', group: 'Finance & Search', text: 'stocks market quote oversold rsi swing screen ticker' },
+    { title: 'Word Game', href: '/wordle/', icon: 'word', group: 'Game Studio', text: 'wordle word game daily five letter puzzle' },
+    { title: 'Mini Crossword', href: '/crossword/', icon: 'cross', group: 'Game Studio', text: 'mini crossword trivia daily clues' },
+    { title: 'Wiki', href: '/wiki/', icon: 'book', group: 'Finance & Search', text: 'wiki notes notebook pages' },
+    { title: 'Paint', href: '/board/', icon: 'paint', group: 'Community', text: 'paint drawing whiteboard board canvas' },
+    { title: 'Chat', href: '/chat/', icon: 'aim', group: 'Community', text: 'chat room talk messages public' },
+    { title: 'Arcade', href: '/arcade/', icon: 'joy', group: 'Game Studio', text: 'arcade games cruiser brick breaker cabinet' },
+    { title: 'Virtual Pet', href: '/pet/', icon: 'egg', group: 'Game Studio', text: 'virtual pet egg tamagotchi habitat park' },
+    { title: 'Radio', href: '/radio/', icon: 'radio', group: 'Community', text: 'radio soundboard stream stations synth' },
+    { title: 'Bulletin Forum', href: '/forum/', icon: 'forum', group: 'Community', text: 'forum bulletin board posts topics' },
+    { title: 'Marketplace', href: '/market/', icon: 'gavel', group: 'Community', text: 'marketplace market classifieds for sale listing shop ebay' },
+    { title: 'Mystic 8-Ball', href: '/8ball/', icon: 'ball', group: 'Game Studio', text: 'magic 8-ball mystic oracle fortune eight ball' },
+    { title: 'Craft', href: '/mmo/', icon: 'sword', group: 'Game Studio', text: 'craft mmo mondocraft faction class goldhaven realm' },
+    { title: "Half-Strike '99", href: '/fps/', icon: 'gun', group: 'Game Studio', text: 'half-strike fps fortress shooter labs' },
+    { title: 'ASH_HOUSE.EXE', href: '/escape/', icon: 'door', group: 'Game Studio', text: 'ash house escape door locked room begin' }
   ];
   var toyLinks = [
     { title: '56k Dial-Up', href: '/#dialup', icon: 'modem' },
@@ -756,14 +738,21 @@
       footer.appendChild(foot);
       document.body.appendChild(footer);
     }
+    if (document.body.classList.contains('home-page') && !foot.querySelector('.studio-about')) {
+      var about = document.createElement('p');
+      about.className = 'studio-about';
+      about.textContent = 'Mondosupreme is a personal phone home screen for recipes, the Space Coast, and small games.';
+      foot.insertBefore(about, foot.firstChild);
+    }
     if (foot.querySelector('a[href="/privacy/"]')) return;
-    if (foot.textContent.trim()) foot.appendChild(document.createTextNode(' · '));
     var link = document.createElement('a');
     link.href = '/privacy/';
     link.textContent = 'Privacy';
-    var visits = foot.querySelector('.home-visits');
-    if (visits) foot.insertBefore(link, visits);
-    else foot.appendChild(link);
+    var copy = foot.querySelector('.studio-footer') || foot.querySelector('p:not(.home-visits):not(.studio-about)');
+    if (copy) {
+      copy.appendChild(document.createTextNode(' · '));
+      copy.appendChild(link);
+    } else foot.appendChild(link);
   }
   function boot() {
     writeFx({ scan: 0, stars: 0 });
@@ -892,6 +881,9 @@
     actions.appendChild(findBtn);
     actions.appendChild(muteBtn);
     actions.appendChild(ownerBtn);
+    var drawerOwner = ownerBtn.cloneNode(true);
+    drawerOwner.id = 'shellOwnerDrawer';
+    drawerOwner.classList.add('studio-drawer-account');
     taskbar.appendChild(brand);
     taskbar.appendChild(links);
     taskbar.appendChild(start);
@@ -899,6 +891,11 @@
     taskbar.appendChild(clock);
     document.body.appendChild(taskbar);
     document.body.appendChild(menu);
+    menu.appendChild(drawerOwner);
+    drawerOwner.addEventListener('click', function () {
+      setMenu(false);
+      ownerBtn.click();
+    });
     var dockNames = { Home: 'home', Recipes: 'pot', Stocks: 'chart', Weather: 'radar', Search: 'search' };
     var dock = document.createElement('nav');
     dock.className = 'studio-dock';
@@ -929,7 +926,7 @@
     more.setAttribute('aria-label', 'All apps');
     more.addEventListener('click', function (event) {
       event.stopPropagation();
-      start.click();
+      setMenu(!menuOpen());
     });
     dock.appendChild(more);
     document.body.appendChild(dock);
@@ -1009,6 +1006,7 @@
     });
 
     function paintAccount(btn, label) {
+      if (!btn) return;
       var face = btn.querySelector('.nav-label');
       var chip = btn.querySelector('.nav-avatar');
       if (face) {
@@ -1029,7 +1027,9 @@
       var on = isOwnerUser();
       var label = window.MONDO_MEMBER ? window.MONDO_MEMBER.buttonLabel() : (on ? 'Webmaster' : 'Sign In');
       paintAccount(ownerBtn, label);
+      paintAccount(drawerOwner, label);
       ownerBtn.classList.toggle('is-owner', on);
+      drawerOwner.classList.toggle('is-owner', on);
       ownerBtn.setAttribute('aria-pressed', window.MONDO_MEMBER && window.MONDO_MEMBER.isMember() ? 'true' : (on ? 'true' : 'false'));
     }
     document.addEventListener('mondo-owner', paintOwner);
@@ -1065,6 +1065,7 @@
     });
 
     armDialogs(document);
+    trackKeyboard();
     var current = nav.querySelector('[aria-current="page"]');
     if (current && current.scrollIntoView) current.scrollIntoView({ inline: 'center', block: 'nearest' });
 
@@ -1075,6 +1076,18 @@
     logVisit();
   }
 
+  function trackKeyboard() {
+    var vv = window.visualViewport;
+    if (!vv) return;
+    function sync() {
+      var overlap = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      document.documentElement.style.setProperty('--kb', overlap + 'px');
+      document.documentElement.classList.toggle('kb-open', overlap > 80);
+    }
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    sync();
+  }
   function isBot() {
     var ua = navigator.userAgent || '';
     if (!ua || ua.length < 20) return true;

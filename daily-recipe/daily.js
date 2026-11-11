@@ -122,8 +122,27 @@
     currentIndex = index == null ? indexOf(video) : index;
     mode = label;
     var frame = $('player');
-    var src = 'https://www.youtube-nocookie.com/embed/' + video.videoId + '?rel=0';
-    if (frame && frame.src.indexOf(video.videoId) === -1) frame.src = src;
+    var poster = $('crtPoster');
+    var thumb = $('crtThumb');
+    var preview = $('crtStatus');
+    if (frame) {
+      frame.hidden = true;
+      frame.removeAttribute('src');
+    }
+    if (poster) poster.hidden = false;
+    if (thumb) {
+      thumb.hidden = false;
+      if (preview) preview.hidden = true;
+      thumb.alt = 'Still from ' + (video.title || 'today’s recipe');
+      thumb.onerror = function () {
+        thumb.hidden = true;
+        if (preview) {
+          preview.hidden = false;
+          preview.textContent = 'The preview didn’t load. Play opens the video here, or use Watch on YouTube.';
+        }
+      };
+      thumb.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(video.videoId) + '/hqdefault.jpg';
+    }
     setText('channelReadout', channelLabel(currentIndex));
     setText('showTitle', video.title);
     var bits = [video.channel || 'YouTube', video.published ? 'published ' + video.published : ''].filter(Boolean);
@@ -332,6 +351,15 @@
     });
   }
   function bind() {
+    var posterBtn = $('crtPoster');
+    if (posterBtn) posterBtn.addEventListener('click', function () {
+      if (!current) return;
+      var frame = $('player');
+      if (!frame) return;
+      frame.hidden = false;
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + current.videoId + '?rel=0&autoplay=1';
+      posterBtn.hidden = true;
+    });
     $('chMinus').addEventListener('click', function () { step(-1); });
     $('chPlus').addEventListener('click', function () { step(1); });
     $('surprise').addEventListener('click', surprise);
