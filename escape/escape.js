@@ -19,13 +19,6 @@ const ITEMS = {
   ring: 'Copper ring',
   glass: 'Green glass'
 };
-const ITEM_SHORT = {
-  key: 'Key',
-  matches: 'Matches',
-  lens: 'Lens',
-  ring: 'Ring',
-  glass: 'Glass'
-};
 const HINTS = {
   cupboard: [
     'The sign names three places, in order.',
@@ -754,7 +747,7 @@ function render() {
       sprite.setAttribute('aria-hidden', 'true');
       paintItem(sprite, id);
       const label = document.createElement('span');
-      label.textContent = ITEM_SHORT[id] || ITEMS[id];
+      label.textContent = ITEMS[id];
       btn.append(sprite, label);
       btn.setAttribute('aria-label', ITEMS[id]);
       btn.setAttribute('aria-pressed', state.selected === id ? 'true' : 'false');
