@@ -8,7 +8,7 @@
 .rules-status{margin:0 0 12px;font-weight:700;color:#111827}
 .rules-pre,.rules-fallback{
   display:block;width:100%;box-sizing:border-box;margin:0;white-space:pre;overflow:auto;
-  max-height:70vh;background:#111827;color:#f8fafc;padding:12px;border:2px inset #808080;
+  max-height:calc(70vh / var(--page-scale, 1));background:#111827;color:#f8fafc;padding:12px;border:2px inset #808080;
   font:14px/1.45 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace
 }
 .rules-fallback{min-height:240px}

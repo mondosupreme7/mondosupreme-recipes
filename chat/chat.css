@@ -45,7 +45,7 @@ body.chat-page{display:flex;flex-direction:column;background:var(--bg,#f4f3ef);c
 .chat-menu[hidden]{display:none}
 .who-panel{
   flex:none;
-  max-height:46dvh;
+  max-height:calc(46dvh / var(--page-scale, 1));
   overflow:auto;
   padding:10px 12px 12px;
   background:var(--paper,#fff);

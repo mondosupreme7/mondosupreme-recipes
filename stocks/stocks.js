@@ -49,9 +49,10 @@
       bottom = 0;
     }
     var root = document.documentElement;
-    root.style.setProperty('--vv-top', top + 'px');
-    root.style.setProperty('--vv-bottom', bottom + 'px');
-    root.style.setProperty('--vv-keyboard', keyboard + 'px');
+    var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : function (n) { return n; };
+    root.style.setProperty('--vv-top', cssPx(top) + 'px');
+    root.style.setProperty('--vv-bottom', cssPx(bottom) + 'px');
+    root.style.setProperty('--vv-keyboard', cssPx(keyboard) + 'px');
   }
   syncVisibleChrome();
   window.addEventListener('resize', syncVisibleChrome);

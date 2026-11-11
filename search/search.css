@@ -2,8 +2,8 @@
 .search-page{overflow-x:clip;background:var(--bg,#f4f3ef);color:var(--ink,#0f172a)}
 .search-page .wrap{
   max-width:980px;margin:0 auto;
-  padding-left:max(12px, env(safe-area-inset-left, 0px));
-  padding-right:max(12px, env(safe-area-inset-right, 0px))
+  padding-left:max(12px, (env(safe-area-inset-left, 0px) / var(--page-scale, 1)));
+  padding-right:max(12px, (env(safe-area-inset-right, 0px) / var(--page-scale, 1)))
 }
 .ask-main{padding-bottom:16px;min-width:0}
 .ask-hero{display:flex;flex-direction:row;align-items:center;gap:10px;margin:4px 0 8px;min-width:0}

@@ -19,12 +19,12 @@
 .wiki-form{padding:12px;margin:8px 0 28px;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
 .wiki-form label,.wiki-form .meta,.wiki-form .wiki-label-row{color:#111827}
 .wiki-form input,.wiki-form textarea{width:100%;font-size:16px}
-.wiki-form textarea{min-height:42vh;resize:vertical;font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;line-height:1.5}
+.wiki-form textarea{min-height:calc(42vh / var(--page-scale, 1));resize:vertical;font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;line-height:1.5}
 .wiki-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;font-size:.86rem;margin-top:4px}
 @media(min-width:960px){
  .wiki-panes.is-preview{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 }
-.wiki-preview{background:#fff;color:#111827;border:2px solid #003399;border-radius:0;padding:8px 18px 18px;min-height:42vh}
+.wiki-preview{background:#fff;color:#111827;border:2px solid #003399;border-radius:0;padding:8px 18px 18px;min-height:calc(42vh / var(--page-scale, 1))}
 .wiki-form .form-actions{position:sticky;bottom:0;background:#c0c0c0;padding:12px 0 8px;justify-content:flex-end;z-index:2}
 .wiki-form .form-actions .btn.danger{margin-right:auto}
 .wiki-form .end{display:flex;gap:10px}

@@ -85,7 +85,7 @@
 .pog{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffe14a,#ff6600 55%,#c4553d);border:4px solid #000;font:700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;cursor:pointer;display:block;margin:0 auto}
 .bsod{position:fixed;inset:0;z-index:200;background:#0000aa;color:#fff;font:700 16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;padding:24px;overflow:auto}
 .bsod[hidden]{display:none}
-.bsod pre{white-space:pre-wrap;margin:8vh auto;max-width:46ch}
+.bsod pre{white-space:pre-wrap;margin:calc(8vh / var(--page-scale, 1)) auto;max-width:46ch}
 @media(max-width:900px){
  .profile-layout{grid-template-columns:1fr}
 }

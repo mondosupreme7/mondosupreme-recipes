@@ -11,11 +11,11 @@ html[data-theme] body.latch-page{
   left:0 !important;
   right:0 !important;
   width:100% !important;
-  height:100svh !important;
-  height:var(--vv-h, 100svh) !important;
+  height:calc(100svh / var(--page-scale, 1)) !important;
+  height:var(--vv-h, calc(100svh / var(--page-scale, 1))) !important;
   min-height:0 !important;
-  max-height:100svh !important;
-  max-height:var(--vv-h, 100svh) !important;
+  max-height:calc(100svh / var(--page-scale, 1)) !important;
+  max-height:var(--vv-h, calc(100svh / var(--page-scale, 1))) !important;
   margin:0 !important;
   padding:var(--latch-nav, 48px) 0 0 !important;
   overflow:hidden !important;
@@ -337,7 +337,7 @@ html[data-theme] body.latch-page button.night-btn:active{
   display:flex;
   flex-direction:column;
   gap:8px;
-  max-height:calc(var(--vv-h, 100svh) - var(--latch-nav, 48px) - 16px);
+  max-height:calc(var(--vv-h, (100svh / var(--page-scale, 1))) - var(--latch-nav, 48px) - 16px);
   overflow:auto;
   background:#16110e;
   color:#f6e6d0;
