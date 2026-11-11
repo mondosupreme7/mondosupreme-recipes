@@ -21,7 +21,7 @@ const SAMPLES=[
 const PUSHED='mondosupreme.recipes.pushed.v1';
 const RULES_BANNER='Server sync waiting on updated Firebase rules — using local storage until published';
 const PHOTO_MAX=200000;
-let recipes, favs, state={q:'',cat:'',tag:'',fav:false,source:'',cuisine:''};
+let recipes, favs, state={q:'',cat:'',tag:'',fav:false,source:'',cuisine:'',protein:'',time:''};
 const CUISINE_ORDER=['British & Irish','Fusion & Everyday','American & BBQ','Southeast Asian','Chinese','Italian','Indian & South Asian','French','German, Nordic & Eastern European','Mexican & Tex-Mex','Greek, Turkish & Mediterranean','Spanish & Portuguese','Middle Eastern & African','Japanese & Korean','Caribbean & Latin American'];
 let chef=null, chefPromise=null, chefParts={}, chefPage=0;
 const CHEF_PAGE=24;
@@ -420,8 +420,30 @@ function publicNotes(recipe){
 function chefMatches(){
   if(!chef)return [];
   const q=state.q.toLowerCase();
-  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||r.cuisine===state.cuisine) && !state.tag && (!state.fav||favs.has(r.id)) &&
+  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||cuisineName(r)===state.cuisine) && (!state.protein||proteinName(r)===state.protein) && (!state.time||timeName(r)===state.time) && !state.tag && (!state.fav||favs.has(r.id)) &&
     (!q||[r.title,r.q,r.cuisine,r.cuisineDetail,r.category].join(' ').toLowerCase().includes(q)));
+}
+function proteinName(r){
+  const cat=String(r.category||'');
+  if(/chicken/i.test(cat))return 'Chicken';
+  if(/beef|steak/i.test(cat))return 'Beef';
+  if(/pork|bacon/i.test(cat))return 'Pork';
+  if(/sea|fish|shrimp/i.test(cat))return 'Seafood';
+  const blob=[r.title,r.q,...(r.tags||[])].join(' ').toLowerCase();
+  if(/\b(chicken|thighs|wings)\b/.test(blob))return 'Chicken';
+  if(/\b(beef|steak|brisket)\b/.test(blob))return 'Beef';
+  if(/\b(pork|bacon|sausage|ham)\b/.test(blob))return 'Pork';
+  if(/\b(fish|shrimp|salmon|prawn|seafood|cod|tuna)\b/.test(blob))return 'Seafood';
+  return 'Other';
+}
+function timeName(r){
+  const minutes=(+r.prep||0)+(+r.cook||0);
+  if(minutes>0&&minutes<=30)return 'Quick';
+  if(minutes>30)return 'Longer';
+  const blob=[r.title,r.q,...(r.tags||[])].join(' ').toLowerCase();
+  if(/\b(quick|15[- ]?min(?:ute)?s?|20[- ]?min(?:ute)?s?|25[- ]?min(?:ute)?s?|30[- ]?min(?:ute)?s?|half an hour)\b/.test(blob))return 'Quick';
+  if(/\b(slow|overnight|45[- ]?min(?:ute)?s?|60[- ]?min(?:ute)?s?|90[- ]?min(?:ute)?s?|\d+\s*hours?)\b/.test(blob))return 'Longer';
+  return '';
 }
 function saveChefToMine(id){
   return loadChefRecipe(id).then(full=>{
@@ -543,12 +565,24 @@ function orderedCuisines(names){
   names.forEach(name=>{if(!list.includes(name))list.push(name)});
   return list;
 }
+function paintFacetChips(host, label, current, names, attr){
+  if(!host)return;
+  const show=state.source==='backyard'&&!!chef;
+  host.hidden=!show;
+  if(!show){host.innerHTML='';return}
+  host.innerHTML=`<button type="button" class="file-tab" data-${attr}="" aria-pressed="${current?'false':'true'}">${label}</button>`+
+    names.map(name=>`<button type="button" class="file-tab" data-${attr}="${esc(name)}" aria-pressed="${current===name?'true':'false'}">${esc(name)}</button>`).join('');
+}
 function paintCuisineChips(){
   const host=$('#cuisineChips');
   if(!host)return;
   const show=state.source==='backyard'&&!!chef;
   host.hidden=!show;
-  if(!show){host.innerHTML='';return}
+  if(!show){
+    host.innerHTML='';
+    [$('#proteinChips'),$('#timeChips')].forEach(node=>{if(node){node.hidden=true;node.innerHTML='';}});
+    return;
+  }
   const pool=chef.items.filter(r=>!state.cat||r.category===state.cat);
   const counts=new Map();
   pool.forEach(r=>{const name=cuisineName(r);counts.set(name,(counts.get(name)||0)+1)});
@@ -556,6 +590,12 @@ function paintCuisineChips(){
   const total=[...counts.values()].reduce((sum,n)=>sum+n,0);
   host.innerHTML=`<button type="button" class="file-tab" data-cuisine="" aria-pressed="${state.cuisine?'false':'true'}">All <span>${total.toLocaleString('en-US')}</span></button>`+
     names.map(name=>`<button type="button" class="file-tab" data-cuisine="${esc(name)}" aria-pressed="${state.cuisine===name?'true':'false'}">${esc(name)} <span>${(counts.get(name)||0).toLocaleString('en-US')}</span></button>`).join('');
+  const proteinPool=pool.filter(r=>!state.cuisine||cuisineName(r)===state.cuisine);
+  const proteins=['Chicken','Beef','Pork','Seafood','Other'].filter(name=>proteinPool.some(r=>proteinName(r)===name));
+  paintFacetChips($('#proteinChips'), 'Any protein', state.protein, proteins, 'protein');
+  const timePool=proteinPool.filter(r=>!state.protein||proteinName(r)===state.protein);
+  const times=['Quick','Longer'].filter(name=>timePool.some(r=>timeName(r)===name));
+  paintFacetChips($('#timeChips'), 'Any time', state.time, times, 'time');
 }
 function fillCuisine(details, reset){
   const box=details.querySelector('.cuisine-cards');
@@ -817,7 +857,8 @@ function paintDetail(r, readonly){
    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
    <div class="cols"><section><h2>Ingredients</h2>
    <div class="scale-bar" role="group" aria-label="Serving scale">${factors.map(([n,label])=>`<button type="button" class="btn ghost scale-btn" data-scale="${n}" aria-pressed="${detailScale===n?'true':'false'}">${label}</button>`).join('')}
-   <button type="button" class="btn primary" id="addGrocery">Add to Grocery List</button></div>
+   <button type="button" class="btn primary" id="addGrocery">Add ingredients to Grocery List</button>
+   <button type="button" class="btn" id="cookOpen">Cook</button></div>
    <ul>${lines.map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
    <section><h2>Steps</h2><ol>${(r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section></div>
    ${notes?`<div class="notes"><strong>Notes:</strong> ${esc(notes)}</div>`:''}</div></article>`;
@@ -826,6 +867,7 @@ function paintDetail(r, readonly){
     btn.onclick=()=>{detailScale=Number(btn.dataset.scale)||1;renderDetail(r.id);};
   });
   $('#addGrocery').onclick=()=>{addGroceryLines(lines,r);toast('Added to Grocery List');openGrocery();};
+  if($('#cookOpen'))$('#cookOpen').onclick=()=>openCook(r, lines);
   if($('#saveMine'))$('#saveMine').onclick=()=>{saveChefToMine(r.id)};
   $('#dPrint').onclick=()=>window.print();
   if($('#dEdit'))$('#dEdit').onclick=()=>openEditor(r);
@@ -2402,7 +2444,7 @@ function init(){
     const btn=e.target.closest('[data-source]');
     if(!btn)return;
     state.source=btn.dataset.source||'';
-    state.cat=''; state.tag=''; state.cuisine=''; chefPage=0;
+    state.cat=''; state.tag=''; state.cuisine=''; state.protein=''; state.time=''; chefPage=0;
     if(state.source==='backyard'){
       renderList();
       loadChefIndex().then(()=>renderList()).catch(()=>toast('Backyard Chef recipes did not load'));
@@ -2426,6 +2468,83 @@ function init(){
     state.cuisine=btn.dataset.cuisine||'';
     chefPage=0;
     renderList();
+  });
+  const proteinChips=$('#proteinChips');
+  if(proteinChips)proteinChips.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-protein]');
+    if(!btn)return;
+    state.protein=btn.dataset.protein||'';
+    chefPage=0;
+    renderList();
+  });
+  const timeChips=$('#timeChips');
+  if(timeChips)timeChips.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-time]');
+    if(!btn)return;
+    state.time=btn.dataset.time||'';
+    chefPage=0;
+    renderList();
+  });
+  let cookIndex=0, cookSteps=[], cookLines=[], cookRecipe=null, cookLock=null;
+  function paintCook(){
+    const count=$('#cookCount');
+    const step=$('#cookStep');
+    const title=$('#cookTitle');
+    if(title)title.textContent=cookRecipe?cookRecipe.title:'Cook';
+    const total=cookSteps.length;
+    if(!total){
+      if(count)count.textContent='No steps';
+      if(step)step.textContent='This card has no method steps.';
+    }else{
+      if(count)count.textContent='Step '+(cookIndex+1)+' of '+total;
+      if(step)step.textContent=cookSteps[cookIndex];
+    }
+    const prev=$('#cookPrev');
+    const next=$('#cookNext');
+    if(prev)prev.disabled=cookIndex<=0;
+    if(next)next.disabled=!total||cookIndex>=total-1;
+  }
+  async function holdWake(){
+    const note=$('#cookWake');
+    if(!navigator.wakeLock||!navigator.wakeLock.request){
+      if(note)note.hidden=false;
+      return;
+    }
+    try{
+      cookLock=await navigator.wakeLock.request('screen');
+      if(note)note.hidden=true;
+    }catch(e){
+      if(note)note.hidden=false;
+    }
+  }
+  function releaseWake(){
+    if(cookLock){cookLock.release().catch(()=>{});cookLock=null;}
+  }
+  function openCook(recipe, lines){
+    cookRecipe=recipe;
+    cookLines=lines||[];
+    cookSteps=(recipe.steps||[]).map(step=>String(step).replace(/^\s*\d+[\.\)]\s*/, ''));
+    cookIndex=0;
+    paintCook();
+    const dlg=$('#cookMode');
+    if(dlg&&typeof dlg.showModal==='function'&&!dlg.open)dlg.showModal();
+    holdWake();
+  }
+  window.openCook = openCook;
+  const cookPrev=$('#cookPrev');
+  const cookNext=$('#cookNext');
+  const cookGrocery=$('#cookGrocery');
+  const cookMode=$('#cookMode');
+  if(cookPrev)cookPrev.addEventListener('click',()=>{if(cookIndex>0){cookIndex-=1;paintCook();}});
+  if(cookNext)cookNext.addEventListener('click',()=>{if(cookIndex<cookSteps.length-1){cookIndex+=1;paintCook();}});
+  if(cookGrocery)cookGrocery.addEventListener('click',()=>{
+    if(!cookRecipe)return;
+    addGroceryLines(cookLines.length?cookLines:(cookRecipe.ingredients||[]), cookRecipe);
+    toast('Added to Grocery List');
+  });
+  if(cookMode)cookMode.addEventListener('close', releaseWake);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible'&&cookMode&&cookMode.open)holdWake();
   });
   $('#grid').addEventListener('toggle',e=>{
     const group=e.target.closest('details.cuisine-group');

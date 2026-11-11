@@ -207,6 +207,8 @@
       else if (typeof row.dayChange === 'number' && row.dayChange > 0) change.classList.add('num-up');
       line.appendChild(change);
       line.appendChild(el('span', rowScore(row), 'quote-score'));
+      var flag = tradeFlag(row);
+      if (flag) line.appendChild(el('span', flag.label, 'trade-flag is-' + flag.kind));
       cell.append(pinBtn, line);
       tr.appendChild(cell);
       tr.addEventListener('click', function (event) {
@@ -224,6 +226,7 @@
     });
     document.getElementById('empty').hidden = list.length !== 0;
     document.getElementById('count').textContent = list.length ? 'Top ' + list.length : '';
+    paintTradeAlerts();
   }
 
   function fillWhy(row) {
@@ -297,11 +300,58 @@
     var low = row.entryLow;
     var high = row.entryHigh;
     var stop = row.stop;
+    var target = row.target;
     if (typeof price !== 'number' || typeof low !== 'number' || typeof high !== 'number') return '';
-    if (typeof stop === 'number' && price < stop) return 'Below stop';
+    if (typeof stop === 'number' && price < stop) return 'Stop hit';
+    if (typeof target === 'number' && price >= target) return 'Target hit';
     if (price > high) return 'Above buy zone — wait';
     if (price + 0.0001 < low) return 'Below buy zone';
-    return 'In buy zone';
+    return 'Buy zone';
+  }
+  function tradeFlag(row) {
+    var state = planState(row);
+    if (state === 'Buy zone') return { kind: 'buy', label: 'Buy zone' };
+    if (state === 'Stop hit') return { kind: 'stop', label: 'Stop hit' };
+    if (state === 'Target hit') return { kind: 'target', label: 'Target hit' };
+    return null;
+  }
+  function flaggedNames() {
+    var top = {};
+    rows.slice().sort(byBestScore).slice(0, LIST_CAP).forEach(function (row) { top[row.symbol] = true; });
+    var names = [];
+    rows.forEach(function (row) {
+      if (!top[row.symbol] && !watch[row.symbol]) return;
+      var flag = tradeFlag(row);
+      if (!flag) return;
+      names.push({ symbol: row.symbol, flag: flag, top: !!top[row.symbol] });
+    });
+    Object.keys(watch).forEach(function (symbol) {
+      if (names.some(function (item) { return item.symbol === symbol; })) return;
+      var row = bySymbol(symbol);
+      if (!row) return;
+      var flag = tradeFlag(row);
+      if (flag) names.push({ symbol: symbol, flag: flag, top: false });
+    });
+    return names;
+  }
+  function paintTradeAlerts() {
+    var box = document.getElementById('tradeAlerts');
+    if (!box) return;
+    var names = flaggedNames();
+    if (!names.length) {
+      box.hidden = true;
+      box.textContent = '';
+      return;
+    }
+    var buys = names.filter(function (item) { return item.flag.kind === 'buy'; }).map(function (item) { return item.symbol; });
+    var stops = names.filter(function (item) { return item.flag.kind === 'stop'; }).map(function (item) { return item.symbol; });
+    var targets = names.filter(function (item) { return item.flag.kind === 'target'; }).map(function (item) { return item.symbol; });
+    var bits = [];
+    if (buys.length) bits.push('Buy zone: ' + buys.join(', '));
+    if (targets.length) bits.push('Target hit: ' + targets.join(', '));
+    if (stops.length) bits.push('Stop hit: ' + stops.join(', '));
+    box.hidden = false;
+    box.textContent = bits.join(' · ');
   }
   function verdict(row) {
     if (row.pinnedOnly) return 'This ticker is on your watchlist and was not in the latest scan.';
@@ -358,8 +408,9 @@
       return;
     }
     var banner = el('p', state, 'plan-state');
-    if (state === 'In buy zone') banner.classList.add('is-in');
-    else if (state === 'Below stop') banner.classList.add('is-stop');
+    if (state === 'Buy zone') banner.classList.add('is-in');
+    else if (state === 'Stop hit') banner.classList.add('is-stop');
+    else if (state === 'Target hit') banner.classList.add('is-target');
     else banner.classList.add('is-wait');
     box.appendChild(banner);
     var spanMin = Math.min(stop, price, low);
@@ -652,6 +703,9 @@
         change.className = dollars > 0 ? 'watch-up' : (dollars < 0 ? 'watch-down' : '');
       }
       now.appendChild(change);
+      var row = bySymbol(symbol);
+      var flag = row ? tradeFlag(row) : null;
+      if (flag) now.appendChild(el('span', flag.label, 'trade-flag watch-flag is-' + flag.kind));
       meta.append(when);
       if (at) meta.append(at);
       meta.append(now);
@@ -990,6 +1044,8 @@
     document.getElementById('swingScore').textContent = rowScore(row);
     var chips = document.getElementById('swingChips');
     chips.replaceChildren();
+    var flag = tradeFlag(row);
+    if (flag) chips.appendChild(el('span', flag.label, 'trade-flag is-' + flag.kind));
     (row.swingSignals || []).slice(0, 3).forEach(function (label) {
       chips.appendChild(el('span', label, 'swing-chip'));
     });

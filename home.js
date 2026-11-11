@@ -88,36 +88,69 @@
       slot.replaceChildren(modern, classic);
     });
   }
-  function forecastUrl(place) {
+  function forecastUrl(place, hourly) {
     return 'https://api.open-meteo.com/v1/forecast?latitude=' + place.lat +
       '&longitude=' + place.lon +
-      '&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=' + encodeURIComponent(TZ);
+      '&current=temperature_2m,weather_code' +
+      (hourly ? '&hourly=precipitation_probability&forecast_days=2' : '') +
+      '&temperature_unit=fahrenheit&timezone=' + encodeURIComponent(TZ);
+  }
+  function etHourKey(date) {
+    var parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23'
+    }).formatToParts(date);
+    var map = {};
+    parts.forEach(function (part) { map[part.type] = part.value; });
+    return map.year + '-' + map.month + '-' + map.day + 'T' + map.hour;
+  }
+  function hourLabel(key) {
+    var hour = Number(String(key).slice(11, 13));
+    if (!isFinite(hour)) return '';
+    return ((hour % 12) || 12) + (hour >= 12 ? 'p' : 'a');
+  }
+  function nextRain(data) {
+    var times = (data && data.hourly && data.hourly.time) || [];
+    var pops = (data && data.hourly && data.hourly.precipitation_probability) || [];
+    var nowKey = etHourKey(new Date());
+    for (var i = 0; i < times.length; i++) {
+      var key = String(times[i] || '').slice(0, 13);
+      var pop = pops[i];
+      if (key >= nowKey && typeof pop === 'number' && pop >= 20) {
+        return 'rain ' + hourLabel(key) + ' ' + Math.round(pop) + '%';
+      }
+    }
+    return 'no rain overnight';
   }
   function readMeteo(data) {
     var cur = data && data.current;
     if (!cur || cur.temperature_2m == null) return null;
     return { temp: Math.round(cur.temperature_2m), sky: sky(cur.weather_code) };
   }
-  function paintWeather(cocoa, port) {
-    var when = dateLine();
-    var line = when + '. Weather for Cocoa and Port Canaveral did not load.';
-    if (cocoa && port) {
-      if (cocoa.sky === port.sky && Math.abs(cocoa.temp - port.temp) <= 1) {
-        line = when + '. Cocoa and Port Canaveral, ' + cocoa.temp + '° and ' + cocoa.sky + '.';
-      } else {
-        line = when + '. Cocoa ' + cocoa.temp + '° and ' + cocoa.sky + '. Port Canaveral ' + port.temp + '° and ' + port.sky + '.';
-      }
+  function paintWeather(cocoa, port, rain) {
+    var line = 'Weather for Cocoa and Port Canaveral did not load.';
+    var skyBit = '';
+    if (cocoa && port && Math.abs(cocoa.temp - port.temp) <= 1) {
+      skyBit = cocoa.temp + '°';
+    } else if (cocoa && port) {
+      skyBit = 'Cocoa ' + cocoa.temp + '° · Port ' + port.temp + '°';
     } else if (cocoa) {
-      line = when + '. Cocoa ' + cocoa.temp + '° and ' + cocoa.sky + '.';
+      skyBit = 'Cocoa ' + cocoa.temp + '°';
+    } else if (port) {
+      skyBit = 'Port ' + port.temp + '°';
     }
+    if (skyBit) line = skyBit + (rain ? ' · ' + rain : '');
     text('homeLine', line);
+    var link = $('homeWeather');
+    if (link) link.setAttribute('aria-label', 'Weather. ' + line);
   }
   function loadWeather() {
-    text('homeLine', dateLine() + '. Checking Cocoa and Port Canaveral.');
+    text('homeLine', 'Checking Cocoa and Port Canaveral');
     Promise.all([
-      getJSON(forecastUrl(COCOA)).then(readMeteo).catch(function () { return null; }),
-      getJSON(forecastUrl(PORT)).then(readMeteo).catch(function () { return null; })
-    ]).then(function (pair) { paintWeather(pair[0], pair[1]); });
+      getJSON(forecastUrl(COCOA, true)).then(function (data) {
+        return { meteo: readMeteo(data), rain: nextRain(data) };
+      }).catch(function () { return { meteo: null, rain: '' }; }),
+      getJSON(forecastUrl(PORT, false)).then(readMeteo).catch(function () { return null; })
+    ]).then(function (pair) { paintWeather(pair[0].meteo, pair[1], pair[0].rain); });
   }
   function futureNet(iso) {
     var start = new Date(iso);
@@ -155,10 +188,10 @@
   function paintLaunch() {
     if (!launchWhen) return;
     var phrase = countPhrase(launchWhen.getTime() - Date.now());
-    text('homeLaunchWhen', phrase);
-    text('homeLaunchWhat', launchDetail);
+    var line = phrase + (launchDetail ? ' · ' + launchDetail : '');
+    text('homeLaunchLine', line);
     var link = $('homeLaunch');
-    if (link) link.setAttribute('aria-label', 'Next launch ' + phrase + '. ' + launchDetail);
+    if (link) link.setAttribute('aria-label', 'Next launch ' + line);
   }
   function armLaunch(when, detail) {
     launchWhen = when;
@@ -185,16 +218,6 @@
       armLaunch(new Date(row.net), row.name + ' from ' + row.pad + ' (backup schedule)');
     });
   }
-  function miles(lat, lon) {
-    if (typeof lat !== 'number' || typeof lon !== 'number') return 99;
-    var dy = (lat - PORT.lat) * 69;
-    var dx = (lon - PORT.lon) * 69 * Math.cos(PORT.lat * Math.PI / 180);
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-  function niceName(raw) {
-    return String(raw || '').toLowerCase().replace(/\b[a-z]/g, function (ch) { return ch.toUpperCase(); })
-      .replace(/\bOf\b/g, 'of').replace(/\bThe\b/g, 'the');
-  }
   function shortDate(iso) {
     var parts = String(iso || '').split('-');
     if (parts.length < 3) return iso;
@@ -202,40 +225,18 @@
     return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(when);
   }
   function loadShips() {
-    Promise.all([
-      getJSON('/cruises/fleet.json').catch(function () { return { ships: [] }; }),
-      getJSON('/cruises/positions.json').catch(function () { return { ships: {} }; }),
-      getJSON('/cruises/canaveral-deals.json').catch(function () { return { deals: [] }; })
-    ]).then(function (parts) {
-      var names = {};
-      (parts[0].ships || []).forEach(function (ship) {
-        if (ship.mmsi) names[String(ship.mmsi)] = ship.name;
-      });
-      var inPort = [];
-      var ships = parts[1].ships || {};
-      Object.keys(ships).forEach(function (mmsi) {
-        var ship = ships[mmsi];
-        var dist = miles(ship.lat, ship.lon);
-        var slow = ship.sog == null || Number(ship.sog) < 1.5;
-        if (dist < 2.5 && slow) inPort.push(names[mmsi] || niceName(ship.aisName || 'Ship'));
-      });
+    getJSON('/cruises/canaveral-deals.json').catch(function () { return { deals: [] }; }).then(function (data) {
       var today = todayISO();
       var next = null;
-      (parts[2].deals || []).forEach(function (deal) {
+      (data.deals || []).forEach(function (deal) {
         if (!deal || !deal.sailDate || deal.sailDate < today) return;
         if (!next || deal.sailDate < next.sailDate) next = deal;
       });
-      var head = inPort.length ? (inPort.length === 1 ? inPort[0] + ' in port' : inPort.length + ' in port') : 'None in port';
-      var detail = inPort.length > 1 ? inPort.slice(0, 3).join(', ') : '';
-      if (next) {
-        var sail = 'Next ' + (next.ship || 'sailing') + ', ' + shortDate(next.sailDate);
-        detail = detail ? detail + '. ' + sail : sail;
-      }
-      if (!detail) detail = 'Port Canaveral sailings';
-      text('homeShipWhen', head);
-      text('homeShipWhat', detail);
+      var line = 'No dated Port Canaveral sailing';
+      if (next) line = (next.ship || 'Sailing') + ' · ' + shortDate(next.sailDate);
+      text('homeShipLine', line);
       var link = $('homeShips');
-      if (link) link.setAttribute('aria-label', 'Ships. ' + head + '. ' + detail);
+      if (link) link.setAttribute('aria-label', 'Next sailing. ' + line);
     });
   }
   function loadTides() {
@@ -334,31 +335,18 @@
       return;
     }
     line.replaceChildren();
-    var company = shortCompany(row.name).replace(/\s+\(The$/i, '');
-    if (company.length > 14) company = company.split(/[\s,]+/)[0];
-    var main = document.createElement('span');
-    main.className = 'home-stock-main';
-    var name = document.createElement('span');
-    name.className = 'home-stock-name';
-    name.textContent = row.symbol + (company ? ' ' + company : '') + ' · ';
-    var facts = document.createElement('span');
-    facts.className = 'home-stock-facts';
-    facts.appendChild(document.createTextNode('$' + row.price.toFixed(2) + ' '));
+    line.appendChild(document.createTextNode(row.symbol + ' $' + row.price.toFixed(2) + ' '));
     if (typeof row.dayChange === 'number') {
       var change = document.createElement('span');
-      change.className = row.dayChange < 0 ? 'home-stock-down' : (row.dayChange > 0 ? 'home-stock-up' : '');
+      change.className = row.dayChange < 0 ? 'home-brief-down' : (row.dayChange > 0 ? 'home-brief-up' : '');
       change.textContent = signedPct(row.dayChange);
-      facts.appendChild(change);
+      line.appendChild(change);
     }
-    main.append(name, facts);
-    line.appendChild(main);
-    var badgeScore = typeof row.rankScore === 'number' ? row.rankScore : row.score;
-    if (typeof badgeScore === 'number') {
-      var badge = document.createElement('span');
-      badge.className = 'home-stock-score';
-      badge.textContent = String(badgeScore).replace(/\.0$/, '');
-      line.appendChild(badge);
+    if (typeof row.entryLow === 'number' && typeof row.entryHigh === 'number') {
+      line.appendChild(document.createTextNode(' · Buy ' + row.entryLow.toFixed(2) + '–' + row.entryHigh.toFixed(2)));
     }
+    var link = line.closest('a');
+    if (link) link.setAttribute('aria-label', 'Top stock. ' + line.textContent);
   }
   function loadStock() {
     text('homeStockLine', 'Checking the screener');

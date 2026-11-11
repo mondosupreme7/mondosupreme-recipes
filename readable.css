@@ -897,6 +897,13 @@ html:not([data-theme="retro"]) dialog{
   width:min(560px, calc(100vw - 24px));
   max-height:min(88dvh, 760px);
 }
+html:not([data-theme="retro"]) #cookMode{
+  margin:0 !important;width:100% !important;max-width:none !important;height:100% !important;max-height:none !important;
+  border:0 !important;border-radius:0 !important;box-shadow:none !important;
+  padding:28px 18px calc(20px + env(safe-area-inset-bottom)) !important;
+  background:#0b1220 !important;color:#f8fafc !important
+}
+html[data-theme="light"] #cookMode,html[data-theme="warm"] #cookMode{background:#f7f4ee !important;color:#111827 !important}
 html:not([data-theme="retro"]) dialog:modal{overscroll-behavior:contain}
 html:not([data-theme="retro"]) dialog::backdrop{overflow:hidden;overscroll-behavior:contain}
 html:not([data-theme="retro"]) dialog > header,

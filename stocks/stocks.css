@@ -112,7 +112,7 @@ a.rule-chip{text-decoration:none;color:#111827}
  .quote-main{grid-column:1;grid-row:2;min-width:0}
 }
 td.quote-row{display:flex;align-items:center;gap:8px;min-height:44px;width:100%}
-.quote-line{display:flex;flex:1;align-items:baseline;gap:8px;min-width:0}
+.quote-line{display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
 .quote-px,.quote-chg,.quote-score{font:650 15px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
 .quote-score{margin-left:auto;color:var(--ink,#0f172a)}
 .watch-btn{
@@ -291,7 +291,14 @@ html[data-theme="harbor"] .rules-foot{color:#E2E8F0!important}
 .plan-state{margin:0 0 8px;min-height:44px;display:flex;align-items:center;padding:8px 12px;border-radius:12px;font:700 18px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .plan-state.is-in{background:#dcfce7;color:#14532d}
 .plan-state.is-stop{background:#fee2e2;color:#7f1d1d}
+.plan-state.is-target{background:#dbeafe;color:#1e3a8a}
 .plan-state.is-wait{background:#fef3c7;color:#78350f}
+.trade-alerts{margin:0 0 8px;padding:8px 10px;border-radius:10px;background:#14532d;color:#dcfce7;font:650 14px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.trade-flag{flex:none;padding:2px 8px;border-radius:999px;font:700 12px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.trade-flag.is-buy{background:#14532d;color:#dcfce7}
+.trade-flag.is-stop{background:#7f1d1d;color:#fee2e2}
+.trade-flag.is-target{background:#1e3a8a;color:#dbeafe}
+.watch-flag{margin-left:6px}
 .plan-missing{margin:0;font:600 15px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .ladder{margin:0 0 10px}
 .ladder-track{position:relative;height:18px;border-radius:999px;background:#e2e8f0}
@@ -342,6 +349,7 @@ html[data-theme] .quote-card .why-box p,
 html[data-theme] .quote-card .more-metrics{background:transparent!important;color:var(--ink)!important;border-left:0!important}
 html[data-theme="dark"] .plan-state.is-in,html[data-theme="harbor"] .plan-state.is-in{background:#14532d;color:#dcfce7}
 html[data-theme="dark"] .plan-state.is-stop,html[data-theme="harbor"] .plan-state.is-stop{background:#7f1d1d;color:#fee2e2}
+html[data-theme="dark"] .plan-state.is-target,html[data-theme="harbor"] .plan-state.is-target{background:#1e3a8a;color:#dbeafe}
 html[data-theme="dark"] .plan-state.is-wait,html[data-theme="harbor"] .plan-state.is-wait{background:#78350f;color:#fef3c7}
 html[data-theme="dark"] .plan-buy,html[data-theme="harbor"] .plan-buy{background:#052e16;color:#dcfce7;border-color:#166534}
 html[data-theme="dark"] .plan-stop,html[data-theme="harbor"] .plan-stop{background:#450a0a;color:#fee2e2;border-color:#b91c1c}

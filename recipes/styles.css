@@ -179,5 +179,16 @@ html[data-theme="dark"] .fav-btn.is-on .fav-heart,html[data-theme="harbor"] .fav
 @keyframes fav-pop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
 .fav-btn.is-pop{animation:fav-pop .28s ease}
 @media (prefers-reduced-motion:reduce){.fav-btn.is-pop{animation:none}}
+#cookMode{width:min(100%,28rem);max-width:calc(100vw - 24px);margin:auto;padding:20px 16px calc(16px + env(safe-area-inset-bottom));border:0;border-radius:16px;background:#0b1220;color:#f8fafc}
+html[data-theme="light"] #cookMode,html[data-theme="warm"] #cookMode{background:#f7f4ee;color:#111827}
+#cookMode::backdrop{background:rgb(0 0 0 / .72)}
+.cook-kicker{margin:0;font:650 13px/1.2 var(--font-ui,Inter,sans-serif);color:var(--ink-muted,#94a3b8)}
+.cook-count{margin:8px 0 0;font:600 14px/1.2 var(--font-ui,Inter,sans-serif)}
+.cook-step{margin:12px 0 16px;min-height:4.6em;font:600 clamp(1.45rem,6.4vw,2.1rem)/1.35 var(--font-ui,Inter,sans-serif)}
+.cook-nav{display:flex;gap:8px}
+.cook-nav .btn{flex:1 1 0}
+#cookMode #cookGrocery,#cookMode #cookClose{width:100%;margin-top:8px}
+.cook-wake{margin:8px 0 0;font-size:13px;color:var(--ink-muted,#94a3b8)}
+#cookMode .btn:disabled{opacity:.45}
 @media(max-width:720px){.cols{grid-template-columns:1fr}.row{flex-direction:column}.detail-inner{padding:20px}.detail-hero{height:220px}}
 @media print{.site-header,.site-footer,.dbar,.no-print,#listView,#toast,.sync-banner{display:none!important}body{background:#fff}.detail{box-shadow:none;margin:0}.detail-hero{height:220px;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cols ol li::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}.cols{grid-template-columns:1fr 1.6fr}input[type=checkbox]{display:none}}

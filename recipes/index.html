@@ -19,11 +19,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=7">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/readable.css?v=13">
 </head>
 <body>
 <div class="ticker"><div class="ticker-track">
@@ -76,6 +76,8 @@
    <button type="button" class="file-tab" data-source="backyard" aria-pressed="false">Backyard Chef</button>
   </div>
   <div id="cuisineChips" class="source-chips cuisine-chips" role="group" aria-label="Cuisine" hidden></div>
+  <div id="proteinChips" class="source-chips cuisine-chips" role="group" aria-label="Protein" hidden></div>
+  <div id="timeChips" class="source-chips cuisine-chips" role="group" aria-label="Time" hidden></div>
   <p id="listCount" class="list-count" hidden></p>
   <div class="toolbar">
    <input id="search" type="search" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Search recipes, ingredients, tags…" aria-label="Search">
@@ -140,6 +142,20 @@
  <label>Tags (comma separated)<input name="tags" placeholder="quick, vegetarian"></label>
  <div class="form-actions"><button type="button" id="cancelEdit" class="btn ghost">Cancel</button><button type="submit" class="btn primary">Save Recipe</button></div>
 </form></dialog>
+<dialog id="cookMode">
+ <form method="dialog">
+  <p class="cook-kicker" id="cookTitle">Cook</p>
+  <p class="cook-count" id="cookCount">Step 1</p>
+  <p class="cook-step" id="cookStep"></p>
+  <div class="cook-nav">
+   <button type="button" class="btn" id="cookPrev">Previous</button>
+   <button type="button" class="btn primary" id="cookNext">Next</button>
+  </div>
+  <button type="button" class="btn" id="cookGrocery">Add ingredients to Grocery List</button>
+  <p class="cook-wake" id="cookWake" hidden>This browser may dim the screen. Wake Lock is not available here.</p>
+  <button type="submit" class="btn ghost" id="cookClose">Close</button>
+ </form>
+</dialog>
 <footer class="site-footer no-print"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Recipes are shared. Favorites stay in this browser. Export still makes a backup. · <a href="/daily-recipe/">Recipe TV</a></div></footer>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <dialog id="ownerDialog">
@@ -220,7 +236,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="app.js?v=13"></script>
+<script src="app.js?v=14"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>

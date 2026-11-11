@@ -683,6 +683,180 @@
       at: firebase.database.ServerValue.TIMESTAMP
     }).catch(function () { /* The public wire waits until the rules are published. */ });
   }
+  var siteMemo = {};
+  function getJSON(url) {
+    if (siteMemo[url]) return siteMemo[url];
+    siteMemo[url] = fetch(url).then(function (res) {
+      if (!res.ok) throw new Error('status');
+      return res.json();
+    });
+    return siteMemo[url];
+  }
+  function siteIntent(q) {
+    var s = q.toLowerCase();
+    if (/launch|liftoff|cape|rocket|falcon|artemis|spacex/.test(s)) return 'launch';
+    if (/tide|high tide|low tide/.test(s)) return 'tide';
+    if (/stock|ticker|buy zone|oversold|screener/.test(s) || /why/.test(s) && /list|pick|stock|screen/.test(s)) return 'stock';
+    if (/recipe|cook|chicken|beef|pork|dinner|dish|pasta|ingredient|backyard|chef/.test(s)) return 'recipe';
+    return '';
+  }
+  function briefHtml(title, paragraphs, links) {
+    return '<div class="brief-local"><h3>' + esc(title) + '</h3>' +
+      paragraphs.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
+      (links && links.length ? '<ul class="cite-list">' + links.map(function (link) {
+        return '<li><a href="' + esc(link[1]) + '">' + esc(link[0]) + '</a></li>';
+      }).join('') + '</ul>' : '') + '</div>';
+  }
+  function outsideBrief() {
+    return briefHtml('On this site', [
+      'The butler answers the next Cape launch, tonight\'s Port Canaveral tide, a recipe from the kitchen, and why the top stock is on the list. That question is outside those notes.'
+    ], [['Launches', '/launches/'], ['Tides', '/tides/'], ['Recipes', '/recipes/'], ['Stocks', '/stocks/'], ['Weather', '/weather/']]);
+  }
+  function answerLaunch() {
+    return getJSON('https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=8').then(function (data) {
+      var best = null;
+      (data.results || []).forEach(function (row) {
+        var when = new Date(row.net || row.window_start || '');
+        if (isNaN(when.getTime()) || when.getTime() < Date.now() - 3600000) return;
+        if (!best || when < best.when) best = { when: when, name: row.name || 'Launch', pad: (row.pad && row.pad.name) || 'the Cape' };
+      });
+      if (!best) throw new Error('empty');
+      var ms = best.when.getTime() - Date.now();
+      var hours = Math.floor(Math.abs(ms) / 3600000);
+      var mins = Math.floor(Math.abs(ms) / 60000) % 60;
+      var phrase = hours > 0 ? 'in ' + hours + 'h ' + mins + 'm' : 'in ' + mins + 'm';
+      return {
+        status: 'The next Cape launch is on the card.',
+        html: briefHtml('Next launch', [best.name + ' from ' + best.pad + ', ' + phrase + '.'], [['Launch calendar', '/launches/']])
+      };
+    }).catch(function () {
+      return {
+        status: 'The launch wire did not answer. The calendar is still there.',
+        html: briefHtml('Next launch', ['The launch list did not answer just now. The Cape calendar is on the Launches page.'], [['Launch calendar', '/launches/']])
+      };
+    });
+  }
+  function answerTide() {
+    var start = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date()).replace(/-/g, '');
+    var url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8721604&product=predictions&datum=MLLW&time_zone=lst_ldt&units=english&interval=hilo&format=json&begin_date=' + start + '&range=48';
+    return getJSON(url).then(function (data) {
+      var parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      }).formatToParts(new Date());
+      var map = {};
+      parts.forEach(function (part) { map[part.type] = part.value; });
+      var nowKey = map.year + '-' + map.month + '-' + map.day + ' ' + map.hour + ':' + map.minute;
+      var next = null;
+      (data.predictions || []).forEach(function (row) {
+        var match = String(row.t || '').match(/(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+        if (!match) return;
+        var key = match[1] + '-' + match[2] + '-' + match[3] + ' ' + match[4] + ':' + match[5];
+        if (key < nowKey) return;
+        if (!next || key < next.key) next = { key: key, hour: Number(match[4]), minute: match[5], type: row.type, v: Number(row.v) };
+      });
+      if (!next) throw new Error('empty');
+      var clock = ((next.hour % 12) || 12) + ':' + next.minute + (next.hour >= 12 ? ' PM' : ' AM');
+      var kind = next.type === 'H' ? 'High' : 'Low';
+      return {
+        status: 'Tonight\'s Port Canaveral tide is on the card.',
+        html: briefHtml('Port Canaveral tide', [kind + ' tide ' + clock + ', ' + next.v.toFixed(1) + ' ft.'], [['Tide & Surf', '/tides/']])
+      };
+    }).catch(function () {
+      return {
+        status: 'The tide station did not answer.',
+        html: briefHtml('Port Canaveral tide', ['The tide station did not answer just now. Highs and lows are on the Tide page.'], [['Tide & Surf', '/tides/']])
+      };
+    });
+  }
+  function answerStock() {
+    return getJSON('/stocks/oversold.json').then(function (data) {
+      var list = (data.stocks || []).filter(function (row) { return row && row.symbol && typeof row.price === 'number'; });
+      list.sort(function (a, b) {
+        var aSwing = a.swingEligible && typeof a.swingScore === 'number' && a.swingScore >= 20 ? 1 : 0;
+        var bSwing = b.swingEligible && typeof b.swingScore === 'number' && b.swingScore >= 20 ? 1 : 0;
+        if (aSwing !== bSwing) return bSwing - aSwing;
+        var left = typeof a.rankScore === 'number' ? a.rankScore : (a.score || 0);
+        var right = typeof b.rankScore === 'number' ? b.rankScore : (b.score || 0);
+        return right - left || String(a.symbol).localeCompare(String(b.symbol));
+      });
+      var row = list[0];
+      if (!row) throw new Error('empty');
+      var because = row.swingEligible ? 'it is a swing-bottom setup' : 'it leads the latest screen';
+      if (typeof row.rankScore === 'number') because += ', rank ' + String(row.rankScore).replace(/\.0$/, '');
+      var signals = (row.swingSignals || []).filter(function (label) {
+        return label !== 'Near 52w low' && label !== 'Pullback from high' && label !== 'Uptrend pullback';
+      }).slice(0, 3);
+      if (signals.length) because += ', ' + signals.join(', ');
+      var change = '';
+      if (typeof row.dayChange === 'number') {
+        change = ' ' + (row.dayChange > 0 ? '+' : '') + row.dayChange.toFixed(1).replace(/\.0$/, '') + '% today.';
+      }
+      var zone = (typeof row.entryLow === 'number' && typeof row.entryHigh === 'number')
+        ? ' Buy zone $' + row.entryLow.toFixed(2) + '–$' + row.entryHigh.toFixed(2) + '.' : '';
+      var stop = typeof row.stop === 'number' ? ' Stop $' + row.stop.toFixed(2) + '.' : '';
+      var target = typeof row.target === 'number' ? ' Target $' + row.target.toFixed(2) + '.' : '';
+      var sentence = row.symbol + ' is the top name because ' + because + '. Last $' + row.price.toFixed(2) + '.' + change + zone + stop + target + ' Informational only, not financial advice.';
+      return {
+        status: row.symbol + ' is the top name on the screen.',
+        html: briefHtml('Top stock', [sentence], [['Stocks', '/stocks/']])
+      };
+    }).catch(function () {
+      return {
+        status: 'The stock screen did not answer.',
+        html: briefHtml('Top stock', ['The screener file did not answer just now. The list is on the Stocks page.'], [['Stocks', '/stocks/']])
+      };
+    });
+  }
+  function answerRecipe(q) {
+    return getJSON('/recipes/collections/backyard-chef-index.json').then(function (data) {
+      var words = q.toLowerCase().split(/[^a-z0-9]+/).filter(function (word) {
+        return word.length > 2 && !/^(the|and|for|from|with|dish|recipe|cook|what|whats|how|tonight|some|any)$/.test(word);
+      });
+      var best = null;
+      var bestScore = 0;
+      (data.items || []).forEach(function (item) {
+        var title = String(item[1] || '').toLowerCase();
+        var blob = title + ' ' + String(item[2] || '') + ' ' + String(item[6] || '') + ' ' + String(item[7] || '');
+        var score = 0;
+        words.forEach(function (word) {
+          if (title.indexOf(word) !== -1) score += 3;
+          else if (blob.indexOf(word) !== -1) score += 1;
+        });
+        if (score > bestScore) { bestScore = score; best = item; }
+      });
+      if (!best || !bestScore) {
+        return {
+          status: 'No recipe in the kitchen matched that.',
+          html: briefHtml('Recipes', ['Nothing in the Backyard Chef cards matched those words. Search the recipe box directly.'], [['Recipes', '/recipes/']])
+        };
+      }
+      var snippet = String(best[6] || '').replace(/\s+/g, ' ').trim();
+      if (snippet.length > 140) snippet = snippet.slice(0, 137) + '…';
+      var where = [best[7], best[2]].filter(Boolean).join(' · ');
+      var line = best[1] + (where ? ' (' + where + ').' : '.');
+      if (snippet) line += ' The card starts: ' + snippet;
+      return {
+        status: 'A matching recipe is on the card.',
+        html: briefHtml('Recipe', [line], [['Open the recipe', '/recipes/#/recipe/' + encodeURIComponent(best[0])]])
+      };
+    }).catch(function () {
+      return {
+        status: 'The recipe box did not answer.',
+        html: briefHtml('Recipes', ['The recipe index did not answer just now. The kitchen is on the Recipes page.'], [['Recipes', '/recipes/']])
+      };
+    });
+  }
+  function siteFacts(q) {
+    var intent = siteIntent(q);
+    if (intent === 'launch') return answerLaunch();
+    if (intent === 'tide') return answerTide();
+    if (intent === 'stock') return answerStock();
+    if (intent === 'recipe') return answerRecipe(q);
+    return Promise.resolve(null);
+  }
   function run(raw) {
     var q = cleanQ(raw);
     var input = $('q');
@@ -693,44 +867,41 @@
       return;
     }
     var mine = ++ticket;
-    var waiting = mode === 'site' ? 1 : 2;
     document.body.classList.add('is-asking');
     function finishAsk() {
       if (mine !== ticket) return;
-      waiting -= 1;
-      if (waiting <= 0) document.body.classList.remove('is-asking');
+      document.body.classList.remove('is-asking');
     }
     rememberUrl(q);
-    $('askStatus').textContent = 'The butler is asking the wires…';
+    $('askStatus').textContent = 'The butler is checking the house notes…';
     postAsk(q);
-    var localChips = [];
-    var jobs = [loadCatalog()];
-    if (mode !== 'site') {
-      jobs.push(withTimeout(fetchWiki(q), 8000));
-      jobs.push(withTimeout(fetchDDG(q), 8000));
-    }
-    var aiJob = mode === 'site' ? Promise.resolve('') : withTimeout(askModel(q), 12000);
-    Promise.all(jobs).then(function (parts) {
+    var intent = siteIntent(q);
+    Promise.all([siteFacts(q), loadCatalog().catch(function () { return null; })]).then(function (parts) {
+      var fact = parts[0];
       if (mine !== ticket) return;
-      var pack = { sites: siteHits(q), wiki: mode === 'site' ? [] : (parts[1] || []), ddg: mode === 'site' ? null : (parts[2] || null) };
-      localChips = renderLocal(q, pack) || [];
-      var outside = mode !== 'site';
-      $('askStatus').textContent = outside
-        ? 'Ground truth is in. The cyber-butler line fills in when it answers.'
-        : 'Search Inside Mondosupreme is ready.';
-      finishAsk();
-    }).catch(function () { finishAsk(); });
-    aiJob.then(function (text) {
-      if (mine !== ticket || mode === 'site') return;
-      var parsed = parseModel(text || '');
-      if (!parsed.paragraphs.length && !parsed.facts.length) {
-        $('askStatus').textContent = 'The outside AI line was busy. This brief is from Wikipedia, DuckDuckGo, and Mondosupreme.';
-        return;
+      if (fact) {
+        $('briefBody').innerHTML = fact.html;
+        $('askStatus').textContent = fact.status;
+      } else {
+        $('briefBody').innerHTML = outsideBrief();
+        $('askStatus').textContent = 'That one is outside the butler\'s site notes.';
       }
-      renderAi(parsed, localChips);
-      $('askStatus').textContent = 'Ask the Butler answered, with sources underneath.';
-    }).catch(function () { /* The brief stays on the sources already on the page. */ }).then(function () {
-      if (mode !== 'site') finishAsk();
+      paintChips([]);
+      var sites = [];
+      try { sites = siteHits(q); } catch (e) { sites = []; }
+      paintHits($('siteBody'), sites.map(function (hit) {
+        return { kind: hit.kind, title: hit.title, url: hit.href, snippet: hit.text, external: hit.external };
+      }), 'No other Mondosupreme page matched those words.');
+      if (intent) {
+        $('webBody').innerHTML = '<p class="ask-empty">This answer is from the site\'s own notes.</p>';
+        $('deepWin').hidden = true;
+      }
+      finishAsk();
+    }).catch(function () {
+      if (mine !== ticket) return;
+      $('briefBody').innerHTML = outsideBrief();
+      $('askStatus').textContent = 'The house notes did not answer.';
+      finishAsk();
     });
   }
   function paintWire(val) {

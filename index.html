@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=7">
 <link rel="stylesheet" href="/readable.css?v=10">
-<link rel="stylesheet" href="/home.css?v=4">
+<link rel="stylesheet" href="/home.css?v=5">
 </head>
 <body class="home-page">
 <div class="ticker"><div class="ticker-track">
@@ -65,33 +65,25 @@
 </div></header>
 <main class="wrap">
  <h1 class="visually-hidden">Mondosupreme</h1>
- <header class="home-now">
+ <section class="home-brief" aria-label="Today">
   <h2 id="homeGreet">Good afternoon</h2>
-  <p class="home-line" id="homeLine">Friday. Weather for Cocoa and Port Canaveral is loading.</p>
- </header>
- <div class="home-chips">
-  <a class="home-chip" id="homeLaunch" href="/launches/">
-   <span class="home-ico" data-icon="rocket"></span>
-   <span class="home-chip-copy">
-    <strong id="homeLaunchWhen">Checking the Cape</strong>
-    <span id="homeLaunchWhat">Next launch</span>
-   </span>
+  <a class="home-brief-row" id="homeWeather" href="/weather/">
+   <span class="home-brief-k">Weather</span>
+   <span class="home-brief-v" id="homeLine">Cocoa and Port Canaveral</span>
   </a>
-  <a class="home-chip" id="homeShips" href="/cruises/">
-   <span class="home-ico" data-icon="ship"></span>
-   <span class="home-chip-copy">
-    <strong id="homeShipWhen">Checking the port</strong>
-    <span id="homeShipWhat">Ships and the next sailing</span>
-   </span>
+  <a class="home-brief-row" id="homeLaunch" href="/launches/">
+   <span class="home-brief-k">Launch</span>
+   <span class="home-brief-v" id="homeLaunchLine">Checking the Cape</span>
   </a>
- </div>
- <a class="home-row home-stock" href="/stocks/">
-  <span class="home-ico" data-icon="chart"></span>
-  <span class="home-row-copy">
-   <b>Top stock</b>
-   <span class="home-row-detail" id="homeStockLine">Checking the screener</span>
-  </span>
- </a>
+  <a class="home-brief-row" id="homeShips" href="/cruises/">
+   <span class="home-brief-k">Sailing</span>
+   <span class="home-brief-v" id="homeShipLine">Checking Port Canaveral</span>
+  </a>
+  <a class="home-brief-row home-stock" href="/stocks/">
+   <span class="home-brief-k">Stock</span>
+   <span class="home-brief-v" id="homeStockLine">Checking the screener</span>
+  </a>
+ </section>
  <nav class="home-apps" aria-label="Apps">
   <a class="home-app" href="/recipes/"><span class="home-ico" data-icon="pot"></span><span class="home-label">Recipes</span></a>
   <a class="home-app" href="/stocks/"><span class="home-ico" data-icon="chart"></span><span class="home-label">Stocks</span></a>
@@ -161,7 +153,7 @@
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
 <script src="/shell.js?v=9"></script>
-<script src="/home.js?v=8"></script>
+<script src="/home.js?v=9"></script>
 <script src="/8ball/oracle.js"></script>
 <script src="/toys.js"></script>
 <script src="/quotes.js"></script>

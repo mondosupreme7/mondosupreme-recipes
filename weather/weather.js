@@ -801,6 +801,62 @@
     save();
   }
 
+  function glanceText(id, value) {
+    var node = $(id);
+    if (node) node.textContent = value;
+  }
+  function loadGlance() {
+    var start = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date()).replace(/-/g, '');
+    var tideUrl = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8721604&product=predictions&datum=MLLW&time_zone=lst_ldt&units=english&interval=hilo&format=json&begin_date=' + start + '&range=48';
+    fetch(tideUrl).then(function (res) { return res.json(); }).then(function (data) {
+      var rows = data.predictions || [];
+      var next = null;
+      var nowParts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      }).formatToParts(new Date());
+      var nowMap = {};
+      nowParts.forEach(function (part) { nowMap[part.type] = part.value; });
+      var nowKey = nowMap.year + '-' + nowMap.month + '-' + nowMap.day + ' ' + nowMap.hour + ':' + nowMap.minute;
+      rows.forEach(function (row) {
+        var match = String(row.t || '').match(/(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+        if (!match) return;
+        var key = match[1] + '-' + match[2] + '-' + match[3] + ' ' + match[4] + ':' + match[5];
+        if (key < nowKey) return;
+        if (!next || key < next.key) next = { key: key, hour: Number(match[4]), minute: match[5], type: row.type, v: Number(row.v) };
+      });
+      if (!next) throw new Error('empty');
+      var kind = next.type === 'H' ? 'High' : 'Low';
+      var clock = ((next.hour % 12) || 12) + ':' + next.minute + (next.hour >= 12 ? ' PM' : ' AM');
+      glanceText('wxTide', 'Port Canaveral ' + kind.toLowerCase() + ' ' + clock + ', ' + next.v.toFixed(1) + ' ft');
+    }).catch(function () {
+      glanceText('wxTide', 'Port Canaveral tides');
+    });
+    var stormUrl = 'https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Active_Hurricanes_v1/FeatureServer/1/query?where=' +
+      encodeURIComponent("BASIN='AL'") + '&outFields=STORMNAME,STORMTYPE&returnGeometry=false&f=json';
+    fetch(stormUrl).then(function (res) { return res.json(); }).then(function (data) {
+      var features = data.features || [];
+      var link = $('wxTropics');
+      if (!link) return;
+      if (!features.length) {
+        link.hidden = true;
+        return;
+      }
+      var names = features.map(function (feat) {
+        var attr = feat.attributes || {};
+        var name = attr.STORMNAME || 'Storm';
+        var kind = attr.STORMTYPE || '';
+        return kind ? name + ' ' + kind : name;
+      });
+      link.hidden = false;
+      link.textContent = names.join(', ');
+    }).catch(function () {
+      var link = $('wxTropics');
+      if (link) link.hidden = true;
+    });
+  }
   function loadForecast() {
     var cond = $('wxCond');
     cond.textContent = 'Tuning the forecast…';
@@ -1070,6 +1126,7 @@
     loadRadar();
     loadForecast();
     loadMarine();
+    loadGlance();
     $('wxSearch').addEventListener('submit', function (event) {
       event.preventDefault();
       var q = $('wxQuery').value.replace(/\s+/g, ' ').trim();
