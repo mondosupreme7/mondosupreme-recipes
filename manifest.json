@@ -1,31 +1,28 @@
 {
   "name": "Mondosupreme",
   "short_name": "Mondosupreme",
-  "description": "Recipes, cruises, weather, games, and the rest of Mondosupreme, in a Desktop window.",
+  "description": "A personal iPhone home screen for recipes, the Space Coast, and small games.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#008080",
-  "theme_color": "#000080",
-  "shortcuts": [
-    {
-      "name": "Grocery List",
-      "short_name": "Grocery List",
-      "description": "Build a grocery list from Mondosupreme recipes",
-      "url": "/grocery/",
-      "icons": [
-        {
-          "src": "/apple-touch-icon.png",
-          "sizes": "180x180",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
+  "background_color": "#f4f3ef",
+  "theme_color": "#f4f3ef",
   "icons": [
     {
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },

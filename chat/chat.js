@@ -156,7 +156,21 @@ function renderMessage(msg) {
   const when = new Date(msg.t);
   if (!Number.isNaN(when.getTime())) time.dateTime = when.toISOString();
   time.textContent = formatTime(msg.t);
-  head.append(name, time);
+  const report = document.createElement('button');
+  report.type = 'button';
+  report.className = 'msg-act';
+  const flagKey = 'mondosupreme.report.chat.' + msg.id;
+  let flagged = false;
+  try { flagged = localStorage.getItem(flagKey) === '1'; } catch (e) {}
+  report.textContent = flagged ? 'Flagged' : 'Report';
+  report.setAttribute('aria-pressed', flagged ? 'true' : 'false');
+  report.addEventListener('click', () => {
+    try { localStorage.setItem(flagKey, '1'); } catch (e) {}
+    report.textContent = 'Flagged';
+    report.setAttribute('aria-pressed', 'true');
+    setStatus('Flagged on this phone. The owner can remove a public message after signing in.');
+  });
+  head.append(name, time, report);
   if (isOwner && live) {
     const actions = document.createElement('span');
     actions.className = 'msg-actions';

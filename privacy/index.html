@@ -19,9 +19,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
-<link rel="stylesheet" href="/shell.css?v=7">
+<link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="/coast.css">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/readable.css?v=14">
 </head>
 <body>
 <header class="site-header"><div class="wrap hdr">
@@ -33,15 +33,35 @@
   <h1>Privacy</h1>
   <p class="coast-lead">Mondosupreme is a static site. It does not sell data and it does not run third-party ad trackers.</p>
  </header>
- <section class="coast-card">
-  <h2>What is stored</h2>
+ <nav class="privacy-toc" aria-label="On this page">
+  <a href="#stored">Sign-in</a>
+  <a href="#public">Public posts</a>
+  <a href="#private">Private copies</a>
+  <a href="#device">This device</a>
+  <a href="#visits">Visit stats</a>
+  <a href="#delete">Delete my data</a>
+ </nav>
+ <section class="coast-card" id="stored">
+  <h2>Sign-in</h2>
   <p>Sign-in uses Firebase Authentication. A password account has an email inside Firebase Auth. That email is not copied into the public database and it is not shown on the site. Visitors see display names only.</p>
+ </section>
+ <section class="coast-card" id="public">
+  <h2>Public posts</h2>
   <p>Public posts you choose to share can include a forum topic, wiki page, market listing, chat line, drawing stroke, guestbook note, recipe, local tip, 8-ball fortune, quote, puzzle score, or a game name. Those records store your account id and the display name, not your email.</p>
+ </section>
+ <section class="coast-card" id="private">
+  <h2>Private copies</h2>
   <p>A signed-in member can keep a private copy of favorites, the grocery list, and a few game saves under their own user id. Other visitors cannot read that private node. The public profile is only a handle, an avatar, a short status, and whether the account is a member.</p>
+ </section>
+ <section class="coast-card" id="device">
+  <h2>This device</h2>
   <p>This browser also keeps localStorage keys that start with mondosupreme, such as the theme, grocery list, meal plan, and puzzle progress. Those stay on the device until you clear them or use Delete my data.</p>
+ </section>
+ <section class="coast-card" id="visits">
+  <h2>Visit stats</h2>
   <p>Anonymous visit stats are collected for site administration: the page, a rough city and region, the browser family, the screen size, and a random id stored in this browser so return visits can be counted. A signed-in display name may be included. IP addresses, email addresses, and precise coordinates are not stored. The Visitors page is visible only to an admin.</p>
  </section>
- <section class="coast-card">
+ <section class="coast-card" id="delete">
   <h2>Delete my data</h2>
   <p>Sign in, then remove the records tied to this account. The button deletes your profile, your private user node, and posts it can match to your account id. It also clears Mondosupreme keys in this browser and tries to delete the Firebase Auth user.</p>
   <p id="privStatus" class="coast-note" role="status">Sign in to delete the records for this account.</p>
@@ -56,7 +76,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=12"></script>
 <script src="privacy.js"></script>
 </body>
 </html>

@@ -104,7 +104,7 @@
       var row = document.createElement('div');
       row.className = 'conn-group';
       row.dataset.tier = String(tier);
-      row.textContent = group.name + ' — ' + group.words.join(', ');
+      row.textContent = 'Group ' + (tier + 1) + ' · ' + group.name + ' — ' + group.words.join(', ');
       box.appendChild(row);
     });
     var open = [];
@@ -361,7 +361,23 @@
       firebase.database().ref('puzzles/' + path + '/' + user.uid).set(Object.assign({ t: Date.now(), name: 'Guest' }, extra)).catch(function () {});
     } catch (e) {}
   }
+  function showPuzzle(which) {
+    var connPanel = $('connPanel');
+    var sudoPanel = $('sudoPanel');
+    if (!connPanel || !sudoPanel) return;
+    var sudoku = which === 'sudo';
+    connPanel.hidden = sudoku;
+    sudoPanel.hidden = !sudoku;
+    var tabConn = $('tabConn');
+    var tabSudo = $('tabSudo');
+    if (tabConn) tabConn.setAttribute('aria-selected', sudoku ? 'false' : 'true');
+    if (tabSudo) tabSudo.setAttribute('aria-selected', sudoku ? 'true' : 'false');
+    try { sessionStorage.setItem('mondosupreme.puzzle-tab', sudoku ? 'sudo' : 'conn'); } catch (e) {}
+  }
   function boot() {
+    showPuzzle((function () { try { return sessionStorage.getItem('mondosupreme.puzzle-tab'); } catch (e) { return ''; } })() === 'sudo' ? 'sudo' : 'conn');
+    if ($('tabConn')) $('tabConn').addEventListener('click', function () { showPuzzle('conn'); });
+    if ($('tabSudo')) $('tabSudo').addEventListener('click', function () { showPuzzle('sudo'); });
     $('connDate').textContent = today;
     $('connSubmit').addEventListener('click', submitConn);
     $('connShare').addEventListener('click', shareConn);

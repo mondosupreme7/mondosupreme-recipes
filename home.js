@@ -13,9 +13,33 @@
   ];
 
   function $(id) { return document.getElementById(id); }
-  function text(id, value) {
+  function text(id, value, state) {
     var node = $(id);
-    if (node) node.textContent = value;
+    if (!node) return;
+    node.replaceChildren(document.createTextNode(value));
+    node.classList.remove('feed-pending', 'feed-error', 'feed-empty');
+    if (state) node.classList.add(state);
+    var link = node.closest('a');
+    if (link) link.setAttribute('aria-busy', state === 'feed-pending' ? 'true' : 'false');
+  }
+  function fail(id, message, again) {
+    var node = $(id);
+    if (!node) return;
+    node.classList.remove('feed-pending', 'feed-empty');
+    node.classList.add('feed-error');
+    node.replaceChildren(document.createTextNode(message + ' '));
+    var retry = document.createElement('button');
+    retry.type = 'button';
+    retry.className = 'feed-retry';
+    retry.textContent = 'Retry';
+    retry.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      again();
+    });
+    node.appendChild(retry);
+    var link = node.closest('a');
+    if (link) link.setAttribute('aria-busy', 'false');
   }
   function getJSON(url) {
     var ctrl = new AbortController();
@@ -138,13 +162,17 @@
     } else if (port) {
       skyBit = 'Port ' + port.temp + '°';
     }
-    if (skyBit) line = skyBit + (rain ? ' · ' + rain : '');
+    if (!skyBit) {
+      fail('homeLine', 'Weather didn’t load.', loadWeather);
+      return;
+    }
+    line = skyBit + (rain ? ' · ' + rain : '');
     text('homeLine', line);
     var link = $('homeWeather');
     if (link) link.setAttribute('aria-label', 'Weather. ' + line);
   }
   function loadWeather() {
-    text('homeLine', 'Checking Cocoa and Port Canaveral');
+    text('homeLine', 'Loading weather', 'feed-pending');
     Promise.all([
       getJSON(forecastUrl(COCOA, true)).then(function (data) {
         return { meteo: readMeteo(data), rain: nextRain(data) };
@@ -189,7 +217,7 @@
     if (!launchWhen) return;
     var phrase = countPhrase(launchWhen.getTime() - Date.now());
     var line = phrase + (launchDetail ? ' · ' + launchDetail : '');
-    text('homeLaunchLine', line);
+    text('homeLaunchLine', line, String(launchDetail).indexOf('backup schedule') >= 0 ? 'feed-empty' : '');
     var link = $('homeLaunch');
     if (link) link.setAttribute('aria-label', 'Next launch ' + line);
   }
@@ -202,6 +230,7 @@
     window.__homeLaunchTimer = setInterval(paintLaunch, left < 2 * 3600000 ? 1000 : 30000);
   }
   function loadLaunch() {
+    text('homeLaunchLine', 'Loading the Cape', 'feed-pending');
     getJSON(LAUNCH_API).then(function (data) {
       var rows = (data.results || []).map(function (row) {
         var padName = (row.pad && row.pad.name) || '';
@@ -225,21 +254,22 @@
     return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(when);
   }
   function loadShips() {
-    getJSON('/cruises/canaveral-deals.json').catch(function () { return { deals: [] }; }).then(function (data) {
+    text('homeShipLine', 'Loading sailings', 'feed-pending');
+    getJSON('/cruises/canaveral-deals.json').then(function (data) {
       var today = todayISO();
       var next = null;
       (data.deals || []).forEach(function (deal) {
         if (!deal || !deal.sailDate || deal.sailDate < today) return;
         if (!next || deal.sailDate < next.sailDate) next = deal;
       });
-      var line = 'No dated Port Canaveral sailing';
-      if (next) line = (next.ship || 'Sailing') + ' · ' + shortDate(next.sailDate);
-      text('homeShipLine', line);
+      if (!next) text('homeShipLine', 'No dated Port Canaveral sailing', 'feed-empty');
+      else text('homeShipLine', (next.ship || 'Sailing') + ' · ' + shortDate(next.sailDate));
       var link = $('homeShips');
-      if (link) link.setAttribute('aria-label', 'Next sailing. ' + line);
-    });
+      if (link) link.setAttribute('aria-label', 'Next sailing. ' + ($('homeShipLine') ? $('homeShipLine').textContent : ''));
+    }).catch(function () { fail('homeShipLine', 'Sailings didn’t load.', loadShips); });
   }
   function loadTides() {
+    text('homeTide', 'Loading the tide', 'feed-pending');
     var start = ymd(new Date());
     var url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8721604&product=predictions&datum=MLLW&time_zone=lst_ldt&units=english&interval=hilo&format=json&begin_date=' + start + '&range=48';
     getJSON(url).then(function (data) {
@@ -257,9 +287,7 @@
       var kind = next.type === 'H' ? 'High' : 'Low';
       var clock = next.when.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
       text('homeTide', kind + ' ' + clock + ', ' + next.v.toFixed(1) + ' ft at Port Canaveral');
-    }).catch(function () {
-      text('homeTide', 'Port Canaveral highs and lows');
-    });
+    }).catch(function () { fail('homeTide', 'Tide didn’t load.', loadTides); });
   }
   function shortCompany(name) {
     return String(name || '').replace(/\s+/g, ' ').trim()
@@ -326,14 +354,19 @@
     if (!line) return;
     var row = topPick(data);
     var stale = !data || !data.fetchedAt || tradingGap(data.fetchedAt) > 3;
+    if (!row && (!data || !data.fetchedAt)) {
+      fail('homeStockLine', 'The screener didn’t load.', loadStock);
+      return;
+    }
     if (!row) {
-      line.textContent = 'Updating…';
+      text('homeStockLine', 'No screened stock in this snapshot.', 'feed-empty');
       return;
     }
     if (stale) {
-      line.textContent = 'Updating… · as of ' + (shortWhen(data && data.fetchedAt) || 'an earlier day');
+      text('homeStockLine', 'Saved screen · as of ' + (shortWhen(data && data.fetchedAt) || 'an earlier day'), 'feed-empty');
       return;
     }
+    line.classList.remove('feed-pending', 'feed-error', 'feed-empty');
     line.replaceChildren();
     line.appendChild(document.createTextNode(row.symbol + ' $' + row.price.toFixed(2) + ' '));
     if (typeof row.dayChange === 'number') {
@@ -349,16 +382,17 @@
     if (link) link.setAttribute('aria-label', 'Top stock. ' + line.textContent);
   }
   function loadStock() {
-    text('homeStockLine', 'Checking the screener');
+    text('homeStockLine', 'Loading the screener', 'feed-pending');
     getJSON('/stocks/oversold.json?v=7').then(paintStock, function () { paintStock(null); });
   }
   function loadTropics() {
+    text('homeTropics', 'Loading the Atlantic', 'feed-pending');
     var url = 'https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Active_Hurricanes_v1/FeatureServer/1/query?where=' +
       encodeURIComponent("BASIN='AL'") + '&outFields=STORMNAME,STORMTYPE&returnGeometry=false&f=json';
     getJSON(url).then(function (data) {
       var features = data.features || [];
       if (!features.length) {
-        text('homeTropics', 'No active Atlantic storms');
+        text('homeTropics', 'No active Atlantic storms', 'feed-empty');
         return;
       }
       var names = features.map(function (feat) {
@@ -368,9 +402,7 @@
         return kind ? name + ' (' + kind + ')' : name;
       });
       text('homeTropics', names.join(', '));
-    }).catch(function () {
-      text('homeTropics', 'Atlantic storm watch');
-    });
+    }).catch(function () { fail('homeTropics', 'Storm list didn’t load.', loadTropics); });
   }
 
   function parkCounter() {

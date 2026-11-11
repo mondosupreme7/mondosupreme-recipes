@@ -869,8 +869,26 @@
       '&hourly=precipitation_probability,temperature_2m,weather_code' +
       '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max' +
       '&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=7';
+    var temp = $('wxTemp');
+    if (temp) {
+      temp.textContent = 'Loading';
+      temp.classList.add('is-pending');
+    }
     var current = fetch(meteo).then(function (res) { return res.json(); }).then(paintMeteo).catch(function () {
-      cond.textContent = 'Open-Meteo did not answer.';
+      cond.textContent = 'The forecast did not load.';
+      if (temp) {
+        temp.textContent = 'Unavailable';
+        temp.classList.remove('is-pending');
+      }
+      if (!document.getElementById('wxRetry')) {
+        var retry = document.createElement('button');
+        retry.type = 'button';
+        retry.id = 'wxRetry';
+        retry.className = 'btn';
+        retry.textContent = 'Retry forecast';
+        retry.addEventListener('click', loadForecast);
+        cond.after(retry);
+      }
     });
     var points = 'https://api.weather.gov/points/' + place.lat.toFixed(4) + ',' + place.lon.toFixed(4);
     fetch(points, { headers: { Accept: 'application/geo+json' } }).then(function (res) {
@@ -900,7 +918,10 @@
   }
   function paintMeteo(data) {
     var cur = data.current || {};
-    if (typeof cur.temperature_2m === 'number') $('wxTemp').textContent = Math.round(cur.temperature_2m) + '°';
+    var tempNode = $('wxTemp');
+    if (tempNode) tempNode.classList.remove('is-pending');
+    if (typeof cur.temperature_2m === 'number') tempNode.textContent = Math.round(cur.temperature_2m) + '°';
+    else if (tempNode) tempNode.textContent = 'No temperature in this feed';
     var facts = $('wxFacts');
     clearNode(facts);
     if (typeof cur.apparent_temperature === 'number') facts.appendChild(fact('Feels like', Math.round(cur.apparent_temperature) + '°'));

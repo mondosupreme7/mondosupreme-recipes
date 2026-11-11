@@ -24,9 +24,9 @@
 <link rel="stylesheet" href="/recipes/styles.css">
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
-<link rel="stylesheet" href="/shell.css?v=7">
-<link rel="stylesheet" href="wordle.css?v=4">
-<link rel="stylesheet" href="/readable.css?v=10">
+<link rel="stylesheet" href="/shell.css?v=8">
+<link rel="stylesheet" href="wordle.css?v=5">
+<link rel="stylesheet" href="/readable.css?v=14">
 </head>
 <body class="wordle-page is-playing">
 <div class="ticker"><div class="ticker-track">
@@ -73,7 +73,7 @@
    </div>
    <button class="btn word-btn" id="wordInfo" type="button" aria-haspopup="dialog">Info</button>
   </div>
-  <p class="word-msg" id="wordMsg" role="status" aria-live="polite">Six tries. Green is the right spot. Gold is in the word. Gray tiles are out, and those keys turn red.</p>
+  <p class="word-msg" id="wordMsg" role="status" aria-live="polite">Six tries. A check is the right spot, a dot is in the word somewhere else, and an × is out.</p>
   <div class="word-stage">
    <div class="word-grid" id="wordGrid" role="group" aria-label="Guess grid"></div>
   </div>
@@ -85,7 +85,7 @@
    <button class="btn word-btn" id="wordInfoClose" type="button">Close</button>
   </div>
   <p class="word-kicker" id="wordKicker">Daily 5-letter puzzle. Same word for every visitor.</p>
-  <p>Six tries. Green is the right spot. Gold is in the word. Gray tiles are out, and those keys turn red.</p>
+  <p>Six tries. A check is the right spot, a dot is in the word somewhere else, and an × is out. Color repeats the same marks.</p>
   <p class="word-legend"><span class="leg correct">✓ right spot</span><span class="leg present">• wrong spot</span><span class="leg absent">× not in word</span></p>
   <p><a class="btn word-btn" href="/crossword/">Daily 5×5 mini crossword</a></p>
   <div class="word-actions">
@@ -114,7 +114,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=12"></script>
 <script src="/backup.js"></script>
 <script src="words.js"></script>
 <script src="wordle.js?v=4"></script>
