@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="/shell.css?v=8">
 <link rel="stylesheet" href="stocks.css?v=11">
 <link rel="stylesheet" href="/readable.css?v=14">
+<link rel="stylesheet" href="paper/paper.css?v=1">
 </head>
 <body>
 <div class="ticker quote-tape" aria-hidden="true"><div class="ticker-track" id="tapeTrack"></div></div>
@@ -64,6 +65,12 @@
  <div class="hero quote-hero">
   <h1>Stocks</h1>
   <p class="hero-sub">Oversold research and swing setups</p>
+  <a class="paper-strip" id="paperStrip" href="/stocks/paper/">
+   <span class="paper-kicker">Paper book · simulated, not a live account</span>
+   <span class="paper-eq" id="paperEquity">Equity $1,000.00</span>
+   <span class="paper-meta" id="paperMeta">Flat vs $1,000.00 start · risk $19.50 · 1 working order, no fills</span>
+   <span class="paper-go">Open the paper trade log</span>
+  </a>
   <p>The wide list is an oversold research screen. Only a name that passes the swing rules is a swing candidate, the top stock to watch, or a journal entry. A card uses the latest daily bars and, when a sheet comes back, fundamentals as notes. Informational only, not financial advice.</p>
  </div>
  <details class="rules-card" id="swingRules">
@@ -197,6 +204,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="stocks.js?v=13"></script>
+<script src="paper/paper.js?v=1"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

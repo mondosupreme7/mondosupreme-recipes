@@ -1,0 +1,207 @@
+{
+  "account": {
+    "name": "Mondosupreme swing paper book",
+    "kind": "paper",
+    "currency": "USD",
+    "startingCash": 1000,
+    "openedAt": "2026-11-10T21:35:01-05:00",
+    "openedOn": "2026-11-10",
+    "goalEquity": 1000000,
+    "notes": "Paper only. Never place live brokerage orders or spend the user's money. Do not loosen swing gates to chase the $1,000,000 goal."
+  },
+  "rules": {
+    "method": "mondosupreme.com Stocks swing gates",
+    "paramVersionAtOpen": "2026-11-11.1",
+    "riskPerTradePct": 2,
+    "minRewardRisk": 2,
+    "earningsWindowDays": 7,
+    "sectorCap": 1,
+    "fillWindowTradingDays": 5,
+    "timeStopTradingDays": 8,
+    "entryStyle": "Limit in the published buy zone or a next-session reclaim of the signal high; never the signal close.",
+    "regime": "No new official entries when SPY is under its 200-day; at most two when SPY is under its 50-day.",
+    "userAlerts": "Alert the user only when a name newly enters a buy zone, not at fill, target, or stop."
+  },
+  "balances": {
+    "cash": 1000,
+    "cashReserved": 233.25,
+    "cashAvailable": 766.75,
+    "marketValue": 0,
+    "equity": 1000,
+    "openRiskUsd": 19.5,
+    "asOf": "2026-11-10T21:35:01-05:00",
+    "markSource": "no fills yet"
+  },
+  "marketAtOpen": {
+    "symbol": "SPY",
+    "price": 752.69,
+    "vsSma50": -1.65,
+    "vsSma200": 3.01,
+    "regime": "below 50-day",
+    "officialSlots": 2,
+    "snapshotFetchedAt": "2026-11-11T01:25:48Z",
+    "paramVersion": "2026-11-11.1",
+    "swingCandidates": 1
+  },
+  "workingOrders": [
+    {
+      "id": "paper-2026-11-10-ZD",
+      "status": "working",
+      "side": "buy",
+      "symbol": "ZD",
+      "name": "Ziff Davis, Inc.",
+      "sector": "Telecommunications",
+      "officialPickId": "2026-11-10-ZD",
+      "paramVersion": "2026-11-11.1",
+      "signalDate": "2026-11-10",
+      "signalClose": 50.56,
+      "orderType": "limit",
+      "planStyle": "limit",
+      "planNote": "Limit under the close, at the nearest structure.",
+      "buyZoneLow": 46.09,
+      "buyZoneHigh": 46.65,
+      "limitPrice": 46.65,
+      "stop": 42.75,
+      "target": 55.81,
+      "targetLabel": "the 20-day average",
+      "rewardRisk": 2.35,
+      "shares": 5,
+      "riskPerShareAtLimit": 3.9,
+      "riskUsdAtLimit": 19.5,
+      "riskPctAtLimit": 1.95,
+      "reservedCash": 233.25,
+      "firstEligibleSession": "2026-11-11",
+      "fillWindowTradingDays": 5,
+      "timeStopTradingDaysAfterFill": 8,
+      "swingScore": 36,
+      "vsSma200": 5.72,
+      "sma200": 47.83,
+      "sma200Rising": true,
+      "avgDollarVolume": 24196247,
+      "placedAt": "2026-11-10T21:35:01-05:00",
+      "note": "Only swing-eligible official name in the 2026-11-11.1 snapshot. Price is still above the buy zone, so this is a working order, not a fill. Fill only if a later session actually trades the zone."
+    }
+  ],
+  "openPositions": [],
+  "closedTrades": [],
+  "events": [
+    {
+      "at": "2026-11-10T21:35:01-05:00",
+      "type": "account_opened",
+      "detail": "Started paper book with $1,000 cash. Goal is $1,000,000 without loosening the swing gates."
+    },
+    {
+      "at": "2026-11-10T21:35:01-05:00",
+      "type": "order_placed",
+      "symbol": "ZD",
+      "detail": "Working buy limit 5 shares of ZD at 46.65 (zone 46.09–46.65), stop 42.75, target 55.81. First eligible session 2026-11-11. Risk $19.50 (1.95%) if filled at the limit. Older official journal names (KRT, HALO, PAYS, and the rest of the Nov 9–10 lists) are not eligible under the current gates and were not taken."
+    }
+  ],
+  "skippedFromJournal": [
+    {
+      "symbol": "KRT",
+      "reason": "Fails current gates: shock bar, average dollar volume about $7.4M, only 3.6% above the 200-day, 21-session drop -30.65%."
+    },
+    {
+      "symbol": "HALO",
+      "reason": "Fails current gates: shock bar. Journal had a same-day fill under an older parameter version."
+    },
+    {
+      "symbol": "PAYS",
+      "reason": "Not swing eligible (score 4 / 0); shock bar; same-day journal fill under an older parameter version."
+    },
+    {
+      "symbol": "PBYI",
+      "reason": "Fails current gates: shock, thin dollar volume, 21-session drop -18.37%."
+    },
+    {
+      "symbol": "CVI",
+      "reason": "Fails current gates: shock bar, 21-session drop -34.29%."
+    },
+    {
+      "symbol": "UFCS",
+      "reason": "Fails current gates: shock bar, dollar volume under $20M, only 3.79% above the 200-day."
+    },
+    {
+      "symbol": "NTNX",
+      "reason": "Fails current gates: 21-session drop -20.29% (limit is -15%)."
+    },
+    {
+      "symbol": "PAGP",
+      "reason": "Fails current gates: only 2.23% above the 200-day."
+    },
+    {
+      "symbol": "SU",
+      "reason": "Fails current gates: swing score 4."
+    },
+    {
+      "symbol": "CNQ",
+      "reason": "Fails current gates: only 3.74% above the 200-day, reward-to-risk 1.9."
+    }
+  ],
+  "schemaVersion": 1,
+  "policy": {
+    "history": "append-only",
+    "timezone": "America/New_York",
+    "arrays": [
+      "workingOrders",
+      "openPositions",
+      "closedTrades",
+      "events"
+    ],
+    "rule": "Append trades, orders, and events. Do not delete or rewrite an earlier record. Record a fill, scratch, stop, or target by appending an event and an open position or a closed trade. To change an order, append a later record with the same id and keep the earlier record. A status of working is not a fill.",
+    "closedTradeFields": [
+      "id",
+      "symbol",
+      "side",
+      "shares",
+      "entryAt",
+      "entryPrice",
+      "entryLow",
+      "entryHigh",
+      "stop",
+      "target",
+      "exitAt",
+      "exitPrice",
+      "exitReason",
+      "realizedPnlUsd",
+      "realizedPnlPct",
+      "cashAfter",
+      "equityAfter"
+    ],
+    "openPositionFields": [
+      "id",
+      "symbol",
+      "side",
+      "shares",
+      "entryAt",
+      "entryPrice",
+      "entryLow",
+      "entryHigh",
+      "stop",
+      "target",
+      "mark",
+      "markedAt",
+      "unrealizedPnlUsd",
+      "unrealizedPnlPct"
+    ],
+    "orderFields": [
+      "id",
+      "status",
+      "side",
+      "symbol",
+      "name",
+      "shares",
+      "orderType",
+      "limitPrice",
+      "buyZoneLow",
+      "buyZoneHigh",
+      "stop",
+      "target",
+      "reservedCash",
+      "riskUsdAtLimit",
+      "placedAt",
+      "firstEligibleSession"
+    ]
+  }
+}

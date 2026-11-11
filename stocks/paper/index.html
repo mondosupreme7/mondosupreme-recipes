@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="paper-page">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script src="/theme-boot.js"></script>
+<script src="/ga.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mondosupreme">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Paper trade log — Stocks</title>
+<meta name="description" content="Paper, simulated swing-trade log for the Mondosupreme stocks book. Informational only, not financial advice, and not a live brokerage account.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css?v=8">
+<link rel="stylesheet" href="/readable.css?v=14">
+<link rel="stylesheet" href="paper.css?v=1">
+</head>
+<body>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/stocks/" class="brand"><span class="logo">💹</span><span>Stocks</span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/recipes/">Recipes</a>
+  <a href="/weather/">Weather</a>
+  <a href="/search/">Search</a>
+  <a href="/stocks/paper/" aria-current="page">Paper log</a>
+  <a href="/stocks/">Stocks</a>
+ </nav>
+</div></header>
+<main class="wrap paper-book">
+ <p class="paper-back"><a href="/stocks/">Stocks</a></p>
+ <h1>Paper trade log</h1>
+ <p class="paper-banner">Paper / simulated trading. Not a live brokerage account, and not real money.</p>
+ <div id="paperApp" class="paper-seed" aria-live="polite">
+  <section class="paper-summary" aria-labelledby="paperPnlTitle">
+   <h2 id="paperPnlTitle">P&amp;L summary</h2>
+   <p class="paper-lead">Opened Nov 10, 2026, 9:35 PM EST. Goal $1,000,000.00.</p>
+   <div class="paper-stats">
+    <p class="paper-stat"><span>Running equity</span><b>$1,000.00</b></p>
+    <p class="paper-stat"><span>Versus $1,000.00 start</span><b>$0.00 · 0.00%</b></p>
+    <p class="paper-stat"><span>Open risk</span><b>$19.50</b></p>
+    <p class="paper-stat"><span>Closed-trade results</span><b>$0.00 · none yet</b></p>
+    <p class="paper-stat"><span>Unrealized P&amp;L</span><b>$0.00</b></p>
+    <p class="paper-stat"><span>Goal progress</span><b>0.10%</b></p>
+   </div>
+   <p class="paper-line">Running cash $1,000.00 · reserved $233.25 · available $766.75</p>
+   <p class="paper-fine">Market value $0.00 · $999,000.00 still to go</p>
+  </section>
+  <section class="paper-section">
+   <h2>Working orders</h2>
+   <p class="paper-lead">These orders are working and unfilled. They are not positions and they are not fills.</p>
+   <article class="paper-card">
+    <h3>ZD <span class="paper-badge is-working">Working · unfilled</span></h3>
+    <p class="paper-sub">Ziff Davis, Inc.</p>
+    <dl class="paper-dl">
+     <div><dt>Side</dt><dd>Buy</dd></div>
+     <div><dt>Shares</dt><dd>5 shares</dd></div>
+     <div><dt>Limit</dt><dd>$46.65</dd></div>
+     <div><dt>Buy zone</dt><dd>$46.09–$46.65</dd></div>
+     <div><dt>Stop</dt><dd>$42.75</dd></div>
+     <div><dt>Target</dt><dd>$55.81 (the 20-day average)</dd></div>
+     <div><dt>Reserved cash</dt><dd>$233.25</dd></div>
+     <div><dt>Placed</dt><dd><time datetime="2026-11-10T21:35:01-05:00">Nov 10, 2026, 9:35 PM EST</time></dd></div>
+     <div><dt>First eligible session</dt><dd>Nov 11, 2026</dd></div>
+    </dl>
+    <p class="paper-callout">Working order. Not a fill. No shares are held. Last close was $50.56, so this limit is still working.</p>
+   </article>
+  </section>
+  <section class="paper-section">
+   <h2>Open positions</h2>
+   <p class="paper-lead">No open positions. Unrealized P&amp;L is $0.00.</p>
+  </section>
+  <section class="paper-section">
+   <h2>Closed trades</h2>
+   <p class="paper-lead">No closed trades yet. When a trade ends, it stays here whether it is a winner, a loser, a scratch, a stop, or a target. Each record shows the Eastern time, ticker, side, shares, entry or fill range, stop, target, exit date and price, realized profit or loss in dollars and percent, and running cash after the trade.</p>
+  </section>
+  <section class="paper-section">
+   <h2>Ledger</h2>
+   <ol class="paper-events">
+    <li><time datetime="2026-11-10T21:35:01-05:00">Nov 10, 2026, 9:35 PM EST</time><p>Started paper book with $1,000 cash. Goal is $1,000,000 without loosening the swing gates.</p></li>
+    <li><time datetime="2026-11-10T21:35:01-05:00">Nov 10, 2026, 9:35 PM EST</time><p>Working buy limit 5 shares of ZD at 46.65 (zone 46.09–46.65), stop 42.75, target 55.81. First eligible session 2026-11-11. Risk $19.50 (1.95%) if filled at the limit. Older official journal names were not eligible under the current gates and were not taken.</p></li>
+   </ol>
+  </section>
+ </div>
+ <p class="paper-disclaimer">Informational only, not financial advice and not a recommendation to buy or sell. This is a paper, simulated book. It is not a live brokerage account. Times are America/New_York.</p>
+</main>
+<footer class="site-footer"><div class="wrap"><p>© <span id="yr"></span> Mondosupreme.com · Paper trading, not financial advice. · <a href="/stocks/">Stocks</a></p></div></footer>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/members.js?v=5"></script>
+<script src="/shell.js?v=13"></script>
+<script src="/backup.js"></script>
+<script src="paper.js?v=1"></script>
+</body>
+</html>
