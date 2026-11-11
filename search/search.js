@@ -852,7 +852,7 @@
     });
   }
   function answerPlant() {
-    return getJSON('/planting/plants.json?v=1').then(function (doc) {
+    return getJSON('/planting/plants.json?v=2').then(function (doc) {
       var raw = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'numeric' }).format(new Date());
       var month = parseInt(raw, 10);
       var names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -861,11 +861,16 @@
       Object.keys(groups).forEach(function (kind) {
         var items = (doc.crops || []).filter(function (crop) {
           return crop.kind === kind && (crop.months || []).indexOf(month) !== -1;
-        }).map(function (crop) { return crop.name; });
+        });
         if (!items.length) return;
-        var shown = items.slice(0, 8);
-        var extra = items.length > shown.length ? ', and ' + (items.length - shown.length) + ' more' : '';
-        lines.push(groups[kind] + ': ' + shown.join(', ') + extra + '.');
+        var shown = items.slice(0, 6).map(function (crop) {
+          if (!crop.types) return crop.name;
+          var bit = crop.types.split('. ')[0].replace(/\.$/, '');
+          if (bit.length > 72) bit = bit.slice(0, 69) + '…';
+          return crop.name + ' (' + bit + ')';
+        });
+        var extra = items.length > 6 ? ', and ' + (items.length - 6) + ' more' : '';
+        lines.push(groups[kind] + ': ' + shown.join('; ') + extra + '.');
       });
       var zone = doc.zone || {};
       var lead = 'In ' + names[month - 1] + ', ZIP ' + doc.zip + ' is Central Florida, zone ' + zone.code + ' (' + zone.range + ').';

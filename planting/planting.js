@@ -78,7 +78,15 @@
       list.className = 'plant-chips';
       rows.forEach(function (crop) {
         var item = document.createElement('li');
-        item.textContent = crop.name;
+        var name = document.createElement('span');
+        name.textContent = crop.name;
+        item.appendChild(name);
+        if (crop.types) {
+          var types = document.createElement('span');
+          types.className = 'plant-type';
+          types.textContent = crop.types;
+          item.appendChild(types);
+        }
         if (crop.note) {
           var small = document.createElement('small');
           small.textContent = crop.note;
@@ -101,7 +109,7 @@
   }
   function paintFine() {
     var fine = $('plantFine');
-    var bits = [data.frostNote, data.disclaimer].filter(Boolean);
+    var bits = [data.frostNote, data.varietyNote, data.disclaimer].filter(Boolean);
     fine.replaceChildren();
     fine.appendChild(document.createTextNode(bits.join(' ')));
     (data.sources || []).forEach(function (source) {
@@ -116,7 +124,7 @@
     });
   }
   document.getElementById('yr').textContent = String(new Date().getFullYear());
-  fetch('plants.json?v=1').then(function (res) { return res.json(); }).then(function (doc) {
+  fetch('plants.json?v=2').then(function (res) { return res.json(); }).then(function (doc) {
     data = doc;
     month = hashMonth() || nowMonth();
     paintZone();
