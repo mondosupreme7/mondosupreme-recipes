@@ -136,7 +136,7 @@
   }
   function showFlorida() {
     if (!map) return;
-    map.fitBounds(FLORIDA, { paddingTopLeft: [40, 4], paddingBottomRight: [4, 16], maxZoom: 6, animate: false });
+    map.fitBounds(FLORIDA, { paddingTopLeft: [8, 6], paddingBottomRight: [8, 8], maxZoom: 6, animate: false });
   }
   function applyPlace(next) {
     place = {
@@ -832,7 +832,6 @@
         fetch(props.forecast, { headers: { Accept: 'application/geo+json' } }).then(function (res) { return res.json(); }).then(function (cast) {
           var periods = (cast.properties && cast.properties.periods) || [];
           if (periods[0] && periods[0].shortForecast) cond.textContent = periods[0].shortForecast;
-          paintDays(periods);
         }).catch(function () {});
       }
     }).catch(function () { /* Open-Meteo still covers the numbers */ });
@@ -857,8 +856,20 @@
       $('wxCond').textContent = sky(cur.weather_code);
     }
     var times = (data.hourly && data.hourly.time) || [];
-    var start = times.indexOf(cur.time);
-    if (start < 0) start = 0;
+    function hourKey(iso) {
+      var match = /^(\d{4}-\d{2}-\d{2})[T ](\d{2})/.exec(String(iso || ''));
+      return match ? match[1] + match[2] : '';
+    }
+    var nowKey = hourKey(cur.time);
+    if (!nowKey && typeof data.utc_offset_seconds === 'number') {
+      var shifted = new Date(Date.now() + data.utc_offset_seconds * 1000);
+      nowKey = shifted.getUTCFullYear() + '-' + pad2(shifted.getUTCMonth() + 1) + '-' + pad2(shifted.getUTCDate()) + pad2(shifted.getUTCHours());
+    }
+    var start = 0;
+    for (var h = 0; h < times.length; h++) {
+      var key = hourKey(times[h]);
+      if (key && nowKey && key >= nowKey) { start = h; break; }
+    }
     var hourly = $('wxHourly');
     clearNode(hourly);
     for (var i = start; i < Math.min(times.length, start + 8); i++) {
@@ -887,46 +898,23 @@
       cell.appendChild(chance);
       hourly.appendChild(cell);
     }
-    if (!$('wxDays').children.length && data.daily) paintDaily(data.daily);
-  }
-  function paintDays(periods) {
-    var box = $('wxDays');
-    clearNode(box);
-    periods.slice(0, 6).forEach(function (period) {
-      var card = document.createElement('article');
-      card.className = 'wx-day';
-      var name = document.createElement('b');
-      name.textContent = period.name || '';
-      var hi = document.createElement('div');
-      hi.className = 'hi';
-      hi.textContent = (period.temperature != null ? period.temperature : '—') + '°';
-      var skyText = document.createElement('div');
-      skyText.textContent = period.shortForecast || '';
-      var pop = document.createElement('div');
-      var value = period.probabilityOfPrecipitation && period.probabilityOfPrecipitation.value;
-      pop.textContent = (typeof value === 'number' ? value : 0) + '% rain';
-      card.appendChild(name);
-      card.appendChild(hi);
-      card.appendChild(skyText);
-      card.appendChild(pop);
-      box.appendChild(card);
-    });
+    if (data.daily) paintDaily(data.daily);
   }
   function paintDaily(daily) {
     var box = $('wxDays');
-    if (box.children.length) return;
+    clearNode(box);
     (daily.time || []).forEach(function (day, i) {
       var card = document.createElement('article');
       card.className = 'wx-day';
       var name = document.createElement('b');
-      name.textContent = new Date(day + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+      name.textContent = new Date(day + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' });
       var hi = document.createElement('div');
       hi.className = 'hi';
-      hi.textContent = Math.round(daily.temperature_2m_max[i]) + '° / ' + Math.round(daily.temperature_2m_min[i]) + '°';
+      hi.textContent = Math.round(daily.temperature_2m_max[i]) + '°/' + Math.round(daily.temperature_2m_min[i]) + '°';
       var skyText = document.createElement('div');
       skyText.textContent = sky(daily.weather_code[i]);
       var pop = document.createElement('div');
-      pop.textContent = (daily.precipitation_probability_max[i] != null ? daily.precipitation_probability_max[i] : '—') + '% rain';
+      pop.textContent = (daily.precipitation_probability_max[i] != null ? daily.precipitation_probability_max[i] : '—') + '%';
       card.appendChild(name);
       card.appendChild(hi);
       card.appendChild(skyText);
@@ -952,9 +940,21 @@
       var lower = eventName.toLowerCase();
       card.className = 'wx-alert ' + (lower.indexOf('warning') >= 0 ? 'is-warning' : lower.indexOf('watch') >= 0 ? 'is-watch' : 'is-advisory');
       var title = document.createElement('strong');
-      title.textContent = eventName + (props.severity ? ' · ' + props.severity : '');
+      title.textContent = eventName;
       var headline = document.createElement('div');
-      headline.textContent = props.headline || '';
+      var until = props.ends || props.expires;
+      var untilText = '';
+      if (until) {
+        var end = new Date(until);
+        if (isFinite(end.getTime())) {
+          untilText = 'until ' + end.toLocaleString('en-US', {
+            timeZone: 'America/New_York',
+            weekday: 'short',
+            hour: 'numeric'
+          });
+        }
+      }
+      headline.textContent = untilText ? ' · ' + untilText : '';
       card.appendChild(title);
       card.appendChild(headline);
       box.appendChild(card);

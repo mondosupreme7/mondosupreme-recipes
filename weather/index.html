@@ -26,8 +26,8 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=7">
-<link rel="stylesheet" href="weather.css?v=2">
-<link rel="stylesheet" href="/readable.css?v=11">
+<link rel="stylesheet" href="weather.css?v=3">
+<link rel="stylesheet" href="/readable.css?v=12">
 </head>
 <body class="wx-page">
 <div class="ticker"><div class="ticker-track">
@@ -66,16 +66,18 @@
  <div class="wx-hero">
   <p class="wx-kicker">The Weather Channel · WeatherStar 4000 · Local on the 8s</p>
   <h1><span class="wx-clean-title">Weather</span><span class="wx-retro-title">Weather — Doppler 4000 Radar</span></h1>
-  <p id="wxPlace">Cocoa / Cape Canaveral, FL · 32927</p>
  </div>
- <form id="wxSearch" class="wx-search">
-  <label for="wxQuery">ZIP code or city</label>
-  <div class="wx-search-row">
-   <input id="wxQuery" name="q" type="search" maxlength="80" placeholder="32927 or Cocoa" autocomplete="off" enterkeyhint="search" aria-label="ZIP code or city">
-   <button class="btn wx-btn" type="submit">Search</button>
+ <section class="wx-top" aria-label="Current conditions">
+  <div class="wx-now">
+   <p class="wx-temp" id="wxTemp">--°</p>
+   <div class="wx-now-copy">
+    <p id="wxPlace">Cocoa, FL · 32927</p>
+    <p class="wx-cond" id="wxCond" aria-live="polite">Tuning the forecast…</p>
+    <ul class="wx-facts" id="wxFacts"></ul>
+   </div>
   </div>
- </form>
- <div class="wx-presets" id="wxPresets" role="group" aria-label="Radar presets"></div>
+  <div id="wxAlerts" class="wx-alerts" aria-live="polite"></div>
+ </section>
  <section class="wx-crt" aria-labelledby="wxRadarTitle">
   <h2 id="wxRadarTitle" class="wx-screen-title"><span class="wx-retro-brand"><span class="wx-live">LIVE</span> DOPPLER 4000 · </span><span class="wx-clean-brand">Radar · </span><span id="wxStamp">Loading the loop…</span></h2>
   <div class="wx-map-wrap">
@@ -115,26 +117,26 @@
    </div>
    <label class="wx-check"><input id="wxRain" type="checkbox" checked> 2-hour loop</label>
    <label class="wx-check"><input id="wxNexrad" type="checkbox" checked> NEXRAD</label>
-   <label class="wx-check"><input id="wxShips" type="checkbox"> Cruise ships</label>
   </div>
   <p id="wxRadarNote" class="wx-note">The loop plays past, now, and future when the source has a forecast. Otherwise it loops past to now.</p>
  </section>
+ <h3 class="wx-sub">Next hours</h3>
+ <div class="wx-hourly" id="wxHourly"></div>
+ <form id="wxSearch" class="wx-search">
+  <label for="wxQuery">ZIP code or city</label>
+  <div class="wx-search-row">
+   <input id="wxQuery" name="q" type="search" maxlength="80" placeholder="32927 or Cocoa" autocomplete="off" enterkeyhint="search" aria-label="ZIP code or city">
+   <button class="btn wx-btn" type="submit">Search</button>
+  </div>
+ </form>
+ <div class="wx-presets" id="wxPresets" role="group" aria-label="Radar presets"></div>
+ <label class="wx-check wx-ships"><input id="wxShips" type="checkbox"> Cruise ships</label>
  <section class="wx-star" aria-labelledby="wxStarTitle">
   <div class="wx-star-top">
-   <h2 id="wxStarTitle"><span class="wx-clean-title">Local forecast</span><span class="wx-retro-title">LOCAL ON THE 8s</span></h2>
+   <h2 id="wxStarTitle"><span class="wx-clean-title">Daily</span><span class="wx-retro-title">LOCAL ON THE 8s</span></h2>
    <button class="btn wx-btn" id="wxMusic" type="button" aria-pressed="false">[🎷 Local on the 8s Music]</button>
   </div>
   <div class="wx-screen">
-   <div class="wx-now">
-    <p class="wx-temp" id="wxTemp">--°</p>
-    <div>
-     <p class="wx-cond" id="wxCond" aria-live="polite">Tuning the forecast for 32927…</p>
-     <ul class="wx-facts" id="wxFacts"></ul>
-    </div>
-   </div>
-   <div id="wxAlerts" class="wx-alerts" aria-live="polite"></div>
-   <h3 class="wx-sub">Hourly rain chance</h3>
-   <div class="wx-hourly" id="wxHourly"></div>
    <h3 class="wx-sub">7-day forecast</h3>
    <div class="wx-days" id="wxDays"></div>
    <h3 class="wx-sub">Marine</h3>
@@ -154,6 +156,6 @@
 <script src="/members.js?v=5"></script>
 <script src="/shell.js?v=9"></script>
 <script src="/backup.js"></script>
-<script src="weather.js?v=2"></script>
+<script src="weather.js?v=3"></script>
 </body>
 </html>
