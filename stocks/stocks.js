@@ -17,6 +17,16 @@
   var LIST_CAP = 5;
   var WATCH_CAP = 100;
   var watchShown = PAGE;
+  var researchShown = PAGE;
+  var market = null;
+  var PROMOTED_DOLLAR = 20000000;
+  var MIN_CUSHION = 5;
+  var MAX_PULLBACK = -15;
+  var SHOCK_PCT = -9;
+  var SHOCK_LOOKBACK = 8;
+  var MIN_SWING = 36;
+  var MIN_CLOSED = 20;
+  var ACCOUNT_KEY = 'mondosupreme.stocks.account';
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
@@ -118,23 +128,42 @@
     return null;
   }
 
-  function isSwingPick(row) {
-    return !!(row && row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20);
+  function shockFromSeries(row) {
+    if (!row) return false;
+    if (row.shock) return true;
+    if ((row.flags || []).indexOf('Falling knife') !== -1) return true;
+    if (typeof row.dayChange === 'number' && row.dayChange <= SHOCK_PCT) return true;
+    var closes = row.series && row.series.c;
+    if (!closes || closes.length < 2) return false;
+    var start = Math.max(1, closes.length - SHOCK_LOOKBACK);
+    for (var i = start; i < closes.length; i++) {
+      if (!(closes[i - 1] > 0)) continue;
+      if ((closes[i] / closes[i - 1] - 1) * 100 <= SHOCK_PCT) return true;
+    }
+    return false;
   }
-  function bestScore(row) {
-    if (typeof row.rankScore === 'number') return row.rankScore;
-    if (typeof row.score === 'number') return row.score;
-    return 0;
+  function displayActionable(row) {
+    if (!row || row.swingEligible !== true) return false;
+    if (typeof row.swingScore !== 'number' || row.swingScore < MIN_SWING) return false;
+    if (row.above200 !== true || row.sma200Rising === false) return false;
+    if (typeof row.vsSma200 !== 'number' || row.vsSma200 < MIN_CUSHION) return false;
+    if (typeof row.drop21 === 'number' && row.drop21 <= MAX_PULLBACK) return false;
+    if (typeof row.avgDollarVolume !== 'number' || row.avgDollarVolume < PROMOTED_DOLLAR) return false;
+    if (earningsSoon(row) || shockFromSeries(row) || row.planStyle === 'none') return false;
+    if (typeof row.rewardRisk !== 'number' || row.rewardRisk < 2) return false;
+    var signals = confirmingSignals(row);
+    return signals.indexOf('Volume reversal') !== -1 && signals.length >= 2;
   }
-  function byBestScore(a, b) {
-    var swing = (isSwingPick(b) ? 1 : 0) - (isSwingPick(a) ? 1 : 0);
-    if (swing) return swing;
-    var score = bestScore(b) - bestScore(a);
+  function bySwingScore(a, b) {
+    var score = (b.swingScore || 0) - (a.swingScore || 0);
     if (score) return score;
     return a.symbol.localeCompare(b.symbol);
   }
+  function actionableRows() {
+    return rows.filter(displayActionable).sort(bySwingScore);
+  }
   function visibleRows() {
-    var list = rows.slice().sort(byBestScore).slice(0, LIST_CAP);
+    var list = actionableRows().slice(0, LIST_CAP);
     if (document.getElementById('sort').value === 'ticker') {
       list.sort(function (a, b) { return a.symbol.localeCompare(b.symbol); });
     }
@@ -143,10 +172,9 @@
 
   function badges(row) {
     var box = el('span', null, 'badge-row');
-    if (row.flags && row.flags.length) box.appendChild(el('span', row.flags[0], 'qbadge is-caution'));
-    if (row.strongBounce) box.appendChild(el('span', 'STRONG BOUNCE SETUP!', 'qbadge is-bounce'));
-    if (typeof row.rsi === 'number' && row.rsi < 30) box.appendChild(el('span', 'RSI < 30!', 'qbadge is-hot'));
-    else if (row.zone === 'watch') box.appendChild(el('span', 'WATCH / BOUNCE ZONE', 'qbadge is-bounce'));
+    (row.flags || []).slice(0, 2).forEach(function (flag) {
+      box.appendChild(el('span', flag, 'qbadge is-caution'));
+    });
     return box.childNodes.length ? box : null;
   }
 
@@ -159,7 +187,7 @@
   }
 
   function rowScore(row) {
-    var value = typeof row.rankScore === 'number' ? row.rankScore : row.score;
+    var value = typeof row.swingScore === 'number' ? row.swingScore : row.score;
     return value == null || !isFinite(value) ? '—' : String(value);
   }
   function dayText(value) {
@@ -224,9 +252,21 @@
       });
       body.appendChild(tr);
     });
-    document.getElementById('empty').hidden = list.length !== 0;
-    document.getElementById('count').textContent = list.length ? 'Top ' + list.length : '';
+    var empty = document.getElementById('empty');
+    if (!rows.length) {
+      empty.hidden = false;
+      empty.textContent = 'No stocks in this snapshot.';
+    } else if (!list.length) {
+      empty.hidden = false;
+      empty.textContent = 'No name passes the swing rules on this pass. The research list below is not a set of swing candidates.';
+    } else {
+      empty.hidden = true;
+    }
+    document.getElementById('count').textContent = list.length
+      ? 'Actionable setups: ' + list.length + '.'
+      : '';
     paintTradeAlerts();
+    renderResearch();
   }
 
   function fillWhy(row) {
@@ -270,6 +310,9 @@
     if (row.above200 === false || flags.indexOf('Below the 200-day') !== -1) {
       notes.push({ href: '#rule-1', text: 'Below the 200-day · Rule 1' });
     }
+    if (row.shock || flags.indexOf('Falling knife') !== -1) {
+      notes.push({ href: '#rule-1', text: 'Shock bar · not a pullback' });
+    }
     if (flags.indexOf('Earnings within 7 days') !== -1) {
       notes.push({ href: '#rule-3', text: 'Earnings within 7 days · Rule 3' });
     }
@@ -277,7 +320,7 @@
       notes.push({ href: '#rule-5', text: 'Reward:risk under 2:1 · Rule 5' });
     }
     flags.forEach(function (flag) {
-      if (flag === 'Below the 200-day' || flag === 'Earnings within 7 days') return;
+      if (flag === 'Below the 200-day' || flag === 'Earnings within 7 days' || flag === 'Falling knife') return;
       notes.push({ href: '', text: flag });
     });
     return notes;
@@ -295,29 +338,43 @@
   function earningsSoon(row) {
     return (row.flags || []).indexOf('Earnings within 7 days') !== -1;
   }
+  function closeDefinedZone(row) {
+    if (!row || row.planStyle === 'limit' || row.planStyle === 'confirm') return false;
+    return typeof row.price === 'number' && typeof row.entryHigh === 'number' && Math.abs(row.entryHigh - row.price) < 0.02;
+  }
   function planState(row) {
+    if (!row) return '';
+    if (row.planStyle === 'none' || row.shock) return 'No plan after a shock bar';
+    if (closeDefinedZone(row)) return 'Wait for a planned entry';
     var price = row.price;
     var low = row.entryLow;
     var high = row.entryHigh;
     var stop = row.stop;
     var target = row.target;
     if (typeof price !== 'number' || typeof low !== 'number' || typeof high !== 'number') return '';
+    if (row.planStyle === 'confirm') {
+      if (typeof stop === 'number' && price < stop) return 'Stop hit';
+      if (typeof target === 'number' && price >= target) return 'Target hit';
+      if (price + 0.0001 < high) return 'Wait for confirmation';
+      return 'Confirmation price traded';
+    }
     if (typeof stop === 'number' && price < stop) return 'Stop hit';
     if (typeof target === 'number' && price >= target) return 'Target hit';
-    if (price > high) return 'Above buy zone — wait';
-    if (price + 0.0001 < low) return 'Below buy zone';
-    return 'Buy zone';
+    if (price > high) return 'Above the entry zone';
+    if (price + 0.0001 < low) return 'Below the entry zone';
+    return 'Inside the entry zone';
   }
   function tradeFlag(row) {
     var state = planState(row);
-    if (state === 'Buy zone') return { kind: 'buy', label: 'Buy zone' };
+    if (state === 'Inside the entry zone') return { kind: 'buy', label: 'Entry zone' };
+    if (state === 'Confirmation price traded') return { kind: 'buy', label: 'Confirmation' };
     if (state === 'Stop hit') return { kind: 'stop', label: 'Stop hit' };
     if (state === 'Target hit') return { kind: 'target', label: 'Target hit' };
     return null;
   }
   function flaggedNames() {
     var top = {};
-    rows.slice().sort(byBestScore).slice(0, LIST_CAP).forEach(function (row) { top[row.symbol] = true; });
+    actionableRows().slice(0, LIST_CAP).forEach(function (row) { top[row.symbol] = true; });
     var names = [];
     rows.forEach(function (row) {
       if (!top[row.symbol] && !watch[row.symbol]) return;
@@ -343,23 +400,22 @@
       box.textContent = '';
       return;
     }
-    var buys = names.filter(function (item) { return item.flag.kind === 'buy'; }).map(function (item) { return item.symbol; });
-    var stops = names.filter(function (item) { return item.flag.kind === 'stop'; }).map(function (item) { return item.symbol; });
-    var targets = names.filter(function (item) { return item.flag.kind === 'target'; }).map(function (item) { return item.symbol; });
-    var bits = [];
-    if (buys.length) bits.push('Buy zone: ' + buys.join(', '));
-    if (targets.length) bits.push('Target hit: ' + targets.join(', '));
-    if (stops.length) bits.push('Stop hit: ' + stops.join(', '));
+    var groups = {};
+    names.forEach(function (item) {
+      var key = item.flag.label;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(item.symbol);
+    });
+    var bits = Object.keys(groups).map(function (key) { return key + ': ' + groups[key].join(', '); });
     box.hidden = false;
     box.textContent = bits.join(' · ');
   }
   function verdict(row) {
     if (row.pinnedOnly) return 'This ticker is on your watchlist and was not in the latest scan.';
     var lead;
-    if (row.swingEligible && typeof row.swingScore === 'number' && row.swingScore >= 20) lead = 'Swing-bottom setup.';
-    else if (row.above200 === false) lead = 'Not a setup yet.';
-    else if (row.above200 && ((typeof row.drop5 === 'number' && row.drop5 < 0) || (typeof row.vsSma20 === 'number' && row.vsSma20 < 0))) lead = 'Pullback, not a full swing-bottom setup yet.';
-    else lead = 'Not a setup yet.';
+    if (displayActionable(row)) lead = 'Actionable swing setup.';
+    else if (row.shock || shockFromSeries(row)) lead = 'Shock bar, not a pullback.';
+    else lead = 'Research list only. Not a swing setup.';
     var bits = [];
     if (row.above200 === true && typeof row.vsSma200 === 'number') bits.push(Math.abs(row.vsSma200).toFixed(1).replace(/\.0$/, '') + '% above the 200-day');
     else if (row.above200 === false && typeof row.vsSma200 === 'number') bits.push(Math.abs(row.vsSma200).toFixed(1).replace(/\.0$/, '') + '% under the 200-day');
@@ -403,12 +459,13 @@
     var stop = row.stop;
     var target = row.target;
     var price = row.price;
-    if (!state || typeof stop !== 'number' || typeof target !== 'number') {
-      box.appendChild(el('p', 'This snapshot has no entry, stop, and target for this ticker.', 'plan-missing'));
+    if (!state || state === 'No plan after a shock bar' || typeof stop !== 'number' || typeof target !== 'number' || typeof low !== 'number' || typeof high !== 'number') {
+      box.appendChild(el('p', row.planNote || 'No entry, stop, and target for this ticker.', 'plan-missing'));
+      paintSize(row);
       return;
     }
     var banner = el('p', state, 'plan-state');
-    if (state === 'Buy zone') banner.classList.add('is-in');
+    if (state === 'Inside the entry zone' || state === 'Confirmation price traded') banner.classList.add('is-in');
     else if (state === 'Stop hit') banner.classList.add('is-stop');
     else if (state === 'Target hit') banner.classList.add('is-target');
     else banner.classList.add('is-wait');
@@ -423,7 +480,7 @@
     }
     var ladder = el('div', null, 'ladder');
     ladder.setAttribute('role', 'img');
-    ladder.setAttribute('aria-label', 'Last ' + money(price) + ', ' + state.toLowerCase() + '. Buy zone ' + money(low) + ' to ' + money(high) + '. Stop ' + money(stop) + '. Target ' + money(target) + '.');
+    ladder.setAttribute('aria-label', 'Last ' + money(price) + ', ' + state.toLowerCase() + '. Entry ' + money(low) + ' to ' + money(high) + '. Stop ' + money(stop) + '. Target ' + money(target) + '.');
     var track = el('div', null, 'ladder-track');
     var zone = el('span', null, 'ladder-zone');
     var zoneLeft = at(Math.min(low, high));
@@ -445,8 +502,9 @@
     box.appendChild(ladder);
     var grid = el('div', null, 'plan-grid');
     var buy = el('div', null, 'plan-tile plan-buy');
-    buy.appendChild(el('span', 'Buy zone', 'plan-k'));
-    buy.appendChild(el('strong', money(low) + '–' + money(high), 'plan-v'));
+    var entryLabel = row.planStyle === 'confirm' ? 'Confirmation' : (closeDefinedZone(row) ? 'Signal close' : 'Entry zone');
+    buy.appendChild(el('span', entryLabel, 'plan-k'));
+    buy.appendChild(el('strong', money(low) + (low === high ? '' : '–' + money(high)), 'plan-v'));
     var stopTile = el('div', null, 'plan-tile plan-stop');
     stopTile.appendChild(el('span', 'Stop', 'plan-k'));
     stopTile.appendChild(el('strong', money(stop), 'plan-v'));
@@ -462,6 +520,39 @@
     reward.appendChild(el('strong', typeof row.rewardRisk === 'number' ? row.rewardRisk.toFixed(1).replace(/\.0$/, '') + ':1' : '—', 'plan-v'));
     grid.append(buy, stopTile, goal, reward);
     box.appendChild(grid);
+    paintSize(row);
+  }
+  function readAccount() {
+    var raw = '';
+    try { raw = localStorage.getItem(ACCOUNT_KEY) || ''; } catch (e) { raw = ''; }
+    var value = Number(String(raw).replace(/[$,\s]/g, ''));
+    return value > 0 && value < 1e12 ? value : null;
+  }
+  function paintSize(row) {
+    var box = document.getElementById('sizeHelper');
+    var out = document.getElementById('sizeOut');
+    if (!box || !out) return;
+    var entry = row && typeof row.entryHigh === 'number' ? row.entryHigh : null;
+    var stop = row && typeof row.stop === 'number' ? row.stop : null;
+    var planned = row && row.planStyle !== 'none' && !row.shock && !closeDefinedZone(row) && entry != null && stop != null && entry > stop;
+    box.hidden = !planned;
+    if (!planned) {
+      out.textContent = '';
+      return;
+    }
+    var account = readAccount();
+    var risk = entry - stop;
+    if (!(account > 0)) {
+      out.textContent = 'Enter an account size to sketch the share count.';
+      return;
+    }
+    var one = Math.floor((account * 0.01) / risk);
+    var two = Math.floor((account * 0.02) / risk);
+    if (one < 1 && two < 1) {
+      out.textContent = 'The stop is ' + money(risk) + ' away. That is wider than 2% of this account, so the sketch is 0 shares.';
+      return;
+    }
+    out.textContent = one + ' shares at 1% risk (' + money(account * 0.01) + '), ' + two + ' shares at 2% risk (' + money(account * 0.02) + '). Risk per share is ' + money(risk) + '.';
   }
   function paintFacts(row) {
     var box = document.getElementById('detailFacts');
@@ -492,7 +583,7 @@
       factRow(!!(row.uptick || row.hammer || signals.indexOf('RSI turning up') !== -1), 'Turn', row.uptick ? 'Last close turned up' : (row.hammer ? 'Hammer' : 'Last close did not turn up')),
       factRow(signals.length >= 2, 'Signals', signals.length ? signals.join(', ') : 'No confirming signal')
     ];
-    var volumePass = signals.indexOf('Volume reversal') !== -1 || (typeof row.volumeRatio === 'number' && row.volumeRatio >= 1);
+    var volumePass = signals.indexOf('Volume reversal') !== -1;
     var volume = [
       typeof row.volumeRatio === 'number' ? factRow(volumePass, 'Volume', row.volumeRatio.toFixed(1).replace(/\.0$/, '') + '× the prior 20 sessions') : factRow(null, 'Volume', 'Not in this snapshot')
     ];
@@ -526,8 +617,8 @@
     var sentence = parts[0] + ', ' + parts[1] + ', ' + parts.slice(2).join(', ') + '.';
     if (row.above200) sentence += ' Still above the 200-day average.';
     else if (row.sma200) sentence += ' Under the 200-day average.';
-    if (row.zone === 'deep') sentence += ' Flagged DEEPLY OVERSOLD.';
-    else if (row.zone === 'watch') sentence += ' Flagged WATCH / BOUNCE ZONE.';
+    if (displayActionable(row)) sentence += ' This is an actionable swing setup.';
+    else sentence += ' Research list only, not a swing setup.';
     return sentence;
   }
 
@@ -644,9 +735,8 @@
     if (row.sma200) moreBits.push('SMA200 ' + money(row.sma200));
     if (row.bbDistancePct != null) moreBits.push('Lower BB ' + (row.bbDistancePct > 0 ? '+' : '') + row.bbDistancePct.toFixed(1) + '%');
     if (row.range52 != null) moreBits.push('52-wk ' + row.range52.toFixed(0) + '%');
-    if (row.swingScore != null) moreBits.push('Swing bottom ' + row.swingScore);
-    if (row.rankScore != null) moreBits.push('Rank ' + row.rankScore);
-    if (row.score != null) moreBits.push('Bounce score ' + row.score);
+    if (row.swingScore != null) moreBits.push('Swing score ' + row.swingScore);
+    if (row.score != null) moreBits.push('Oversold score ' + row.score);
     if (moreBits.length) extra.appendChild(el('p', moreBits.join(' · '), 'more-metrics'));
     var links = document.getElementById('detailLinks');
     links.replaceChildren();
@@ -726,13 +816,16 @@
 
   function paintTape() {
     var track = document.getElementById('tapeTrack');
-    var bits = rows.slice().sort(function (a, b) { return a.rsi - b.rsi; }).slice(0, 24);
-    if (!bits.length) bits = rows.slice(0, 12);
+    var bits = actionableRows().slice(0, 12);
     function line() {
       var node = document.createElement('p');
-      node.textContent = bits.map(function (row) {
-        return row.symbol + ' ' + money(row.price) + ' ' + signed(row.dayChange) + ' RSI ' + row.rsi.toFixed(1);
-      }).join('   ★   ');
+      if (!bits.length) {
+        node.textContent = 'No actionable swing setup on this pass';
+      } else {
+        node.textContent = bits.map(function (row) {
+          return row.symbol + ' ' + money(row.price) + ' ' + signed(row.dayChange) + ' swing ' + rowScore(row);
+        }).join('   ·   ');
+      }
       return node;
     }
     track.replaceChildren(line(), line());
@@ -740,13 +833,21 @@
 
   function paintFresh() {
     var box = document.getElementById('fresh');
+    box.removeAttribute('aria-busy');
     if (!rows.length) {
       box.textContent = 'The screener snapshot has not been fetched yet.';
       return;
     }
-    var scope = universeCount
-      ? rows.length + ' swing candidates from ' + (pricedCount || universeCount) + ' priced names in a universe of ' + universeCount + '.'
-      : rows.length + ' names.';
+    var setups = actionableRows().length;
+    var scope = rows.length + ' names on the oversold research list';
+    if (pricedCount || universeCount) scope += ' from ' + (pricedCount || universeCount) + ' priced names';
+    if (universeCount) scope += ' in a universe of ' + universeCount;
+    scope += '. ' + setups + (setups === 1 ? ' passes' : ' pass') + ' the swing setup.';
+    if (market && typeof market.vsSma200 === 'number') {
+      scope += ' SPY is ' + signed(market.vsSma200) + ' versus its 200-day';
+      if (typeof market.vsSma50 === 'number') scope += ' and ' + signed(market.vsSma50) + ' versus its 50-day';
+      scope += '.';
+    }
     box.textContent = 'Prices as of ' + pricesAsOf(fetchedAt) + '. ' + scope + ' Daily bars, not a live quote. Informational only, not financial advice.';
   }
   function pricesAsOf(iso) {
@@ -763,8 +864,12 @@
     if (pick.outcome === 'target hit') return 'Target';
     if (pick.outcome === 'stopped out') return 'Stopped';
     if (pick.outcome === 'never filled') return 'No fill';
+    if (pick.outcome === 'time stop') return 'Time stop';
     if (pick.outcome === 'expired') return 'Expired';
     return 'Open';
+  }
+  function resultedPick(pick) {
+    return pick.outcome === 'target hit' || pick.outcome === 'stopped out' || pick.outcome === 'expired' || pick.outcome === 'time stop';
   }
   function outcomeClass(pick) {
     if (pick.outcome === 'target hit') return 'is-win';
@@ -777,20 +882,34 @@
     if (!summary || !list) return;
     var picks = history && Array.isArray(history.picks) ? history.picks.slice() : [];
     if (!picks.length) {
-      summary.textContent = 'No tracked picks yet. The after-close scan records the top 5.';
+      summary.textContent = 'No tracked picks yet. The after-close scan records official setups that pass the swing rules.';
       list.replaceChildren();
       return;
     }
-    var closed = picks.filter(function (pick) {
-      return pick.outcome === 'target hit' || pick.outcome === 'stopped out' || pick.outcome === 'expired';
+    var versions = {};
+    picks.forEach(function (pick) {
+      var version = pick.paramVersion || 'unversioned';
+      if (!versions[version]) versions[version] = [];
+      versions[version].push(pick);
     });
-    var wins = closed.filter(function (pick) { return pick.outcome === 'target hit'; });
-    var returns = closed.map(function (pick) { return pick.returnPct; }).filter(function (value) { return typeof value === 'number'; });
-    var average = returns.length ? returns.reduce(function (sum, value) { return sum + value; }, 0) / returns.length : null;
+    var ids = Object.keys(versions).sort();
     var openCount = picks.filter(function (pick) { return pick.status === 'open'; }).length;
-    summary.textContent = 'Win rate ' + (closed.length ? Math.round((wins.length / closed.length) * 100) + '%' : '—')
-      + ' · avg ' + (average == null ? '—' : (average > 0 ? '+' : '') + average.toFixed(1) + '%')
-      + ' · ' + openCount + ' open · ' + (picks.length - openCount) + ' closed';
+    var lines = [openCount + ' open. Versions are kept separate, and a win rate stays hidden until ' + MIN_CLOSED + ' closed trades in that version.'];
+    if (ids.length > 1) lines.push('Parameter versions: ' + ids.join(', ') + '.');
+    ids.forEach(function (version) {
+      var closed = versions[version].filter(resultedPick);
+      if (closed.length < MIN_CLOSED) {
+        lines.push(version + ': ' + closed.length + ' closed with a result.');
+        return;
+      }
+      var wins = closed.filter(function (pick) { return pick.outcome === 'target hit'; });
+      var returns = closed.map(function (pick) { return pick.returnPct; }).filter(function (value) { return typeof value === 'number'; });
+      var average = returns.length ? returns.reduce(function (sum, value) { return sum + value; }, 0) / returns.length : null;
+      var rate = Math.round((wins.length / closed.length) * 100);
+      lines.push(version + ': target hit on ' + rate + '% of ' + closed.length + ' closed trades'
+        + (average == null ? '' : ', average return ' + (average > 0 ? '+' : '') + average.toFixed(1) + '%') + '.');
+    });
+    summary.textContent = lines.join(' ');
     picks.sort(function (a, b) {
       return String(b.pickedOn || '').localeCompare(String(a.pickedOn || '')) || (a.rank || 0) - (b.rank || 0);
     });
@@ -807,8 +926,11 @@
       var detail = el('div', '', 'track-detail');
       detail.hidden = true;
       var bits = [];
-      if (typeof pick.priceAtPick === 'number') bits.push('Picked ' + money(pick.priceAtPick));
-      if (typeof pick.entryLow === 'number' && typeof pick.entryHigh === 'number') bits.push('Buy ' + money(pick.entryLow) + '–' + money(pick.entryHigh));
+      if (typeof pick.priceAtPick === 'number') bits.push('Signal close ' + money(pick.priceAtPick));
+      if (typeof pick.fillPrice === 'number') bits.push('Filled ' + money(pick.fillPrice) + (pick.filledOn ? ' on ' + pick.filledOn : ''));
+      else if (pick.filledOn) bits.push('Filled on ' + pick.filledOn);
+      if (typeof pick.entryLow === 'number' && typeof pick.entryHigh === 'number') bits.push('Entry ' + money(pick.entryLow) + '–' + money(pick.entryHigh));
+      if (pick.paramVersion) bits.push(pick.paramVersion);
       if (typeof pick.stop === 'number') bits.push('Stop ' + money(pick.stop));
       if (typeof pick.target === 'number') bits.push('Target ' + money(pick.target));
       if (typeof pick.rewardRisk === 'number') bits.push(pick.rewardRisk.toFixed(1) + ':1');
@@ -1005,11 +1127,60 @@
     });
   }
 
+  function regimeBlocksOfficial() {
+    return !!(market && typeof market.vsSma200 === 'number' && market.vsSma200 < 0);
+  }
   function swingPick() {
-    var list = rows.filter(function (row) {
-      return row && typeof row.price === 'number';
-    }).sort(byBestScore);
-    return list[0] || null;
+    if (regimeBlocksOfficial()) return null;
+    return actionableRows()[0] || null;
+  }
+  function researchPool() {
+    var taken = {};
+    actionableRows().forEach(function (row) { taken[row.symbol] = true; });
+    return rows.filter(function (row) { return row && !taken[row.symbol]; }).sort(function (a, b) {
+      var shock = (shockFromSeries(a) ? 1 : 0) - (shockFromSeries(b) ? 1 : 0);
+      if (shock) return shock;
+      var trend = (b.above200 === true ? 1 : 0) - (a.above200 === true ? 1 : 0);
+      if (trend) return trend;
+      var dropA = typeof a.drop21 === 'number' ? a.drop21 : -100;
+      var dropB = typeof b.drop21 === 'number' ? b.drop21 : -100;
+      if (dropA !== dropB) return dropB - dropA;
+      return a.symbol.localeCompare(b.symbol);
+    });
+  }
+  function renderResearch() {
+    var list = document.getElementById('researchRows');
+    var note = document.getElementById('researchNote');
+    var more = document.getElementById('researchMore');
+    if (!list) return;
+    var pool = researchPool();
+    var page = pool.slice(0, researchShown);
+    if (note) {
+      note.textContent = pool.length
+        ? pool.length + ' names on the oversold research list. These are not swing candidates.'
+        : 'No extra research names in this snapshot.';
+    }
+    list.replaceChildren();
+    page.forEach(function (row) {
+      var item = document.createElement('li');
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'research-row';
+      button.appendChild(el('span', row.symbol, 'research-name'));
+      var meta = el('span', null, 'research-meta');
+      var bits = [row.price == null ? '—' : money(row.price)];
+      if (typeof row.dayChange === 'number') bits.push(dayText(row.dayChange));
+      bits.push(row.above200 === true ? 'above 200-day' : 'below 200-day');
+      meta.textContent = bits.join(' · ');
+      button.appendChild(meta);
+      button.addEventListener('click', function () { openDetail(row.symbol); });
+      item.appendChild(button);
+      list.appendChild(item);
+    });
+    if (more) {
+      more.hidden = page.length >= pool.length;
+      more.textContent = 'Show ' + PAGE + ' more';
+    }
   }
 
   function shortSwingName(name) {
@@ -1022,13 +1193,23 @@
 
   function paintSwing() {
     var card = document.getElementById('swingWatch');
+    var empty = document.getElementById('swingEmpty');
+    var button = document.getElementById('swingOpen');
     var row = swingPick();
     if (!card) return;
+    card.hidden = false;
     if (!row) {
-      card.hidden = true;
+      if (button) button.hidden = true;
+      if (empty) {
+        empty.hidden = false;
+        empty.textContent = regimeBlocksOfficial()
+          ? 'SPY is under its 200-day, so this pass does not name a top stock to watch.'
+          : 'No name passes the swing rules on this pass.';
+      }
       return;
     }
-    card.hidden = false;
+    if (empty) empty.hidden = true;
+    if (button) button.hidden = false;
     var company = shortSwingName(row.name);
     document.getElementById('swingSymbol').textContent = row.symbol + (company ? ' ' + company : '');
     document.getElementById('swingPrice').textContent = money(row.price);
@@ -1071,6 +1252,7 @@
       fetchedAt = data && data.fetchedAt || '';
       universeCount = data && data.universeCount || 0;
       pricedCount = data && data.priced || 0;
+      market = data && data.market && typeof data.market === 'object' ? data.market : null;
       paintFresh();
       loadPicks();
       paintTape();
@@ -1082,9 +1264,11 @@
       else if (rows.length) {
         var first = visibleRows()[0];
         if (first) openDetail(first.symbol, false);
+        else document.getElementById('detail').hidden = true;
       }
     }).catch(function () {
       var fresh = document.getElementById('fresh');
+      fresh.removeAttribute('aria-busy');
       fresh.textContent = 'The screener did not load. ';
       var retry = document.createElement('button');
       retry.type = 'button';
@@ -1092,6 +1276,7 @@
       retry.textContent = 'Retry';
       retry.addEventListener('click', function () {
         fresh.textContent = 'Loading the screener…';
+        fresh.setAttribute('aria-busy', 'true');
         loadSnapshot();
       });
       fresh.appendChild(retry);
@@ -1117,6 +1302,40 @@
   });
   document.getElementById('sort').addEventListener('change', function () { renderTable(); });
   document.getElementById('watchMore').addEventListener('click', function () { watchShown += PAGE; renderWatch(); });
+  var researchMore = document.getElementById('researchMore');
+  if (researchMore) researchMore.addEventListener('click', function () { researchShown += PAGE; renderResearch(); });
+  var accountInput = document.getElementById('accountSize');
+  if (accountInput) {
+    var savedAccount = '';
+    try { savedAccount = localStorage.getItem(ACCOUNT_KEY) || ''; } catch (e) { savedAccount = ''; }
+    if (savedAccount) accountInput.value = savedAccount;
+    accountInput.addEventListener('input', function () {
+      var raw = accountInput.value.replace(/[$,\s]/g, '');
+      accountInput.removeAttribute('aria-invalid');
+      if (raw === '') {
+        try { localStorage.removeItem(ACCOUNT_KEY); } catch (e) { /* private mode */ }
+      } else if (/^\d+(\.\d{0,2})?$/.test(raw)) {
+        try { localStorage.setItem(ACCOUNT_KEY, raw); } catch (e) { /* private mode */ }
+      }
+      if (selected) {
+        var current = bySymbol(selected);
+        if (current) paintSize(current);
+      }
+    });
+    accountInput.addEventListener('blur', function () {
+      var raw = accountInput.value.replace(/[$,\s]/g, '');
+      var out = document.getElementById('sizeOut');
+      if (raw !== '' && !/^\d+(\.\d+)?$/.test(raw)) {
+        accountInput.setAttribute('aria-invalid', 'true');
+        if (out) out.textContent = 'Use a dollar amount like 25000.';
+        return;
+      }
+      if (selected) {
+        var current = bySymbol(selected);
+        if (current) paintSize(current);
+      }
+    });
+  }
   document.getElementById('detailClose').addEventListener('click', function () {
     selected = '';
     document.getElementById('detail').hidden = true;

@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
-<link rel="stylesheet" href="stocks.css?v=9">
+<link rel="stylesheet" href="stocks.css?v=10">
 <link rel="stylesheet" href="/readable.css?v=14">
 </head>
 <body>
@@ -62,8 +62,8 @@
  <div class="quote-layout">
  <div class="hero quote-hero">
   <h1>Stocks</h1>
-  <p class="hero-sub">Oversold swing scanner</p>
-  <p>Each name screens as a swing candidate from the latest daily bars and, when Yahoo returns them, a fundamentals sheet. The note on a card uses only those fetched numbers. Informational only, not financial advice.</p>
+  <p class="hero-sub">Oversold research and swing setups</p>
+  <p>The wide list is an oversold research screen. Only a name that passes the swing rules is a swing candidate, the top stock to watch, or a journal entry. A card uses the latest daily bars and, when a sheet comes back, fundamentals as notes. Informational only, not financial advice.</p>
  </div>
  <details class="rules-card" id="swingRules">
   <summary>Swing Trading Rules</summary>
@@ -87,6 +87,7 @@
  <p id="fresh" class="quote-fresh" aria-busy="true">Loading the screener…</p>
  <section id="swingWatch" class="swing-watch" hidden>
   <h2>Top stock to watch</h2>
+  <p id="swingEmpty" class="swing-empty" hidden>No name passes the swing rules on this pass.</p>
   <button type="button" id="swingOpen" class="swing-card">
    <span class="swing-line">
     <span id="swingSymbol" class="swing-symbol"></span>
@@ -101,17 +102,18 @@
  </section>
  <div class="quote-tools">
   <label>Sort
-   <select id="sort" aria-label="Sort the top stocks">
-    <option value="rank" selected>Best score</option>
+   <select id="sort" aria-label="Sort the actionable setups">
+    <option value="rank" selected>Swing score</option>
     <option value="ticker">Ticker (A–Z)</option>
    </select>
   </label>
  </div>
+ <h2 class="setup-title" id="setupTitle">Actionable setups</h2>
  <p id="count" class="quote-count"></p>
  <p id="tradeAlerts" class="trade-alerts" hidden></p>
  <div class="quote-scroll">
   <table class="quote-table">
-   <caption>Swing screen of US common stocks on Nasdaq, the NYSE, and NYSE American</caption>
+   <caption>Actionable swing setups. The wider oversold list is research, not a set of swing candidates.</caption>
    <thead>
     <tr>
      <th scope="col">Ticker</th>
@@ -129,6 +131,12 @@
   </table>
  </div>
  <p id="empty" class="empty" hidden>No stocks in this snapshot.</p>
+ <details class="research-card" id="researchCard">
+  <summary>Oversold research list</summary>
+  <p id="researchNote" class="research-note">These names are not swing candidates. They stay here for research.</p>
+  <ul id="researchRows" class="research-list"></ul>
+  <button type="button" id="researchMore" class="btn stocks-more" hidden>Show 25 more</button>
+ </details>
  <section class="track-record" id="trackRecord" aria-labelledby="trackTitle">
   <h2 id="trackTitle">Track record</h2>
   <p id="trackSummary" class="track-summary">Loading picks…</p>
@@ -145,6 +153,12 @@
   </div>
   <p id="detailVerdict" class="detail-verdict"></p>
   <div id="detailPlan" class="trade-plan"></div>
+  <div id="sizeHelper" class="size-helper" hidden>
+   <label for="accountSize">Account size (USD)</label>
+   <input id="accountSize" name="accountSize" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-describedby="sizeHelp">
+   <p id="sizeHelp" class="size-help">Share count at 1% and 2% of this account, from the planned entry to the stop. A sketch of Rule 6, not a recommendation.</p>
+   <p id="sizeOut" class="size-out" aria-live="polite"></p>
+  </div>
   <div id="detailFacts" class="detail-facts"></div>
   <details id="detailMore" class="detail-more">
    <summary>More details</summary>
@@ -172,7 +186,7 @@
   <ul id="watchList" class="watch-list"></ul>
   <button id="watchMore" class="btn stocks-more" type="button" hidden>Show 25 more</button>
  </section>
- <p class="quote-disclaimer">Informational only, not financial advice and not a recommendation to buy or sell. A stock is here because it matched a rules-based swing screen. Prices are delayed daily closes. Fundamentals come from Yahoo's quote summary when that request succeeds, and otherwise from Nasdaq's public quote, financials, analyst targets, and earnings calendar.</p>
+ <p class="quote-disclaimer">Informational only, not financial advice and not a recommendation to buy or sell. The research list is an oversold screen. A swing candidate is a name that passed the stricter swing rules. Prices are delayed daily closes. Fundamentals come from Yahoo's quote summary when that request succeeds, and otherwise from Nasdaq's public quote, financials, analyst targets, and earnings calendar.</p>
  </div>
  </div>
 </main>
@@ -181,7 +195,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=11"></script>
+<script src="stocks.js?v=12"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

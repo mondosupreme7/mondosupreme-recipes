@@ -1,9 +1,10 @@
 {
-  "version": "2026-11-10.2",
+  "version": "2026-11-11.1",
   "liquidity": {
     "minPrice": 5,
     "minAvgVolume": 250000,
     "minDollarVolume": 5000000,
+    "minPromotedDollarVolume": 20000000,
     "minBars": 60
   },
   "universeFilter": {
@@ -52,6 +53,10 @@
     "penalty": 12,
     "drop21": -12
   },
+  "shock": {
+    "lookback": 8,
+    "minDownPct": 9
+  },
   "gates": {
     "minConfirmingSignals": 2,
     "minRawScore": 36,
@@ -61,17 +66,25 @@
     "below200Penalty": 30,
     "rewardPenalty": 20,
     "earningsPenalty": 25,
-    "uiScoreFloor": 20
+    "uiScoreFloor": 36,
+    "minAbove200Pct": 5,
+    "maxPullback21Pct": -15
   },
   "trade": {
     "atrStopMultiple": 1.5,
     "entryAtrFraction": 0.25,
     "targetMinLift": 1.002,
-    "secondTargetLift": 1.005
+    "secondTargetLift": 1.005,
+    "maxTargetStretch": 0.12,
+    "secondTargetStretch": 0.18
   },
   "picks": {
     "listSize": 5,
     "fillWindowTradingDays": 5,
-    "maxHoldTradingDays": 20
+    "maxHoldTradingDays": 8,
+    "timeStopTradingDays": 8,
+    "minClosedSample": 20,
+    "sectorCap": 1,
+    "cautiousListSize": 2
   }
 }
