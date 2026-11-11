@@ -1,5 +1,10 @@
 (function () {
   var KEY = 'mondosupreme.quote_idx.v1';
+  var RECENT_KEY = 'mondosupreme.quote_recent.v1';
+  var HISTORY = 8;
+  var memoryHist = [];
+  var histReady = false;
+  var legacyIndex = NaN;
   var CURATED = [
     { text: 'The best way out is always through.', author: 'Robert Frost' },
     { text: 'Well done is better than well said.', author: 'Benjamin Franklin' },
@@ -92,18 +97,65 @@
     if (/^mondo\s*supreme$/i.test(name)) return 'Unknown';
     return text;
   }
-  function readLast() {
+  function quoteKey(quote) {
+    return JSON.stringify([String(quote.text), String(quote.author)]);
+  }
+  function storageGet(store, key) {
     try {
-      var raw = localStorage.getItem(KEY);
-      if (raw == null || raw === '') return NaN;
-      var n = parseInt(raw, 10);
-      return isFinite(n) ? n : NaN;
+      if (!store) return null;
+      return store.getItem(key);
     } catch (e) {
-      return NaN;
+      return null;
     }
   }
-  function writeLast(index) {
-    try { localStorage.setItem(KEY, String(index)); } catch (e) {}
+  function absorb(raw) {
+    if (raw == null || raw === '') return;
+    if (raw.charAt(0) === '[') {
+      try {
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return;
+        parsed.forEach(function (key) {
+          if (typeof key === 'string' && memoryHist.indexOf(key) === -1) memoryHist.push(key);
+        });
+      } catch (e) {}
+      return;
+    }
+    var n = parseInt(raw, 10);
+    if (isFinite(n)) legacyIndex = Math.floor(n);
+  }
+  function loadHist() {
+    if (histReady) return memoryHist;
+    histReady = true;
+    memoryHist = [];
+    legacyIndex = NaN;
+    absorb(storageGet(typeof localStorage === 'undefined' ? null : localStorage, KEY));
+    absorb(storageGet(typeof sessionStorage === 'undefined' ? null : sessionStorage, RECENT_KEY));
+    if (memoryHist.length > HISTORY) memoryHist = memoryHist.slice(-HISTORY);
+    return memoryHist;
+  }
+  function writeHist() {
+    memoryHist = memoryHist.slice(-HISTORY);
+    var payload = JSON.stringify(memoryHist);
+    try { localStorage.setItem(KEY, payload); } catch (e) {}
+    try { sessionStorage.setItem(RECENT_KEY, payload); } catch (e) {}
+  }
+  function remember(quote) {
+    var key = quoteKey(quote);
+    loadHist();
+    memoryHist = memoryHist.filter(function (item) { return item !== key; });
+    memoryHist.push(key);
+    writeHist();
+  }
+  function seedLegacy(list) {
+    loadHist();
+    if (!isFinite(legacyIndex)) return;
+    if (legacyIndex < 0 || legacyIndex >= list.length) return;
+    var key = quoteKey(list[legacyIndex]);
+    legacyIndex = NaN;
+    if (memoryHist.indexOf(key) === -1) {
+      memoryHist.push(key);
+      writeHist();
+    }
   }
   function pool() {
     var list = CURATED.map(function (quote) {
@@ -126,19 +178,24 @@
     });
     return list;
   }
-  function pick(list, last) {
+  function pick(list, recent) {
     var n = list.length;
     if (n <= 1) return 0;
-    if (!isFinite(last)) return 0;
-    var prev = Math.floor(last);
-    var next = (prev + 1) % n;
-    var guard = 0;
-    while (guard < n && prev >= 0 && prev < n && list[next].text === list[prev].text && list[next].author === list[prev].author) {
-      next = (next + 1) % n;
-      guard++;
+    var banned = {};
+    var i;
+    for (i = 0; i < recent.length; i++) banned[recent[i]] = true;
+    var candidates = [];
+    for (i = 0; i < n; i++) {
+      if (!banned[quoteKey(list[i])]) candidates.push(i);
     }
-    if (next === prev) next = (next + 1) % n;
-    return next;
+    if (!candidates.length) {
+      var last = recent.length ? recent[recent.length - 1] : '';
+      for (i = 0; i < n; i++) {
+        if (quoteKey(list[i]) !== last) candidates.push(i);
+      }
+    }
+    if (!candidates.length) return 0;
+    return candidates[Math.floor(Math.random() * candidates.length)];
   }
   function paint(quote, index, total) {
     current = quote;
@@ -154,37 +211,60 @@
     }
     if (kicker) kicker.textContent = (index + 1) + ' of ' + total;
   }
-  function choice() {
+  function present() {
     var list = pool();
-    var next = pick(list, readLast());
-    return { list: list, next: next, quote: list[next] };
+    if (!list.length) return;
+    seedLegacy(list);
+    var recent = loadHist().slice();
+    if (current) {
+      var shown = quoteKey(current);
+      if (recent.indexOf(shown) === -1) recent.push(shown);
+    }
+    var index = pick(list, recent);
+    if (current && list.length > 1 && list[index].text === current.text && list[index].author === current.author) {
+      var j;
+      for (j = 0; j < list.length; j++) {
+        if (list[j].text !== current.text || list[j].author !== current.author) {
+          index = j;
+          break;
+        }
+      }
+    }
+    remember(list[index]);
+    paint(list[index], index, list.length);
   }
   function preview() {
-    var picked = choice();
-    paint(picked.quote, picked.next, picked.list.length);
+    if (current) return;
+    present();
   }
   function commit() {
     if (committed) return;
     committed = true;
-    var picked = choice();
-    writeLast(picked.next);
-    paint(picked.quote, picked.next, picked.list.length);
+    if (current) {
+      remember(current);
+      refreshSame();
+      return;
+    }
+    present();
   }
   function showNext() {
     if (!committed) commit();
-    var list = pool();
-    if (list.length < 2) return;
-    var next = pick(list, readLast());
-    writeLast(next);
-    paint(list[next], next, list.length);
+    if (pool().length < 2) return;
+    present();
   }
   function refreshSame() {
     if (!current) return;
-    var index = readLast();
     var list = pool();
-    if (!isFinite(index) || index < 0 || index >= list.length) return;
-    var quote = list[index];
-    if (quote.text === current.text && quote.author === current.author) paint(quote, index, list.length);
+    var index = -1;
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].text === current.text && list[i].author === current.author) {
+        index = i;
+        break;
+      }
+    }
+    if (index < 0) return;
+    paint(list[index], index, list.length);
   }
   function setStatus(message) {
     if (statusEl) statusEl.textContent = message;
@@ -365,7 +445,7 @@
     setOwner(window.MONDO_MEMBER.isOwner());
   }
   window.addEventListener('pageshow', function (event) {
-    if (event.persisted && committed) showNext();
+    if (event.persisted) showNext();
   });
 
   var database = db();
