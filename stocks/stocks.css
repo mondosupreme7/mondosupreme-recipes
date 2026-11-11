@@ -29,9 +29,9 @@ html[data-theme="retro"] .research-count{border-radius:0;background:#fff;color:#
 .size-helper input{font:inherit;font-size:max(1rem,1em);min-height:48px;width:min(100%,16rem);padding:8px 10px;border:1px solid var(--line-strong,#64748b);border-radius:12px;background:var(--surface,#fff);color:var(--ink,#0f172a)}
 .size-help,.size-out{margin:0;font:600 14px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
 .quote-fresh{background:#001400;color:#86efac;border:3px ridge #39ff14;padding:8px 10px;font:700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace}
-.quote-tools,.pin-form{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:0 0 10px}
-.quote-tools label,.pin-form label{display:flex;flex-direction:column;gap:4px;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
-.quote-tools select,.pin-form input{background:#fff;color:#111827;min-height:44px;font-size:16px;padding:6px;border:2px inset #808080}
+.quote-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:0 0 10px}
+.quote-tools label{display:flex;flex-direction:column;gap:4px;font:700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
+.quote-tools select{background:#fff;color:#111827;min-height:44px;font-size:16px;padding:6px;border:2px inset #808080}
 .quote-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;background:#d4d0c8;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
 .quote-table{width:100%;min-width:760px;border-collapse:collapse;background:#000;color:#86efac;font:13px/1.35 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace}
 .quote-table caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -52,7 +52,7 @@ html[data-theme="retro"] .research-count{border-radius:0;background:#fff;color:#
 @keyframes qblink{50%{opacity:.45}}
 .num-down{color:#ff5555}
 .num-up{color:#86efac}
-.quote-card{margin:12px 0;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;padding:10px}
+.quote-card{margin:12px 0;background:#c0c0c0;color:#111827;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;padding:10px 10px 6px}
 .quote-card-bar{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#F1F5F9;color:#0F172A;border-left:3px solid #2563EB;padding:8px 10px 8px 12px;margin:-10px -10px 8px}
 .quote-card-bar h2{margin:0;font:600 16px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#0F172A}
 .quote-card canvas{width:100%;height:auto;max-width:100%;background:#020802;border:2px inset #808080;display:block;box-sizing:border-box}
@@ -65,9 +65,10 @@ html[data-theme]:not([data-theme="retro"]) .quote-card canvas{border:1px solid v
 .why-chip b{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted,#334155)}
 .why-box .qbadge{font:700 16px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:4px 8px}
 .why-flags{display:flex;flex-wrap:wrap;gap:4px}
-.quote-watch{margin:14px 0;background:#FFF7ED;color:#1C1917;border:1px solid #E7E5E4;border-radius:14px;padding:10px}
-.quote-watch h2{margin:-10px -10px 8px;padding:8px 12px;background:#FFF7ED;color:#1C1917;border-left:3px solid #2563EB;font:600 18px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.watch-count{margin:0 0 6px;font:600 13px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1c1917)}
+.quote-watch{margin:4px 0;background:#FFF7ED;color:#1C1917;border:1px solid #E7E5E4;border-radius:14px;padding:0 8px 4px}
+.quote-watch h2{margin:0 -8px 0;padding:6px 10px;display:flex;align-items:center;background:#FFF7ED;color:#1C1917;border-left:3px solid #2563EB;font:600 18px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#watchLead{margin:0 0 2px;font:600 14px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1c1917)}
+.watch-count{margin:0 0 2px;font:600 13px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1c1917)}
 .watch-list{list-style:none;margin:0;padding:0}
 #toast{
   position:fixed;z-index:1400;left:50%;top:calc(var(--nav-h,56px) + env(safe-area-inset-top,0px) + 12px);
@@ -77,10 +78,15 @@ html[data-theme]:not([data-theme="retro"]) .quote-card canvas{border:1px solid v
   font:650 15px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-align:center
 }
 #toast.show{transform:translateX(-50%);opacity:1}
-.watch-list li{display:flex;align-items:center;gap:8px;padding:4px 0;border-top:1px dotted #CBD5E1;min-height:44px}
-.watch-list li .watch-meta{flex:1;min-width:0;flex-wrap:nowrap}
-.watch-list button{min-height:44px;padding:0 10px}
-.watch-meta{display:flex;align-items:baseline;gap:4px;min-width:0;font:600 11px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1C1917)}
+.watch-list li{display:flex;align-items:center;gap:6px;padding:0;border-top:1px dotted var(--line,#CBD5E1);min-height:44px;min-width:0}
+.watch-list li.watch-empty{min-height:0;padding:2px 0 4px;border-top:0;font:600 14px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1c1917)}
+.watch-list li .watch-meta{flex:1;min-width:0;flex-wrap:wrap;align-items:center;row-gap:0}
+.watch-list .watch-when{flex:1 1 100%}
+.watch-list .watch-at,.watch-list .watch-now{flex:0 1 auto;margin-left:0}
+.watch-list button{min-height:44px;min-width:44px;padding:0 10px}
+.watch-list .watch-symbol{flex:0 0 auto;min-width:44px;padding:0 8px}
+.watch-list .watch-remove{flex:0 0 auto;min-width:44px;padding:0 10px;white-space:nowrap}
+.watch-meta{display:flex;align-items:baseline;gap:4px;min-width:0;font:600 13px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1C1917)}
 .watch-when{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .watch-at,.watch-now{flex:0 0 auto;white-space:nowrap;font-variant-numeric:tabular-nums}
 .watch-now{margin-left:auto}
@@ -154,7 +160,7 @@ html[data-theme="dark"] .watch-btn.is-on,html[data-theme="harbor"] .watch-btn.is
 .watch-when{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .watch-at,.watch-now{flex:none;white-space:nowrap}
 @media(max-width:768px){
- .quote-tools label,.pin-form label{flex:1 1 140px}
+ .quote-tools label{flex:1 1 140px}
  .quote-hero h1{font-size:1.45rem}
  .quote-table{min-width:0}
  .quote-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -357,7 +363,7 @@ html[data-theme="harbor"] .rules-foot{color:#E2E8F0!important}
 .fact-mark{flex:none;min-width:52px;min-height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;font:700 12px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .fact-text{font:600 15px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
 .fact-text b{font-weight:700}
-.detail-more{margin:8px 0 12px;border-top:1px solid var(--line,#e2e8f0);container-type:inline-size;container-name:detail}
+.detail-more{margin:4px 0 6px;border-top:1px solid var(--line,#e2e8f0);container-type:inline-size;container-name:detail}
 .detail-more summary{list-style:none;min-height:44px;display:flex;align-items:center;gap:8px;cursor:pointer;font:700 16px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a);touch-action:manipulation}
 .detail-more summary::-webkit-details-marker{display:none}
 .detail-more summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);flex:0 0 auto}
@@ -508,3 +514,49 @@ html[data-theme="retro"] .why-chip{background:#fff;color:#111827;border:1px soli
 html[data-theme="retro"] .why-chip b{color:#111827}
 html[data-theme="retro"] .detail-links a{background:#fff!important;color:#000080!important;border:2px solid #000!important}
 html[data-theme="retro"] .quote-card canvas{border:2px inset #808080}
+
+/* recipes/styles.css sets every form to a column with padding and flex:1 labels.
+   In that column, flex-basis becomes height and align-items:end pins the fields to the right.
+   These two forms stay a short row so a phone can see My Watchlist under the quote card. */
+.pin-form{
+  display:flex;flex-flow:row wrap;align-items:end;align-content:flex-start;justify-content:flex-start;
+  gap:6px;width:100%;margin:0 0 2px;padding:0;flex:0 0 auto;min-height:0
+}
+.pin-form label{
+  display:flex;flex-direction:column;align-items:stretch;gap:2px;flex:1 1 140px;min-width:0;margin:0;
+  font:700 13px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#111827)
+}
+.pin-form input,
+.pin-form input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]){
+  width:100%;min-width:0;max-width:100%;box-sizing:border-box;height:auto;min-height:44px;margin:0;
+  padding:6px 8px;font-size:max(1rem,1em);line-height:1.2;
+  background:#fff;color:#111827;border:1px solid var(--line-strong,#64748b)
+}
+html[data-theme] .pin-form input::placeholder{color:var(--ink-muted,var(--muted,#334155));opacity:1}
+#pinForm .btn{
+  flex:1 1 calc(50% - 6px);min-width:44px;min-height:44px;margin:0;padding:6px 10px;white-space:nowrap
+}
+#addForm .btn{flex:0 0 auto;min-width:44px;min-height:44px;margin:0;padding:0 12px}
+#pinStatus,#addStatus{margin:0;line-height:1.35;font-size:14px}
+#pinStatus:empty,#addStatus:empty{display:none;margin:0}
+html[data-theme="dark"] .quote-watch,
+html[data-theme="harbor"] .quote-watch,
+html[data-theme="dark"] #watchLead,
+html[data-theme="harbor"] #watchLead,
+html[data-theme="dark"] .watch-count,
+html[data-theme="harbor"] .watch-count,
+html[data-theme="dark"] .watch-meta,
+html[data-theme="harbor"] .watch-meta,
+html[data-theme="dark"] .watch-empty,
+html[data-theme="harbor"] .watch-empty{color:var(--ink)!important}
+html[data-theme="dark"] .quote-watch,
+html[data-theme="harbor"] .quote-watch{background:var(--surface)!important;border-color:var(--line)!important}
+html[data-theme="dark"] .quote-watch h2,
+html[data-theme="harbor"] .quote-watch h2{color:var(--ink)!important}
+html[data-theme="retro"] .pin-form input{
+  background:#fff!important;color:#111827!important;border:2px inset #808080!important;border-radius:0!important
+}
+html[data-theme="retro"] .pin-form label,
+html[data-theme="retro"] #watchLead,
+html[data-theme="retro"] .watch-meta,
+html[data-theme="retro"] .watch-empty{color:#111827!important}
