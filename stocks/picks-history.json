@@ -483,6 +483,68 @@
       "maePct": -5.22,
       "lastPrice": 10.05,
       "evaluatedAt": "2026-11-10T20:42:24Z"
+    },
+    {
+      "id": "2026-11-10-ZD",
+      "pickedOn": "2026-11-10",
+      "paramVersion": "2026-11-11.1",
+      "rank": 1,
+      "symbol": "ZD",
+      "name": "Ziff Davis, Inc.",
+      "priceAtPick": 50.56,
+      "entryLow": 46.09,
+      "entryHigh": 46.65,
+      "entryStyle": "limit",
+      "stop": 42.75,
+      "target": 55.81,
+      "rewardRisk": 2.35,
+      "score": 36,
+      "swingScore": 36,
+      "swingEligible": true,
+      "signals": [
+        "RSI turning up",
+        "Pullback from high",
+        "Volume reversal",
+        "Uptrend pullback"
+      ],
+      "gates": {
+        "above200": true,
+        "cushionPct": 5.72,
+        "sma200Rising": true,
+        "confirming": [
+          "RSI turning up",
+          "Volume reversal"
+        ],
+        "volume": true,
+        "adjustedScore": 36,
+        "rewardRisk": 2.35,
+        "earningsClear": true,
+        "shock": false,
+        "avgDollarVolume": 24196247,
+        "drop21": -10.54,
+        "entryStyle": "limit"
+      },
+      "sector": "Telecommunications",
+      "industry": "Telecommunications Equipment",
+      "market": {
+        "symbol": "SPY",
+        "price": 752.69,
+        "vsSma50": -1.65,
+        "vsSma200": 3.01,
+        "regime": "below 50-day",
+        "officialSlots": 2
+      },
+      "status": "open",
+      "outcome": null,
+      "filledOn": null,
+      "fillPrice": null,
+      "closedOn": null,
+      "daysHeld": null,
+      "returnPct": null,
+      "mfePct": null,
+      "maePct": null,
+      "lastPrice": 50.56,
+      "evaluatedAt": "2026-11-11T01:25:48Z"
     }
   ]
 }
