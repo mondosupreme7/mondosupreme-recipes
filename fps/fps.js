@@ -1836,6 +1836,19 @@
       ctx.lineTo(hx - s, hy2 + s);
       ctx.stroke();
     }
+    if (state.phase === 'roundend' || state.phase === 'dead' || state.phase === 'clear') {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(8, h / 2 - 26, w - 16, 52);
+      ctx.fillStyle = state.phase === 'dead' ? '#fecaca' : '#fde68a';
+      ctx.font = '700 13px sans-serif';
+      ctx.textAlign = 'center';
+      var banner = state.phase === 'dead'
+        ? (state.mode === 'cs' ? 'Eliminated — round still going' : 'You died. Respawning')
+        : (state.endText || 'Round over');
+      var cut = banner.indexOf(' — ');
+      ctx.fillText(cut > 0 ? banner.slice(0, cut) : banner, w / 2, h / 2 - 4);
+      if (cut > 0) ctx.fillText(banner.slice(cut + 3), w / 2, h / 2 + 14);
+    }
     shells.forEach(function (shell) {
       ctx.globalAlpha = Math.max(0, shell.life * 2);
       ctx.fillStyle = '#fbbf24';
