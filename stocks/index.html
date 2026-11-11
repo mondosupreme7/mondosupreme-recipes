@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
-<link rel="stylesheet" href="stocks.css?v=11">
+<link rel="stylesheet" href="stocks.css?v=12">
 <link rel="stylesheet" href="/readable.css?v=14">
 <link rel="stylesheet" href="paper/paper.css?v=1">
 </head>
@@ -140,15 +140,19 @@
  </div>
  <p id="empty" class="empty" hidden>No stocks in this snapshot.</p>
  <details class="research-card" id="researchCard">
-  <summary>Oversold research list</summary>
+  <summary>
+   <span class="research-title">Oversold research list</span>
+   <span id="researchCount" class="research-count"></span>
+  </summary>
   <p id="researchNote" class="research-note">These names are not swing candidates. They stay here for research.</p>
   <ul id="researchRows" class="research-list"></ul>
   <button type="button" id="researchMore" class="btn stocks-more" hidden>Show 25 more</button>
  </details>
  <section class="track-record" id="trackRecord" aria-labelledby="trackTitle">
   <h2 id="trackTitle">Track record</h2>
-  <p id="trackSummary" class="track-summary">Loading picks…</p>
+  <div id="trackSummary" class="track-summary">Loading picks…</div>
   <ul id="trackList" class="track-list"></ul>
+  <button type="button" id="trackMore" class="btn stocks-more" hidden>Show 25 more</button>
  </section>
  <section class="quote-card" id="detail" hidden aria-labelledby="detailTitle">
   <div class="quote-card-bar">
@@ -171,8 +175,8 @@
   <details id="detailMore" class="detail-more">
    <summary>More details</summary>
    <canvas id="chart" width="720" height="320" aria-label="Price, Bollinger Bands, and RSI chart"></canvas>
+   <p id="detailLinks" class="detail-links"></p>
    <div id="detailWhy" class="why-box"></div>
-   <p id="detailLinks"></p>
   </details>
   <form id="pinForm" class="pin-form">
    <label>Note<input id="pinNote" maxlength="140" autocomplete="off"></label>
@@ -203,7 +207,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=13"></script>
+<script src="stocks.js?v=14"></script>
 <script src="paper/paper.js?v=1"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>

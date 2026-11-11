@@ -18,6 +18,8 @@
   var WATCH_CAP = 100;
   var watchShown = PAGE;
   var researchShown = PAGE;
+  var trackShown = PAGE;
+  var trackHistory = { picks: [] };
   var market = null;
   var PROMOTED_DOLLAR = 20000000;
   var MIN_CUSHION = 5;
@@ -302,9 +304,6 @@
   function fillWhy(row) {
     var box = document.getElementById('detailWhy');
     box.replaceChildren();
-    box.appendChild(el('p', row.why || why(row)));
-    var marks = badges(row);
-    if (marks) box.appendChild(marks);
     if (row.chips) {
       var chips = el('div', null, 'why-chips');
       [['Value', row.chips.value], ['Setup', row.chips.setup], ['Risk', row.chips.risk]].forEach(function (pair) {
@@ -316,6 +315,8 @@
       });
       if (chips.childNodes.length) box.appendChild(chips);
     }
+    var marks = badges(row);
+    if (marks) box.appendChild(marks);
     var notes = ruleNotes(row);
     if (notes.length) {
       var flags = el('div', null, 'why-flags');
@@ -332,6 +333,7 @@
       });
       box.appendChild(flags);
     }
+    box.appendChild(el('p', row.why || why(row), 'why-note'));
   }
 
   function ruleNotes(row) {
@@ -652,16 +654,49 @@
     return sentence;
   }
 
+  function chartCssHeight() {
+    var vv = window.visualViewport;
+    var visible = (vv && vv.height) || window.innerHeight || 800;
+    var narrow = window.matchMedia('(max-width: 720px)').matches;
+    if (!narrow && visible > 760) return 320;
+    /* Short phones: the chart shares the open disclosure with the note and links.
+       visualViewport excludes Firefox toolbars that safe-area insets do not. */
+    var budget = Math.round(visible * 0.32);
+    return Math.max(152, Math.min(narrow ? 200 : 320, budget));
+  }
+  function chartBox(canvas) {
+    var details = canvas.parentElement;
+    var width = details && details.clientWidth ? details.clientWidth : 0;
+    if (width < 80) {
+      var card = canvas.closest('.quote-card');
+      if (card && card.clientWidth) {
+        var cardStyle = window.getComputedStyle(card);
+        width = card.clientWidth - (parseFloat(cardStyle.paddingLeft) || 0) - (parseFloat(cardStyle.paddingRight) || 0);
+      }
+    }
+    var style = window.getComputedStyle(canvas);
+    var borderX = (parseFloat(style.borderLeftWidth) || 0) + (parseFloat(style.borderRightWidth) || 0);
+    var borderY = (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.borderBottomWidth) || 0);
+    return {
+      width: Math.max(260, Math.round((width || 320) - borderX)),
+      borderY: borderY,
+      borderBox: style.boxSizing === 'border-box'
+    };
+  }
   function drawChart(row) {
     var canvas = document.getElementById('chart');
     var series = row.series;
     if (!series || !series.c || !series.c.length) {
       canvas.hidden = true;
+      canvas.style.height = '';
       return;
     }
     canvas.hidden = false;
-    var width = Math.max(320, canvas.clientWidth || 640);
-    var height = 320;
+    var box = chartBox(canvas);
+    var width = box.width;
+    var height = chartCssHeight();
+    var cssHeight = box.borderBox ? height + box.borderY : height;
+    canvas.style.height = cssHeight + 'px';
     var ratio = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
@@ -669,11 +704,15 @@
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     ctx.fillStyle = '#020802';
     ctx.fillRect(0, 0, width, height);
-    var pad = 28;
-    var gap = 16;
-    var priceH = Math.round((height - pad * 2 - gap) * 0.68);
-    var rsiTop = pad + priceH + gap;
-    var rsiH = height - rsiTop - pad;
+    var compact = height <= 210;
+    var padL = compact ? 58 : 28;
+    var padR = 8;
+    var padTop = compact ? 16 : 28;
+    var padBot = compact ? 12 : 28;
+    var gap = compact ? 16 : 16;
+    var priceH = Math.round((height - padTop - padBot - gap) * (compact ? 0.7 : 0.68));
+    var rsiTop = padTop + priceH + gap;
+    var rsiH = height - rsiTop - padBot;
     var closes = series.c;
     var lows = series.l.filter(function (n) { return typeof n === 'number'; }).concat(closes);
     var highs = series.u.filter(function (n) { return typeof n === 'number'; }).concat(closes);
@@ -681,10 +720,10 @@
     var max = Math.max.apply(null, highs);
     if (!(max > min)) { max = min + 1; }
     function xAt(index) {
-      return pad + (index / Math.max(1, closes.length - 1)) * (width - pad * 2);
+      return padL + (index / Math.max(1, closes.length - 1)) * (width - padL - padR);
     }
     function yPrice(value) {
-      return pad + (1 - (value - min) / (max - min)) * priceH;
+      return padTop + (1 - (value - min) / (max - min)) * priceH;
     }
     function line(values, color, mapY) {
       ctx.beginPath();
@@ -701,34 +740,42 @@
       ctx.stroke();
     }
     ctx.strokeStyle = '#0a3';
-    ctx.strokeRect(pad, pad, width - pad * 2, priceH);
-    ctx.strokeRect(pad, rsiTop, width - pad * 2, rsiH);
+    ctx.strokeRect(padL, padTop, width - padL - padR, priceH);
+    ctx.strokeRect(padL, rsiTop, width - padL - padR, rsiH);
     line(series.u, '#c90', yPrice);
     line(series.m, '#888', yPrice);
     line(series.l, '#c90', yPrice);
     line(closes, '#39ff14', yPrice);
     ctx.fillStyle = '#9f9';
     ctx.font = '11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
-    ctx.fillText(money(max), 4, pad + 10);
-    ctx.fillText(money(min), 4, pad + priceH);
+    ctx.fillText(money(max), 4, padTop + 10);
+    ctx.fillText(money(min), 4, padTop + priceH);
     function yRsi(value) {
       return rsiTop + (1 - value / 100) * rsiH;
     }
     ctx.setLineDash([3, 3]);
     [30, 70].forEach(function (level) {
       ctx.beginPath();
-      ctx.moveTo(pad, yRsi(level));
-      ctx.lineTo(width - pad, yRsi(level));
+      ctx.moveTo(padL, yRsi(level));
+      ctx.lineTo(width - padR, yRsi(level));
       ctx.strokeStyle = level === 30 ? '#ff4444' : '#39ff14';
       ctx.stroke();
       ctx.fillStyle = '#fff';
-      ctx.fillText(String(level), 4, yRsi(level) + 4);
+      if (compact) {
+        ctx.textAlign = 'right';
+        ctx.fillText(String(level), width - padR, yRsi(level) - 2);
+        ctx.textAlign = 'left';
+      } else ctx.fillText(String(level), 4, yRsi(level) + 4);
     });
     ctx.setLineDash([]);
     line(series.r, '#7fdfff', yRsi);
     ctx.fillStyle = '#ffcc33';
-    ctx.fillText('RSI(14)', pad, rsiTop - 2);
-    ctx.fillText('Price + Bollinger 20, 2σ', pad, 14);
+    if (compact) {
+      ctx.textAlign = 'right';
+      ctx.fillText('RSI(14)', width - padR, Math.max(12, rsiTop - 4));
+      ctx.textAlign = 'left';
+    } else ctx.fillText('RSI(14)', padL, rsiTop - 2);
+    ctx.fillText('Price + Bollinger 20, 2σ', compact ? 4 : padL, compact ? 12 : 14);
   }
 
   function openDetail(symbol, scroll) {
@@ -767,7 +814,12 @@
     if (row.range52 != null) moreBits.push('52-wk ' + row.range52.toFixed(0) + '%');
     if (row.swingScore != null) moreBits.push('Swing score ' + row.swingScore);
     if (row.score != null) moreBits.push('Oversold score ' + row.score);
-    if (moreBits.length) extra.appendChild(el('p', moreBits.join(' · '), 'more-metrics'));
+    if (moreBits.length) {
+      var metrics = el('p', moreBits.join(' · '), 'more-metrics');
+      var note = extra.querySelector('.why-note');
+      if (note) extra.insertBefore(metrics, note);
+      else extra.appendChild(metrics);
+    }
     var links = document.getElementById('detailLinks');
     links.replaceChildren();
     var yahoo = document.createElement('a');
@@ -780,7 +832,7 @@
     tv.target = '_blank';
     tv.rel = 'noopener noreferrer';
     tv.textContent = 'TradingView';
-    links.append(yahoo, document.createTextNode(' · '), tv);
+    links.append(yahoo, tv);
     var pin = watch[symbol] || {};
     document.getElementById('pinNote').value = pin.note || '';
     document.getElementById('pinTarget').value = pin.target ? String(pin.target) : '';
@@ -901,19 +953,38 @@
   function resultedPick(pick) {
     return pick.outcome === 'target hit' || pick.outcome === 'stopped out' || pick.outcome === 'expired' || pick.outcome === 'time stop';
   }
+  function stillOpenPick(pick) {
+    return !resultedPick(pick) && pick.outcome !== 'never filled';
+  }
+  function trackFact(label, value, wide) {
+    var wrap = el('div', null, wide ? 'track-fact is-wide' : 'track-fact');
+    wrap.appendChild(el('dt', label));
+    wrap.appendChild(el('dd', value));
+    return wrap;
+  }
+  function trackCount(label, count) {
+    var item = el('li', null, 'track-count');
+    item.appendChild(el('b', String(count)));
+    item.appendChild(document.createTextNode(' ' + label));
+    return item;
+  }
   function outcomeClass(pick) {
     if (pick.outcome === 'target hit') return 'is-win';
     if (pick.outcome === 'stopped out') return 'is-stop';
     return 'is-open';
   }
   function renderTrack(history) {
+    if (history) trackHistory = history;
     var summary = document.getElementById('trackSummary');
     var list = document.getElementById('trackList');
+    var more = document.getElementById('trackMore');
     if (!summary || !list) return;
-    var picks = history && Array.isArray(history.picks) ? history.picks.slice() : [];
+    var source = trackHistory && Array.isArray(trackHistory.picks) ? trackHistory.picks : [];
+    var picks = source.slice();
     if (!picks.length) {
       summary.textContent = 'No tracked picks yet. The after-close scan records official setups that pass the swing rules.';
       list.replaceChildren();
+      if (more) more.hidden = true;
       return;
     }
     var versions = {};
@@ -924,62 +995,85 @@
     });
     var ids = Object.keys(versions).sort();
     var openCount = picks.filter(function (pick) { return pick.status === 'open'; }).length;
-    var lines = [openCount + ' open. Versions are kept separate, and a win rate stays hidden until ' + MIN_CLOSED + ' closed trades in that version.'];
-    if (ids.length > 1) lines.push('Parameter versions: ' + ids.join(', ') + '.');
+    summary.replaceChildren();
+    summary.appendChild(el('p', openCount + ' still open. A win rate stays hidden until ' + MIN_CLOSED + ' closed trades in that version.', 'track-lead'));
     ids.forEach(function (version) {
-      var closed = versions[version].filter(resultedPick);
-      if (closed.length < MIN_CLOSED) {
-        lines.push(version + ': ' + closed.length + ' closed with a result.');
-        return;
+      var group = versions[version];
+      var closed = group.filter(resultedPick);
+      var block = el('div', null, 'track-version');
+      block.appendChild(el('h3', version, 'track-version-name'));
+      var counts = el('ul', null, 'track-counts');
+      counts.setAttribute('aria-label', 'Outcomes for ' + version);
+      counts.append(
+        trackCount('target', group.filter(function (pick) { return pick.outcome === 'target hit'; }).length),
+        trackCount('stop', group.filter(function (pick) { return pick.outcome === 'stopped out'; }).length),
+        trackCount('time stop', group.filter(function (pick) { return pick.outcome === 'time stop'; }).length),
+        trackCount('expired', group.filter(function (pick) { return pick.outcome === 'expired'; }).length),
+        trackCount('open', group.filter(stillOpenPick).length)
+      );
+      var noFill = group.filter(function (pick) { return pick.outcome === 'never filled'; }).length;
+      if (noFill) counts.appendChild(trackCount('no fill', noFill));
+      block.appendChild(counts);
+      if (closed.length >= MIN_CLOSED) {
+        var wins = closed.filter(function (pick) { return pick.outcome === 'target hit'; });
+        var returns = closed.map(function (pick) { return pick.returnPct; }).filter(function (value) { return typeof value === 'number'; });
+        var average = returns.length ? returns.reduce(function (sum, value) { return sum + value; }, 0) / returns.length : null;
+        var rate = Math.round((wins.length / closed.length) * 100);
+        var rateText = 'Target hit on ' + rate + '% of ' + closed.length + ' closed trades';
+        if (average != null) rateText += ', average return ' + (average > 0 ? '+' : '') + average.toFixed(1) + '%';
+        rateText += '.';
+        block.appendChild(el('p', rateText, 'track-rate'));
       }
-      var wins = closed.filter(function (pick) { return pick.outcome === 'target hit'; });
-      var returns = closed.map(function (pick) { return pick.returnPct; }).filter(function (value) { return typeof value === 'number'; });
-      var average = returns.length ? returns.reduce(function (sum, value) { return sum + value; }, 0) / returns.length : null;
-      var rate = Math.round((wins.length / closed.length) * 100);
-      lines.push(version + ': target hit on ' + rate + '% of ' + closed.length + ' closed trades'
-        + (average == null ? '' : ', average return ' + (average > 0 ? '+' : '') + average.toFixed(1) + '%') + '.');
+      summary.appendChild(block);
     });
-    summary.textContent = lines.join(' ');
     picks.sort(function (a, b) {
       return String(b.pickedOn || '').localeCompare(String(a.pickedOn || '')) || (a.rank || 0) - (b.rank || 0);
     });
+    var page = picks.slice(0, trackShown);
     list.replaceChildren();
-    picks.slice(0, 10).forEach(function (pick) {
+    page.forEach(function (pick) {
       var item = document.createElement('li');
-      var button = el('button', '', 'track-row');
-      button.type = 'button';
-      button.setAttribute('aria-expanded', 'false');
-      var label = el('span', outcomeLabel(pick), 'track-badge ' + outcomeClass(pick));
-      var name = el('span', (pick.symbol || '') + '  ' + (pick.pickedOn || ''), 'track-name');
-      var ret = el('span', typeof pick.returnPct === 'number' ? ((pick.returnPct > 0 ? '+' : '') + pick.returnPct.toFixed(1) + '%') : '—', 'track-return');
-      button.append(label, name, ret);
-      var detail = el('div', '', 'track-detail');
-      detail.hidden = true;
-      var bits = [];
-      if (typeof pick.priceAtPick === 'number') bits.push('Signal close ' + money(pick.priceAtPick));
-      if (typeof pick.fillPrice === 'number') bits.push('Filled ' + money(pick.fillPrice) + (pick.filledOn ? ' on ' + pick.filledOn : ''));
-      else if (pick.filledOn) bits.push('Filled on ' + pick.filledOn);
-      if (typeof pick.entryLow === 'number' && typeof pick.entryHigh === 'number') bits.push('Entry ' + money(pick.entryLow) + '–' + money(pick.entryHigh));
-      if (pick.paramVersion) bits.push(pick.paramVersion);
-      if (typeof pick.stop === 'number') bits.push('Stop ' + money(pick.stop));
-      if (typeof pick.target === 'number') bits.push('Target ' + money(pick.target));
-      if (typeof pick.rewardRisk === 'number') bits.push(pick.rewardRisk.toFixed(1) + ':1');
-      if (typeof pick.daysHeld === 'number') bits.push(pick.daysHeld + ' days');
-      if (typeof pick.mfePct === 'number') bits.push('MFE ' + (pick.mfePct > 0 ? '+' : '') + pick.mfePct.toFixed(1) + '%');
-      if (typeof pick.maePct === 'number') bits.push('MAE ' + pick.maePct.toFixed(1) + '%');
-      if (pick.sector) bits.push(pick.sector);
-      var market = pick.market || {};
-      if (typeof market.vsSma200 === 'number') bits.push('SPY vs 200d ' + (market.vsSma200 > 0 ? '+' : '') + market.vsSma200.toFixed(1) + '%');
-      if (pick.signals && pick.signals.length) bits.push(pick.signals.slice(0, 4).join(', '));
-      detail.textContent = bits.join(' · ');
-      button.addEventListener('click', function () {
-        var open = detail.hidden;
-        detail.hidden = !open;
-        button.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      item.append(button, detail);
+      item.className = 'track-pick';
+      var head = el('div', null, 'track-head');
+      head.appendChild(el('span', outcomeLabel(pick), 'track-badge ' + outcomeClass(pick)));
+      head.appendChild(el('span', pick.symbol || '', 'track-name'));
+      if (pick.pickedOn) head.appendChild(el('span', pick.pickedOn, 'track-when'));
+      head.appendChild(el('span', typeof pick.returnPct === 'number' ? signed(pick.returnPct) : '—', 'track-return'));
+      var facts = el('dl', null, 'track-facts');
+      if (typeof pick.fillPrice === 'number') facts.appendChild(trackFact('Fill', money(pick.fillPrice) + (pick.filledOn ? ' · ' + pick.filledOn : ''), true));
+      else if (typeof pick.priceAtPick === 'number') facts.appendChild(trackFact('Signal', money(pick.priceAtPick)));
+      else if (pick.filledOn) facts.appendChild(trackFact('Filled', pick.filledOn));
+      if (typeof pick.entryLow === 'number' && typeof pick.entryHigh === 'number') facts.appendChild(trackFact('Entry', money(pick.entryLow) + '–' + money(pick.entryHigh), true));
+      if (typeof pick.stop === 'number') facts.appendChild(trackFact('Stop', money(pick.stop)));
+      if (typeof pick.target === 'number') facts.appendChild(trackFact('Target', money(pick.target)));
+      if (typeof pick.rewardRisk === 'number') facts.appendChild(trackFact('R:R', pick.rewardRisk.toFixed(1) + ':1'));
+      if (typeof pick.daysHeld === 'number') facts.appendChild(trackFact('Days', String(pick.daysHeld)));
+      if (typeof pick.mfePct === 'number') facts.appendChild(trackFact('MFE', signed(pick.mfePct)));
+      if (typeof pick.maePct === 'number') facts.appendChild(trackFact('MAE', signed(pick.maePct)));
+      if (pick.paramVersion) facts.appendChild(trackFact('Version', pick.paramVersion, true));
+      item.append(head, facts);
+      var extra = [];
+      if (typeof pick.fillPrice === 'number' && typeof pick.priceAtPick === 'number') extra.push('Signal close ' + money(pick.priceAtPick));
+      if (pick.name && pick.name !== pick.symbol) extra.push(pick.name);
+      if (pick.sector) extra.push(pick.sector);
+      var marketNote = pick.market || {};
+      if (typeof marketNote.vsSma200 === 'number') extra.push('SPY vs 200-day ' + signed(marketNote.vsSma200));
+      if (pick.signals && pick.signals.length) extra.push(pick.signals.slice(0, 4).join(', '));
+      if (extra.length) {
+        var moreDetail = document.createElement('details');
+        moreDetail.className = 'track-extra';
+        var moreSummary = document.createElement('summary');
+        moreSummary.textContent = 'Signals and notes';
+        var moreBody = el('p', extra.join(' · '), 'track-detail');
+        moreDetail.append(moreSummary, moreBody);
+        item.appendChild(moreDetail);
+      }
       list.appendChild(item);
     });
+    if (more) {
+      more.hidden = page.length >= picks.length;
+      more.textContent = 'Show ' + PAGE + ' more';
+    }
   }
   function loadPicks() {
     return fetch('picks-history.json?t=' + Date.now(), { cache: 'no-store' }).then(function (response) {
@@ -1185,6 +1279,11 @@
     if (!list) return;
     var pool = researchPool();
     var page = pool.slice(0, researchShown);
+    var countEl = document.getElementById('researchCount');
+    if (countEl) {
+      var countLabel = pool.length === 1 ? ' name' : ' names';
+      countEl.textContent = pool.length + countLabel;
+    }
     if (note) {
       note.textContent = pool.length
         ? pool.length + ' names on the oversold research list. These are not swing candidates.'
@@ -1334,6 +1433,8 @@
   document.getElementById('watchMore').addEventListener('click', function () { watchShown += PAGE; renderWatch(); });
   var researchMore = document.getElementById('researchMore');
   if (researchMore) researchMore.addEventListener('click', function () { researchShown += PAGE; renderResearch(); });
+  var trackMore = document.getElementById('trackMore');
+  if (trackMore) trackMore.addEventListener('click', function () { trackShown += PAGE; renderTrack(trackHistory); });
   var accountInput = document.getElementById('accountSize');
   if (accountInput) {
     var savedAccount = '';
@@ -1401,12 +1502,19 @@
       openDetail(symbol);
     }
   });
-  window.addEventListener('resize', function () {
-    if (selected) {
-      var row = bySymbol(selected);
-      if (row) drawChart(row);
-    }
-  });
+  function redrawOpenChart() {
+    if (!selected) return;
+    var row = bySymbol(selected);
+    if (row) drawChart(row);
+  }
+  window.addEventListener('resize', redrawOpenChart);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', redrawOpenChart);
+  var detailMore = document.getElementById('detailMore');
+  if (detailMore) {
+    detailMore.addEventListener('toggle', function () {
+      if (detailMore.open) redrawOpenChart();
+    });
+  }
 
   watch = readWatch();
   renderWatch();
