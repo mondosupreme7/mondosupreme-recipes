@@ -221,6 +221,11 @@ body.is-playing .crt{height:calc(100dvh - var(--nav-h) - 168px)}
   -webkit-overflow-scrolling:touch;scrollbar-width:thin;gap:4px;padding-bottom:2px
 }
 .site-header .site-nav a{flex:0 0 auto;white-space:nowrap}
+.site-header .site-nav a[href="/fps/"],
+.site-footer a[href="/fps/"]{
+  white-space:normal;max-width:9.2em;font-size:clamp(11px, 3.1vw, 15px);line-height:1.05;text-align:center
+}
+.app-label{font-size:clamp(10px, 2.9vw, 12px)}
 .nav-apps{display:none}
 dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);box-sizing:border-box}
 .shell-find{width:min(520px,calc(100vw - 16px));background:#c0c0c0;color:#111827;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040;padding:10px}
