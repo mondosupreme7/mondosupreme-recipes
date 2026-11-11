@@ -71,7 +71,7 @@
       ]
     },
     tfc: {
-      title: '2Fort_99',
+      title: '2Fort',
       rows: [
         '########################',
         '#1..R.................2#',
@@ -130,6 +130,11 @@
   var walkPhase = 0;
   var hurtFlash = 0;
   var hitMark = { until: 0, kill: false };
+  var shells = [];
+  var impacts = [];
+  var crouch = false;
+  var jumpT = 0;
+  var spawnToken = 0;
   var VIEW_W = 320;
   var VIEW_H = 180;
   var hazardAcc = 0;
@@ -155,11 +160,13 @@
           data.deaths = clampInt(data.deaths, 0, 999999);
           data.wins = clampInt(data.wins, 0, 999999);
           data.cash = clampInt(data.cash, 0, 999999);
+          if (typeof data.lookSens !== 'number' || data.lookSens < 0.4 || data.lookSens > 2.2) data.lookSens = 1;
+          data.aimAssist = !!data.aimAssist;
           return data;
         }
       }
     } catch (err) { /* keep the default sheet */ }
-    return { v: 1, name: 'Rookie', frags: 0, deaths: 0, wins: 0, cash: 800 };
+    return { v: 1, name: 'Rookie', frags: 0, deaths: 0, wins: 0, cash: 800, lookSens: 1, aimAssist: false };
   }
 
   function saveProfile() {
@@ -734,6 +741,34 @@
   function noteHit(kill) {
     hitMark.until = performance.now() + (kill ? 260 : 120);
     hitMark.kill = !!kill;
+    if (!reduceMotion && window.MONDO_JUICE && MONDO_JUICE.shake) MONDO_JUICE.shake(kill ? 3 : 2, kill ? 120 : 80);
+  }
+  function teamLabel(team) {
+    if (team === 'ct') return 'Counter-Terrorists';
+    if (team === 't') return 'Terrorists';
+    if (team === 'red') return 'Red team';
+    if (team === 'blue') return 'Blue team';
+    return 'That side';
+  }
+  function buzz() {
+    if (!navigator.vibrate) return;
+    try { navigator.vibrate([12, 24, 16]); } catch (err) { /* no haptics */ }
+  }
+  function assistAngle(ang) {
+    if (!profile.aimAssist || !player) return ang;
+    var best = ang;
+    var bestD = 0.18;
+    function consider(ent) {
+      if (!ent || ent.hp <= 0 || !isEnemy(ent)) return;
+      var a = Math.atan2(ent.y - player.y, ent.x - player.x);
+      var d = Math.atan2(Math.sin(a - ang), Math.cos(a - ang));
+      if (Math.abs(d) < bestD) { bestD = Math.abs(d); best = ang + d * 0.7; }
+    }
+    monsters.forEach(consider);
+    bots.forEach(consider);
+    remotes.forEach(consider);
+    sentries.forEach(consider);
+    return best;
   }
   function damageEnt(ent, dmg, weapon, fromPlayer) {
     if (!ent || ent.hp <= 0) return;
@@ -916,7 +951,7 @@
   }
 
   function hitscan(spread, dmg, weapon) {
-    var ang = player.ang + (Math.random() - 0.5) * (spread || 0);
+    var ang = assistAngle(player.ang) + (Math.random() - 0.5) * (spread || 0);
     var dx = Math.cos(ang);
     var dy = Math.sin(ang);
     var best = null;
@@ -944,6 +979,8 @@
     remotes.forEach(consider);
     if (best) damageEnt(best, dmg, weapon, true);
     else floatText(player.x + dx * Math.min(bestT, 4), player.y + dy * Math.min(bestT, 4), '·', '#ffffff');
+    impacts.push({ x: player.x + dx * Math.max(0.4, bestT - 0.05), y: player.y + dy * Math.max(0.4, bestT - 0.05), life: 6 });
+    if (impacts.length > 24) impacts.shift();
   }
 
   function launchRocket() {
@@ -1036,8 +1073,12 @@
     }
     if (!g.energy || true) ammo.mag -= 1;
     player.cool = g.cd;
-    flash = 0.05;
-    recoil = 1;
+    flash = reduceMotion ? 0.08 : 0.18;
+    recoil = reduceMotion ? 0.35 : 1;
+    if (!reduceMotion && !g.energy) {
+      shells.push({ x: VIEW_W * 0.66, y: VIEW_H * 0.62, vx: 80 + Math.random() * 40, vy: -110, life: 0.55 });
+      if (shells.length > 8) shells.shift();
+    }
     if (ammo.mag <= 0 && !g.energy) startReload();
     return true;
   }
@@ -1319,6 +1360,8 @@
       carrying = enemy && enemy.carrier === 'player';
     }
     var speed = 2.35 * (player.speed || 1);
+    if (crouch) speed *= 0.55;
+    if (jumpT > 0) jumpT -= dt;
     if (carrying && player.cls !== 'scout') speed *= 0.86;
     var dirX = Math.cos(player.ang);
     var dirY = Math.sin(player.ang);
@@ -1417,7 +1460,18 @@
     if ($('play').hidden) return;
     flash = Math.max(0, flash - dt);
     swing = Math.max(0, swing - dt * 3);
-    recoil = Math.max(0, recoil - dt * 3);
+    recoil = Math.max(0, recoil - dt * (reduceMotion ? 6 : 3));
+    for (var sh = shells.length - 1; sh >= 0; sh--) {
+      shells[sh].life -= dt;
+      shells[sh].x += shells[sh].vx * dt;
+      shells[sh].y += shells[sh].vy * dt;
+      shells[sh].vy += 220 * dt;
+      if (shells[sh].life <= 0) shells.splice(sh, 1);
+    }
+    for (var im = impacts.length - 1; im >= 0; im--) {
+      impacts[im].life -= dt;
+      if (impacts[im].life <= 0) impacts.splice(im, 1);
+    }
     hurtFlash = Math.max(0, hurtFlash - dt);
     for (var i = floats.length - 1; i >= 0; i--) {
       floats[i].life -= dt;
@@ -1561,6 +1615,9 @@
       : view.getContext('2d');
     var w = VIEW_W;
     var h = VIEW_H;
+    var heldPitch = pitch;
+    pitch = pitch + (crouch ? (reduceMotion ? -8 : -18) : 0);
+    if (jumpT > 0 && !reduceMotion) pitch += 12 * (jumpT / 0.32);
     updateCam();
     var horizon = h / 2 + pitch;
     var sky = ctx.createLinearGradient(0, 0, 0, Math.max(1, horizon));
@@ -1677,6 +1734,9 @@
       sprites.push({ x: d.x, y: d.y, color: color, size: d.kind === 'hazard' ? 0.35 : 0.5, label: '' });
     });
     sites.forEach(function (s) { sprites.push({ x: s.x, y: s.y, color: '#ff9900', size: 0.35, label: s.label || 'A' }); });
+    impacts.forEach(function (mark) {
+      sprites.push({ x: mark.x, y: mark.y, color: '#1c1917', size: 0.16, label: '', mark: true });
+    });
     if (bomb && (bomb.planted || !bomb.carrier)) sprites.push({ x: bomb.x, y: bomb.y, color: '#ff6600', size: 0.45, label: 'C4' });
     if (flags.red) sprites.push({ x: flags.red.x, y: flags.red.y, color: '#e02020', size: 0.8, label: 'RED' });
     if (flags.blue) sprites.push({ x: flags.blue.x, y: flags.blue.y, color: '#2060e8', size: 0.8, label: 'BLU' });
@@ -1701,23 +1761,19 @@
       var flashing = !!(ent && ((ent.hurtUntil && Date.now() < ent.hurtUntil) || (ent.hp <= 0 && age < 0.18)));
       var fade = age > 0 ? Math.max(0, 1 - age) : 1;
       ctx.globalAlpha = Math.max(0.2, 1 - ty / 16) * fade;
-      for (var stripe = Math.max(0, x0); stripe < Math.min(w, x0 + spriteW); stripe++) {
-        if (ty >= zbuf[stripe]) continue;
-        var local = (stripe - x0) / spriteW;
-        var head = local > 0.32 && local < 0.68;
-        var torso = local > 0.18 && local < 0.82;
-        if (!torso) continue;
-        var top = head ? y0 : y0 + spriteH * 0.22;
-        var tall = head ? spriteH : spriteH * 0.78;
-        ctx.fillStyle = flashing ? '#f8fafc' : (head ? '#1c1917' : '#111827');
-        ctx.fillRect(stripe, top, 1, tall);
-        if (local > 0.34 && local < 0.66) {
-          ctx.fillStyle = flashing ? '#ffffff' : sp.color;
-          ctx.fillRect(stripe, top + tall * 0.18, 1, tall * 0.5);
+      if (sp.mark) {
+        for (var markX = Math.max(0, x0); markX < Math.min(w, x0 + spriteW); markX++) {
+          if (ty >= zbuf[markX]) continue;
+          ctx.fillStyle = '#0c0a09';
+          ctx.fillRect(markX, y0 + spriteH * 0.45, 1, Math.max(2, spriteH * 0.2));
         }
-        if (Math.abs(local - 0.5) < 0.06) {
-          ctx.fillStyle = '#f8fafc';
-          ctx.fillRect(stripe, top + 2, 1, Math.max(2, tall * 0.08));
+      } else if (ent) {
+        blitFigure(ctx, ent, sp.color, x0, y0, spriteW, spriteH, zbuf, ty, w, flashing);
+      } else {
+        for (var stripe = Math.max(0, x0); stripe < Math.min(w, x0 + spriteW); stripe++) {
+          if (ty >= zbuf[stripe]) continue;
+          ctx.fillStyle = sp.color;
+          ctx.fillRect(stripe, y0, 1, spriteH);
         }
       }
       ctx.globalAlpha = 1;
@@ -1778,7 +1834,55 @@
       ctx.lineTo(hx - s, hy2 + s);
       ctx.stroke();
     }
+    shells.forEach(function (shell) {
+      ctx.globalAlpha = Math.max(0, shell.life * 2);
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(shell.x, shell.y, 4, 2);
+    });
+    ctx.globalAlpha = 1;
+    pitch = heldPitch;
     drawStick();
+  }
+  function blitFigure(ctx, ent, teamColor, x0, y0, spriteW, spriteH, zbuf, ty, w, flashing) {
+    var step = reduceMotion ? 0 : (Math.floor(Date.now() / 160) % 2);
+    var kind = ent.kind || '';
+    var rows;
+    if (kind === 'headcrab') rows = ['..yyyy..', 'yyyyyyyy', '.ye..ey.', 'yy.yy.yy'];
+    else if (kind === 'turret' || kind === 'sentry') rows = ['...mm...', '..mmmm..', 'mmmmmmmm', '.m.mm.m.', '..mmmm..'];
+    else rows = [
+      '..hhhhhh..',
+      '.hheeeehh.',
+      '.hhheehhh.',
+      '..ssssss..',
+      '.dssssssd.',
+      'ddsswwssdd',
+      '.dssssssd.',
+      '..ssssss..',
+      step ? '..ll....rr' : '.ll......r',
+      '.ll....rr.',
+      'bb......bb'
+    ];
+    var team = ent.team || '';
+    var shirt = team === 't' ? '#c2410c' : team === 'ct' ? '#2563eb' : team === 'red' ? '#dc2626' : team === 'blue' ? '#1d4ed8' : (teamColor || '#166534');
+    var shade = team === 't' ? '#7c2d12' : team === 'ct' ? '#1e3a8a' : team === 'red' ? '#7f1d1d' : team === 'blue' ? '#1e3a8a' : '#14532d';
+    var pal = flashing
+      ? { h: '#fff', e: '#fff', s: '#fff', d: '#fff', w: '#fff', l: '#fff', r: '#fff', b: '#fff', y: '#fff', m: '#fff' }
+      : { h: '#3f2a1c', e: '#0f172a', s: shirt, d: shade, w: '#1c1917', l: '#44403c', r: '#57534e', b: '#292524', y: '#eab308', m: '#94a3b8' };
+    var cols = rows[0].length;
+    var pxH = spriteH / rows.length;
+    var stripe;
+    for (stripe = Math.max(0, Math.floor(x0)); stripe < Math.min(w, Math.ceil(x0 + spriteW)); stripe++) {
+      if (ty >= zbuf[stripe]) continue;
+      var col = Math.floor(((stripe - x0) / spriteW) * cols);
+      if (col < 0 || col >= cols) continue;
+      var r;
+      for (r = 0; r < rows.length; r++) {
+        var ch = rows[r].charAt(col);
+        if (ch === '.' || !pal[ch]) continue;
+        ctx.fillStyle = pal[ch];
+        ctx.fillRect(stripe, Math.floor(y0 + r * pxH), 1, Math.ceil(pxH) + 1);
+      }
+    }
   }
 
   function shadeHex(hex) {
@@ -1788,58 +1892,88 @@
   function drawGun(ctx, w, h) {
     var id = gunId();
     var bob = reduceMotion ? 0 : Math.sin(walkPhase) * 3;
-    var kick = recoil * 16;
+    var kick = recoil * (reduceMotion ? 4 : 22);
+    var dip = 0;
+    var tilt = 0;
+    if (player && player.reloading > 0) {
+      var spec = GUNS[player.reloadId];
+      var u = spec && spec.reload ? 1 - player.reloading / spec.reload : 0.5;
+      dip = Math.sin(Math.max(0, Math.min(1, u)) * Math.PI) * (reduceMotion ? 8 : 42);
+      tilt = Math.sin(Math.max(0, Math.min(1, u)) * Math.PI) * (reduceMotion ? 0.06 : 0.42);
+    }
     ctx.save();
-    ctx.translate(w * 0.68, h - 6 + bob - kick);
-    var metal = ctx.createLinearGradient(-20, -90, 20, 10);
-    metal.addColorStop(0, '#f8fafc');
-    metal.addColorStop(0.45, '#94a3b8');
-    metal.addColorStop(1, '#1e293b');
-    function barrel(x, y, bw, bh, color) {
-      var g = ctx.createLinearGradient(x, y, x + bw, y);
-      g.addColorStop(0, '#0f172a');
-      g.addColorStop(0.35, color);
-      g.addColorStop(1, '#020617');
-      ctx.fillStyle = g;
+    ctx.imageSmoothingEnabled = false;
+    ctx.translate(w * 0.62, h - 2 + bob - kick + dip);
+    ctx.rotate(tilt);
+    function metal(x, y, bw, bh, hi, mid, lo) {
+      ctx.fillStyle = lo;
       ctx.fillRect(x, y, bw, bh);
+      ctx.fillStyle = mid;
+      ctx.fillRect(x + 1, y, Math.max(1, bw - 2), bh);
+      ctx.fillStyle = hi;
+      ctx.fillRect(x + 1, y, Math.max(1, Math.floor(bw * 0.3)), Math.max(1, Math.floor(bh * 0.45)));
     }
+    function hand(x, y) {
+      ctx.fillStyle = '#e7c2a0';
+      ctx.fillRect(x, y, 16, 11);
+      ctx.fillStyle = '#c4a484';
+      ctx.fillRect(x, y + 8, 16, 4);
+      ctx.fillStyle = '#3f2a1c';
+      ctx.fillRect(x + 3, y + 2, 2, 2);
+    }
+    var muzzle = { x: -6, y: -64 };
+    var smg = id === 'mp5' || id === 'mp5n' || id === 'mini';
+    var pistol = id === 'pistol' || id === 'deagle';
     if (id === 'crowbar' || id === 'knife' || id === 'wrench') {
-      ctx.rotate(-0.7 - swing * 0.9);
-      ctx.fillStyle = id === 'wrench' ? metal : '#b91c1c';
-      ctx.fillRect(-5, -78, 10, 84);
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(-7, -10, 14, 16);
+      ctx.rotate(-0.65 - (reduceMotion ? 0 : swing * 0.9));
+      ctx.fillStyle = id === 'wrench' ? '#cbd5e1' : '#b91c1c';
+      ctx.fillRect(-4, -82, 8, 74);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-9, -14, 18, 18);
+      hand(-12, -6);
     } else if (id === 'rocket') {
-      barrel(-16, -58, 28, 18, '#3f7a38');
-      barrel(-8, -40, 14, 36, '#14532d');
-    } else if (id === 'mini') {
-      barrel(-28, -36, 48, 22, '#94a3b8');
-      barrel(-8, -18, 16, 22, '#334155');
-    } else if (id === 'awp') {
-      barrel(-8, -92, 8, 88, '#1e293b');
-      ctx.fillStyle = '#7c5a32';
-      ctx.fillRect(-14, -30, 20, 12);
-    } else if (id === 'tau') {
-      barrel(-12, -70, 22, 16, '#ea580c');
-      barrel(-6, -54, 12, 40, '#9a3412');
-    } else if (id === 'shot') {
-      barrel(-10, -78, 14, 70, '#92400e');
-      ctx.fillStyle = '#44403c';
-      ctx.fillRect(-16, -28, 24, 12);
-    } else {
-      barrel(-8, -64, 12, 52, id === 'deagle' ? '#e2e8f0' : id === 'ak' ? '#7c2d12' : '#3f6212');
+      metal(-20, -64, 34, 16, '#86efac', '#166534', '#052e16');
+      metal(-12, -48, 16, 30, '#4ade80', '#14532d', '#052e16');
+      hand(-18, -24);
+      muzzle = { x: 10, y: -62 };
+    } else if (smg) {
+      metal(-40, -50, 52, 12, '#f8fafc', '#64748b', '#0f172a');
+      metal(-10, -38, 12, 20, '#e2e8f0', '#334155', '#020617');
       ctx.fillStyle = '#1e293b';
-      ctx.fillRect(-18, -24, 22, 12);
+      ctx.fillRect(-24, -38, 8, 16);
+      hand(-8, -30);
+      muzzle = { x: -42, y: -48 };
+    } else if (pistol) {
+      metal(-4, -62, 12, 30, '#f8fafc', id === 'deagle' ? '#e2e8f0' : '#94a3b8', '#0f172a');
+      ctx.fillStyle = '#1c1917';
+      ctx.fillRect(-2, -36, 14, 24);
+      ctx.fillStyle = '#57534e';
+      ctx.fillRect(0, -32, 4, 14);
+      hand(-10, -32);
+      muzzle = { x: 4, y: -64 };
+    } else {
+      var body = id === 'ak' ? '#9a3412' : id === 'shot' ? '#92400e' : id === 'tau' ? '#c2410c' : '#3f6212';
+      var hi = id === 'ak' ? '#fdba74' : id === 'tau' ? '#fdba74' : '#d9f99d';
+      metal(-6, -102, 9, 84, hi, body, '#0f172a');
+      ctx.fillStyle = '#1c1917';
+      ctx.fillRect(-18, -40, 26, 12);
+      ctx.fillStyle = '#292524';
+      ctx.fillRect(-12, -28, 8, 18);
+      if (id === 'awp') {
+        ctx.fillStyle = '#e7e5e4';
+        ctx.fillRect(-2, -78, 5, 12);
+      }
+      hand(-16, -26);
+      hand(4, -34);
+      muzzle = { x: -4, y: -104 };
     }
-    if (flash > 0) {
-      var bloom = ctx.createRadialGradient(-8, -78, 2, -8, -78, 36);
-      bloom.addColorStop(0, 'rgba(255,244,214,.95)');
-      bloom.addColorStop(0.4, 'rgba(251,191,36,.55)');
-      bloom.addColorStop(1, 'rgba(251,191,36,0)');
-      ctx.fillStyle = bloom;
-      ctx.beginPath();
-      ctx.arc(-8, -78, 34, 0, Math.PI * 2);
-      ctx.fill();
+    if (flash > 0 && id !== 'crowbar' && id !== 'knife' && id !== 'wrench') {
+      var rad = reduceMotion ? 8 : 26;
+      ctx.fillStyle = '#fff7d6';
+      ctx.fillRect(muzzle.x - 1, muzzle.y - rad, 3, rad);
+      ctx.fillRect(muzzle.x - rad, muzzle.y - 1, rad, 3);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(muzzle.x - 3, muzzle.y - 3, 7, 7);
     }
     ctx.restore();
   }
@@ -1933,12 +2067,34 @@
   function paintPicks() {
     var teams = document.querySelectorAll('#lobby [data-team]');
     for (var i = 0; i < teams.length; i++) {
-      teams[i].classList.toggle('is-on', teams[i].getAttribute('data-team') === state.pickTeam);
+      var on = teams[i].getAttribute('data-team') === state.pickTeam;
+      teams[i].classList.toggle('is-on', on);
+      teams[i].setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     var classes = document.querySelectorAll('#lobby [data-class]');
     for (var j = 0; j < classes.length; j++) {
-      classes[j].classList.toggle('is-on', classes[j].getAttribute('data-class') === state.pickClass);
+      var picked = classes[j].getAttribute('data-class') === state.pickClass;
+      classes[j].classList.toggle('is-on', picked);
+      classes[j].setAttribute('aria-pressed', picked ? 'true' : 'false');
     }
+  }
+  function chooseTeam(team) {
+    state.pickTeam = team;
+    paintPicks();
+    var label = teamLabel(team);
+    var spawning = state.mode === 'cs';
+    var line = label + (spawning ? ' selected. Spawning.' : ' selected.');
+    var confirm = $('teamConfirm');
+    if (confirm) confirm.textContent = line;
+    note(line);
+    tone(540, 0.06, 'square', 0.04);
+    buzz();
+    if (!spawning) return;
+    var token = ++spawnToken;
+    window.setTimeout(function () {
+      if (token !== spawnToken || $('lobby').hidden) return;
+      deploy();
+    }, 180);
   }
 
   function openBuy() {
@@ -2179,8 +2335,7 @@
     var teamButtons = document.querySelectorAll('#lobby [data-team]');
     for (var t = 0; t < teamButtons.length; t++) {
       teamButtons[t].addEventListener('click', function () {
-        state.pickTeam = this.getAttribute('data-team');
-        paintPicks();
+        chooseTeam(this.getAttribute('data-team'));
       });
     }
     var classButtons = document.querySelectorAll('#lobby [data-class]');
@@ -2188,6 +2343,12 @@
       classButtons[c].addEventListener('click', function () {
         state.pickClass = this.getAttribute('data-class');
         paintPicks();
+        var line = this.textContent.replace(/\s+/g, ' ').trim().split(' ')[0] + ' selected.';
+        var confirm = $('teamConfirm');
+        if (confirm) confirm.textContent = line;
+        note(line);
+        tone(480, 0.05, 'square', 0.03);
+        buzz();
       });
     }
     $('deploy').addEventListener('click', deploy);
@@ -2210,6 +2371,29 @@
       else if (state.mode === 'tfc') openLobby(true);
       else { player.wpn = 0; scopeLevel = 0; }
     });
+    $('btnJump').addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      if (jumpT <= 0) jumpT = 0.32;
+    });
+    $('btnCrouch').addEventListener('click', function () {
+      crouch = !crouch;
+      this.setAttribute('aria-pressed', crouch ? 'true' : 'false');
+    });
+    $('btnAssist').setAttribute('aria-pressed', profile.aimAssist ? 'true' : 'false');
+    $('btnAssist').addEventListener('click', function () {
+      profile.aimAssist = !profile.aimAssist;
+      this.setAttribute('aria-pressed', profile.aimAssist ? 'true' : 'false');
+      saveProfile();
+      note(profile.aimAssist ? 'Aim assist on.' : 'Aim assist off.');
+    });
+    var sens = $('lookSens');
+    if (sens) {
+      sens.value = String(Math.round((profile.lookSens || 1) * 100));
+      sens.addEventListener('input', function () {
+        profile.lookSens = Math.max(0.4, Math.min(2.2, Number(sens.value) / 100));
+        saveProfile();
+      });
+    }
     $('btnUse').addEventListener('pointerdown', function (e) { e.preventDefault(); useHeld = true; });
     $('btnUse').addEventListener('pointerup', function () { useHeld = false; });
     $('btnUse').addEventListener('pointerleave', function () { useHeld = false; });
@@ -2237,6 +2421,8 @@
         }
         return;
       }
+      var touchBox = view.getBoundingClientRect();
+      if (e.clientX < touchBox.left + touchBox.width * 0.42) return;
       look.on = true;
       look.x = e.clientX;
       look.y = e.clientY;
@@ -2245,9 +2431,10 @@
     });
     view.addEventListener('pointermove', function (e) {
       if (!player) return;
+      var sens = profile.lookSens || 1;
       if (document.pointerLockElement === view) {
-        player.ang += (e.movementX || 0) * 0.005;
-        pitch = Math.max(-80, Math.min(80, pitch - (e.movementY || 0) * 0.35));
+        player.ang += (e.movementX || 0) * 0.005 * sens;
+        pitch = Math.max(-80, Math.min(80, pitch - (e.movementY || 0) * 0.35 * sens));
         return;
       }
       if (!look.on || e.pointerId !== look.id) return;
@@ -2255,8 +2442,8 @@
       var dy = e.clientY - look.y;
       look.x = e.clientX;
       look.y = e.clientY;
-      player.ang += dx * 0.005;
-      pitch = Math.max(-80, Math.min(80, pitch - dy * 0.35));
+      player.ang += dx * 0.005 * sens;
+      pitch = Math.max(-80, Math.min(80, pitch - dy * 0.35 * sens));
     });
     view.addEventListener('pointerup', function (e) {
       look.on = false;
@@ -2301,6 +2488,11 @@
       if (e.repeat) return;
       if (e.code === 'Space') { fireHeld = true; pullTrigger(); }
       if (e.code === 'KeyR') startReload();
+      if (e.code === 'KeyC') {
+        crouch = !crouch;
+        var crouchBtn = $('btnCrouch');
+        if (crouchBtn) crouchBtn.setAttribute('aria-pressed', crouch ? 'true' : 'false');
+      }
       if (e.code === 'KeyQ' || e.code === 'KeyG') nextWeapon();
       if (e.code === 'KeyE') useHeld = true;
       if (e.code === 'KeyB') $('btnSpecial').click();

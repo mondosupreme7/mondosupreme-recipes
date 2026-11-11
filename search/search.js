@@ -296,7 +296,7 @@
       ['App', 'Marketplace', '/market/', 'classifieds for sale ebay listings'],
       ['App', 'Mystic 8-Ball', '/8ball/', 'magic eight ball fortune'],
       ['App', 'Craft', '/mmo/', 'pixel mmo realm'],
-      ['App', 'Half-Strike', '/fps/', 'goldsrc fps labs'],
+      ['App', 'Half Strike Fortress', '/fps/', 'fps fortress labs'],
       ['App', 'Cinderlatch', '/escape/', 'cinderlatch escape door'],
       ['App', 'Planting', '/planting/', 'garden planting zone 10a 32927 cocoa vegetables herbs flowers fruit calendar']
     ].forEach(function (row) { addItem({ kind: row[0], title: row[1], href: row[2], text: row[3] }); });
