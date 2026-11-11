@@ -838,100 +838,137 @@ function drawRoom() {
   ctx.fillStyle = '#808080';
   ctx.fillRect(40, 136, 22, 8);
 }
+const ACCENT = {
+  egg: '#e4c56a', eggCrack: '#e4c56a', blob: '#e8ff9a', kidchi: '#fff3a8', teenchi: '#dff6ff',
+  chefchi: '#fffdf6', captainchi: '#ffd100', cyberchi: '#7af6ff', phantomchi: '#f4f4f4'
+};
 function spriteKey() {
   if (pet.species === 'egg' && (Date.now() - pet.eggStarted > HATCH_MS * 0.66)) return 'eggCrack';
   return SPRITES[pet.species] ? pet.species : 'blob';
 }
+function spriteRows(species) {
+  return SPRITES[species] || SPRITES.blob;
+}
+function inkAt(rows, r, c) {
+  return r >= 0 && c >= 0 && r < rows.length && c < rows[r].length && rows[r][c] !== ' ';
+}
+function headBox(rows) {
+  let top = 0;
+  while (top < rows.length && rows[top].indexOf('#') < 0 && rows[top].indexOf('+') < 0 && rows[top].indexOf('o') < 0) top++;
+  if (top >= rows.length) top = 0;
+  const line = rows[top] || '';
+  let left = 0;
+  let right = line.length - 1;
+  while (left <= right && line[left] === ' ') left++;
+  while (right >= left && line[right] === ' ') right--;
+  if (right < left) { left = 0; right = Math.max(0, line.length - 1); }
+  let eye = top;
+  for (let r = 0; r < rows.length; r++) if (rows[r].indexOf('o') >= 0) { eye = r; break; }
+  return { top, left, right, eye };
+}
+function drawSpritePixels(rows, scale, species, blink) {
+  const fur = FUR[species] || FUR[species === 'eggCrack' ? 'egg' : 'blob'] || '#86efac';
+  const accent = ACCENT[species] || '#fff8dc';
+  const outline = species === 'egg' || species === 'eggCrack' ? '#6d5428' : '#10240f';
+  let r, c, dy, dx;
+  for (r = 0; r < rows.length; r++) {
+    for (c = 0; c < rows[r].length; c++) {
+      if (!inkAt(rows, r, c)) continue;
+      for (dy = -1; dy <= 1; dy++) {
+        for (dx = -1; dx <= 1; dx++) {
+          if (!dx && !dy) continue;
+          if (inkAt(rows, r + dy, c + dx)) continue;
+          ctx.fillStyle = outline;
+          ctx.fillRect((c + dx) * scale, (r + dy) * scale, scale, scale);
+        }
+      }
+    }
+  }
+  for (r = 0; r < rows.length; r++) {
+    for (c = 0; c < rows[r].length; c++) {
+      const ch = rows[r][c];
+      if (ch === ' ') continue;
+      const px = c * scale;
+      const py = r * scale;
+      if (ch === 'o') {
+        ctx.fillStyle = fur;
+        ctx.fillRect(px, py, scale, scale);
+        if (blink) {
+          ctx.fillStyle = '#1a1208';
+          ctx.fillRect(px, py + Math.floor(scale / 2), scale, Math.max(1, Math.floor(scale / 4)));
+        } else {
+          ctx.fillStyle = '#f7f3df';
+          ctx.fillRect(px + 1, py + 1, scale - 2, scale - 2);
+          const pupil = Math.max(1, Math.floor(scale * 0.4));
+          ctx.fillStyle = '#1a1208';
+          ctx.fillRect(px + Math.floor((scale - pupil) / 2), py + Math.floor((scale - pupil) / 2), pupil, pupil);
+        }
+      } else {
+        ctx.fillStyle = ch === '+' ? accent : fur;
+        ctx.fillRect(px, py, scale, scale);
+      }
+    }
+  }
+}
 function drawCreature(x, y, scale, species, hat, flip, shiverOn) {
-  const rows = SPRITES[species] || SPRITES.blob;
+  const rows = spriteRows(species);
   const w = rows[0].length * scale;
   const h = rows.length * scale;
-  const left = x - w / 2;
-  const top = y - h;
-  const blink = clock < blinkUntil;
-  const ear = reduceMotion ? 0 : Math.sin(clock / 90) * 3;
-  const shiver = shiverOn && species !== 'egg' ? Math.sin(clock / 28) * 2 : 0;
-  const squish = reduceMotion ? 1 : 1 + Math.sin(clock / 140) * 0.04;
+  const blink = !reduceMotion && clock < blinkUntil;
+  const bob = reduceMotion ? 0 : ((Math.floor(clock / 280) % 2) ? -scale : 0);
+  const shiver = !reduceMotion && shiverOn && species !== 'egg' && species !== 'eggCrack'
+    ? ((Math.floor(clock / 40) % 2) ? scale : -scale) : 0;
   ctx.save();
-  ctx.translate(x + shiver, y);
-  ctx.scale((flip < 0 ? -1 : 1) * squish, 1 / squish);
-  ctx.translate(0, ear * 0.2);
-  ctx.fillStyle = 'rgba(15,23,42,.18)';
-  ctx.beginPath();
-  ctx.ellipse(0, 4, w * 0.32, 6, 0, 0, Math.PI * 2);
-  ctx.fill();
-  const fur = FUR[species] || '#86efac';
-  const body = ctx.createRadialGradient(-w * 0.12, -h * 0.55, 4, 0, -h * 0.35, w * 0.55);
-  body.addColorStop(0, '#fff');
-  body.addColorStop(0.25, fur);
-  body.addColorStop(1, '#0f172a');
-  ctx.fillStyle = body;
-  ctx.beginPath();
-  if (species === 'egg') ctx.ellipse(0, -h * 0.42, w * 0.28, h * 0.42, 0, 0, Math.PI * 2);
-  else ctx.ellipse(0, -h * 0.38, w * 0.34, h * 0.4, 0, 0, Math.PI * 2);
-  ctx.fill();
-  if (species !== 'egg') {
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.ellipse(-w * 0.1, -h * 0.48, 7, blink ? 1 : 8, 0, 0, Math.PI * 2);
-    ctx.ellipse(w * 0.1, -h * 0.48, 7, blink ? 1 : 8, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#0f172a';
-    if (!blink) {
-      ctx.beginPath();
-      ctx.arc(-w * 0.08, -h * 0.46, 3, 0, Math.PI * 2);
-      ctx.arc(w * 0.12, -h * 0.46, 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(-w * 0.1, -h * 0.5, 2, 2);
-      ctx.fillRect(w * 0.1, -h * 0.5, 2, 2);
-    }
-    ctx.fillStyle = 'rgba(244,114,182,.55)';
-    ctx.beginPath();
-    ctx.ellipse(-w * 0.2, -h * 0.32, 5, 3, 0, 0, Math.PI * 2);
-    ctx.ellipse(w * 0.2, -h * 0.32, 5, 3, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  ctx.imageSmoothingEnabled = false;
+  ctx.translate(Math.round(x + shiver), Math.round(y + bob));
+  ctx.scale(flip < 0 ? -1 : 1, 1);
+  ctx.translate(-w / 2, -h);
+  ctx.fillStyle = 'rgba(16,24,16,.28)';
+  ctx.fillRect(Math.floor(w * 0.22), h - Math.max(2, Math.floor(scale / 2)), Math.floor(w * 0.56), Math.max(2, Math.floor(scale / 2)));
+  drawSpritePixels(rows, scale, species, blink);
+  drawHat(rows, scale, hat);
   ctx.restore();
-  drawHat(left + shiver, top + ear, w, hat, scale);
 }
-function drawHat(left, top, w, hat) {
+function drawHat(rows, scale, hat) {
   if (!hat) return;
-  ctx.save();
+  const head = headBox(rows);
+  const s = scale;
+  const x = head.left * s;
+  const y = head.top * s;
+  const w = (head.right - head.left + 1) * s;
   if (hat === 'captain') {
     ctx.fillStyle = '#0b1d5e';
-    ctx.fillRect(left + 4, top - 10, w - 8, 8);
+    ctx.fillRect(x, y - s, w, s);
     ctx.fillStyle = '#ffd100';
-    ctx.fillRect(left, top - 4, w, 4);
+    ctx.fillRect(x - s, y, w + s * 2, Math.max(2, Math.floor(s * 0.7)));
   } else if (hat === 'chef') {
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(left + w / 2 - 8, top - 18, 16, 14);
-    ctx.fillRect(left + 2, top - 8, w - 4, 6);
+    ctx.fillStyle = '#fffdf6';
+    ctx.fillRect(x + Math.floor(w / 2) - s, y - s * 3, s * 2, s * 2);
+    ctx.fillRect(x, y - s, w, s);
   } else if (hat === 'shades') {
-    ctx.fillStyle = '#111';
-    ctx.fillRect(left + 4, top + 16, w - 8, 6);
+    ctx.fillStyle = '#141414';
+    ctx.fillRect(x, head.eye * s + Math.floor(s * 0.2), w, Math.max(2, Math.floor(s * 0.7)));
   } else if (hat === 'party') {
     ctx.fillStyle = '#ff4d6d';
-    ctx.beginPath();
-    ctx.moveTo(left + w / 2, top - 20);
-    ctx.lineTo(left + w - 2, top);
-    ctx.lineTo(left + 2, top);
-    ctx.fill();
+    ctx.fillRect(x + Math.floor(w / 2) - Math.floor(s / 2), y - s * 3, s, s);
+    ctx.fillRect(x + s, y - s * 2, Math.max(s, w - s * 2), s);
+    ctx.fillRect(x, y - s, w, s);
   } else if (hat === 'wizard') {
     ctx.fillStyle = '#5b2d9e';
-    ctx.beginPath();
-    ctx.moveTo(left + w / 2, top - 24);
-    ctx.lineTo(left + w, top);
-    ctx.lineTo(left, top);
-    ctx.fill();
+    ctx.fillRect(x + Math.floor(w / 2) - Math.floor(s / 2), y - s * 4, s, s);
+    ctx.fillRect(x + s, y - s * 3, Math.max(s, w - s * 2), s);
+    ctx.fillRect(x, y - s * 2, w, s * 2);
     ctx.fillStyle = '#ffe14a';
-    ctx.fillRect(left + w / 2, top - 16, 3, 3);
+    ctx.fillRect(x + Math.floor(w / 2), y - s * 3, Math.max(2, Math.floor(s * 0.4)), Math.max(2, Math.floor(s * 0.4)));
   } else if (hat === 'crown') {
     ctx.fillStyle = '#ffd100';
-    ctx.fillRect(left + 2, top - 8, w - 4, 8);
-    for (let i = 0; i < 3; i++) ctx.fillRect(left + 4 + i * 12, top - 14, 6, 8);
+    ctx.fillRect(x, y - s, w, s);
+    const points = 3;
+    for (let i = 0; i < points; i++) {
+      const px = x + Math.floor(i * (w - s) / (points - 1));
+      ctx.fillRect(px, y - s * 2, s, s);
+    }
   }
-  ctx.restore();
 }
 function drawBits() {
   bits.forEach(b => {
