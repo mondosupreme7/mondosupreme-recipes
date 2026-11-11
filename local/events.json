@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-11T04:40:08Z",
+ "updated": "2026-11-11T05:41:00Z",
  "sources": [
   {
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 1
+   "count": 2
   },
   {
    "name": "City of Cocoa",
@@ -17,13 +17,13 @@
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
    "ok": true,
-   "count": 1
+   "count": 2
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 0
+   "count": 1
   },
   {
    "name": "City of Titusville",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 10
+   "count": 12
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 27
+   "count": 32
   },
   {
    "name": "Launch Library 2",
@@ -96,20 +96,6 @@
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
    "kind": "event"
-  },
-  {
-   "id": "c96eebfeef1790ae",
-   "title": "Harmony of the Seas in port",
-   "start": "2026-11-10T11:00:00Z",
-   "end": "2026-11-10T21:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "ba1d8e577e32c1c9",
@@ -795,6 +781,146 @@
    "description": "Gingerbread, but make it pottery! Join us at Playalinda Brewing Company for a special hands-on evening with Nicki and the team from Space Coast Ceramics on Wednesday, November 18th from 6-8pm This interactive workshop includes: One drink of your choice \u2013 beer, cocktail, mocktail, or wine! Your choice of one of eight gingerbread pottery pieces Use of all glazes, brushes, and tools Step-by-step guid",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "7b6e78dc304414e2",
+   "title": "Disney Wish in port",
+   "start": "2026-11-20T11:00:00Z",
+   "end": "2026-11-20T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT10",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "bfeb8f8eb7826e69",
+   "title": "Disney Fantasy in port",
+   "start": "2026-11-20T11:00:00Z",
+   "end": "2026-11-20T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "948f0376aebcdd72",
+   "title": "Utopia of the Seas in port",
+   "start": "2026-11-20T11:30:00Z",
+   "end": "2026-11-20T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "a954b13b1610afba",
+   "title": "Sky Princess in port",
+   "start": "2026-11-20T12:00:00Z",
+   "end": "2026-11-20T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "fe342ecad0e2e404",
+   "title": "Carnival Glory in port",
+   "start": "2026-11-20T12:00:00Z",
+   "end": "2026-11-20T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "3963a8b6d97da9f9",
+   "title": "Holiday Lights at Brevard Zoo",
+   "start": "2026-11-20T13:00:00Z",
+   "end": "2027-01-02T22:00:00Z",
+   "town": "Melbourne",
+   "venue": "BREVARD ZOO, 8225 N. Wickham Rd, Melbourne, FL, 32935, United States",
+   "category": "Family",
+   "url": "https://www.visitspacecoast.com/event/holiday-lights-at-brevard-zoo/",
+   "description": "Select Nights: November 20, 2026 \u2013 January 2, 2027 Event Hours: 6:00 PM \u2013 9:00 PM | Final Admission: 8:00 PM November 20 \u2013 December 12: Friday and Saturday evenings December 18 \u2013 January 2: Nightly, excluding Christmas Eve and Christmas Day Make new family memories under the glow of sparkling lights during this all-new nighttime experience. Immerse yourself in the magic of the holidays as visions ",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "edca3ecce36e4fc4",
+   "title": "Food Drive Collection Event at Sam's Club",
+   "start": "2026-11-20T15:00:00Z",
+   "end": "2026-11-20T19:00:00Z",
+   "town": "Cocoa",
+   "venue": "<p>Sam's Club</p> - 450 Townsend Road Cocoa FL 32922",
+   "category": "Food & Markets",
+   "url": "https://www.cocoafl.gov/calendar.aspx?EID=6369",
+   "description": "Join Team Cocoa as we collect items for the Food Drive. https://www.cocoafl.gov/calendar.aspx?EID=6369",
+   "source": "City of Cocoa",
+   "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "0d1172e52e8a896d",
+   "title": "Friday Fest Downtown Cocoa Beach",
+   "start": "2026-11-20T18:00:00Z",
+   "end": "2026-11-20T22:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "DOWNTOWN COCOA BEACH, 20 N. Brevard Avenue, Cocoa Beach, FL, 32931",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/friday-fest-cocoa-beach/",
+   "description": "A free, family friendly street party in downtown Cocoa Beach. Live music, food trucks and unique vendors line the streets.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "ba7ff8f8e5c1f1b9",
+   "title": "Norwegian Escape in port",
+   "start": "2026-11-20T22:00:00Z",
+   "end": "2026-11-21T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "ff3e5e34a15712a1",
+   "title": "Cocoa Beach Main Street Friday Fest",
+   "start": "2026-11-20T23:00:00Z",
+   "end": "2026-11-21T03:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "- Cocoa Beach FL 32932",
+   "category": "Outdoors",
+   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9793",
+   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9793",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
    "kind": "event"
   },
   {
