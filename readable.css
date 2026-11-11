@@ -178,10 +178,22 @@ body:not(.chat-page):not(.board-page):not(.night) main.wrap,
   background-color: #fff;
   color: #111827;
 }
-.hero h1, .profile-head h1, .word-main h1, .wx-hero h1, .ask-intro h1,
+.hero h1, .profile-head h1, .word-main h1, .wx-hero h1,
 .hero p, .empty, .wiki-h, .credits, .credits h2, .result-count, .mood,
 .quote-copy blockquote, .quote-box .quote-kicker, .deals h2, .deal-ship {
   color: #111827;
+}
+html[data-theme="dark"] .ask-intro h1,
+html[data-theme="harbor"] .ask-intro h1,
+html[data-theme="dark"] body.search-page :is(.ask-lead, .ask-status, .ask-empty, #privNote),
+html[data-theme="harbor"] body.search-page :is(.ask-lead, .ask-status, .ask-empty, #privNote) {
+  color: var(--ink) !important;
+}
+html[data-theme="dark"] body.search-page,
+html[data-theme="harbor"] body.search-page {
+  background: var(--bg) !important;
+  background-image: none !important;
+  color: var(--ink) !important;
 }
 .brand, .site-header .brand { color: #0b3d91; }
 .brand em, .network { color: #374151; }

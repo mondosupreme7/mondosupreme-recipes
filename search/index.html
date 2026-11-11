@@ -26,8 +26,8 @@
 <link rel="stylesheet" href="/retro.css">
 <link rel="stylesheet" href="/retro-theme.css">
 <link rel="stylesheet" href="/shell.css?v=8">
-<link rel="stylesheet" href="search.css?v=3">
-<link rel="stylesheet" href="/readable.css?v=14">
+<link rel="stylesheet" href="search.css?v=4">
+<link rel="stylesheet" href="/readable.css?v=15">
 </head>
 <body class="search-page">
 <header class="site-header"><div class="wrap hdr">
@@ -73,26 +73,47 @@
  <form class="ask-form" id="askForm" role="search">
   <label class="ask-label" for="q">Search</label>
   <div class="ask-bar">
-   <input id="q" name="q" type="search" enterkeyhint="search" maxlength="140" autocomplete="off" placeholder="Ask anything… pancakes, Port Canaveral, 2 cups to ml" aria-describedby="askStatus">
+   <input id="q" name="q" type="search" enterkeyhint="search" maxlength="140" autocomplete="off" placeholder="Ask anything…" aria-describedby="askStatus">
    <button class="btn primary ask-go" type="submit">Search</button>
-   <button class="btn ask-voice" id="voiceBtn" type="button">Dictate</button>
-   <button class="btn ask-radical" id="radicalBtn" type="button">I'm Feeling Radical!</button>
   </div>
  </form>
- <div class="ask-modes" id="modeBar" role="group" aria-label="Topic mode">
-  <button class="btn mode-btn" type="button" data-mode="all" aria-pressed="true">All Web &amp; AI</button>
-  <button class="btn mode-btn" type="button" data-mode="cook" aria-pressed="false">Cooking &amp; Recipes</button>
-  <button class="btn mode-btn" type="button" data-mode="cruise" aria-pressed="false">Cruises &amp; Travel</button>
-  <button class="btn mode-btn" type="button" data-mode="retro" aria-pressed="false">Classics</button>
-  <button class="btn mode-btn" type="button" data-mode="tech" aria-pressed="false">Tech &amp; Finance</button>
-  <button class="btn mode-btn" type="button" data-mode="site" aria-pressed="false">Search Inside Mondosupreme</button>
- </div>
- <div class="ask-priv" role="group" aria-label="Public or private search">
-  <button class="btn priv-btn" id="privPublic" type="button" aria-pressed="true">Public</button>
-  <button class="btn priv-btn" id="privPrivate" type="button" aria-pressed="false">Private</button>
-  <p id="privNote">Public questions join What Visitors Are Asking. Private questions stay on this computer.</p>
- </div>
  <p class="ask-status" id="askStatus" role="status" aria-live="polite">The butler is at the door. Ask a question.</p>
+ <details class="ask-tools" id="askTools">
+  <summary>
+   <span class="ask-tools-label">
+    <span class="ask-tools-with-voice">Dictate, topics, privacy</span>
+    <span class="ask-tools-no-voice">Topics and privacy</span>
+   </span>
+   <span class="ask-tools-state">
+    <span class="ask-mode-echo" data-mode="cook">Cooking</span>
+    <span class="ask-mode-echo" data-mode="cruise">Cruises</span>
+    <span class="ask-mode-echo" data-mode="retro">Classics</span>
+    <span class="ask-mode-echo" data-mode="tech">Tech</span>
+    <span class="ask-mode-echo" data-mode="site">On this site</span>
+    <span class="is-public">Public</span>
+    <span class="is-private">Private</span>
+   </span>
+  </summary>
+  <div class="ask-tools-body">
+   <div class="ask-actions">
+    <button class="btn ask-voice" id="voiceBtn" type="button">Dictate</button>
+    <button class="btn ask-radical" id="radicalBtn" type="button">I'm Feeling Radical!</button>
+   </div>
+   <div class="ask-priv" role="group" aria-label="Public or private search">
+    <button class="btn priv-btn" id="privPublic" type="button" aria-pressed="true">Public</button>
+    <button class="btn priv-btn" id="privPrivate" type="button" aria-pressed="false">Private</button>
+    <p id="privNote">Public questions join What Visitors Are Asking. Private questions stay on this computer.</p>
+   </div>
+   <div class="ask-modes" id="modeBar" role="group" aria-label="Topic mode">
+    <button class="btn mode-btn" type="button" data-mode="all" aria-pressed="true">All Web &amp; AI</button>
+    <button class="btn mode-btn" type="button" data-mode="cook" aria-pressed="false">Cooking &amp; Recipes</button>
+    <button class="btn mode-btn" type="button" data-mode="cruise" aria-pressed="false">Cruises &amp; Travel</button>
+    <button class="btn mode-btn" type="button" data-mode="retro" aria-pressed="false">Classics</button>
+    <button class="btn mode-btn" type="button" data-mode="tech" aria-pressed="false">Tech &amp; Finance</button>
+    <button class="btn mode-btn" type="button" data-mode="site" aria-pressed="false">Search Inside Mondosupreme</button>
+   </div>
+  </div>
+ </details>
  <section class="ask-win" id="toolWin" hidden>
   <h2>Instant tool bar</h2>
   <div id="toolBody"></div>
@@ -110,7 +131,7 @@
  </section>
  <section class="ask-win" id="siteWin">
   <h2>On Mondosupreme</h2>
-  <div id="siteBody"><p class="ask-empty">Recipes, wiki pages, Royal Caribbean ships, Port Canaveral deals, forum posts, Marketplace listings, and site apps show up beside the web results.</p></div>
+  <div id="siteBody"><p class="ask-empty">Recipes, wiki pages, cruise ships, Port Canaveral deals, forum posts, Marketplace listings, and site apps show up beside the web results.</p></div>
  </section>
  <section class="ask-win" id="webWin">
   <h2>Web results</h2>
