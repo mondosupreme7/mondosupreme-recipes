@@ -1,0 +1,21 @@
+.plant{padding-top:8px;padding-bottom:24px}
+.plant h1{margin:0 0 4px;font:650 1.35rem/1.15 var(--font-ui,Inter,sans-serif);color:var(--ink,#f8fafc)}
+.plant-zone{margin:0;font:600 15px/1.3 var(--font-ui,Inter,sans-serif);color:var(--ink,#f8fafc)}
+.plant-note{margin:4px 0 8px;font:500 13px/1.35 var(--font-ui,Inter,sans-serif);color:var(--ink-muted,#cbd5e1)}
+.plant-seasons,.plant-months{display:flex;gap:6px;overflow-x:auto;margin:0 0 8px;padding-bottom:2px}
+.plant-seasons button,.plant-months button{
+  flex:0 0 auto;min-height:44px;padding:0 12px;border-radius:999px;
+  border:1px solid var(--line,#334155);background:var(--surface,#151c2c);color:var(--ink,#f8fafc);
+  font:600 14px/1 var(--font-ui,Inter,sans-serif)
+}
+.plant-seasons button[aria-pressed="true"],.plant-months button[aria-pressed="true"]{
+  background:var(--ink,#f8fafc);color:var(--surface,#0b1220)
+}
+.plant-when{margin:4px 0 8px;font:650 1.05rem/1.2 var(--font-ui,Inter,sans-serif);color:var(--ink,#f8fafc)}
+.plant-group{margin:0 0 10px}
+.plant-group h3{margin:0 0 4px;font:650 12px/1.2 var(--font-ui,Inter,sans-serif);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted,#94a3b8)}
+.plant-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.plant-chips li{padding:6px 8px;border-radius:10px;background:var(--surface,#151c2c);color:var(--ink,#f8fafc);font:600 14px/1.25 var(--font-ui,Inter,sans-serif)}
+.plant-chips small{display:block;font:500 11px/1.3 var(--font-ui,Inter,sans-serif);color:var(--ink-muted,#94a3b8)}
+.plant-fine{margin:12px 0 0;font:500 12px/1.4 var(--font-ui,Inter,sans-serif);color:var(--ink-muted,#94a3b8)}
+.plant-fine a{color:var(--link,#93c5fd)}

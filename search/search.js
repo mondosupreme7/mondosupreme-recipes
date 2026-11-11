@@ -297,7 +297,8 @@
       ['App', 'Mystic 8-Ball', '/8ball/', 'magic eight ball fortune'],
       ['App', 'Craft', '/mmo/', 'pixel mmo realm'],
       ['App', 'Half-Strike', '/fps/', 'goldsrc fps labs'],
-      ['App', 'The Locked Room', '/escape/', 'escape door']
+      ['App', 'The Locked Room', '/escape/', 'escape door'],
+      ['App', 'Planting', '/planting/', 'garden planting zone 10a 32927 cocoa vegetables herbs flowers fruit calendar']
     ].forEach(function (row) { addItem({ kind: row[0], title: row[1], href: row[2], text: row[3] }); });
     [
       ['sample-1', 'Supreme Tomato Basil Pasta', 'Dinner pasta tomatoes basil garlic vegetarian', '400 g spaghetti, olive oil, garlic, San Marzano tomatoes, basil, Parmesan'],
@@ -697,6 +698,7 @@
     if (/launch|liftoff|cape|rocket|falcon|artemis|spacex/.test(s)) return 'launch';
     if (/tide|high tide|low tide/.test(s)) return 'tide';
     if (/stock|ticker|buy zone|oversold|screener/.test(s) || /why/.test(s) && /list|pick|stock|screen/.test(s)) return 'stock';
+    if (/\b(plant|planting|garden|sow)\b/.test(s) || (/32927/.test(s) && /\b(grow|growing)\b/.test(s))) return 'plant';
     if (/recipe|cook|chicken|beef|pork|dinner|dish|pasta|ingredient|backyard|chef/.test(s)) return 'recipe';
     return '';
   }
@@ -709,8 +711,8 @@
   }
   function outsideBrief() {
     return briefHtml('On this site', [
-      'The butler answers the next Cape launch, tonight\'s Port Canaveral tide, a recipe from the kitchen, and why the top stock is on the list. That question is outside those notes.'
-    ], [['Launches', '/launches/'], ['Tides', '/tides/'], ['Recipes', '/recipes/'], ['Stocks', '/stocks/'], ['Weather', '/weather/']]);
+      'The butler answers the next Cape launch, tonight\'s Port Canaveral tide, a recipe from the kitchen, why the top stock is on the list, and what to plant in 32927. That question is outside those notes.'
+    ], [['Launches', '/launches/'], ['Tides', '/tides/'], ['Recipes', '/recipes/'], ['Stocks', '/stocks/'], ['Planting', '/planting/'], ['Weather', '/weather/']]);
   }
   function answerLaunch() {
     return getJSON('https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=8').then(function (data) {
@@ -849,12 +851,42 @@
       };
     });
   }
+  function answerPlant() {
+    return getJSON('/planting/plants.json?v=1').then(function (doc) {
+      var raw = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'numeric' }).format(new Date());
+      var month = parseInt(raw, 10);
+      var names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var groups = { vegetable: 'Vegetables', herb: 'Herbs', fruit: 'Fruit', flower: 'Flowers' };
+      var lines = [];
+      Object.keys(groups).forEach(function (kind) {
+        var items = (doc.crops || []).filter(function (crop) {
+          return crop.kind === kind && (crop.months || []).indexOf(month) !== -1;
+        }).map(function (crop) { return crop.name; });
+        if (!items.length) return;
+        var shown = items.slice(0, 8);
+        var extra = items.length > shown.length ? ', and ' + (items.length - shown.length) + ' more' : '';
+        lines.push(groups[kind] + ': ' + shown.join(', ') + extra + '.');
+      });
+      var zone = doc.zone || {};
+      var lead = 'In ' + names[month - 1] + ', ZIP ' + doc.zip + ' is Central Florida, zone ' + zone.code + ' (' + zone.range + ').';
+      return {
+        status: 'The ' + names[month - 1] + ' planting list is on the card.',
+        html: briefHtml('Planting', [lead].concat(lines.length ? lines : ['The calendar has no named crops for this month.']), [['Planting', '/planting/#' + month]])
+      };
+    }).catch(function () {
+      return {
+        status: 'The planting notes did not answer.',
+        html: briefHtml('Planting', ['The planting file did not answer just now. The month list is on the Planting page.'], [['Planting', '/planting/']])
+      };
+    });
+  }
   function siteFacts(q) {
     var intent = siteIntent(q);
     if (intent === 'launch') return answerLaunch();
     if (intent === 'tide') return answerTide();
     if (intent === 'stock') return answerStock();
     if (intent === 'recipe') return answerRecipe(q);
+    if (intent === 'plant') return answerPlant();
     return Promise.resolve(null);
   }
   function run(raw) {

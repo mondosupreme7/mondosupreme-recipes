@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script src="/theme-boot.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-title" content="Mondosupreme">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://securetoken.google.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Planting — Mondosupreme</title>
+<meta name="description" content="What to plant in ZIP 32927, Port St. John and Cocoa, Florida. USDA zone 10a and the UF/IFAS Central Florida calendar, by month.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/shell.css?v=8">
+<link rel="stylesheet" href="/readable.css?v=14">
+<link rel="stylesheet" href="planting.css?v=1">
+</head>
+<body>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/planting/" class="brand">Planting</a>
+ <nav class="site-nav" aria-label="Site"><a href="/">Home</a><a href="/planting/" aria-current="page">Planting</a></nav>
+</div></header>
+<main class="wrap plant">
+ <h1>Planting</h1>
+ <p class="plant-zone" id="plantZone">32927 · checking the zone</p>
+ <p class="plant-note" id="plantRegion"></p>
+ <div class="plant-seasons" id="plantSeasons" role="group" aria-label="Season shortcuts"></div>
+ <div class="plant-months" id="plantMonths" role="tablist" aria-label="Month"></div>
+ <h2 class="plant-when" id="plantWhen">This month</h2>
+ <div id="plantLists"></div>
+ <p class="plant-fine" id="plantFine"></p>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme · Gardening notes, not a guarantee. · <a href="/">Home</a></div></footer>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/members.js?v=5"></script>
+<script src="/shell.js?v=13"></script>
+<script src="planting.js?v=1"></script>
+</body>
+</html>

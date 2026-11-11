@@ -434,6 +434,7 @@
     { title: 'Launch Control', href: '/launches/', icon: 'rocket', group: 'Space Coast & Travel', text: 'launch launches cape canaveral kennedy rocket falcon artemis starship countdown' },
     { title: 'Tide & Surf', href: '/tides/', icon: 'tide', group: 'Space Coast & Travel', text: 'tide tides surf wave waves swell beach ocean port canaveral trident pier marine' },
     { title: 'Local Guide', href: '/local/', icon: 'pin', group: 'Space Coast & Travel', text: 'local guide events calendar cocoa merritt island cocoa beach brevard town happening' },
+    { title: 'Planting', href: '/planting/', icon: 'sprout', group: 'Space Coast & Travel', text: 'planting garden zone 10a 32927 cocoa port st john vegetables herbs flowers fruit calendar' },
     { title: 'Tropics', href: '/tropics/', icon: 'storm', group: 'Space Coast & Travel', text: 'tropics tropical hurricane hurricanes storm storms atlantic basin cyclone nhc' },
     { title: 'Connections', href: '/connections/', icon: 'puzzle', group: 'Game Studio', text: 'connections sudoku puzzle groups four daily mini' },
     { title: 'Stocks', href: '/stocks/', icon: 'chart', group: 'Finance & Search', text: 'stocks market quote oversold rsi swing screen ticker' },
@@ -491,6 +492,7 @@
     tide: [[1,3,14,2,'#000080'],[1,7,14,2,'#1084d0'],[1,11,14,2,'#7fdfff']],
     puzzle: [[2,2,5,5,'#ffcc00'],[9,2,5,5,'#00aa00'],[2,9,5,5,'#ff0000'],[9,9,5,5,'#0000ff']],
     pin: [[6,1,4,4,'#ff0000'],[7,5,2,6,'#404040'],[5,11,6,2,'#808080']],
+    sprout: [[7,2,2,3,'#166534'],[4,5,8,3,'#22c55e'],[6,8,4,3,'#15803d'],[7,11,2,3,'#854d0e']],
     storm: [[2,3,12,4,'#c0c0c0'],[5,8,4,2,'#ffff00'],[6,10,2,4,'#000080']],
     chart: [[2,12,3,2,'#00aa00'],[6,8,3,6,'#00aa00'],[10,5,3,9,'#00aa00'],[2,14,12,1,'#000']],
     forum: [[1,2,10,7,'#fff'],[3,4,6,1,'#000080'],[3,6,5,1,'#000080'],[1,9,6,4,'#c0c0c0'],[8,6,7,6,'#ffffcc']]
@@ -529,6 +531,7 @@
     tide: '<path d="M3 7c1.2 1.2 2.2 1.8 3.6 1.8 2.2 0 2.6-1.8 4.6-1.8s2.4 1.8 4.6 1.8c1.4 0 2.4-.6 3.6-1.8"/><path d="M3 12c1.2 1.2 2.2 1.8 3.6 1.8 2.2 0 2.6-1.8 4.6-1.8s2.4 1.8 4.6 1.8c1.4 0 2.4-.6 3.6-1.8"/><path d="M3 17c1.2 1.2 2.2 1.8 3.6 1.8 2.2 0 2.6-1.8 4.6-1.8s2.4 1.8 4.6 1.8c1.4 0 2.4-.6 3.6-1.8"/>',
     puzzle: '<circle cx="7" cy="7" r="2.1"/><circle cx="17" cy="7" r="2.1"/><circle cx="7" cy="17" r="2.1"/><circle cx="17" cy="17" r="2.1"/><path d="M9.1 7h5.8M7 9.1v5.8M17 9.1v5.8M9.1 17h5.8"/>',
     pin: '<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.2"/>',
+    sprout: '<path d="M12 21V10"/><path d="M12 14c-3-1-5-3.5-5-6 3.2 0 5 2 5 6z"/><path d="M12 12c3-.6 5.5-2.6 6-5.5-3.4.2-5.4 2.2-6 5.5z"/>',
     storm: '<path d="M8 16h8.2a3.6 3.6 0 0 0 .3-7.2 5 5 0 0 0-9.6 1.6A3.1 3.1 0 0 0 8 16z"/><path d="m11 9.5 2.6 3.4H11L13.2 17"/>',
     chart: '<path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/>',
     forum: '<path d="M6 16.5 3.5 19V6.5A2.5 2.5 0 0 1 6 4h8a2.5 2.5 0 0 1 2.5 2.5V14a2.5 2.5 0 0 1-2.5 2.5z"/><path d="M10 16.5V18a2 2 0 0 0 2 2h5.2L20.5 22v-8A2 2 0 0 0 18.5 12H16"/>'
@@ -567,6 +570,7 @@
     tide: ['#cffafe', '#155e75'],
     puzzle: ['#fef3c7', '#92400e'],
     pin: ['#fee2e2', '#991b1b'],
+    sprout: ['#dcfce7', '#14532d'],
     storm: ['#ddd6fe', '#4c1d95'],
     chart: ['#ecfccb', '#3f6212'],
     forum: ['#e2e8f0', '#1e293b']
@@ -783,6 +787,7 @@
       ['Grocery List', '/grocery/'],
       ['Puzzles', '/connections/'],
       ['Local', '/local/'],
+      ['Planting', '/planting/'],
       ['Tropics', '/tropics/'],
       ['Markets', '/stocks/'],
       ['Search', '/search/'],
@@ -815,7 +820,7 @@
     } else menu.hidden = true;
     var groups = [
       ['Kitchen & Food', ['Recipes', 'Grocery List', 'Recipe TV']],
-      ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Tropics']],
+      ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Planting', 'Tropics']],
       ['Finance & Search', ['Stocks', 'Search', 'Wiki']],
       ['Community', ['Bulletin Forum', 'Chat', 'Paint', 'Marketplace', 'Radio']],
       ['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', "Half-Strike '99", 'ASH_HOUSE.EXE']]
