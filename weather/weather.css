@@ -34,7 +34,7 @@ html[data-theme] .wx-live.is-forecast{background:#c2410c!important;color:#fff!im
 #map{height:440px;background:#001848}
 .wx-scan{display:none;position:absolute;inset:0;pointer-events:none;z-index:500;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
 html[data-theme="retro"] .wx-scan{display:block}
-.wx-controls{display:flex;flex-direction:column;gap:8px;align-items:stretch;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+.wx-controls{display:flex;flex-direction:column;gap:8px;align-items:stretch;padding:8px 8px calc(8px + (env(safe-area-inset-bottom) / var(--page-scale, 1)))}
 .wx-transport{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;width:100%;min-width:0}
 .wx-icon{flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center}
 .wx-icon svg{width:22px;height:22px;display:block}
@@ -146,9 +146,9 @@ html:not([data-theme="retro"]) .wx-sea b{color:var(--ink,#f8fafc)}
 html:not([data-theme="retro"]) .wx-alert.is-clear{background:transparent;color:var(--ink-muted,#cbd5e1);border:0;padding:0}
 html:not([data-theme="retro"]) #wxMusic{display:none}
 @media(max-width:768px){
- html[data-theme="retro"] #map{height:min(48svh,360px)}
+ html[data-theme="retro"] #map{height:min((48svh / var(--page-scale, 1)),360px)}
  html[data-theme="retro"] .wx-temp{font-size:3.2rem}
- html[data-theme="retro"] .wx-controls{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+ html[data-theme="retro"] .wx-controls{padding-bottom:calc(12px + (env(safe-area-inset-bottom) / var(--page-scale, 1)))}
  .wx-hero{scroll-margin-top:calc(var(--nav-h, 56px) + 8px)}
  body.wx-page main.wrap{padding-bottom:calc(var(--dock-h, 72px) + 28px)}
 }
