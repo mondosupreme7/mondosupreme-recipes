@@ -10,8 +10,10 @@
   var WORLD_W = COLS * TILE;
   var WORLD_H = ROWS * TILE_H;
   var STEP = 1 / 60;
-  var HOMES = [1, 4, 7, 10, 13];
   var START = { c: 7, r: 6 };
+  function porchCols() {
+    return level < 2 ? [7, 10, 13] : [1, 4, 7, 10, 13];
+  }
   var DIRS = {
     left: { x: -1, y: 0 },
     right: { x: 1, y: 0 },
@@ -33,7 +35,7 @@
   var score = 0;
   var lives = 3;
   var level = 1;
-  var homes = [false, false, false, false, false];
+  var homes = [false, false, false];
   var lanes = [];
   var player = null;
   var timer = 48;
@@ -105,13 +107,13 @@
   function laneSpec() {
     var easy = level < 2;
     return [
-      { row: 1, kind: 'log', dir: 1, speed: easy ? 14 : 30, len: easy ? 78 : 72, gap: easy ? 64 : 42, color: '#d2a679' },
-      { row: 2, kind: 'log', dir: easy ? 1 : -1, speed: easy ? 11 : 36, len: easy ? 86 : 64, gap: easy ? 72 : 36, color: '#8b5a2b' },
-      { row: 4, kind: 'car', dir: 1, speed: easy ? 16 : 40, len: 28, gap: easy ? 160 : 64, color: '#ff5a36' },
-      { row: 5, kind: 'car', dir: easy ? 1 : -1, speed: easy ? 12 : 52, len: 28, gap: easy ? 180 : 52, color: '#38bdf8' }
+      { row: 1, kind: 'log', dir: 1, speed: easy ? 4 : 30, len: easy ? 130 : 72, gap: easy ? 20 : 42, color: '#d2a679' },
+      { row: 2, kind: 'log', dir: easy ? 1 : -1, speed: easy ? 4 : 36, len: easy ? 124 : 64, gap: easy ? 22 : 36, color: '#8b5a2b' },
+      { row: 4, kind: 'car', dir: 1, speed: easy ? 10 : 40, len: 22, gap: easy ? 200 : 64, color: '#ff5a36' },
+      { row: 5, kind: 'car', dir: easy ? 1 : -1, speed: easy ? 6 : 52, len: 20, gap: easy ? 240 : 52, color: '#38bdf8' }
     ];
   }
-  function maxTimer() { return level === 1 ? 64 : Math.max(30, 46 - (level - 1) * 4); }
+  function maxTimer() { return level === 1 ? 120 : Math.max(30, 46 - (level - 1) * 4); }
   function speedOf(lane) { return lane.speed * (1 + (level - 1) * 0.18); }
   function centerX(col) { return col * TILE + TILE / 2; }
   function centerY(row) { return row * TILE_H + TILE_H / 2; }
@@ -130,6 +132,19 @@
     }
     lane.items = items;
     openStartGap(lane);
+    seatBeginnerLogs(lane);
+  }
+  function seatBeginnerLogs(lane) {
+    if (level >= 2 || lane.kind !== 'log' || !lane.items.length) return;
+    var center = centerX(START.c);
+    var best = lane.items[0];
+    var bestD = 1e9;
+    lane.items.forEach(function (it) {
+      var dist = Math.abs(it.x + it.w / 2 - center);
+      if (dist < bestD) { bestD = dist; best = it; }
+    });
+    var shift = center - (best.x + best.w / 2);
+    lane.items.forEach(function (it) { it.x += shift; });
   }
   function openStartGap(lane) {
     if (lane.kind !== 'car') return;
@@ -151,7 +166,7 @@
     });
   }
   function resetRound(full) {
-    if (full) homes = [false, false, false, false, false];
+    if (full) homes = porchCols().map(function () { return false; });
     buildLanes();
     player = {
       col: START.c,
@@ -236,7 +251,7 @@
     deadT = 0.35;
   }
   function landHome() {
-    var hi = HOMES.indexOf(player.col);
+    var hi = porchCols().indexOf(player.col);
     if (hi < 0) return;
     if (level >= 2 && snareOn && snare === hi) {
       die('snare');
@@ -249,8 +264,8 @@
     feel('home', player.x, 10);
     blip('coin', { pitch: 660, dur: 0.08 });
     setTimeout(function () { blip('coin', { pitch: 880, dur: 0.1 }); }, 70);
-    announce('Porch ' + homes.filter(Boolean).length + ' of 5');
-    if (homes.every(Boolean)) {
+    announce('Porch ' + homes.filter(Boolean).length + ' of ' + porchCols().length);
+    if (homes.length === porchCols().length && homes.every(Boolean)) {
       score += 800 * level;
       popup('FORD CLEAR', WORLD_W / 2, WORLD_H / 2);
       feel('clear', player.x, player.y);
@@ -304,8 +319,8 @@
     if (player.ride) nc = Math.round((player.x - TILE / 2) / TILE) + d.x;
     if (nr === 0) {
       var best = null;
-      var bestD = 14;
-      HOMES.forEach(function (col) {
+      var bestD = level < 2 ? 16 : 14;
+      porchCols().forEach(function (col) {
         var dist = Math.abs(player.x - centerX(col));
         if (dist <= bestD) { bestD = dist; best = col; }
       });
@@ -313,7 +328,7 @@
       nc = best;
     }
     if (nc < 0 || nc >= COLS || nr < 0 || nr >= ROWS) return;
-    if (nr === 0 && homes[HOMES.indexOf(nc)]) return;
+    if (nr === 0 && homes[porchCols().indexOf(nc)]) return;
     if (nr < player.row) {
       score += 10;
       streak += 1;
@@ -423,7 +438,7 @@
   }
   function paintHud() {
     var lit = homes.filter(Boolean).length;
-    var text = 'Score ' + score + ' · Lives ' + lives + ' · Porches ' + lit + '/5';
+    var text = 'Score ' + score + ' · Lives ' + lives + ' · Porches ' + lit + '/' + homes.length;
     if (hud.textContent !== text) hud.textContent = text;
     var ratio = phase === 'play' || phase === 'dead' || phase === 'win' ? Math.max(0, timer / timerMax) : 1;
     duskBar.style.transform = 'scaleX(' + ratio.toFixed(3) + ')';
@@ -504,7 +519,7 @@
         ctx.fillRect(shift, y + 6, 10, 2);
       }
     }
-    HOMES.forEach(function (col, i) {
+    porchCols().forEach(function (col, i) {
       x = col * TILE;
       ctx.fillStyle = '#163526';
       ctx.fillRect(x, 0, TILE, TILE_H);
@@ -521,7 +536,7 @@
       }
     });
     for (x = 0; x < COLS; x++) {
-      if (HOMES.indexOf(x) < 0) {
+      if (porchCols().indexOf(x) < 0) {
         ctx.fillStyle = '#102418';
         ctx.fillRect(x * TILE, 0, TILE, TILE_H);
       }
@@ -698,7 +713,15 @@
   }
   function commitScore() {
     var typed = ($('initials').value || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
-    var name = typed || letters.join('') || 'AAA';
+    if (!typed) {
+      announce('Type initials, then press Save score');
+      var box = $('initials');
+      box.hidden = false;
+      if ($('entry')) $('entry').hidden = false;
+      try { box.focus(); } catch (err) { /* already gone */ }
+      return;
+    }
+    var name = typed;
     store.name = name;
     store.scores.push({ name: name, score: score, at: Date.now() });
     store.scores.sort(function (a, b) { return b.score - a.score || a.at - b.at; });
@@ -715,6 +738,8 @@
     level = 1;
     flash = 0;
     savedMark = -1;
+    cause = '';
+    homes = [false, false, false];
     resetRound(true);
     phase = 'ready';
     readyT = 0.85;
@@ -846,6 +871,115 @@
   show('title');
   requestAnimationFrame(loop);
 
+  function laneCovers(row, x, inset, ahead) {
+    var ok = false;
+    lanes.forEach(function (lane) {
+      if (lane.row !== row || lane.kind === 'car') return;
+      lane.items.forEach(function (it) {
+        var front = lane.dir > 0 ? it.x + it.w - (ahead || inset) : it.x + (ahead || inset);
+        var back = lane.dir > 0 ? it.x + inset : it.x + it.w - inset;
+        var lo = Math.min(front, back);
+        var hi = Math.max(front, back);
+        if (x >= lo && x <= hi) ok = true;
+      });
+    });
+    return ok;
+  }
+  function laneThreat(row, x, margin) {
+    var hit = false;
+    lanes.forEach(function (lane) {
+      if (lane.row !== row || lane.kind !== 'car') return;
+      lane.items.forEach(function (it) {
+        if (x + margin > it.x && x - margin < it.x + it.w) hit = true;
+      });
+    });
+    return hit;
+  }
+  /* Dev harness: 350ms reactions, and only the next lane that is already on screen. */
+  function beginnerChoice() {
+    if (phase !== 'play' || !player || player.hop) return null;
+    var x = player.x;
+    var row = player.row;
+    if (isRiver(row) && (x < 8 || x > WORLD_W - 8)) {
+      var below = row + 1;
+      if (below === 3 || laneCovers(below, x, 4, 16)) return 'down';
+    }
+    var next = row - 1;
+    if (next < 0) return null;
+    if (isRoad(next)) return laneThreat(next, x, 16) ? null : 'up';
+    if (isRiver(next)) return laneCovers(next, x, 6, 40) ? 'up' : null;
+    if (next === 0) {
+      var aligned = false;
+      porchCols().forEach(function (col, i) {
+        if (!homes[i] && Math.abs(x - centerX(col)) <= 14) aligned = true;
+      });
+      return aligned ? 'up' : null;
+    }
+    return 'up';
+  }
+  function beginnerRuns(runs) {
+    var n = runs || 10;
+    var clears = 0;
+    var details = [];
+    var sound = store.sound;
+    store.sound = false;
+    var i;
+    for (i = 0; i < n; i++) {
+      score = 0;
+      lives = 3;
+      level = 1;
+      cause = '';
+      holdDir = null;
+      homes = [false, false, false];
+      resetRound(true);
+      lanes.forEach(function (lane) {
+        var span = lane.len + lane.gap;
+        var shift = Math.random() * Math.min(8, span);
+        lane.items.forEach(function (it) { it.x += shift; });
+      });
+      phase = 'play';
+      safe = 2.2;
+      var pending = null;
+      var wait = 0.2 + Math.random() * 0.35;
+      var t = 0;
+      while (t < 110 && level === 1 && phase !== 'over') {
+        var choice = beginnerChoice();
+        if (choice !== pending) {
+          pending = choice;
+          wait = 0.35 + (Math.random() - 0.5) * 0.1;
+        }
+        if (pending && wait <= 0 && phase === 'play') {
+          hopTo(pending);
+          pending = null;
+          wait = 0.35;
+        }
+        update(STEP);
+        t += STEP;
+        wait -= STEP;
+      }
+      var clear = level > 1 || phase === 'win';
+      if (clear) clears += 1;
+      details.push({
+        clear: clear,
+        seconds: Math.round(t * 10) / 10,
+        lives: lives,
+        porches: homes.filter(Boolean).length,
+        cause: cause || '',
+        phase: phase
+      });
+    }
+    store.sound = sound;
+    score = 0;
+    lives = 3;
+    level = 1;
+    holdDir = null;
+    homes = [false, false, false];
+    phase = 'title';
+    show('title');
+    paintHud();
+    return { clears: clears, runs: n, details: details };
+  }
+
   window.NIGHTFORD = {
     snap: function () {
       var hazards = [];
@@ -884,4 +1018,5 @@
       };
     }
   };
+  if (/[?&]dev=1(?:&|$)/.test(location.search)) window.NIGHTFORD.beginner = beginnerRuns;
 })();
