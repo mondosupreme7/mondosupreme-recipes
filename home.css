@@ -38,6 +38,31 @@ body.home-page main.wrap{
   color:var(--ink);
   font-variant-numeric:tabular-nums
 }
+html[data-page-scale="110"] .home-brief-row,
+html[data-page-scale="125"] .home-brief-row{
+  align-items:flex-start;
+  padding-top:8px;
+  padding-bottom:8px
+}
+html[data-page-scale="110"] .home-brief-k,
+html[data-page-scale="125"] .home-brief-k{padding-top:2px}
+html[data-page-scale="110"] .home-brief-v,
+html[data-page-scale="125"] .home-brief-v,
+html[data-page-scale="110"] .home-stock-main,
+html[data-page-scale="125"] .home-stock-main,
+html[data-page-scale="110"] .home-stock .home-row-detail,
+html[data-page-scale="125"] .home-stock .home-row-detail{
+  overflow:visible;
+  white-space:normal;
+  text-overflow:clip;
+  overflow-wrap:anywhere
+}
+html[data-page-scale="110"] .home-label,
+html[data-page-scale="125"] .home-label{
+  font-size:11px;
+  letter-spacing:-.03em;
+  overflow-wrap:anywhere
+}
 a.home-brief-row,a.home-brief-row .home-brief-v{color:var(--ink) !important;text-decoration:none !important}
 .home-brief-up{color:#166534 !important}
 .home-brief-down{color:#991b1b !important}
@@ -166,10 +191,8 @@ html[data-theme="harbor"] a.home-row .home-stock-down{color:#fca5a5 !important}
   cursor:pointer
 }
 .home-quote-text{
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
-  overflow:hidden;
+  display:block;
+  overflow:visible;
   font:500 0.9375rem/1.35 var(--font-display);
   color:var(--ink)
 }
@@ -236,6 +259,12 @@ body.home-page .gb-box{margin-top:4px}
   .home-app .app-tile{width:46px;height:46px}
   .home-chip,.home-row{min-height:52px}
   .home-now,.home-chips,.home-stock{margin-bottom:8px}
+  html[data-page-scale="125"] body.home-page main.wrap{padding-top:2px}
+  html[data-page-scale="125"] .home-apps{gap:4px 4px;margin-bottom:4px}
+  html[data-page-scale="125"] .home-app{gap:2px}
+  html[data-page-scale="125"] .home-app .app-tile{width:40px;height:40px}
+  html[data-page-scale="125"] .home-brief{margin-bottom:6px}
+  html[data-page-scale="125"] .home-brief-v{font-size:13px}
 }
 .feed-pending{
   color:transparent !important;

@@ -773,9 +773,9 @@
   function paintPageScale(announce) {
     var percent = pagePercent();
     document.querySelectorAll('.page-scale').forEach(function (group) {
-      group.querySelectorAll('[role="radio"]').forEach(function (btn) {
+      group.querySelectorAll('.page-scale-step').forEach(function (btn) {
         var on = parseInt(btn.getAttribute('data-scale'), 10) === percent;
-        btn.setAttribute('aria-checked', on ? 'true' : 'false');
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
         btn.tabIndex = on ? 0 : -1;
       });
       var num = group.querySelector('.page-scale-num');
@@ -808,19 +808,30 @@
   function buildPageScale() {
     var group = document.createElement('div');
     group.className = 'page-scale';
-    group.setAttribute('role', 'radiogroup');
-    group.setAttribute('aria-label', 'Page size');
+    var head = document.createElement('div');
+    head.className = 'page-scale-head';
     var label = document.createElement('span');
     label.className = 'page-scale-label';
+    label.id = 'pageSizeLabel';
     label.textContent = 'Page size';
-    group.appendChild(label);
+    var reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'page-scale-reset';
+    reset.textContent = 'Reset';
+    reset.setAttribute('aria-label', 'Reset page size to 100%');
+    reset.addEventListener('click', function () { applyPageScale(100, true); });
+    head.appendChild(label);
+    head.appendChild(reset);
+    group.appendChild(head);
     var steps = document.createElement('div');
     steps.className = 'page-scale-steps';
+    steps.setAttribute('role', 'group');
+    steps.setAttribute('aria-labelledby', 'pageSizeLabel');
     PAGE_STEPS.forEach(function (percent) {
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'page-scale-step';
-      btn.setAttribute('role', 'radio');
+      btn.setAttribute('aria-pressed', 'false');
       btn.setAttribute('data-scale', String(percent));
       btn.textContent = percent + '%';
       btn.addEventListener('click', function () { applyPageScale(percent, true); });
@@ -839,13 +850,6 @@
       if (chosen) chosen.focus();
     });
     group.appendChild(steps);
-    var reset = document.createElement('button');
-    reset.type = 'button';
-    reset.className = 'page-scale-reset';
-    reset.textContent = 'Reset';
-    reset.setAttribute('aria-label', 'Reset page size to 100%');
-    reset.addEventListener('click', function () { applyPageScale(100, true); });
-    group.appendChild(reset);
     var status = document.createElement('span');
     status.className = 'page-scale-status visually-hidden';
     status.setAttribute('aria-live', 'polite');
@@ -1052,7 +1056,7 @@
       var label = document.createElement('span');
       label.textContent = pair[0];
       a.appendChild(label);
-      if (pair[0] !== pair[2]) a.setAttribute('aria-label', pair[2]);
+      a.setAttribute('aria-label', pair[2]);
       if (pair[1] === '/' ? location.pathname === '/' : location.pathname.indexOf(pair[1]) === 0) a.setAttribute('aria-current', 'page');
       dock.appendChild(a);
     });
