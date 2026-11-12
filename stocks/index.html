@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="stocks.css?v=16">
 <link rel="stylesheet" href="/readable.css?v=15">
 <link rel="stylesheet" href="paper/paper.css?v=3">
+<link rel="stylesheet" href="swot.css?v=1">
 </head>
 <body>
 <div class="ticker quote-tape" aria-hidden="true"><div class="ticker-track" id="tapeTrack"></div></div>
@@ -117,6 +118,7 @@
    <span id="swingChips" class="swing-chips"></span>
    <span id="swingVerdict" class="swing-verdict"></span>
   </button>
+  <div id="swingSwot" class="swot-slot"></div>
   <p class="swing-note">Not financial advice.</p>
  </section>
  <div class="quote-tools">
@@ -175,6 +177,7 @@
    <button type="button" id="detailClose" class="btn">Close</button>
   </div>
   <p id="detailVerdict" class="detail-verdict"></p>
+  <div id="detailSwot" class="swot-slot"></div>
   <div id="detailPlan" class="trade-plan"></div>
   <div id="sizeHelper" class="size-helper" hidden>
    <label for="accountSize">Paper equity (USD)</label>
@@ -218,8 +221,9 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=18"></script>
-<script src="paper/paper.js?v=5"></script>
+<script src="swot.js?v=1"></script>
+<script src="stocks.js?v=19"></script>
+<script src="paper/paper.js?v=6"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

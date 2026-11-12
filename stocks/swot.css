@@ -1,0 +1,129 @@
+/* SWOT quadrants use the same gain and loss tokens as the trade plan.
+   Strengths and opportunities lean positive. Weaknesses and threats lean caution. */
+html{
+  --stk-stop-ink:#991b1b;--stk-stop-line:#b91c1c;--stk-stop-tint:#f7e4e4;
+  --stk-target-ink:#166534;--stk-target-line:#15803d;--stk-target-tint:#e3f0e8;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink)
+}
+html[data-theme="light"],html[data-theme="warm"]{
+  --stk-stop-ink:#991b1b;--stk-stop-line:#b91c1c;--stk-stop-tint:#f7e4e4;
+  --stk-target-ink:#166534;--stk-target-line:#15803d;--stk-target-tint:#e3f0e8;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink)
+}
+html[data-theme="warm"]{--stk-stop-tint:#f7dfd9;--stk-target-tint:#e3ebdd}
+html[data-theme="dark"]{
+  --stk-stop-ink:#fca5a5;--stk-stop-line:#f87171;--stk-stop-tint:#302634;
+  --stk-target-ink:#86efac;--stk-target-line:#4ade80;--stk-target-tint:#1b3336;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink)
+}
+html[data-theme="harbor"]{
+  --stk-stop-ink:#fca5a5;--stk-stop-line:#f87171;--stk-stop-tint:#2f2f33;
+  --stk-target-ink:#86efac;--stk-target-line:#4ade80;--stk-target-tint:#1a3c35;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink)
+}
+html[data-theme="retro"]{
+  --stk-stop-ink:#800000;--stk-stop-line:#800000;--stk-stop-tint:#f3d6d6;
+  --stk-target-ink:#0a4a0a;--stk-target-line:#0a4a0a;--stk-target-tint:#d7ecd7;
+  --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink)
+}
+
+.swot-slot:empty{display:none}
+.swot-block{min-width:0;max-width:100%;margin:6px 0}
+.swot-block{
+  scroll-margin-top:calc(var(--nav-h, 48px) + var(--vv-top, 0px) + 12px);
+  scroll-margin-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 24px)
+}
+.swot-card,.swot-note{min-width:0;max-width:100%}
+.swot-card > summary,.swot-note > summary{
+  list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;
+  box-sizing:border-box;max-width:100%;padding-right:8px;overflow:hidden;
+  font:650 16px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink,#0f172a);touch-action:manipulation
+}
+.swot-card > summary::-webkit-details-marker,.swot-note > summary::-webkit-details-marker{display:none}
+.swot-card > summary::after,.swot-note > summary::after{
+  content:"";margin-left:auto;width:8px;height:8px;flex:0 0 auto;
+  border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg)
+}
+.swot-card[open] > summary::after,.swot-note[open] > summary::after{transform:rotate(-135deg);margin-top:4px}
+.swot-sum{min-width:0}
+.swot-chip{
+  display:inline-flex;align-items:center;min-height:24px;padding:0 8px;border-radius:999px;
+  background:#ffcc33;color:#111827;font:800 12px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+.swot-flag{
+  margin:0 0 8px;padding:8px 10px;border-radius:10px;background:#ffcc33;color:#111827;
+  font:650 14px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-wrap:anywhere
+}
+.swot-flag b{display:inline;font-weight:800}
+.swot-body{min-width:0;padding:0 0 4px}
+.swot-asof,.swot-decision,.swot-note p{
+  margin:0 0 8px;font:600 14px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink,#0f172a);overflow-wrap:anywhere
+}
+.swot-decision b{
+  display:block;margin:0 0 2px;font:700 11px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.04em;text-transform:uppercase
+}
+.swot-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 8px;min-width:0
+}
+.swot-quad{min-width:0;padding:6px 8px;border-radius:10px}
+.swot-quad h3,.swot-quad h4,.swot-sources-title{
+  margin:0 0 4px;font:700 11px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.04em;text-transform:uppercase
+}
+.swot-quad ul{margin:0;padding-left:1rem}
+.swot-quad li{margin:0 0 4px;font:600 14px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-wrap:anywhere}
+.swot-quad li::marker{color:currentColor}
+.swot-quad.is-pos{
+  background:var(--stk-target-tint);color:var(--stk-gain);
+  box-shadow:inset 0 0 0 1px var(--stk-target-line)
+}
+.swot-quad.is-neg{
+  background:var(--stk-stop-tint);color:var(--stk-loss);
+  box-shadow:inset 0 0 0 1px var(--stk-stop-line)
+}
+.swot-note{margin:0 0 8px;border-top:1px solid var(--line,#e2e8f0)}
+.swot-sources{list-style:none;margin:0;padding:0;min-width:0}
+.swot-sources li{margin:0 0 8px;min-width:0}
+.swot-sources a{font:650 14px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-wrap:anywhere}
+.swot-sources time{
+  display:block;color:var(--ink-muted,#334155);
+  font:600 12px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+a.paper-swot-link{
+  flex:0 0 auto;display:inline-flex;align-items:center;min-height:44px;padding:0 2px;
+  font:700 15px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--link,#1d4ed8)
+}
+a.paper-swot-link[hidden]{display:none}
+td.quote-row{flex-wrap:wrap}
+.quote-row > .swot-slot,.track-pick > .swot-slot,#swingSwot,#detailSwot{flex:1 0 100%;min-width:0;max-width:100%}
+
+html[data-theme] .swot-card > summary,
+html[data-theme] .swot-note > summary,
+html[data-theme] .swot-asof,
+html[data-theme] .swot-decision,
+html[data-theme] .swot-note p{color:var(--ink)!important;background:transparent!important}
+html[data-theme] .swot-quad.is-pos,
+html[data-theme] .swot-quad.is-pos :is(h3,h4,li){
+  color:var(--stk-gain)!important;background:transparent
+}
+html[data-theme] .swot-quad.is-pos{
+  background:var(--stk-target-tint)!important;
+  box-shadow:inset 0 0 0 1px var(--stk-target-line)!important
+}
+html[data-theme] .swot-quad.is-neg,
+html[data-theme] .swot-quad.is-neg :is(h3,h4,li){
+  color:var(--stk-loss)!important;background:transparent
+}
+html[data-theme] .swot-quad.is-neg{
+  background:var(--stk-stop-tint)!important;
+  box-shadow:inset 0 0 0 1px var(--stk-stop-line)!important
+}
+html[data-theme] .swot-sources a{color:var(--link)!important}
+html[data-theme] .swot-sources time{color:var(--ink-muted)!important;background:transparent!important}
+html[data-theme] a.paper-swot-link{color:var(--link)!important;background:transparent!important}
+html[data-theme] .swot-chip,html[data-theme] .swot-flag{background:#ffcc33!important;color:#111827!important}
+html[data-theme="retro"] .swot-quad,html[data-theme="retro"] .swot-flag,html[data-theme="retro"] .swot-chip{border-radius:0}

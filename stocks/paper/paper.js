@@ -895,6 +895,45 @@
     return node;
   }
 
+  var swotSerial = Object.create(null);
+
+  function resetSwotIds() {
+    swotSerial = Object.create(null);
+  }
+
+  function swotDomId(symbol, scope) {
+    var key = (scope || 'card') + ':' + symbol;
+    var seen = swotSerial[key] || 0;
+    swotSerial[key] = seen + 1;
+    var id = 'swot-' + (scope ? scope + '-' : '') + symbol;
+    return id + (seen ? '-' + (seen + 1) : '');
+  }
+
+  function addSwot(card, title, symbol, scope) {
+    if (!symbol || !title || !window.MONDO_SWOT) return;
+    var swotId = swotDomId(symbol, scope);
+    var jump = document.createElement('a');
+    jump.className = 'paper-swot-link';
+    jump.href = '#' + swotId;
+    jump.textContent = 'SWOT';
+    jump.hidden = true;
+    title.appendChild(jump);
+    var slot = el('div', 'swot-slot');
+    card.appendChild(slot);
+    window.MONDO_SWOT.mount(slot, symbol, {
+      id: swotId,
+      stateKey: 'paper:' + swotId,
+      level: 4,
+      onReady: function (node) {
+        jump.hidden = false;
+        jump.addEventListener('click', function () {
+          var details = node.querySelector('.swot-card');
+          if (details) details.open = true;
+        });
+      }
+    });
+  }
+
   function timeNode(value) {
     var node = el('time', '', formatWhen(value));
     if (value) node.setAttribute('datetime', String(value));
@@ -994,6 +1033,7 @@
       details.appendChild(dl(extra));
       card.appendChild(details);
     }
+    addSwot(card, title, current.symbol);
     return card;
   }
 
@@ -1017,6 +1057,7 @@
       ['Marked', timeNode(position.markedAt)],
       ['Unrealized P&L', (pnl == null ? '—' : signedMoney(pnl)) + (pct == null ? '' : ' (' + signedPct(pct) + ')'), tone(pnl)]
     ]));
+    addSwot(card, title, position.symbol);
     return card;
   }
 
@@ -1047,6 +1088,7 @@
       ['Running cash', money(num(trade.cashAfter))],
       ['Equity after', money(num(trade.equityAfter))]
     ]));
+    addSwot(card, title, trade.symbol);
     return card;
   }
 
@@ -1258,6 +1300,7 @@
   function renderTradeLog(book, mount, options) {
     if (!mount) return;
     options = options || {};
+    resetSwotIds();
     var rows = tradeLogRows(book);
     var spec = readGoal(book);
     mount.textContent = '';
@@ -1303,6 +1346,7 @@
         card.appendChild(facts);
         var notes = setupDetails(book, row);
         if (notes) card.appendChild(notes);
+        addSwot(card, heading, row.symbol, 'log');
         mount.appendChild(card);
       });
     }
@@ -1323,6 +1367,7 @@
     var progress = summary.goal ? (summary.equity / summary.goal) * 100 : 0;
     var remaining = summary.goal - summary.equity;
     mount.textContent = '';
+    resetSwotIds();
     var spec = readGoal(book);
 
     var stretch = el('section', 'stretch-goal');

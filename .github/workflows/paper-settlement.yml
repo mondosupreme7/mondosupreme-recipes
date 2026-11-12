@@ -23,6 +23,8 @@ on:
       - stocks/paper/paper.js
       - .github/workflows/paper-settlement.yml
       - stocks/paper/ledger.json
+      - scripts/test_swot.py
+      - stocks/swot/**
   schedule:
     - cron: '30 20 * * 1-5'
     - cron: '30 21 * * 1-5'
@@ -46,6 +48,9 @@ jobs:
 
       - name: Test paper pace
         run: node scripts/test_paper_pace.mjs
+
+      - name: Validate company SWOT files
+        run: python3 -m unittest scripts/test_swot.py
 
   settle:
     needs: test

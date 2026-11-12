@@ -29,6 +29,7 @@
   var MIN_SWING = 36;
   var MIN_CLOSED = 20;
   var ACCOUNT_KEY = 'mondosupreme.stocks.account';
+  var pendingSwot = '';
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
@@ -272,12 +273,18 @@
       if (flag) line.appendChild(el('span', flag.label, 'trade-flag is-' + flag.kind));
       cell.append(pinBtn, line);
       tr.appendChild(cell);
+      if (window.MONDO_SWOT) {
+        var swotSlot = document.createElement('div');
+        swotSlot.className = 'swot-slot';
+        cell.appendChild(swotSlot);
+        window.MONDO_SWOT.mount(swotSlot, row.symbol, { stateKey: 'setup:' + row.symbol });
+      }
       tr.addEventListener('click', function (event) {
-        if (event.target.closest('.watch-btn')) return;
+        if (event.target.closest('.watch-btn') || event.target.closest('.swot-block')) return;
         openDetail(row.symbol);
       });
       tr.addEventListener('keydown', function (event) {
-        if (event.target.closest('.watch-btn')) return;
+        if (event.target.closest('.watch-btn') || event.target.closest('.swot-block')) return;
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           openDetail(row.symbol);
@@ -811,6 +818,19 @@
       priceLine.appendChild(change);
     }
     document.getElementById('detailVerdict').textContent = verdict(row);
+    var swotSlot = document.getElementById('detailSwot');
+    if (swotSlot && window.MONDO_SWOT) {
+      if (pendingSwot === symbol) window.MONDO_SWOT.preferOpen('quote:' + symbol);
+      window.MONDO_SWOT.mount(swotSlot, symbol, {
+        id: 'swot-' + symbol,
+        stateKey: 'quote:' + symbol,
+        onReady: function (node) {
+          if (pendingSwot !== symbol) return;
+          pendingSwot = '';
+          node.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    }
     paintPlan(row);
     paintFacts(row);
     document.getElementById('detailMore').open = false;
@@ -1103,6 +1123,14 @@
         moreDetail.append(moreSummary, moreBody);
         item.appendChild(moreDetail);
       }
+      if (pick.symbol && window.MONDO_SWOT) {
+        var swotSlot = document.createElement('div');
+        swotSlot.className = 'swot-slot';
+        item.appendChild(swotSlot);
+        window.MONDO_SWOT.mount(swotSlot, pick.symbol, {
+          stateKey: 'track:' + (pick.id || pick.symbol)
+        });
+      }
       list.appendChild(item);
     });
     if (more) {
@@ -1364,6 +1392,8 @@
     card.hidden = false;
     if (!row) {
       if (button) button.hidden = true;
+      var swingSwot = document.getElementById('swingSwot');
+      if (swingSwot) swingSwot.replaceChildren();
       if (empty) {
         empty.hidden = false;
         empty.textContent = regimeBlocksOfficial()
@@ -1403,6 +1433,10 @@
     var button = document.getElementById('swingOpen');
     button.dataset.symbol = row.symbol;
     button.setAttribute('aria-label', 'Top stock to watch ' + row.symbol + ', best score ' + rowScore(row));
+    var swingSwot = document.getElementById('swingSwot');
+    if (swingSwot && window.MONDO_SWOT) {
+      window.MONDO_SWOT.mount(swingSwot, row.symbol, { stateKey: 'swing:' + row.symbol });
+    }
   }
 
   function loadSnapshot() {
@@ -1425,6 +1459,7 @@
       renderWatch();
       renderTable();
       if (selected) openDetail(selected, false);
+      else if (swotHashSymbol()) openSwotHash();
       else if (rows.length) {
         var first = visibleRows()[0];
         if (first) openDetail(first.symbol, false);
@@ -1459,6 +1494,19 @@
     if (!link || !rulesCard) return;
     rulesCard.open = true;
   });
+
+  function swotHashSymbol() {
+    var match = /^#swot-([A-Z]{1,5}(?:-[A-Z])?)$/.exec(location.hash || '');
+    return match && TICKER.test(match[1]) ? match[1] : '';
+  }
+  function openSwotHash() {
+    var symbol = swotHashSymbol();
+    if (!symbol) return false;
+    pendingSwot = symbol;
+    openDetail(symbol, false);
+    return true;
+  }
+  window.addEventListener('hashchange', openSwotHash);
 
   document.getElementById('swingOpen').addEventListener('click', function () {
     var symbol = document.getElementById('swingOpen').dataset.symbol;
