@@ -551,7 +551,12 @@ html[data-theme] body.wiki-page a.wiki-row{
   text-decoration:none;
   color:var(--w-link) !important;
 }
-html[data-theme] body.wiki-page a.wiki-row .wiki-row-title{text-decoration:underline;text-underline-offset:.14em}
+html[data-theme] body.wiki-page a.wiki-row .wiki-row-title,
+html[data-theme] body.wiki-page a.wiki-row:visited .wiki-row-title{
+  color:var(--w-link) !important;
+  text-decoration:underline;
+  text-underline-offset:.14em
+}
 html[data-theme] body.wiki-page a.wiki-row .meta{color:var(--w-ink);text-decoration:none;font-size:.95rem}
 .wiki-row-title{font-weight:600;font-size:1.05rem}
 html[data-theme] body.wiki-page #tagBar .tag{
