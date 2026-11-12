@@ -373,6 +373,43 @@
     return node;
   }
 
+  var swotSerial = Object.create(null);
+
+  function resetSwotIds() {
+    swotSerial = Object.create(null);
+  }
+
+  function swotDomId(symbol) {
+    var seen = swotSerial[symbol] || 0;
+    swotSerial[symbol] = seen + 1;
+    return 'swot-' + symbol + (seen ? '-' + (seen + 1) : '');
+  }
+
+  function addSwot(card, title, symbol) {
+    if (!symbol || !title || !window.MONDO_SWOT) return;
+    var swotId = swotDomId(symbol);
+    var jump = document.createElement('a');
+    jump.className = 'paper-swot-link';
+    jump.href = '#' + swotId;
+    jump.textContent = 'SWOT';
+    jump.hidden = true;
+    title.appendChild(jump);
+    var slot = el('div', 'swot-slot');
+    card.appendChild(slot);
+    window.MONDO_SWOT.mount(slot, symbol, {
+      id: swotId,
+      stateKey: 'paper:' + swotId,
+      level: 4,
+      onReady: function (node) {
+        jump.hidden = false;
+        jump.addEventListener('click', function () {
+          var details = node.querySelector('.swot-card');
+          if (details) details.open = true;
+        });
+      }
+    });
+  }
+
   function timeNode(value) {
     var node = el('time', '', formatWhen(value));
     if (value) node.setAttribute('datetime', String(value));
@@ -472,6 +509,7 @@
       details.appendChild(dl(extra));
       card.appendChild(details);
     }
+    addSwot(card, title, current.symbol);
     return card;
   }
 
@@ -495,6 +533,7 @@
       ['Marked', timeNode(position.markedAt)],
       ['Unrealized P&L', (pnl == null ? '—' : signedMoney(pnl)) + (pct == null ? '' : ' (' + signedPct(pct) + ')'), tone(pnl)]
     ]));
+    addSwot(card, title, position.symbol);
     return card;
   }
 
@@ -525,6 +564,7 @@
       ['Running cash', money(num(trade.cashAfter))],
       ['Equity after', money(num(trade.equityAfter))]
     ]));
+    addSwot(card, title, trade.symbol);
     return card;
   }
 
@@ -536,6 +576,7 @@
     var progress = summary.goal ? (summary.equity / summary.goal) * 100 : 0;
     var remaining = summary.goal - summary.equity;
     mount.textContent = '';
+    resetSwotIds();
 
     var pnl = el('section', 'paper-summary');
     pnl.id = 'paperPnl';
