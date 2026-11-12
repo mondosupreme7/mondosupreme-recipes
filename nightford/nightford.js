@@ -3,27 +3,15 @@
   'use strict';
 
   var KEY = 'mondosupreme.nightford.v1';
-  var TILE = 16;
-  var TILE_H = 22;
-  var COLS = 11;
-  var ROWS = 13;
+  var TILE = 8;
+  var TILE_H = 20;
+  var COLS = 15;
+  var ROWS = 7;
   var WORLD_W = COLS * TILE;
   var WORLD_H = ROWS * TILE_H;
   var STEP = 1 / 60;
-  var HOMES = [1, 3, 5, 7, 9];
-  var START = { c: 5, r: 12 };
-  var BASE = [
-    { row: 1, kind: 'log', dir: 1, speed: 14, len: 120, gap: 28, color: '#c4844a' },
-    { row: 2, kind: 'log', dir: -1, speed: 30, len: 72, gap: 50, color: '#6b4423' },
-    { row: 3, kind: 'log', dir: 1, speed: 22, len: 96, gap: 40, color: '#a56b3c' },
-    { row: 4, kind: 'log', dir: -1, speed: 28, len: 80, gap: 48, color: '#5c3a22' },
-    { row: 5, kind: 'log', dir: 1, speed: 16, len: 130, gap: 24, color: '#d2a679' },
-    { row: 7, kind: 'car', dir: -1, speed: 14, len: 26, gap: 140, color: '#ff5a36' },
-    { row: 8, kind: 'car', dir: 1, speed: 18, len: 54, gap: 96, color: '#38bdf8' },
-    { row: 9, kind: 'car', dir: -1, speed: 22, len: 36, gap: 90, color: '#facc15' },
-    { row: 10, kind: 'car', dir: 1, speed: 16, len: 42, gap: 100, color: '#f8fafc' },
-    { row: 11, kind: 'car', dir: -1, speed: 12, len: 30, gap: 110, color: '#e879f9' }
-  ];
+  var HOMES = [1, 4, 7, 10, 13];
+  var START = { c: 7, r: 6 };
   var DIRS = {
     left: { x: -1, y: 0 },
     right: { x: 1, y: 0 },
@@ -112,8 +100,17 @@
       kit.vibrate([10, 18, 10]);
     }
   }
-  function isRiver(row) { return row >= 1 && row <= 5; }
-  function isRoad(row) { return row >= 7 && row <= 11; }
+  function isRiver(row) { return row === 1 || row === 2; }
+  function isRoad(row) { return row === 4 || row === 5; }
+  function laneSpec() {
+    var easy = level < 2;
+    return [
+      { row: 1, kind: 'log', dir: 1, speed: easy ? 14 : 30, len: easy ? 78 : 72, gap: easy ? 64 : 42, color: '#d2a679' },
+      { row: 2, kind: 'log', dir: easy ? 1 : -1, speed: easy ? 11 : 36, len: easy ? 86 : 64, gap: easy ? 72 : 36, color: '#8b5a2b' },
+      { row: 4, kind: 'car', dir: 1, speed: easy ? 16 : 40, len: 28, gap: easy ? 160 : 64, color: '#ff5a36' },
+      { row: 5, kind: 'car', dir: easy ? 1 : -1, speed: easy ? 12 : 52, len: 28, gap: easy ? 180 : 52, color: '#38bdf8' }
+    ];
+  }
   function maxTimer() { return level === 1 ? 64 : Math.max(30, 46 - (level - 1) * 4); }
   function speedOf(lane) { return lane.speed * (1 + (level - 1) * 0.18); }
   function centerX(col) { return col * TILE + TILE / 2; }
@@ -135,21 +132,20 @@
     openStartGap(lane);
   }
   function openStartGap(lane) {
-    if (lane.kind !== 'car' || lane.row < 10) return;
+    if (lane.kind !== 'car') return;
     var center = centerX(START.c);
     lane.items.forEach(function (it) {
-      if (center + 22 > it.x && center - 22 < it.x + it.w) {
-        it.x += lane.dir > 0 ? -(it.w + 36) : (it.w + 36);
+      if (center + 18 > it.x && center - 18 < it.x + it.w) {
+        it.x += lane.dir > 0 ? -(it.w + 28) : (it.w + 28);
       }
     });
   }
   function buildLanes() {
-    lanes = BASE.map(function (b) {
+    lanes = laneSpec().map(function (b) {
       var lane = {
         row: b.row, kind: b.kind, dir: b.dir, speed: b.speed,
         len: b.len, gap: b.gap, color: b.color, items: []
       };
-      if (level >= 2 && lane.row === 2) lane.kind = 'pad';
       fillLane(lane);
       return lane;
     });
@@ -198,7 +194,7 @@
   }
   function carHits(x, row) {
     if (safe > 0) return false;
-    if (level === 1 && (x < 18 || x > WORLD_W - 18)) return false;
+    if (level === 1 && (x < 10 || x > WORLD_W - 10)) return false;
     var hit = false;
     lanes.forEach(function (lane) {
       if (lane.row !== row || lane.kind !== 'car') return;
@@ -308,7 +304,7 @@
     if (player.ride) nc = Math.round((player.x - TILE / 2) / TILE) + d.x;
     if (nr === 0) {
       var best = null;
-      var bestD = 16;
+      var bestD = 14;
       HOMES.forEach(function (col) {
         var dist = Math.abs(player.x - centerX(col));
         if (dist <= bestD) { bestD = dist; best = col; }
@@ -342,7 +338,7 @@
     };
     player.ride = null;
     feel('hop', player.x, player.y);
-    blip('click', { pitch: 480 + (12 - nr) * 18, dur: 0.03, vol: 0.04 });
+    blip('click', { pitch: 480 + (6 - nr) * 24, dur: 0.03, vol: 0.04 });
     if (player.hop.dur === 0) finishHop();
   }
   function updatePlay(dt) {
@@ -432,6 +428,32 @@
     var ratio = phase === 'play' || phase === 'dead' || phase === 'win' ? Math.max(0, timer / timerMax) : 1;
     duskBar.style.transform = 'scaleX(' + ratio.toFixed(3) + ')';
   }
+  function placeSharp(canvas, logicalW, logicalH, host) {
+    var availW = Math.max(1, host.clientWidth);
+    var availH = Math.max(1, host.clientHeight);
+    var fit = Math.min(availW / logicalW, availH / logicalH);
+    var scale = Math.max(1, Math.floor(fit));
+    var cssW = logicalW * scale;
+    var cssH = logicalH * scale;
+    if (canvas._sw !== cssW || canvas._sh !== cssH) {
+      canvas._sw = cssW;
+      canvas._sh = cssH;
+      canvas.style.width = cssW + 'px';
+      canvas.style.height = cssH + 'px';
+    }
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    var mul = Math.max(1, Math.round(scale * dpr));
+    var bw = logicalW * mul;
+    var bh = logicalH * mul;
+    if (canvas.width !== bw || canvas.height !== bh) {
+      canvas.width = bw;
+      canvas.height = bh;
+    }
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(mul, 0, 0, mul, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    return ctx;
+  }
   function drawCricket(ctx, x, y) {
     ctx.fillStyle = '#1b1b12';
     ctx.fillRect(x - 7, y - 1, 3, 2);
@@ -448,20 +470,20 @@
   }
   function draw() {
     var kit = juice();
-    var ctx = kit ? kit.placeCanvas(canvas, WORLD_W, WORLD_H, stage) : canvas.getContext('2d');
+    var ctx = placeSharp(canvas, WORLD_W, WORLD_H, stage);
     var shake = kit && (phase === 'play' || phase === 'dead') ? kit.shakeOffset() : { x: 0, y: 0 };
     ctx.translate(shake.x, shake.y);
     var r, x, y;
     for (r = 0; r < ROWS; r++) {
       y = r * TILE_H;
-      if (r === 0 || r === 6 || r === 12) ctx.fillStyle = r === 6 ? '#1e4634' : '#214c32';
+      if (r === 0 || r === 3 || r === 6) ctx.fillStyle = r === 3 ? '#1e4634' : '#214c32';
       else if (isRiver(r)) ctx.fillStyle = '#12324a';
       else ctx.fillStyle = '#17171f';
       ctx.fillRect(0, y, WORLD_W, TILE_H);
       if (isRoad(r)) {
         ctx.fillStyle = level === 1 ? '#52525b' : '#3f3f46';
-        ctx.fillRect(0, y, 16, TILE_H);
-        ctx.fillRect(WORLD_W - 16, y, 16, TILE_H);
+        ctx.fillRect(0, y, TILE, TILE_H);
+        ctx.fillRect(WORLD_W - TILE, y, TILE, TILE_H);
         ctx.fillStyle = '#2a2a34';
         ctx.fillRect(0, y + TILE_H - 2, WORLD_W, 2);
         ctx.fillStyle = '#f8fafc';
@@ -488,9 +510,9 @@
       ctx.fillRect(x, 0, TILE, TILE_H);
       ctx.fillStyle = homes[i] ? '#fde68a' : '#f59e0b';
       ctx.globalAlpha = homes[i] ? 1 : 0.75;
-      ctx.fillRect(x + 4, 3, 8, 6);
+      ctx.fillRect(x + 1, 3, 6, 6);
       ctx.fillStyle = homes[i] ? '#fff' : '#7c2d12';
-      ctx.fillRect(x + 6, 5, 4, 3);
+      ctx.fillRect(x + 2, 5, 4, 3);
       ctx.globalAlpha = 1;
       if (level >= 2 && snareOn && snare === i && !homes[i]) {
         ctx.fillStyle = '#ef4444';
@@ -567,12 +589,15 @@
       ctx.fillRect(0, 0, WORLD_W, WORLD_H);
     }
     if (phase === 'ready') {
-      ctx.fillStyle = 'rgba(7,11,20,0.5)';
-      ctx.fillRect(0, WORLD_H / 2 - 16, WORLD_W, 28);
+      ctx.fillStyle = 'rgba(7,11,20,0.82)';
+      ctx.fillRect(8, WORLD_H / 2 - 28, WORLD_W - 16, 56);
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(8, WORLD_H / 2 - 28, WORLD_W - 16, 56);
       ctx.fillStyle = '#fbbf24';
-      ctx.font = '700 14px JetBrains Mono, ui-monospace, monospace';
+      ctx.font = '700 20px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('Ready!', WORLD_W / 2, WORLD_H / 2 + 4);
+      ctx.fillText('READY!', WORLD_W / 2, WORLD_H / 2 + 7);
     }
     if (kit) kit.drawParticles(ctx);
     paintHud();
@@ -764,6 +789,7 @@
   stage.addEventListener('pointerup', finishSwipe);
   stage.addEventListener('pointercancel', function () { swipe = null; });
   document.addEventListener('keydown', function (e) {
+    if (e.target && e.target.tagName === 'INPUT') return;
     var map = {
       ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down',
       a: 'left', d: 'right', w: 'up', s: 'down',
@@ -803,8 +829,11 @@
     commitScore();
   });
   document.addEventListener('touchmove', function (e) {
+    if (e.target.closest && e.target.closest('input, textarea, #over')) return;
     if (e.cancelable) e.preventDefault();
   }, { passive: false });
+  $('initials').addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+  $('initials').addEventListener('click', function () { $('initials').focus(); });
   window.addEventListener('resize', syncViewport);
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', syncViewport);
