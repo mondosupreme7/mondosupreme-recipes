@@ -12,6 +12,8 @@
 
 [Cinderwell](https://mondosupreme.com/cinderwell/) is a two-banner skirmish. Ore, thatch, and a hearth stay in `mondosupreme.cinderwell.v1` on this device.
 
+[Saltflare](https://mondosupreme.com/saltflare/) is a formation shooter. [Needlewake](https://mondosupreme.com/needlewake/) is a vector shard shooter. Scores stay on this device under `mondosupreme.saltflare.v1` and `mondosupreme.needlewake.v1`. The arcade cabinet already includes a brick breaker, so Needlewake is the shard field instead of a second one.
+
 [Pet](https://mondosupreme.com/pet/) is Virtual Pet, a keychain virtual pet. The egg, care, and evolutions stay in `mondosupreme.pet.v1`, including time away (capped so a long break does not silently end the pet). The Pet Park shares a snapshot on the same Firebase project once `board/database.rules.json` is published. Only the owner can remove a pet from the park.
 
 [Forum](https://mondosupreme.com/forum/) is a bulletin board for blog posts and replies. Threads stay in `mondosupreme.forum.v1` until `board/database.rules.json` is published, then anyone signed in can post and reply. Only the owner can edit, delete, pin, lock, mark an official post, or ban a writer.
