@@ -7,25 +7,25 @@
     crowbar: { name: 'Crowbar', melee: 1, dmg: 28, range: 1.35, cd: 0.42 },
     knife: { name: 'Knife', melee: 1, dmg: 22, range: 1.2, cd: 0.38 },
     wrench: { name: 'Wrench', melee: 1, build: 1, dmg: 30, range: 1.35, cd: 0.48 },
-    pistol: { name: '9mm Pistol', dmg: 14, cd: 0.28, mag: 17, reserve: 68, reload: 1.05 },
-    deagle: { name: 'Desert Eagle', dmg: 36, cd: 0.4, mag: 7, reserve: 35, reload: 1.15 },
-    mp5: { name: 'MP5', dmg: 10, cd: 0.09, mag: 30, reserve: 90, reload: 1.25, auto: 1 },
-    mp5n: { name: 'MP5-Navy', dmg: 11, cd: 0.085, mag: 30, reserve: 90, reload: 1.25, auto: 1 },
+    pistol: { name: 'Sidearm', dmg: 14, cd: 0.28, mag: 17, reserve: 68, reload: 1.05 },
+    deagle: { name: 'Heavy Pistol', dmg: 36, cd: 0.4, mag: 7, reserve: 35, reload: 1.15 },
+    mp5: { name: 'SMG', dmg: 10, cd: 0.09, mag: 30, reserve: 90, reload: 1.25, auto: 1 },
+    mp5n: { name: 'Navy SMG', dmg: 11, cd: 0.085, mag: 30, reserve: 90, reload: 1.25, auto: 1 },
     shot: { name: 'Shotgun', dmg: 8, pellets: 6, spread: 0.1, cd: 0.7, mag: 6, reserve: 32, reload: 1.45 },
-    tau: { name: 'Tau Cannon', dmg: 42, cd: 0.46, mag: 25, reserve: 0, energy: 1 },
-    ak: { name: 'AK-47', dmg: 18, cd: 0.11, mag: 30, reserve: 90, reload: 1.35, auto: 1 },
-    m4: { name: 'M4A1', dmg: 15, cd: 0.095, mag: 30, reserve: 90, reload: 1.3, auto: 1 },
-    awp: { name: 'AWP', dmg: 100, cd: 1.35, mag: 10, reserve: 20, reload: 1.7, scope: 1 },
+    tau: { name: 'Beam Gun', dmg: 42, cd: 0.46, mag: 25, reserve: 0, energy: 1 },
+    ak: { name: 'Rifle', dmg: 18, cd: 0.11, mag: 30, reserve: 90, reload: 1.35, auto: 1 },
+    m4: { name: 'Carbine', dmg: 15, cd: 0.095, mag: 30, reserve: 90, reload: 1.3, auto: 1 },
+    awp: { name: 'Bolt Rifle', dmg: 100, cd: 1.35, mag: 10, reserve: 20, reload: 1.7, scope: 1 },
     rocket: { name: 'Rocket Launcher', proj: 1, dmg: 88, splash: 2.35, cd: 0.9, mag: 4, reserve: 20, reload: 1.55 },
     mini: { name: 'Minigun', dmg: 7, cd: 0.05, mag: 200, reserve: 200, reload: 2.1, auto: 1, spread: 0.075 }
   };
 
   var SHOP = {
-    deagle: { cost: 700, slot: 'side', name: 'Desert Eagle' },
-    mp5n: { cost: 1500, slot: 'primary', name: 'MP5-Navy' },
-    ak: { cost: 2500, slot: 'primary', name: 'AK-47' },
-    m4: { cost: 3100, slot: 'primary', name: 'M4A1' },
-    awp: { cost: 4750, slot: 'primary', name: 'AWP Sniper' },
+    deagle: { cost: 700, slot: 'side', name: 'Heavy Pistol' },
+    mp5n: { cost: 1500, slot: 'primary', name: 'Navy SMG' },
+    ak: { cost: 2500, slot: 'primary', name: 'Rifle' },
+    m4: { cost: 3100, slot: 'primary', name: 'Carbine' },
+    awp: { cost: 4750, slot: 'primary', name: 'Bolt Rifle' },
     kevlar: { cost: 650, slot: 'armor', name: 'Kevlar+Helmet' },
     kit: { cost: 400, slot: 'kit', name: 'Defuse Kit' }
   };
@@ -135,6 +135,7 @@
   var crouch = false;
   var jumpT = 0;
   var spawnToken = 0;
+  var roundCount = 1;
   var VIEW_W = 320;
   var VIEW_H = 180;
   var hazardAcc = 0;
@@ -573,6 +574,7 @@
     state.roundTime = 80;
     state.phase = 'play';
     state.endText = '';
+    roundCount += 1;
     clearFeed();
   }
 
@@ -592,6 +594,7 @@
     state.roundTime = state.mode === 'cs' ? 80 : 0;
     state.phase = 'play';
     state.endText = '';
+    roundCount = 1;
     clearFeed();
     saveProfile();
     showPlay();
@@ -655,6 +658,8 @@
     setLiveHook(false);
     syncPlayViewport();
     paintPicks();
+    var confirm = $('teamConfirm');
+    if (confirm) confirm.textContent = teamLabel(state.pickTeam) + ' selected.';
   }
 
   function syncLobbyChoices() {
@@ -765,9 +770,26 @@
   }
 
   function noteHit(kill) {
-    hitMark.until = performance.now() + (kill ? 260 : 120);
+    hitMark.until = performance.now() + (kill ? 320 : 160);
     hitMark.kill = !!kill;
+    tone(kill ? 520 : 980, kill ? 0.07 : 0.035, 'square', kill ? 0.05 : 0.04);
     if (!reduceMotion && window.MONDO_JUICE && MONDO_JUICE.shake) MONDO_JUICE.shake(kill ? 3 : 2, kill ? 120 : 80);
+  }
+  function lookNudge() {
+    if (!player) return null;
+    var best = null;
+    var bestAbs = 0.34;
+    function consider(ent) {
+      if (!ent || ent.hp <= 0 || !isEnemy(ent)) return;
+      var a = Math.atan2(ent.y - player.y, ent.x - player.x);
+      var d = Math.atan2(Math.sin(a - player.ang), Math.cos(a - player.ang));
+      if (Math.abs(d) < bestAbs) { bestAbs = Math.abs(d); best = d; }
+    }
+    monsters.forEach(consider);
+    bots.forEach(consider);
+    remotes.forEach(consider);
+    sentries.forEach(consider);
+    return best;
   }
   function teamLabel(team) {
     if (team === 'ct') return 'Counter-Terrorists';
@@ -1099,6 +1121,7 @@
     }
     if (!g.energy || true) ammo.mag -= 1;
     player.cool = g.cd;
+    paintHud();
     flash = reduceMotion ? 0.08 : 0.18;
     recoil = reduceMotion ? 0.35 : 1;
     if (!reduceMotion && !g.energy) {
@@ -1317,9 +1340,10 @@
       }
       var speed = b.hasBomb ? 1.7 : 1.9;
       if (!hunting || dist > 4) steer(b, targetX, targetY, speed, dt);
-      if (hunting && dist < 8 && b.cool <= 0 && player.invul <= 0) {
-        b.cool = 0.62;
-        if (Math.random() < 0.6) hurtPlayer(state.mode === 'tfc' ? 8 : 9, b.name, state.mode === 'tfc' ? 'shot' : (b.team === 't' ? 'ak' : 'm4'));
+      var early = roundCount <= 2;
+      if (hunting && dist < (early ? 6.5 : 8) && b.cool <= 0 && player.invul <= 0) {
+        b.cool = early ? 1.35 : 0.9;
+        if (Math.random() < (early ? 0.28 : 0.42)) hurtPlayer(state.mode === 'tfc' ? 6 : 7, b.name, state.mode === 'tfc' ? 'shot' : 'rifle');
       }
     }
   }
@@ -1560,11 +1584,11 @@
       var mm = Math.floor(clock / 60);
       var ss = String(clock % 60);
       if (ss.length < 2) ss = '0' + ss;
-      var line = 'HP ' + hp + ' | ARMOR ' + Math.round(player.armor || 0) + ' | $' + profile.cash + ' | ' + mm + ':' + ss;
-      if (bomb && bomb.planted) line += ' | BOMB 0:' + String(Math.max(0, Math.ceil(bomb.timer))).padStart(2, '0');
-      else if (bomb && bomb.carrier === 'player') line += bomb.planting > 0 ? ' | PLANTING' : ' | C4';
-      else if (bomb && bomb.defusing > 0) line += ' | DEFUSING';
-      if (state.buyTime > 0) line += ' | BUY ' + Math.ceil(state.buyTime);
+      var line = hp + ' HP · $' + profile.cash + ' · ' + mm + ':' + ss;
+      if (bomb && bomb.planted) line += ' · bomb ' + Math.max(0, Math.ceil(bomb.timer));
+      else if (bomb && bomb.carrier === 'player') line += bomb.planting > 0 ? ' · planting' : ' · bomb';
+      else if (bomb && bomb.defusing > 0) line += ' · defusing';
+      if (state.buyTime > 0) line += ' · buy ' + Math.ceil(state.buyTime);
       info.textContent = line;
     } else {
       var cls = (player.cls || 'soldier').toUpperCase();
@@ -1588,7 +1612,7 @@
     if (!a) return g.name;
     if (g.energy) return g.name + '  ' + Math.floor(a.mag);
     if (player.reloading > 0 && player.reloadId === id) return g.name + '  reloading';
-    return g.name + '  ' + a.mag + ' | ' + a.reserve;
+    return a.mag + ' | ' + a.reserve;
   }
 
   function updateCam() {
@@ -1748,8 +1772,9 @@
       });
     }
     monsters.forEach(function (m) {
-      var color = m.kind === 'headcrab' ? '#e0c04a' : m.kind === 'turret' ? '#b5b5b5' : '#6fbf4a';
-      pushSprite(m, color, m.kind === 'turret' ? 0.7 : 0.9, m.name);
+      var color = m.kind === 'headcrab' ? '#eab308' : m.kind === 'turret' ? '#94a3b8' : '#4ade80';
+      var bulk = m.kind === 'headcrab' ? 1.25 : m.kind === 'turret' ? 1.15 : 1.45;
+      pushSprite(m, color, bulk, m.name);
     });
     bots.forEach(function (b) {
       var color = b.team === 'ct' ? '#3a74c4' : b.team === 't' ? '#d0843a' : b.team === 'red' ? '#d02828' : '#2a62d0';
@@ -1772,6 +1797,8 @@
     if (bomb && (bomb.planted || !bomb.carrier)) sprites.push({ x: bomb.x, y: bomb.y, color: '#ff6600', size: 0.45, label: 'C4' });
     if (flags.red) sprites.push({ x: flags.red.x, y: flags.red.y, color: '#e02020', size: 0.8, label: 'RED' });
     if (flags.blue) sprites.push({ x: flags.blue.x, y: flags.blue.y, color: '#2060e8', size: 0.8, label: 'BLU' });
+    var nameBest = null;
+    var nameTy = 1e9;
     for (var s = 0; s < sprites.length; s++) {
       var sp = sprites[s];
       var dx = sp.x - player.x;
@@ -1784,8 +1811,10 @@
       if (ty <= 0.08) continue;
       var screenX = Math.floor((w / 2) * (1 + tx / ty));
       var spriteH = Math.abs(Math.floor(h / ty)) * sp.size;
-      var spriteW = spriteH * 0.55;
       var ent = sp.ent;
+      var kind = ent && ent.kind;
+      var wide = kind === 'headcrab' ? 1.15 : kind === 'turret' || kind === 'sentry' ? 0.9 : 0.7;
+      var spriteW = spriteH * wide;
       var age = ent && ent.hp <= 0 && ent.deadAt ? (Date.now() - ent.deadAt) / 600 : 0;
       var sink = reduceMotion ? 0 : age * spriteH * 0.35;
       var y0 = Math.floor(h / 2 - spriteH / 2 + pitch + sink);
@@ -1809,12 +1838,23 @@
         }
       }
       ctx.globalAlpha = 1;
-      if (sp.label && ty < 10) {
+      if (!ent && sp.label && ty < 10) {
         ctx.fillStyle = '#fff';
         ctx.font = '10px monospace';
         ctx.textAlign = 'center';
         ctx.fillText(sp.label, screenX, y0 - 2);
+      } else if (ent && sp.label && ty < 14 && ty < nameTy && screenX > 8 && screenX < w - 8) {
+        nameTy = ty;
+        nameBest = { text: sp.label, x: screenX, y: y0 };
       }
+    }
+    if (nameBest) {
+      ctx.fillStyle = '#0c0a09';
+      ctx.fillRect(nameBest.x - 28, nameBest.y - 16, 56, 12);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(nameBest.text, nameBest.x, nameBest.y - 6);
     }
     drawGun(ctx, w, h);
     drawRadar(ctx);
@@ -1855,15 +1895,20 @@
     }
     if (hitMark.until > performance.now()) {
       var hx = w / 2;
-      var hy2 = h / 2 + pitch * 0.15;
-      var s = hitMark.kill ? 8 : 5;
-      ctx.strokeStyle = hitMark.kill ? '#ff4040' : '#ffffff';
-      ctx.lineWidth = hitMark.kill ? 2 : 1;
+      var hy2 = h / 2;
+      var gap = hitMark.kill ? 5 : 4;
+      var len = hitMark.kill ? 12 : 8;
+      ctx.strokeStyle = hitMark.kill ? '#ff4040' : '#f8fafc';
+      ctx.lineWidth = hitMark.kill ? 3 : 2;
       ctx.beginPath();
-      ctx.moveTo(hx - s, hy2 - s);
-      ctx.lineTo(hx + s, hy2 + s);
-      ctx.moveTo(hx + s, hy2 - s);
-      ctx.lineTo(hx - s, hy2 + s);
+      ctx.moveTo(hx - gap - len, hy2 - gap - len);
+      ctx.lineTo(hx - gap, hy2 - gap);
+      ctx.moveTo(hx + gap + len, hy2 - gap - len);
+      ctx.lineTo(hx + gap, hy2 - gap);
+      ctx.moveTo(hx - gap - len, hy2 + gap + len);
+      ctx.lineTo(hx - gap, hy2 + gap);
+      ctx.moveTo(hx + gap + len, hy2 + gap + len);
+      ctx.lineTo(hx + gap, hy2 + gap);
       ctx.stroke();
     }
     if (state.phase === 'roundend' || state.phase === 'dead' || state.phase === 'clear') {
@@ -1892,9 +1937,42 @@
     var step = reduceMotion ? 0 : (Math.floor(Date.now() / 160) % 2);
     var kind = ent.kind || '';
     var rows;
-    if (kind === 'headcrab') rows = ['..yyyy..', 'yyyyyyyy', '.ye..ey.', 'yy.yy.yy'];
-    else if (kind === 'turret' || kind === 'sentry') rows = ['...mm...', '..mmmm..', 'mmmmmmmm', '.m.mm.m.', '..mmmm..'];
-    else rows = [
+    if (kind === 'headcrab') {
+      rows = [
+        '..dddddd..',
+        '.dyyyyyyd.',
+        'dyyeeeeyyd',
+        'dyyyeeyydd',
+        '.dyyyyyyd.',
+        '..y.yy.y..',
+        '.ly.yy.yl.',
+        'dy......yd'
+      ];
+    } else if (kind === 'shock') {
+      rows = [
+        '..hhhhhh..',
+        '.hheeeehh.',
+        '.hhddddhh.',
+        'aassssssaa',
+        '.assssssa.',
+        '..ssssss..',
+        '..ss..ss..',
+        '.ll....ll.',
+        'dl......ld'
+      ];
+    } else if (kind === 'turret' || kind === 'sentry') {
+      rows = [
+        '....ss....',
+        '...sdds...',
+        '..sddddss.',
+        '.bbbbbbbb.',
+        '..b.bb.b..',
+        '.bb.bb.bb.',
+        'bb......bb',
+        'd........d'
+      ];
+    } else {
+    rows = [
       '..hhhhhhhh..',
       '.hhoooooohh.',
       '.hhhoeeohhh.',
@@ -1907,12 +1985,13 @@
       step ? 'll........ll' : '.ll......ll.',
       '..bb....bb..'
     ];
+    }
     var team = ent.team || '';
     var shirt = team === 't' ? '#c2410c' : team === 'ct' ? '#2563eb' : team === 'red' ? '#dc2626' : team === 'blue' ? '#1d4ed8' : (teamColor || '#166534');
     var shade = team === 't' ? '#7c2d12' : team === 'ct' ? '#1e3a8a' : team === 'red' ? '#7f1d1d' : team === 'blue' ? '#1e3a8a' : '#14532d';
     var pal = flashing
-      ? { h: '#fff', o: '#fff', e: '#fff', s: '#fff', d: '#fff', v: '#fff', w: '#fff', l: '#fff', r: '#fff', b: '#fff', y: '#fff', m: '#fff' }
-      : { h: '#1c1917', o: '#e7c2a0', e: '#0f172a', s: shirt, d: shade, v: shade, w: '#0f172a', l: '#44403c', r: '#57534e', b: '#1c1917', y: '#eab308', m: '#94a3b8' };
+      ? { h: '#fff', o: '#fff', e: '#fff', s: '#fff', d: '#fff', v: '#fff', w: '#fff', l: '#fff', r: '#fff', b: '#fff', y: '#fff', a: '#fff', m: '#fff' }
+      : { h: '#1c1917', o: '#e7c2a0', e: '#0f172a', s: shirt, d: '#111827', v: shade, w: '#0f172a', l: '#292524', r: '#57534e', b: '#334155', y: '#facc15', a: '#166534', m: '#94a3b8' };
     var cols = rows[0].length;
     var pxH = spriteH / rows.length;
     var stripe;
@@ -1924,7 +2003,8 @@
       for (r = 0; r < rows.length; r++) {
         var ch = rows[r].charAt(col);
         if (ch === '.' || !pal[ch]) continue;
-        ctx.fillStyle = pal[ch];
+        var edge = col === 0 || col === cols - 1;
+        ctx.fillStyle = flashing ? '#fff' : (edge ? '#0b0f14' : pal[ch]);
         ctx.fillRect(stripe, Math.floor(y0 + r * pxH), 1, Math.ceil(pxH) + 1);
       }
     }
@@ -1952,7 +2032,21 @@
     var pal;
     var scale = Math.max(4, Math.round(h / 22));
     var muzzleRow = 1;
-    if (knife) {
+    if (id === 'crowbar') {
+      rows = [
+        '..........m',
+        '.........mh',
+        '........mh.',
+        '.......mh..',
+        '......mh...',
+        '.....mh....',
+        '....mh.....',
+        '...mh......',
+        '..gh.......',
+        '.gg........'
+      ];
+      pal = { m: '#475569', h: '#e2e8f0', g: '#292524', '.': '' };
+    } else if (knife) {
       rows = [
         '..........eeee',
         '.........eehee',
@@ -1966,7 +2060,6 @@
         '.hh...........'
       ];
       pal = { e: '#e7e5e4', h: '#78716c', g: '#fbbf24', '.': '' };
-      if (id === 'crowbar') pal = { e: '#b91c1c', h: '#7f1d1d', g: '#44403c', '.': '' };
       if (id === 'wrench') pal = { e: '#e2e8f0', h: '#64748b', g: '#0f172a', '.': '' };
     } else if (pistol) {
       rows = [
@@ -1984,6 +2077,33 @@
       pal = { S: '#e2e8f0', H: '#94a3b8', B: '#0f172a', T: '#334155', G: '#1c1917', M: '#44403c', '.': '' };
       if (id === 'deagle') pal.S = '#f8fafc';
       muzzleRow = 0;
+    } else if (id === 'ak') {
+      rows = [
+        'bbbbbbbbbbbbbS',
+        'bhhhhhhhhhhhh.',
+        'bbbbbb........',
+        '......mmmmm...',
+        '.....mm.......',
+        '....gggg......',
+        '...g....g.....',
+        '...gmmmm......',
+        '....mm........'
+      ];
+      pal = { b: '#7c2d12', h: '#fdba74', S: '#e2e8f0', m: '#1c1917', g: '#44403c', '.': '' };
+      muzzleRow = 0;
+    } else if (id === 'm4') {
+      rows = [
+        '..hhbbbbbbbbSS',
+        '.hhbbbbbbbbbb.',
+        '..bbbbbbbbbb..',
+        '.......MMMM...',
+        '......ggggg...',
+        '.....g....g...',
+        '.....gMMMM....',
+        '......MM......'
+      ];
+      pal = { b: '#3f6212', h: '#d9f99d', S: '#f8fafc', M: '#0f172a', g: '#292524', '.': '' };
+      muzzleRow = 0;
     } else {
       rows = [
         'BBBBBBBBBBBBSS',
@@ -1998,7 +2118,6 @@
         '......M..M....'
       ];
       pal = { B: '#3f6212', H: '#d9f99d', S: '#e2e8f0', M: '#1c1917', G: '#292524', '.': '' };
-      if (id === 'ak') { pal.B = '#9a3412'; pal.H = '#fdba74'; }
       if (id === 'shot' || id === 'rocket') { pal.B = '#78350f'; pal.H = '#d6d3d1'; }
       if (id === 'tau') { pal.B = '#c2410c'; pal.H = '#fed7aa'; }
       if (id === 'mp5' || id === 'mp5n' || id === 'mini') { pal.B = '#334155'; pal.H = '#cbd5e1'; }
@@ -2250,6 +2369,12 @@
       rows.push({ uid: child.key, name: v.name, frags: v.frags });
     });
     rows.sort(function (a, b) { return (b.frags || 0) - (a.frags || 0); });
+    rows.forEach(function (row) {
+      if (net.uid && row.uid === net.uid && (row.frags | 0) > profile.frags) {
+        profile.frags = row.frags | 0;
+        saveProfile();
+      }
+    });
     var list = $('boardList');
     if (!list) return;
     list.textContent = '';
@@ -2262,10 +2387,12 @@
     rows.slice(0, 8).forEach(function (row) {
       var li = document.createElement('li');
       var span = document.createElement('span');
-      span.textContent = row.name || 'Rookie';
+      var mine = net.uid && row.uid === net.uid;
+      var frags = mine ? profile.frags : (row.frags | 0);
+      span.textContent = (mine ? profile.name : (row.name || 'Rookie'));
       if (window.MONDO_MEMBER) window.MONDO_MEMBER.adorn(span, row.uid);
       li.appendChild(span);
-      li.appendChild(document.createTextNode(' — ' + row.frags + ' frags'));
+      li.appendChild(document.createTextNode(' — ' + frags + ' frags' + (mine ? ' (you)' : '')));
       list.appendChild(li);
     });
   }
@@ -2416,6 +2543,12 @@
     $('replay').addEventListener('click', function () { $('replay').hidden = true; startMatch(); });
     $('sndBrowser').addEventListener('click', toggleSound);
     $('sndPlay').addEventListener('click', toggleSound);
+    $('gearBtn').addEventListener('click', function () {
+      var sheet = $('gear');
+      var open = sheet.hidden;
+      sheet.hidden = !open;
+      this.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
     $('btnFire').addEventListener('pointerdown', function (e) { e.preventDefault(); fireHeld = true; pullTrigger(); });
     $('btnFire').addEventListener('pointerup', function () { fireHeld = false; });
     $('btnFire').addEventListener('pointerleave', function () { fireHeld = false; });
@@ -2498,7 +2631,10 @@
       var dy = e.clientY - look.y;
       look.x = e.clientX;
       look.y = e.clientY;
+      var nudge = e.pointerType === 'mouse' ? null : lookNudge();
+      if (nudge !== null && Math.abs(nudge) < 0.3) sens *= 0.42;
       player.ang += dx * 0.005 * sens;
+      if (nudge !== null && Math.abs(nudge) < 0.18) player.ang += nudge * 0.2;
       pitch = Math.max(-80, Math.min(80, pitch - dy * 0.35 * sens));
     });
     view.addEventListener('pointerup', function (e) {
@@ -2606,10 +2742,14 @@
       frags: profile.frags,
       x: player ? player.x : 0,
       y: player ? player.y : 0,
+      ang: player ? player.ang : 0,
       enemies: monsters.filter(function (m) { return m.hp > 0; }).map(function (m) {
         return { name: m.name, hp: m.hp, x: m.x, y: m.y, kind: m.kind };
       }),
       bots: bots.filter(function (b) { return b.hp > 0; }).length,
+      botList: bots.filter(function (b) { return b.hp > 0; }).map(function (b) {
+        return { name: b.name, hp: Math.round(b.hp), x: b.x, y: b.y };
+      }),
       buyTime: state.buyTime,
       bomb: bomb ? { planted: !!bomb.planted, timer: bomb.timer, planting: bomb.planting, carrier: bomb.carrier } : null,
       score: { red: score.red, blue: score.blue },
