@@ -247,7 +247,7 @@ html[data-theme="retro"] .paper-badge.is-neutral{border-radius:0}
   .paper-log-facts .is-wide{grid-column:auto}
 }
 @media (max-width:900px){
-  .stretch-goal,.paper-log{
+  .stretch-goal,.paper-log,#paperRiskWarn{
     scroll-margin-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px) + 12px);
     scroll-margin-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + env(safe-area-inset-bottom, 0px) + 16px)
   }

@@ -555,6 +555,8 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertEqual(trade["equityAfter"], 980.5)
         self.assertEqual(trade["cashAfter"], 980.5)
         self.assertEqual(trade["bookPctAtEntry"], 23.33)
+        self.assertEqual(trade["riskPctAtLimit"], 1.95)
+        self.assertEqual(trade["riskUsdAtLimit"], 19.5)
         self.assertEqual(trade["reason"], "Stop. The session low was at or below the stop.")
         self.assertEqual(trade["exitReason"], "stop")
         targeted, _applied = settle.settle_book(
@@ -574,6 +576,76 @@ class PaperSettlementTest(unittest.TestCase):
             "Time stop. Still open when the time stop came due, so the exit is the close.",
         )
         self.assertEqual(updated["goal"], opened["goal"])
+
+    def test_new_paper_orders_risk_at_least_25_percent_and_the_zd_order_stays(self):
+        book = json.loads(PRODUCTION_TEXT)
+        order = book["workingOrders"][0]
+        self.assertEqual(order["shares"], 5)
+        self.assertEqual(order["riskUsdAtLimit"], 19.5)
+        self.assertEqual(order["riskPctAtLimit"], 1.95)
+        self.assertEqual(order["limitPrice"], 46.65)
+        minimum, maximum = settle.paper_risk_band(book["rules"])
+        self.assertEqual(minimum, 25)
+        self.assertEqual(maximum, 50)
+        self.assertEqual(settle.swing_strength(36), 0)
+        self.assertEqual(settle.swing_strength(100), 1)
+        self.assertEqual(settle.swing_strength(None), 0)
+
+        floor = settle.size_paper_order(10000, 10000, 20, 10, strength=0)
+        self.assertEqual(floor["riskTargetPct"], 25)
+        self.assertEqual(floor["shares"], 250)
+        self.assertEqual(floor["riskUsd"], 2500)
+        self.assertEqual(floor["riskPct"], 25)
+        self.assertEqual(floor["bookPct"], 50)
+        self.assertFalse(floor["cappedByCash"])
+        self.assertIn("25.00%", floor["reason"])
+
+        strong = settle.size_paper_order(10000, 10000, 20, 10, strength=1)
+        self.assertEqual(strong["riskTargetPct"], 50)
+        self.assertEqual(strong["shares"], 500)
+        self.assertEqual(strong["notional"], 10000)
+        self.assertEqual(strong["bookPct"], 100)
+        self.assertEqual(strong["riskPct"], 50)
+        self.assertTrue(strong["cappedByBook"])
+        self.assertIn("No margin", strong["reason"])
+
+        cash_capped = settle.size_paper_order(1000, 200, 20, 10, strength=0)
+        self.assertEqual(cash_capped["shares"], 10)
+        self.assertEqual(cash_capped["riskUsd"], 100)
+        self.assertEqual(cash_capped["riskPct"], 10)
+        self.assertEqual(cash_capped["bookPct"], 20)
+        self.assertTrue(cash_capped["cappedByCash"])
+        self.assertLess(cash_capped["notional"], 1000)
+
+        no_leverage = settle.size_paper_order(1000, 5000, 10, 5, strength=1)
+        self.assertEqual(no_leverage["shares"], 100)
+        self.assertEqual(no_leverage["notional"], 1000)
+        self.assertTrue(no_leverage["cappedByBook"])
+        self.assertLessEqual(no_leverage["notional"], 1000)
+
+        tight = settle.size_paper_order(1000, 1000, 46.65, 42.75, strength=0)
+        self.assertEqual(tight["shares"], 21)
+        self.assertEqual(tight["riskUsd"], 81.9)
+        self.assertEqual(tight["riskPct"], 8.19)
+        self.assertEqual(tight["bookPct"], 97.97)
+        self.assertTrue(tight["cappedByCash"])
+        self.assertNotEqual(tight["shares"], 5)
+
+        self.assertEqual(settle.size_paper_order(1000, 1000, 40, 40)["shares"], 0)
+        self.assertEqual(settle.size_paper_order(1000, 0, 20, 10)["shares"], 0)
+
+        updated, _applied = settle.settle_book(
+            self.book(),
+            {"ZD": {"2026-11-11": bar(48.20, 49, 46.10, 47.55)}},
+            at("2026-11-11T16:30:00-05:00"),
+        )
+        self.assertEqual(updated["workingOrders"][0]["shares"], 5)
+        self.assertEqual(updated["workingOrders"][0]["riskPctAtLimit"], 1.95)
+        self.assertEqual(updated["workingOrders"][0]["riskUsdAtLimit"], 19.5)
+        self.assertEqual(updated["openPositions"][0]["shares"], 5)
+        self.assertEqual(updated["openPositions"][0]["riskPctAtLimit"], 1.95)
+        self.assertEqual(updated["rules"]["minRiskPerTradePct"], 25)
+        self.assertEqual(updated["rules"]["maxRiskPerTradePct"], 50)
 
     def test_production_ledger_is_still_the_unfilled_zd_order(self):
         self.assertEqual(LEDGER.read_text(encoding="utf-8"), PRODUCTION_TEXT)
