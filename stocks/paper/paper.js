@@ -360,9 +360,10 @@
       bottom = 0;
     }
     var html = document.documentElement;
-    html.style.setProperty('--vv-top', top + 'px');
-    html.style.setProperty('--vv-bottom', bottom + 'px');
-    html.style.setProperty('--vv-keyboard', keyboard + 'px');
+    var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : function (n) { return n; };
+    html.style.setProperty('--vv-top', cssPx(top) + 'px');
+    html.style.setProperty('--vv-bottom', cssPx(bottom) + 'px');
+    html.style.setProperty('--vv-keyboard', cssPx(keyboard) + 'px');
   }
 
   function el(tag, className, text) {

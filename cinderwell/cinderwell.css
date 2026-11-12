@@ -25,23 +25,23 @@ html[data-theme] body.cinder-page [data-diff][aria-pressed="true"] {
 .lobby summary { min-height: 44px; display: flex; align-items: center; font-weight: 650; cursor: pointer; }
 .lobby li { margin: 0 0 6px; }
 
-body.cinder-page:not(.cinder-live) { overflow: hidden; height: 100svh; height: 100dvh; }
+body.cinder-page:not(.cinder-live) { overflow: hidden; height: calc(100svh / var(--page-scale, 1)); height: calc(100dvh / var(--page-scale, 1)); }
 body.cinder-page:not(.cinder-live) main.wrap {
   overflow: auto;
-  max-height: calc(100svh - var(--nav-h, 48px) - var(--dock-h, 0px));
+  max-height: calc((100svh / var(--page-scale, 1)) - var(--nav-h, 48px) - var(--dock-h, 0px));
   -webkit-overflow-scrolling: touch;
 }
 
-html.cinder-live { overflow: hidden !important; height: var(--vv-h, 100svh) !important; }
+html.cinder-live { overflow: hidden !important; height: var(--vv-h, calc(100svh / var(--page-scale, 1))) !important; }
 html body.cinder-page.cinder-live {
   position: fixed !important;
   top: var(--vv-top, 0px) !important;
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  height: var(--vv-h, 100svh) !important;
+  height: var(--vv-h, calc(100svh / var(--page-scale, 1))) !important;
   min-height: 0 !important;
-  max-height: var(--vv-h, 100svh) !important;
+  max-height: var(--vv-h, calc(100svh / var(--page-scale, 1))) !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
@@ -149,7 +149,7 @@ html body.cinder-page.cinder-live main.wrap {
 #card:empty { display: none; }
 #shortcuts {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding-bottom: max(4px, env(safe-area-inset-bottom));
+  padding-bottom: max(4px, calc(env(safe-area-inset-bottom) / var(--page-scale, 1)));
 }
 html[data-theme] body.cinder-page #card button,
 html[data-theme] body.cinder-page #shortcuts button,

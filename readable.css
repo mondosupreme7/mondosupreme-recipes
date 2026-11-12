@@ -28,8 +28,8 @@
   --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
-  --gutter-l: max(var(--space-4), env(safe-area-inset-left));
-  --gutter-r: max(var(--space-4), env(safe-area-inset-right));
+  --gutter-l: max(var(--space-4), (env(safe-area-inset-left) / var(--page-scale, 1)));
+  --gutter-r: max(var(--space-4), (env(safe-area-inset-right) / var(--page-scale, 1)));
   --tap: 44px;
   --tap-comfy: 48px;
   --measure: 68ch;
@@ -887,10 +887,10 @@ html[data-theme="retro"] .chat-head h1 {
 
 /* iPhone design pass. Modern themes only; Retro keeps its own chrome. */
 @media (max-width:900px){
-  :root{--nav-h:48px;--dock-h:calc(56px + env(safe-area-inset-bottom, 0px))}
+  :root{--nav-h:48px;--dock-h:calc(56px + (env(safe-area-inset-bottom, 0px) / var(--page-scale, 1)))}
 }
 @media (max-height:720px) and (max-width:900px){
-  :root{--nav-h:44px;--dock-h:calc(52px + env(safe-area-inset-bottom, 0px))}
+  :root{--nav-h:44px;--dock-h:calc(52px + (env(safe-area-inset-bottom, 0px) / var(--page-scale, 1)))}
 }
 @media (prefers-reduced-motion: no-preference){
   @view-transition { navigation: auto; }
@@ -909,13 +909,13 @@ html:not([data-theme="retro"]) dialog{
   color:var(--ink) !important;
   box-shadow:var(--shadow-3);
   padding:0;
-  width:min(560px, calc(100vw - 24px));
-  max-height:min(88dvh, 760px);
+  width:min(560px, calc((100vw / var(--page-scale, 1)) - 24px));
+  max-height:min((88dvh / var(--page-scale, 1)), 760px);
 }
 html:not([data-theme="retro"]) #cookMode{
   margin:0 !important;width:100% !important;max-width:none !important;height:100% !important;max-height:none !important;
   border:0 !important;border-radius:0 !important;box-shadow:none !important;
-  padding:28px 18px calc(20px + env(safe-area-inset-bottom)) !important;
+  padding:28px 18px calc(20px + (env(safe-area-inset-bottom) / var(--page-scale, 1))) !important;
   background:#0b1220 !important;color:#f8fafc !important
 }
 html[data-theme="light"] #cookMode,html[data-theme="warm"] #cookMode{background:#f7f4ee !important;color:#111827 !important}
@@ -938,7 +938,7 @@ html:not([data-theme="retro"]) .shell-x{
   html:not([data-theme="retro"]) dialog{
     margin:auto 0 0;width:100%;max-width:none;
     border-radius:var(--radius-xl) var(--radius-xl) 0 0;
-    padding-bottom:env(safe-area-inset-bottom);max-height:92svh
+    padding-bottom:calc(env(safe-area-inset-bottom) / var(--page-scale, 1));max-height:calc(92svh / var(--page-scale, 1))
   }
 }
 html:not([data-theme="retro"]) :is(.win h2,.clues h2,.ask-win h2,.wx-screen-title,.wx-star-top h2,.hlp-caption,.box h2,.gb-box h2,.quote-box h2,.day h2){
@@ -1018,7 +1018,7 @@ html:not([data-theme="retro"]) .cruise-tabs .btn[aria-selected="true"]{
 html:not([data-theme="retro"]) .member-dialog{
   box-sizing:border-box;
   overflow:auto;
-  max-height:calc(100svh - var(--nav-h, 56px) - var(--dock-h, 0px) - 16px)
+  max-height:calc((100svh / var(--page-scale, 1)) - var(--nav-h, 56px) - var(--dock-h, 0px) - 16px)
 }
 html:not([data-theme="retro"]) .member-head{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -1061,7 +1061,7 @@ form label.member-stay{
 }
 @media (max-width:768px){
   html:not([data-theme="retro"]) dialog.member-dialog{
-    max-height:calc(100svh - var(--nav-h, 56px) - var(--dock-h, 72px) - 12px) !important;
+    max-height:calc((100svh / var(--page-scale, 1)) - var(--nav-h, 56px) - var(--dock-h, 72px) - 12px) !important;
     margin-top:calc(var(--nav-h, 56px) + 8px) !important;
     margin-bottom:calc(var(--dock-h, 72px) + 8px) !important;
     overflow:auto !important
@@ -1129,7 +1129,7 @@ html:not([data-theme="retro"]) .grid:not([data-recipe-layout]):not(.xw-grid){
 }
 html:not([data-theme="retro"]) .xw-grid{
   display:grid !important;grid-template-columns:repeat(5,minmax(0,1fr)) !important;
-  width:min(100%,calc(100vw - 32px));max-width:360px;background:transparent !important;border:0 !important;padding:0 !important
+  width:min(100%,calc((100vw / var(--page-scale, 1)) - 32px));max-width:360px;background:transparent !important;border:0 !important;padding:0 !important
 }
 html:not([data-theme="retro"]) .xw-grid .cell{
   aspect-ratio:1;min-height:0 !important;background:var(--surface) !important;color:var(--ink) !important
@@ -1237,7 +1237,7 @@ html:not([data-theme="retro"]) .site-footer{color:var(--ink-subtle) !important}
 #gbClear{flex:1 0 100%}
 @media (max-width:768px){
   body.chat-page .chat-compose{padding-bottom:var(--space-2) !important}
-  body.chat-page.chat-keyboard .chat-compose{padding-bottom:calc(var(--space-2) + env(safe-area-inset-bottom)) !important}
+  body.chat-page.chat-keyboard .chat-compose{padding-bottom:calc(var(--space-2) + (env(safe-area-inset-bottom) / var(--page-scale, 1))) !important}
 }
 .chat-name,.msg .who{font-size:var(--text-sm);font-weight:var(--fw-semibold);color:var(--ink)}
 .msg time,.chat-time{font-size:var(--text-xs);color:var(--ink-subtle)}
@@ -1299,8 +1299,8 @@ html[data-theme="retro"] .studio-app[aria-current="page"]{background:#ffffcc !im
 html[data-theme="retro"] .studio-app[aria-current="page"] .app-label{color:#111827 !important}
 #toast{
   position:fixed !important;z-index:1400 !important;left:50% !important;right:auto !important;
-  top:calc(var(--nav-h, 56px) + env(safe-area-inset-top, 0px) + 12px) !important;bottom:auto !important;
-  max-width:min(92vw, 24rem);pointer-events:none
+  top:calc(var(--nav-h, 56px) + (env(safe-area-inset-top, 0px) / var(--page-scale, 1)) + 12px) !important;bottom:auto !important;
+  max-width:min((92vw / var(--page-scale, 1)), 24rem);pointer-events:none
 }
 [hidden]{display:none !important}
 html[data-theme] .mmo-shell :is(h1,h2,h3,.hint,label,p){color:#f7f1e4 !important}
@@ -1349,4 +1349,4 @@ html[data-theme] .crt-poster{background:#140e09 !important;color:#f8fafc !import
 .crt-poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .crt-play{position:relative;z-index:1;min-height:48px;min-width:96px;padding:0 18px;border-radius:999px;background:#f8fafc;color:#111827;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
 .crt-status{position:relative;z-index:1;margin:0;padding:8px 12px;background:#111827;color:#f8fafc;border-radius:8px}
-dialog,form,.studio-drawer{padding-bottom:max(12px, env(safe-area-inset-bottom, 0px))}
+dialog,form,.studio-drawer{padding-bottom:max(12px, (env(safe-area-inset-bottom, 0px) / var(--page-scale, 1)))}

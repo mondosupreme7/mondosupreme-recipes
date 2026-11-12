@@ -7,8 +7,8 @@
 .pack-group h3{margin:0 0 6px;color:#111827}
 .pack-group label{display:flex;gap:8px;align-items:center;min-height:44px;font-size:16px}
 .pack-count{font:700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace}
-.site-header{padding-top:env(safe-area-inset-top)}
-.site-footer{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.site-header{padding-top:calc(env(safe-area-inset-top) / var(--page-scale, 1))}
+.site-footer{padding-bottom:calc(24px + (env(safe-area-inset-bottom) / var(--page-scale, 1)))}
 .site-footer a{color:var(--accent)}
 .fleet-status{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;scroll-margin-top:calc(var(--nav-h, 56px) + 10px)}
 .fleet-status .live-pill{flex:1 1 auto;min-width:0}
@@ -33,7 +33,7 @@ html[data-theme] .live-pill{color:var(--ink,#111827)}
 .ship-map{margin:0 0 16px;padding:12px;background:var(--paper,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:16px;box-shadow:0 8px 24px -12px rgba(15,23,42,.35)}
 .hero h1,#mapTitle{scroll-margin-top:calc(var(--nav-h, 64px) + 10px)}
 .ship-map h2{margin:0 0 10px;font:600 1.15rem Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
-#map{height:min(62dvh,560px);min-height:300px;border:0;overflow:hidden;margin:0;background:var(--chip,#f1f5f9);position:relative;z-index:0;border-radius:12px}
+#map{height:min((62dvh / var(--page-scale, 1)),560px);min-height:300px;border:0;overflow:hidden;margin:0;background:var(--chip,#f1f5f9);position:relative;z-index:0;border-radius:12px}
 #map .leaflet-tile,
 #map img.leaflet-tile{
   mix-blend-mode:normal !important;
@@ -129,5 +129,5 @@ html[data-theme="dark"] .popup-pick,html[data-theme="harbor"] .popup-pick{backgr
 @media(max-width:720px){
  .hero,.ship-map{scroll-margin-top:calc(var(--nav-h, 64px) + 8px)}
  .hero{padding:28px 0 12px}
- #map{height:min(36svh,340px);min-height:240px}
+ #map{height:min((36svh / var(--page-scale, 1)),340px);min-height:240px}
 }

@@ -219,7 +219,7 @@ html[data-theme] body.wiki-page .wiki-article h1,
 html[data-theme] body.wiki-page .wiki-preview h2{
   font-family:Newsreader, Georgia, "Iowan Old Style", Palatino, "Palatino Linotype", serif !important;
   font-weight:500;
-  font-size:clamp(1.85rem, 1.3rem + 2vw, 2.35rem);
+  font-size:clamp(1.85rem, calc(1.3rem + (2vw / var(--page-scale, 1))), 2.35rem);
   letter-spacing:-0.02em;
   line-height:1.2;
   color:var(--w-ink) !important;
@@ -495,10 +495,10 @@ html[data-theme="harbor"] body.wiki-page #tagBar .tag[aria-pressed="true"]{
 
 .wiki-form{max-width:75ch;margin:8px 0 28px}
 .wiki-form input,.wiki-form textarea{width:100%;max-width:100%;font-size:16px}
-.wiki-form textarea{min-height:42vh;resize:vertical;font-family:"JetBrains Mono", ui-monospace, Consolas, monospace;line-height:1.5}
+.wiki-form textarea{min-height:calc(42vh / var(--page-scale, 1));resize:vertical;font-family:"JetBrains Mono", ui-monospace, Consolas, monospace;line-height:1.5}
 .wiki-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;font-size:.86rem;margin-top:4px}
 .fmt-bar,.tmpl-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0;max-width:100%}
-.wiki-preview{padding:8px 0 18px;min-height:20vh}
+.wiki-preview{padding:8px 0 18px;min-height:calc(20vh / var(--page-scale, 1))}
 .wiki-form .form-actions{display:flex;flex-wrap:wrap;gap:8px;position:sticky;bottom:0;padding:12px 0 8px;z-index:2}
 .wiki-form .end{display:flex;flex-wrap:wrap;gap:8px}
 .history-list{display:flex;flex-direction:column;gap:12px}

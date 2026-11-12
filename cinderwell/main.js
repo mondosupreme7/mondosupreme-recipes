@@ -100,8 +100,9 @@
     var vv = window.visualViewport;
     var top = vv ? vv.offsetTop : 0;
     var h = vv ? vv.height : window.innerHeight;
-    root.style.setProperty('--vv-top', Math.round(top) + 'px');
-    root.style.setProperty('--vv-h', Math.round(Math.max(1, h)) + 'px');
+    var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : Math.round;
+    root.style.setProperty('--vv-top', cssPx(top) + 'px');
+    root.style.setProperty('--vv-h', cssPx(Math.max(1, h)) + 'px');
   }
 
   function resize() {
@@ -176,9 +177,14 @@
   function screenToWorld(sx, sy) {
     return { x: camX + sx / zoom, y: camY + sy / zoom };
   }
+  function pageScale() {
+    var n = window.MONDO_PAGE && window.MONDO_PAGE.factor ? window.MONDO_PAGE.factor() : 1;
+    return n > 0 ? n : 1;
+  }
   function localPoint(event) {
     var rect = $('world').getBoundingClientRect();
-    return { x: event.clientX - rect.left, y: event.clientY - rect.top, rect: rect };
+    var scale = pageScale();
+    return { x: (event.clientX - rect.left) / scale, y: (event.clientY - rect.top) / scale, rect: rect };
   }
 
   function selectedUnits() {
@@ -754,25 +760,26 @@
         var cy = (pts[0].y + pts[1].y) / 2;
         var dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) || 1;
         if (!pinch) pinch = { cx: cx, cy: cy, dist: dist, camX: camX, camY: camY, zoom: zoom, rectLeft: p.rect.left, rectTop: p.rect.top };
-        var worldX = pinch.camX + (pinch.cx - pinch.rectLeft) / pinch.zoom;
-        var worldY = pinch.camY + (pinch.cy - pinch.rectTop) / pinch.zoom;
+        var scale = pageScale();
+        var worldX = pinch.camX + (pinch.cx - pinch.rectLeft) / scale / pinch.zoom;
+        var worldY = pinch.camY + (pinch.cy - pinch.rectTop) / scale / pinch.zoom;
         zoom = Math.max(0.65, Math.min(1.65, pinch.zoom * (dist / pinch.dist)));
-        camX = worldX - (cx - p.rect.left) / zoom;
-        camY = worldY - (cy - p.rect.top) / zoom;
+        camX = worldX - (cx - p.rect.left) / scale / zoom;
+        camY = worldY - (cy - p.rect.top) / scale / zoom;
         clampCam();
         gesture = 'pinch';
         return;
       }
       if (gesture === 'locked' || gesture === 'pinch') return;
-      var moved = Math.hypot(cur.x - cur.sx, cur.y - cur.sy);
+      var moved = Math.hypot(cur.x - cur.sx, cur.y - cur.sy) / pageScale();
       if (gesture === 'pending' && moved > 12) {
         var start = { x: cur.lx, y: cur.ly, rect: p.rect };
         if (cur.button === 2 || cur.button === 1 || edgeStart(start)) gesture = 'pan';
         else gesture = 'box';
       }
       if (gesture === 'pan') {
-        camX -= (cur.x - prevX) / zoom;
-        camY -= (cur.y - prevY) / zoom;
+        camX -= (cur.x - prevX) / pageScale() / zoom;
+        camY -= (cur.y - prevY) / pageScale() / zoom;
         clampCam();
       } else if (gesture === 'box') {
         var x0 = Math.min(cur.lx, p.x);
@@ -796,7 +803,7 @@
         box = null;
         return;
       }
-      var moved = Math.hypot(cur.x - cur.sx, cur.y - cur.sy);
+      var moved = Math.hypot(cur.x - cur.sx, cur.y - cur.sy) / pageScale();
       if (gesture === 'box' && box && (box.w > 10 || box.h > 10)) {
         var a = screenToWorld(box.x, box.y);
         var b = screenToWorld(box.x + box.w, box.y + box.h);

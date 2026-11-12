@@ -33,12 +33,12 @@
   var games = [
     { kind: 'Game', title: 'High Seas Cruiser', href: '/arcade/', text: 'arcade seas cruise cart' },
     { kind: 'Game', title: 'Supreme Kitchen Rush', href: '/arcade/', text: 'arcade kitchen cart' },
-    { kind: 'Game', title: 'Cyber Brick Breaker 1999', href: '/arcade/', text: 'arcade breaker cart' },
+    { kind: 'Game', title: 'Cyber Brick Breaker', href: '/arcade/', text: 'arcade breaker cart' },
     { kind: 'Game', title: 'Virtual Pet', href: '/pet/', text: 'pet egg tamagotchi' },
     { kind: 'Game', title: 'Craft', href: '/mmo/', text: 'mmo mondocraft goldhaven' },
-    { kind: 'Game', title: "Half-Strike — Sector C Labs", href: '/fps/', text: 'fps half-life labs crowbar' },
-    { kind: 'Game', title: 'Half-Strike — de_sandstorm', href: '/fps/', text: 'fps counter-strike bomb sandstorm' },
-    { kind: 'Game', title: "Half-Strike — 2Fort_99", href: '/fps/', text: 'fps team fortress sentry 2fort' },
+    { kind: 'Game', title: 'Half Strike Fortress — Sector C Labs', href: '/fps/', text: 'fps half strike fortress labs crowbar' },
+    { kind: 'Game', title: 'Half Strike Fortress — de_sandstorm', href: '/fps/', text: 'fps half strike fortress bomb sandstorm' },
+    { kind: 'Game', title: 'Half Strike Fortress — 2Fort', href: '/fps/', text: 'fps half strike fortress sentry 2fort' },
 { kind: 'Game', title: 'Cinderlatch', href: '/escape/', text: 'cinderlatch escape room door' },
     { kind: 'Game', title: 'Cinderwell', href: '/cinderwell/', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch hearth' }
   ];
@@ -451,7 +451,7 @@
     { title: 'Marketplace', href: '/market/', icon: 'gavel', group: 'Community', text: 'marketplace market classifieds for sale listing shop ebay' },
     { title: 'Mystic 8-Ball', href: '/8ball/', icon: 'ball', group: 'Game Studio', text: 'magic 8-ball mystic oracle fortune eight ball' },
     { title: 'Craft', href: '/mmo/', icon: 'sword', group: 'Game Studio', text: 'craft mmo mondocraft faction class goldhaven realm' },
-    { title: "Half-Strike '99", href: '/fps/', icon: 'gun', group: 'Game Studio', text: 'half-strike fps fortress shooter labs' },
+    { title: 'Half Strike Fortress', href: '/fps/', icon: 'gun', group: 'Game Studio', text: 'half strike fortress fps shooter labs' },
 { title: 'Cinderlatch', href: '/escape/', icon: 'door', group: 'Game Studio', text: 'cinderlatch escape door locked room begin' },
     { title: 'Cinderwell', href: '/cinderwell/', icon: 'banner', group: 'Game Studio', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch' }
   ];
@@ -763,6 +763,133 @@
       copy.appendChild(link);
     } else foot.appendChild(link);
   }
+  var PAGE_STEPS = [80, 90, 100, 110, 125];
+  var PAGE_KEY = 'mondosupreme.pageScale.v1';
+  function pagePercent() {
+    var saved = document.documentElement.getAttribute('data-page-scale');
+    var n = parseInt(saved, 10);
+    return PAGE_STEPS.indexOf(n) >= 0 ? n : 100;
+  }
+  function paintPageScale(announce) {
+    var percent = pagePercent();
+    document.querySelectorAll('.page-scale').forEach(function (group) {
+      group.querySelectorAll('[role="radio"]').forEach(function (btn) {
+        var on = parseInt(btn.getAttribute('data-scale'), 10) === percent;
+        btn.setAttribute('aria-checked', on ? 'true' : 'false');
+        btn.tabIndex = on ? 0 : -1;
+      });
+      var num = group.querySelector('.page-scale-num');
+      if (num) num.textContent = percent + '%';
+      var value = group.querySelector('.page-scale-value');
+      if (value && announce) value.setAttribute('aria-live', 'polite');
+      var down = group.querySelector('.page-scale-down');
+      var up = group.querySelector('.page-scale-up');
+      if (down) down.disabled = percent <= PAGE_STEPS[0];
+      if (up) up.disabled = percent >= PAGE_STEPS[PAGE_STEPS.length - 1];
+      var status = group.querySelector('.page-scale-status');
+      if (status) status.textContent = announce ? 'Page size ' + percent + '%.' : '';
+    });
+  }
+  function applyPageScale(percent, announce) {
+    if (PAGE_STEPS.indexOf(percent) < 0) percent = 100;
+    document.documentElement.style.setProperty('--page-scale', String(percent / 100));
+    document.documentElement.setAttribute('data-page-scale', String(percent));
+    try { localStorage.setItem(PAGE_KEY, String(percent)); } catch (e) {}
+    paintPageScale(announce);
+    window.dispatchEvent(new Event('resize'));
+    if (window.visualViewport) window.visualViewport.dispatchEvent(new Event('resize'));
+  }
+  function stepPageScale(dir) {
+    var percent = pagePercent();
+    var index = PAGE_STEPS.indexOf(percent);
+    var next = PAGE_STEPS[Math.max(0, Math.min(PAGE_STEPS.length - 1, index + dir))];
+    if (next !== percent) applyPageScale(next, true);
+  }
+  function buildPageScale() {
+    var group = document.createElement('div');
+    group.className = 'page-scale';
+    group.setAttribute('role', 'radiogroup');
+    group.setAttribute('aria-label', 'Page size');
+    var label = document.createElement('span');
+    label.className = 'page-scale-label';
+    label.textContent = 'Page size';
+    group.appendChild(label);
+    var steps = document.createElement('div');
+    steps.className = 'page-scale-steps';
+    PAGE_STEPS.forEach(function (percent) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'page-scale-step';
+      btn.setAttribute('role', 'radio');
+      btn.setAttribute('data-scale', String(percent));
+      btn.textContent = percent + '%';
+      btn.addEventListener('click', function () { applyPageScale(percent, true); });
+      steps.appendChild(btn);
+    });
+    steps.addEventListener('keydown', function (event) {
+      var move = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+      var index = PAGE_STEPS.indexOf(pagePercent());
+      if (event.key === 'Home') index = 0;
+      else if (event.key === 'End') index = PAGE_STEPS.length - 1;
+      else if (move[event.key]) index = (index + move[event.key] + PAGE_STEPS.length) % PAGE_STEPS.length;
+      else return;
+      event.preventDefault();
+      applyPageScale(PAGE_STEPS[index], true);
+      var chosen = steps.querySelector('[data-scale="' + PAGE_STEPS[index] + '"]');
+      if (chosen) chosen.focus();
+    });
+    group.appendChild(steps);
+    var reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'page-scale-reset';
+    reset.textContent = 'Reset';
+    reset.setAttribute('aria-label', 'Reset page size to 100%');
+    reset.addEventListener('click', function () { applyPageScale(100, true); });
+    group.appendChild(reset);
+    var status = document.createElement('span');
+    status.className = 'page-scale-status visually-hidden';
+    status.setAttribute('aria-live', 'polite');
+    group.appendChild(status);
+    return group;
+  }
+  function buildPageScaleNav() {
+    var group = document.createElement('div');
+    group.className = 'page-scale page-scale--nav';
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', 'Page size');
+    var down = document.createElement('button');
+    down.type = 'button';
+    down.className = 'page-scale-down';
+    down.textContent = '\u2212';
+    down.setAttribute('aria-label', 'Smaller page size');
+    down.addEventListener('click', function () { stepPageScale(-1); });
+    var value = document.createElement('span');
+    value.className = 'page-scale-value';
+    var hidden = document.createElement('span');
+    hidden.className = 'visually-hidden';
+    hidden.textContent = 'Page size ';
+    var num = document.createElement('span');
+    num.className = 'page-scale-num';
+    value.appendChild(hidden);
+    value.appendChild(num);
+    var up = document.createElement('button');
+    up.type = 'button';
+    up.className = 'page-scale-up';
+    up.textContent = '+';
+    up.setAttribute('aria-label', 'Larger page size');
+    up.addEventListener('click', function () { stepPageScale(1); });
+    var reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'page-scale-reset';
+    reset.textContent = 'Reset';
+    reset.setAttribute('aria-label', 'Reset page size to 100%');
+    reset.addEventListener('click', function () { applyPageScale(100, true); });
+    group.appendChild(down);
+    group.appendChild(value);
+    group.appendChild(up);
+    group.appendChild(reset);
+    return group;
+  }
   function boot() {
     writeFx({ scan: 0, stars: 0 });
     document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
@@ -829,7 +956,7 @@
       ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Planting', 'Tropics']],
       ['Finance & Search', ['Stocks', 'Search', 'Wiki']],
       ['Community', ['Bulletin Forum', 'Chat', 'Paint', 'Marketplace', 'Radio']],
-['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', "Half-Strike '99", 'Cinderlatch', 'Cinderwell']]
+['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', 'Half Strike Fortress', 'Cinderlatch', 'Cinderwell']]
     ];
     groups.forEach(function (group) {
       var block = document.createElement('section');
@@ -889,6 +1016,7 @@
     clock.className = 'studio-clock';
     clock.id = 'shellClock';
     paintClock(clock);
+    actions.appendChild(buildPageScaleNav());
     actions.appendChild(findBtn);
     actions.appendChild(muteBtn);
     actions.appendChild(ownerBtn);
@@ -941,11 +1069,16 @@
     });
     dock.appendChild(more);
     document.body.appendChild(dock);
+    var pageScale = buildPageScale();
+    menu.appendChild(pageScale);
+    paintPageScale(false);
     var tray = menu;
     function parkTheme() {
       var theme = document.querySelector('.theme-switch');
-      if (!theme) return;
-      if (menu.firstChild !== theme) menu.insertBefore(theme, menu.firstChild);
+      if (theme && menu.firstChild !== theme) menu.insertBefore(theme, menu.firstChild);
+      var scale = menu.querySelector('.page-scale');
+      var after = theme && theme.parentNode === menu ? theme.nextSibling : menu.firstChild;
+      if (scale && scale !== after) menu.insertBefore(scale, after);
     }
     parkTheme();
     setTimeout(parkTheme, 0);
@@ -1092,7 +1225,8 @@
     if (!vv) return;
     function sync() {
       var overlap = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
-      document.documentElement.style.setProperty('--kb', overlap + 'px');
+      var cssOverlap = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx(overlap) : overlap;
+      document.documentElement.style.setProperty('--kb', cssOverlap + 'px');
       document.documentElement.classList.toggle('kb-open', overlap > 80);
     }
     vv.addEventListener('resize', sync);
