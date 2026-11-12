@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css?v=6">
-<link rel="stylesheet" href="cinderwell.css?v=8">
+<link rel="stylesheet" href="cinderwell.css?v=9">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=11">
@@ -71,8 +71,8 @@
   <details>
    <summary>Controls</summary>
    <ul>
-    <li>The card has at most six actions. Near drops the building by the Hearth. Idle finds a free hand. Army selects every fighter. Tap the under-attack line to look there.</li>
-    <li>Desktop: right-click commands, arrows pan, wheel zooms. S stop, H hold, A attack-move, F idle, Q army, N near the Hearth, Esc cancels.</li>
+    <li>Tap a building, tap the map to preview, then Place. Red ground will not hold it. By hearth previews a spot beside home. Idle finds a free hand. Army selects every fighter. Tap the under-attack line to look there.</li>
+    <li>Desktop: right-click commands, arrows pan, wheel zooms. S stop, H hold, A attack-move, F idle, Q army, N preview by the Hearth, P place, Esc cancels.</li>
     <li>Pikes chew rams. Bows pick off pikes. Rams crack buildings. Guards shrug off arrows. Skiffs cross the river. Pixel sprites are drawn in this page.</li>
    </ul>
   </details>
@@ -105,6 +105,13 @@
    </div>
   </div>
   <p id="info">Tap a hand or a building</p>
+  <div id="tutor" hidden>
+   <p id="tutorText"></p>
+   <div class="tutor-actions">
+    <button type="button" id="tutorNext">Next</button>
+    <button type="button" id="tutorSkip">Skip</button>
+   </div>
+  </div>
   <div id="card" role="group" aria-label="Commands"></div>
   <div id="shortcuts">
    <button type="button" id="btnIdle">Idle</button>
@@ -120,9 +127,9 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/mondo-juice.js?v=1"></script>
-<script src="sim.js?v=7"></script>
-<script src="render.js?v=7"></script>
-<script src="main.js?v=8"></script>
+<script src="sim.js?v=8"></script>
+<script src="render.js?v=8"></script>
+<script src="main.js?v=9"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>

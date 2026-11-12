@@ -29,19 +29,19 @@
 
   /* cost is [ore, thatch]. Bonus keys are target classes. */
   var DEFS = {
-    worker: { label: 'Hand', name: 'Hand', cls: 'worker', hp: 42, dmg: 3, range: 18, reload: 1, speed: 74, sight: 6, radius: 10, cost: [0, 50], time: 8 },
-    pike: { label: 'Pike', name: 'Pike', cls: 'melee', hp: 96, dmg: 9, range: 34, reload: 0.85, speed: 68, sight: 7, radius: 11, cost: [35, 20], time: 9, bonus: { siege: 1.8, ranged: 1.15 } },
-    bow: { label: 'Bow', name: 'Bow', cls: 'ranged', hp: 52, dmg: 7, range: 118, reload: 1.05, speed: 64, sight: 8, radius: 10, cost: [25, 35], time: 9, projectile: 'arrow', bonus: { melee: 1.55, siege: 1.5 } },
-    ram: { label: 'Ram', name: 'Ram', cls: 'siege', hp: 120, dmg: 11, range: 128, reload: 1.85, speed: 40, sight: 7, radius: 14, cost: [90, 40], time: 15, projectile: 'rock', aoe: 30, vsBuilding: 2.6 },
-    guard: { label: 'Guard', name: 'Furnace Guard', cls: 'melee', fac: 'kiln', hp: 156, dmg: 8, range: 34, reload: 1, speed: 54, sight: 7, radius: 13, cost: [55, 28], time: 12, armor: 0.5 },
-    skiff: { label: 'Skiff', name: 'Mist Skiff', cls: 'ranged', fac: 'reed', hp: 64, dmg: 9, range: 102, reload: 0.95, speed: 94, sight: 8, radius: 12, cost: [42, 36], time: 12, projectile: 'dart', water: true, bonus: { siege: 1.9 } },
-    titan: { label: 'Titan', name: 'Kiln Titan', cls: 'mythic', fac: 'kiln', hp: 340, dmg: 18, range: 36, reload: 1.25, speed: 44, sight: 7, radius: 16, cost: [160, 90], time: 22, aoe: 36, vsBuilding: 1.45 },
-    saint: { label: 'Saint', name: 'Reed Saint', cls: 'mythic', fac: 'reed', hp: 196, dmg: 12, range: 114, reload: 1.15, speed: 52, sight: 8, radius: 12, cost: [145, 100], time: 22, projectile: 'mist', aoe: 28, heal: 3.2, healRange: 80 },
+    worker: { label: 'Hand', name: 'Hand', plain: 'Worker', role: 'Gathers and builds', cls: 'worker', hp: 42, dmg: 3, range: 18, reload: 1, speed: 74, sight: 6, radius: 10, cost: [0, 50], time: 8 },
+    pike: { label: 'Pike', name: 'Pike', plain: 'Pike', role: 'Melee, beats rams', cls: 'melee', hp: 96, dmg: 9, range: 34, reload: 0.85, speed: 68, sight: 7, radius: 11, cost: [35, 20], time: 9, bonus: { siege: 1.8, ranged: 1.15 } },
+    bow: { label: 'Bow', name: 'Bow', plain: 'Bow', role: 'Ranged, beats pikes', cls: 'ranged', hp: 52, dmg: 7, range: 118, reload: 1.05, speed: 64, sight: 8, radius: 10, cost: [25, 35], time: 9, projectile: 'arrow', bonus: { melee: 1.55, siege: 1.5 } },
+    ram: { label: 'Ram', name: 'Ram', plain: 'Ram', role: 'Cracks buildings', cls: 'siege', hp: 120, dmg: 11, range: 128, reload: 1.85, speed: 40, sight: 7, radius: 14, cost: [90, 40], time: 15, projectile: 'rock', aoe: 30, vsBuilding: 2.6 },
+    guard: { label: 'Guard', name: 'Furnace Guard', plain: 'Guard', role: 'Shrugs off arrows', cls: 'melee', fac: 'kiln', hp: 156, dmg: 8, range: 34, reload: 1, speed: 54, sight: 7, radius: 13, cost: [55, 28], time: 12, armor: 0.5 },
+    skiff: { label: 'Skiff', name: 'Mist Skiff', plain: 'Skiff', role: 'Crosses the river', cls: 'ranged', fac: 'reed', hp: 64, dmg: 9, range: 102, reload: 0.95, speed: 94, sight: 8, radius: 12, cost: [42, 36], time: 12, projectile: 'dart', water: true, bonus: { siege: 1.9 } },
+    titan: { label: 'Titan', name: 'Kiln Titan', plain: 'Titan', role: 'Mythic melee', cls: 'mythic', fac: 'kiln', hp: 340, dmg: 18, range: 36, reload: 1.25, speed: 44, sight: 7, radius: 16, cost: [160, 90], time: 22, aoe: 36, vsBuilding: 1.45 },
+    saint: { label: 'Saint', name: 'Reed Saint', plain: 'Saint', role: 'Heals your line', cls: 'mythic', fac: 'reed', hp: 196, dmg: 12, range: 114, reload: 1.15, speed: 52, sight: 8, radius: 12, cost: [145, 100], time: 22, projectile: 'mist', aoe: 28, heal: 3.2, healRange: 80 },
     hearth: { label: 'Hearth', name: 'Hearth', hp: 980, w: 3, h: 3, time: 1, sight: 8, cost: [0, 0], drop: true, supply: 12 },
-    barracks: { label: 'Arms', name: 'Barracks', hp: 520, w: 3, h: 2, time: 12, sight: 7, cost: [40, 100] },
-    yard: { label: 'Yard', name: 'Yard', hp: 380, w: 2, h: 2, time: 8, sight: 6, cost: [0, 80], drop: true, supply: 8 },
-    tower: { label: 'Watch', name: 'Watchtower', hp: 440, w: 2, h: 2, time: 14, sight: 9, cost: [80, 60], attack: 9, range: 156, reload: 0.9, projectile: 'arrow' },
-    shrine: { label: 'Shrine', name: 'Shrine', hp: 420, w: 2, h: 2, time: 16, sight: 7, cost: [120, 90], research: [80, 40] }
+    barracks: { label: 'Arms', name: 'Barracks', plain: 'Barracks', role: 'Trains soldiers', hp: 520, w: 3, h: 2, time: 12, sight: 7, cost: [40, 100] },
+    yard: { label: 'Yard', name: 'Yard', plain: 'Yard', role: 'Drops off resources', hp: 380, w: 2, h: 2, time: 8, sight: 6, cost: [0, 80], drop: true, supply: 8 },
+    tower: { label: 'Watch', name: 'Watchtower', plain: 'Tower', role: 'Shoots enemies', hp: 440, w: 2, h: 2, time: 14, sight: 9, cost: [80, 60], attack: 9, range: 156, reload: 0.9, projectile: 'arrow' },
+    shrine: { label: 'Shrine', name: 'Shrine', plain: 'Shrine', role: 'Rams and mythic', hp: 420, w: 2, h: 2, time: 16, sight: 7, cost: [120, 90], research: [80, 40] }
   };
 
   function makeRng(seed) {
@@ -499,8 +499,19 @@
     state.alert = { x: x, y: y, text: text, life: 3.4, seq: state.alertSeq };
   }
 
+  /* Opening quiet. Easy holds the other banner for about five and a half minutes. */
+  function graceOf(state) {
+    if (state && state.grace === 0) return 0;
+    return state && state.difficulty === 'easy' ? 330 : 90;
+  }
+
+  function truce(state) {
+    return state.time < graceOf(state);
+  }
+
   function deal(state, target, amount, fromSide) {
     if (!living(target) || amount <= 0 || target.side === fromSide) return;
+    if (fromSide === 1 && target.side === 0 && truce(state)) return;
     target.hp -= amount;
     target.flash = 0.14;
     if (target.side === 0) alertPlayer(state, centerOf(target).x, centerOf(target).y, 'Under attack — tap to look');
@@ -785,6 +796,13 @@
     if (state.over && u.order !== 'idle') {
       /* Keep the last stride so a finished match still reads as a battle. */
     }
+    if (u.side === 1 && u.type !== 'worker' && truce(state)) {
+      if (u.order === 'attack' || u.order === 'attackmove' || u.order === 'hold') {
+        u.order = 'idle';
+        u.targetId = 0;
+        u.anim = 'idle';
+      }
+    }
     if (u.order === 'hold') {
       tgt = foeInRange(state, u);
       if (tgt) strike(state, u, tgt, dt);
@@ -936,7 +954,7 @@
           }
         }
       }
-      if (b.done && DEFS[b.type].attack && !state.over) {
+      if (b.done && DEFS[b.type].attack && !state.over && !(b.side === 1 && truce(state))) {
         b.attackCd = Math.max(0, b.attackCd - dt);
         if (b.attackCd <= 0) {
           var foe = null;
@@ -1236,7 +1254,7 @@
       else if (!easy && army.filter(function (a) { return DEFS[a.type].cls === 'mythic'; }).length < 1 && army.length >= 6) train(state, shrine.id, mythicOf(state.faction[side]));
     }
 
-    var grace = easy ? 330 : 90;
+    var grace = graceOf(state);
     var waveCap = easy ? ((state.aiWaves || 0) === 0 ? 3 : 4) : 5;
     var ready = easy ? 2 : 4;
     if (state.time >= grace && state.time >= (state.aiNext || 0) && army.length >= ready) {
@@ -1501,7 +1519,7 @@
   function create(opts) {
     opts = opts || {};
     var faction = opts.faction === 'reed' ? 'reed' : 'kiln';
-    var difficulty = opts.difficulty === 'easy' ? 'easy' : 'normal';
+    var difficulty = String(opts.difficulty == null ? '' : opts.difficulty).trim().toLowerCase() === 'easy' ? 'easy' : 'normal';
     var seed = (opts.seed != null ? opts.seed : (Math.random() * 0x7fffffff | 0)) >>> 0;
     var rng = makeRng(seed || 1);
     var map = generate(rng);
@@ -1534,7 +1552,7 @@
       cells: new Map(),
       aiT: 0.4,
       aiRetreat: 0,
-      aiNext: 0,
+      aiNext: difficulty === 'easy' ? 330 : 90,
       aiWaves: 0,
       alertSeq: 0,
       alertAt: 0,
@@ -1759,6 +1777,7 @@
   }
 
   function debugBattle(state) {
+    state.grace = 0;
     var cx = 18 * TILE;
     var cy = 27 * TILE;
     function add(side, type, ox, oy, hp) {
@@ -1799,7 +1818,7 @@
     create: create, step: step, issue: issue, place: place, canPlace: canPlace, nearestSite: nearestSite, siteNearHearth: siteNearHearth, train: train,
     research: research, cancelBuild: cancelBuild, cancelTrain: cancelTrain, abandon: abandon, supply: supply, canAfford: canAfford,
     serialize: serialize, restore: restore, pick: pick, unitsInRect: unitsInRect,
-    idsWhere: idsWhere, trainsOf: trainsOf, centerOf: centerOf, uniqueOf: uniqueOf,
+    idsWhere: idsWhere, trainsOf: trainsOf, centerOf: centerOf, uniqueOf: uniqueOf, graceOf: graceOf,
     mythicOf: mythicOf, debugBattle: debugBattle, workersNear: workersNear
   };
 })(typeof window !== 'undefined' ? window : globalThis);
