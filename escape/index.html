@@ -24,9 +24,9 @@
 <link rel="stylesheet" href="/recipes/styles.css?v=6">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
-<link rel="stylesheet" href="/shell.css?v=10">
+<link rel="stylesheet" href="/shell.css?v=11">
 <link rel="stylesheet" href="/readable.css?v=15">
-<link rel="stylesheet" href="escape.css?v=7">
+<link rel="stylesheet" href="escape.css?v=8">
 </head>
 <body class="night latch-page">
 <div class="ticker"><div class="ticker-track">
@@ -105,11 +105,12 @@
   <p id="status" class="status" role="status"></p>
   <p id="hintOut" class="hint-out"></p>
   <div id="pocketTip" class="pocket-tip" hidden>
-   <p>Select an item in Pockets, then tap where it goes.</p>
+   <p>Select an item in Pockets, then tap where it goes. Use with joins two items.</p>
    <button type="button" id="pocketTipClose" class="night-btn">Got it</button>
   </div>
   <div class="inv-bar">
    <span class="inv-label" id="invLabel">Pockets</span>
+   <button type="button" id="useWith" class="night-btn" hidden>Use with…</button>
    <div id="inventory" class="inventory" role="group" aria-labelledby="invLabel"></div>
   </div>
  </section>
@@ -164,7 +165,7 @@
  <button type="button" id="padClose" class="night-btn quiet">Close</button>
 </div>
 <script src="/mondo-juice.js"></script>
-<script src="escape.js?v=7"></script>
+<script src="escape.js?v=8"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>
@@ -172,7 +173,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/members.js?v=5"></script>
-<script src="/shell.js?v=17"></script>
+<script src="/shell.js?v=19"></script>
 <script src="/backup.js"></script>
 </body>
 </html>

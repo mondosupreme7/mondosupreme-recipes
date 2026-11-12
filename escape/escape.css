@@ -254,31 +254,38 @@ html[data-theme] body.latch-page #status{
 .pocket-tip .night-btn{flex:0 0 auto}
 .inv-bar{
   display:flex;
-  align-items:center;
-  flex-wrap:wrap;
+  align-items:stretch;
+  flex-wrap:nowrap;
   gap:6px;
-  min-height:52px;
+  min-height:76px;
   padding:4px 6px;
   background:#1a120e;
   border:1px solid #6b5344;
 }
 .inv-label{
   flex:0 0 auto;
+  align-self:center;
   color:#e7d3b4;
   font-size:16px;
 }
+#useWith{flex:0 0 auto; align-self:center}
 .inventory{
   flex:1 1 auto;
   min-width:0;
   display:flex;
-  flex-wrap:wrap;
-  gap:4px;
-  align-items:center;
-  overflow:visible;
+  flex-wrap:nowrap;
+  gap:8px;
+  align-items:stretch;
+  overflow-x:auto;
+  overflow-y:hidden;
+  overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch;
+  scroll-snap-type:x mandatory;
+  scrollbar-color:#6b5344 #120e0c;
 }
 .inventory canvas{
-  width:24px;
-  height:24px;
+  width:40px;
+  height:40px;
   flex:none;
   image-rendering:pixelated;
   background:transparent;
@@ -338,17 +345,31 @@ html[data-theme] body.latch-page button.night-btn:active{
 }
 .inventory .night-btn{
   display:inline-flex;
+  flex-direction:column;
   align-items:center;
-  gap:6px;
-  height:44px;
-  max-height:44px;
+  justify-content:center;
+  gap:2px;
+  height:auto;
+  min-height:72px;
+  min-width:72px;
   max-width:none;
   flex:0 0 auto;
+  scroll-snap-align:start;
   white-space:nowrap;
+  padding:6px 8px;
+}
+html[data-theme] body.latch-page .inventory .night-btn[aria-pressed="true"]{
+  background:#5a3d18 !important;
+  color:#fff4d2 !important;
+  border-color:#ffe7a3 !important;
+  outline:3px solid #f0c36a;
+  outline-offset:1px;
 }
 .inventory .night-btn span{
   overflow:visible;
   text-overflow:clip;
+  font-size:15px;
+  line-height:1.1;
 }
 .splash-actions .night-btn,
 #again{flex:1 1 auto}
@@ -415,12 +436,42 @@ html[data-theme] body.latch-page .sheet input{
   min-height:36px;
   color:#f0c36a;
 }
-.keys{
+#pad.sheet{
+  top:var(--latch-nav, 48px);
+  bottom:4px;
+  left:4px;
+  right:4px;
+  max-height:none;
+  overflow:hidden;
+  gap:4px;
+  padding:8px;
+}
+#padTitle{
+  flex:0 0 auto;
+  font-size:16px;
+  line-height:1.25;
+}
+#pad .pad-digits{
+  flex:0 0 auto;
+  font-size:22px;
+  letter-spacing:.12em;
+  min-height:28px;
+}
+#padClose{flex:0 0 auto}
+#pad .keys{
   display:grid;
   grid-template-columns:repeat(3, minmax(0, 1fr));
   gap:4px;
+  flex:1 1 auto;
+  min-height:0;
+  align-content:stretch;
+  grid-template-rows:repeat(4, minmax(44px, 1fr));
 }
-.keys .key{width:100%; min-width:0}
+#pad .keys .key{
+  height:100%;
+  min-height:44px;
+  max-height:none;
+}
 @media (prefers-reduced-motion: no-preference){
   .deny{animation:deny .28s}
 }
