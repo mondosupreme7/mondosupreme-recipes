@@ -394,6 +394,8 @@
     }
     phase = 'dead';
     deadT = 0.4;
+    var focused = document.activeElement;
+    if (focused && focused.blur && focused.tagName === 'BUTTON') focused.blur();
   }
   function beginClear() {
     score += 1000 * level;
@@ -444,6 +446,10 @@
       }
     }
     if (holdDir) player.want = holdDir;
+    if (!player.dir && (player.want || queued || holdDir)) {
+      player.dir = holdDir || player.want || queued;
+      player.want = player.dir;
+    }
     pump(player, sp.player, 'player');
     eatCrumb();
     if (run.nectarOn) {
@@ -508,7 +514,12 @@
       if (readyT <= 0) {
         phase = 'play';
         player.inv = 2;
-        if (player.want && !player.dir) player.dir = player.want;
+        var launch = holdDir || player.want || queued;
+        if (launch) {
+          player.want = launch;
+          player.dir = launch;
+          queued = launch;
+        }
       }
     } else if (phase === 'win') {
       winT -= dt;
@@ -527,14 +538,34 @@
   function drawQueueArrow(ctx, x, y, dir) {
     var d = DIRS[dir];
     if (!d) return;
-    ctx.fillStyle = '#ffe14a';
-    var ax = x + d.x * 16;
-    var ay = y + d.y * 16;
-    ctx.fillStyle = '#1a1400';
-    ctx.fillRect(ax - 5, ay - 5, 11, 11);
-    ctx.fillStyle = '#fff36a';
-    ctx.fillRect(ax - 4, ay - 4, 9, 9);
-    ctx.fillRect(x + d.x * 11 - 2, y + d.y * 11 - 2, 5, 5);
+    var cx = Math.round(x + d.x * 30);
+    var cy = Math.round(y + d.y * 30);
+    function mark(color, p) {
+      ctx.fillStyle = color;
+      if (dir === 'up') {
+        ctx.fillRect(cx - 1 - p, cy - 9 - p, 2 + p * 2, 3 + p);
+        ctx.fillRect(cx - 3 - p, cy - 7 - p, 6 + p * 2, 3 + p);
+        ctx.fillRect(cx - 5 - p, cy - 5, 10 + p * 2, 3 + p);
+        ctx.fillRect(cx - 2 - p, cy - 2, 4 + p * 2, 8 + p);
+      } else if (dir === 'down') {
+        ctx.fillRect(cx - 1 - p, cy + 6, 2 + p * 2, 3 + p);
+        ctx.fillRect(cx - 3 - p, cy + 4, 6 + p * 2, 3 + p);
+        ctx.fillRect(cx - 5 - p, cy + 2, 10 + p * 2, 3 + p);
+        ctx.fillRect(cx - 2 - p, cy - 6 - p, 4 + p * 2, 8 + p);
+      } else if (dir === 'left') {
+        ctx.fillRect(cx - 9 - p, cy - 1 - p, 3 + p, 2 + p * 2);
+        ctx.fillRect(cx - 7 - p, cy - 3 - p, 3 + p, 6 + p * 2);
+        ctx.fillRect(cx - 5, cy - 5 - p, 3 + p, 10 + p * 2);
+        ctx.fillRect(cx - 2, cy - 2 - p, 8 + p, 4 + p * 2);
+      } else {
+        ctx.fillRect(cx + 6, cy - 1 - p, 3 + p, 2 + p * 2);
+        ctx.fillRect(cx + 4, cy - 3 - p, 3 + p, 6 + p * 2);
+        ctx.fillRect(cx + 2, cy - 5 - p, 3 + p, 10 + p * 2);
+        ctx.fillRect(cx - 6 - p, cy - 2 - p, 8 + p, 4 + p * 2);
+      }
+    }
+    mark('#1a1400', 1);
+    mark('#ffe14a', 0);
   }
   function placeSharp(canvas, logicalW, logicalH, host) {
     var availW = Math.max(1, host.clientWidth);
@@ -683,15 +714,11 @@
         drawMoth(ctx, player.x, player.y, bob);
       }
       if (player.inv > 0 && phase !== 'ready') {
-        ctx.fillStyle = '#e0f7ff';
-        ctx.font = '700 9px JetBrains Mono, ui-monospace, monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('SAFE', player.x, player.y - 16);
         ctx.strokeStyle = '#7ee0ff';
         ctx.lineWidth = 2;
         ctx.strokeRect(player.x - 9, player.y - 10, 18, 18);
       }
-      if (player.want && player.want !== player.dir) drawQueueArrow(ctx, player.x, player.y, player.want);
+      player._arrow = player.want && player.want !== player.dir ? player.want : null;
     } else if (!player) {
       drawMoth(ctx, 7 * TILE + 6, 13 * TILE + 6 + (reduce ? 0 : Math.sin(attract * 3) * 2), 0);
     }
@@ -717,6 +744,22 @@
       ctx.font = '700 14px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       ctx.fillText('READY!', WORLD_W / 2, 17);
+    }
+    if (player && player.inv > 0 && phase === 'play') {
+      ctx.font = '700 11px JetBrains Mono, ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      var labelY = Math.max(28, player.y - 20);
+      ctx.fillStyle = '#042f2e';
+      ctx.fillRect(player.x - 18, labelY - 10, 36, 13);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('SAFE', player.x, labelY);
+      ctx.strokeStyle = '#7ee0ff';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(player.x - 18, labelY - 10, 36, 13);
+    }
+    if (player && player._arrow && phase !== 'ready') {
+      drawQueueArrow(ctx, player.x, player.y, player._arrow);
+      player._arrow = null;
     }
     if (phase === 'play' && level === 1 && run && !run.lampEaten) {
       ctx.fillStyle = 'rgba(8, 6, 20, 0.8)';
@@ -919,7 +962,7 @@
       a: 'left', d: 'right', w: 'up', s: 'down',
       A: 'left', D: 'right', W: 'up', S: 'down'
     };
-    if (map[e.key] && phase === 'play') {
+    if (map[e.key] && (phase === 'play' || phase === 'ready' || phase === 'dead')) {
       e.preventDefault();
       setWant(map[e.key]);
       return;
@@ -1038,8 +1081,9 @@
     if (!tied.length) return null;
     return tied[(Math.random() * tied.length) | 0];
   }
-  function beginnerRuns(runs) {
+  function beginnerRuns(runs, delay) {
     var n = runs || 10;
+    var gap = typeof delay === 'number' ? delay : 0.35;
     var clears = 0;
     var details = [];
     var sound = store.sound;
@@ -1055,19 +1099,19 @@
       phase = 'play';
       player.inv = 2;
       var pending = null;
-      var wait = 0.2 + Math.random() * 0.3;
+      var wait = gap;
       var t = 0;
       while (t < 240 && level === 1 && phase !== 'over') {
         var choice = beginnerDir(pending);
         if (choice !== pending) {
           pending = choice;
-          wait = 0.35 + (Math.random() - 0.5) * 0.1;
+          wait = gap + (Math.random() - 0.5) * Math.min(0.12, gap * 0.15);
         }
         if (pending && wait <= 0 && phase === 'play' && player) {
           player.want = pending;
           if (!player.dir) player.dir = pending;
           pending = null;
-          wait = 0.35;
+          wait = gap;
         }
         update(STEP);
         t += STEP;
@@ -1091,7 +1135,42 @@
     phase = 'title';
     player = null;
     show('title');
-    return { clears: clears, runs: n, details: details };
+    return { clears: clears, runs: n, delay: gap, details: details };
+  }
+  function checkRespawn() {
+    score = 0;
+    lives = 5;
+    level = 1;
+    holdDir = null;
+    queued = null;
+    freshRun();
+    phase = 'play';
+    player.inv = 0;
+    player.dir = 'left';
+    die();
+    var steps = 0;
+    while (phase === 'dead' && steps < 90) {
+      update(STEP);
+      steps += 1;
+    }
+    var duringDead = phase;
+    setWant('left');
+    var wantBeforeResume = player ? player.want : null;
+    while (phase === 'ready' && steps < 240) {
+      update(STEP);
+      steps += 1;
+    }
+    var x0 = player ? player.x : 0;
+    var i;
+    for (i = 0; i < 20; i++) update(STEP);
+    return {
+      died: duringDead === 'ready',
+      queued: wantBeforeResume,
+      phase: phase,
+      dir: player ? player.dir : null,
+      moved: player ? player.x < x0 - 2 : false,
+      inv: player ? Math.round(player.inv * 10) / 10 : 0
+    };
   }
 
   window.PHOSPHOR = {
@@ -1117,5 +1196,14 @@
       };
     }
   };
-  if (/[?&]dev=1(?:&|$)/.test(location.search)) window.PHOSPHOR.beginner = beginnerRuns;
+  if (/[?&]dev=1(?:&|$)/.test(location.search)) {
+    window.PHOSPHOR.beginner = beginnerRuns;
+    window.PHOSPHOR.checkRespawn = checkRespawn;
+    window.PHOSPHOR.armDeath = function () {
+      if (!player || phase !== 'play') return phase;
+      player.inv = 0;
+      die();
+      return phase;
+    };
+  }
 })();
