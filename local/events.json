@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-12T04:40:22Z",
+ "updated": "2026-11-12T05:43:16Z",
  "sources": [
   {
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 2
+   "count": 3
   },
   {
    "name": "City of Cocoa",
@@ -41,7 +41,7 @@
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
    "ok": true,
-   "count": 2
+   "count": 3
   },
   {
    "name": "City of Rockledge",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 12
+   "count": 14
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 32
+   "count": 35
   },
   {
    "name": "Launch Library 2",
@@ -96,34 +96,6 @@
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
    "kind": "event"
-  },
-  {
-   "id": "ba1d8e577e32c1c9",
-   "title": "Odyssey of the Seas in port",
-   "start": "2026-11-10T18:00:00Z",
-   "end": "2026-11-11T01:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT3",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "64206f8e75bb2f20",
-   "title": "Disney Fantasy in port",
-   "start": "2026-11-11T11:00:00Z",
-   "end": "2026-11-11T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "1bd0297cb3fa1ed4",
@@ -907,6 +879,132 @@
    "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9793",
    "source": "City of Cocoa Beach",
    "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "aae38a6bd9d0e001",
+   "title": "15th Annual Bicycle Bar Tour for Homeless Veterans 2026",
+   "start": "2026-11-21T11:00:00Z",
+   "end": "2026-11-21T18:30:00Z",
+   "town": "Cocoa Beach",
+   "venue": "FISHLIPS WATERFRONT BAR & GRILL, 610 Glen Cheek Dr, Port Canaveral, FL, 32920",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/annual-bicycle-bar-tour-for-homeless-veterans/",
+   "description": "Leisurely ride from Port Canaveral to Cocoa Beach and back on improved bike paths and lanes. 50/50 Drawing to benefit area Homeless Veterans. Starts at Fishlips Waterfront Bar & Grill, 610 Glen Cheek Drive followed by La Cantina, Tiny Tavern, Sandbar Sports Grill, Cocoa Beach Fish Camp Grill, Slide Inn, Ellie Mae\u2019s, and Carib Brewery.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "f71b5d3991f72e87",
+   "title": "Disney Treasure in port",
+   "start": "2026-11-21T11:00:00Z",
+   "end": "2026-11-21T22:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "1fa179f4741f5c94",
+   "title": "Harmony of the Seas in port",
+   "start": "2026-11-21T11:00:00Z",
+   "end": "2026-11-21T21:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "3876b7782d80732d",
+   "title": "Carnival Mardi Gras in port",
+   "start": "2026-11-21T11:00:00Z",
+   "end": "2026-11-21T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "2f8e7e7e4def8a9e",
+   "title": "Carnival Freedom in port",
+   "start": "2026-11-21T12:00:00Z",
+   "end": "2026-11-21T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "4256435404b85e6c",
+   "title": "Celebrity Apex in port",
+   "start": "2026-11-21T12:00:00Z",
+   "end": "2026-11-21T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "4feb216dba3ce457",
+   "title": "Stuff A Cruiser",
+   "start": "2026-11-21T14:00:00Z",
+   "end": "2026-11-21T19:00:00Z",
+   "town": "Rockledge",
+   "venue": "- Rockledge FL 32955",
+   "category": "Family",
+   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2986",
+   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2986",
+   "source": "City of Rockledge",
+   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "d46234a10bf82dc1",
+   "title": "Food Drive Collection Event at Walmart",
+   "start": "2026-11-21T15:00:00Z",
+   "end": "2026-11-21T19:00:00Z",
+   "town": "Cocoa",
+   "venue": "<p>Walmart Supercenter</p> - 2700 Clearlake Road Cocoa FL 32922",
+   "category": "Food & Markets",
+   "url": "https://www.cocoafl.gov/calendar.aspx?EID=6370",
+   "description": "Join Team Cocoa as we collect items for the Food Drive. https://www.cocoafl.gov/calendar.aspx?EID=6370",
+   "source": "City of Cocoa",
+   "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "dd0c6e5753b2a396",
+   "title": "Cocoa Village Saturday Art Market",
+   "start": "2026-11-21T16:00:00Z",
+   "end": "2026-11-21T22:00:00Z",
+   "town": "Cocoa",
+   "venue": "MYRT THARPE SQUARE, 12 Stone St, Cocoa, FL, 32922",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/cocoa-village-saturday-art-market-2/2026-11-21/",
+   "description": "Enjoy this weekly Saturday Cocoa Village Art Market in the heart of Cocoa Village with an array of artisans. Come browse and shop original local artwork by area artists! Spend the day in Cocoa Village also visiting the many shops and eateries.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   },
   {
