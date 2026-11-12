@@ -565,11 +565,30 @@
     var z = view.zoom;
     var x = (view.ghost.tx * SIM.TILE - view.camX) * z;
     var y = (view.ghost.ty * SIM.TILE - view.camY) * z;
-    ctx.fillStyle = view.ghost.ok ? 'rgba(74, 222, 128, 0.45)' : 'rgba(248, 113, 113, 0.45)';
-    ctx.fillRect(x, y, d.w * SIM.TILE * z, d.h * SIM.TILE * z);
+    var w = d.w * SIM.TILE * z;
+    var h = d.h * SIM.TILE * z;
+    ctx.fillStyle = view.ghost.ok ? 'rgba(22, 163, 74, 0.55)' : 'rgba(220, 38, 38, 0.78)';
+    ctx.fillRect(x, y, w, h);
     ctx.lineWidth = 3;
-    ctx.strokeStyle = view.ghost.ok ? '#bbf7d0' : '#fecaca';
-    ctx.strokeRect(x + 1, y + 1, d.w * SIM.TILE * z - 2, d.h * SIM.TILE * z - 2);
+    ctx.strokeStyle = view.ghost.ok ? '#bbf7d0' : '#fee2e2';
+    ctx.strokeRect(x + 1.5, y + 1.5, Math.max(0, w - 3), Math.max(0, h - 3));
+    if (!view.ghost.ok) {
+      ctx.strokeStyle = '#fff7ed';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x + 8, y + 8);
+      ctx.lineTo(x + w - 8, y + h - 8);
+      ctx.moveTo(x + w - 8, y + 8);
+      ctx.lineTo(x + 8, y + h - 8);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#fff7ed';
+    ctx.font = '700 ' + Math.max(14, Math.round(16 * z)) + 'px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(view.ghost.ok ? 'OK' : 'NO', x + w / 2, y + h / 2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
   }
 
   function drawMini(ctx, state, view) {

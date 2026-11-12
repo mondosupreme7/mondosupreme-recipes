@@ -6,6 +6,7 @@
   var DRAW = window.CINDER_DRAW;
   var SAVE_KEY = 'mondosupreme.cinderwell.v1';
   var PREF_KEY = 'mondosupreme.cinderwell.prefs';
+  var TUTOR_KEY = 'mondosupreme.cinderwell.tutorial';
   var STEP = 1 / 30;
 
   var $ = function (id) { return document.getElementById(id); };
@@ -42,6 +43,13 @@
   var faction = 'kiln';
   var difficulty = 'normal';
   var dayOn = true;
+  var tutorStep = -1;
+  var TUTOR = [
+    '1 of 4 · Select workers. Tap a hand, or drag a box around them.',
+    '2 of 4 · Place a building. Tap Barracks, tap grass, then Place.',
+    '3 of 4 · Train a unit. Tap the barracks, then a soldier.',
+    '4 of 4 · Attack. Tap Army, then Attack, then the ground.'
+  ];
   var loopOn = false;
   var dprCap = 2;
 
@@ -269,7 +277,7 @@
   function onTap(sx, sy, button, shift) {
     var world = screenToWorld(sx, sy);
     if (placeType && button !== 2) {
-      tryPlace(world.x, world.y);
+      previewTap(world.x, world.y);
       return;
     }
     var hit = SIM.pick(match, world.x, world.y, 0);
@@ -316,28 +324,30 @@
     selectedUnits().forEach(function (u) { if (u.type === 'worker') hands.push(u.id); });
     return hands;
   }
-  function aimGhost(type, tx, ty) {
-    var site = SIM.nearestSite(match, 0, type, tx, ty, 7);
-    if (site) ghost = { type: type, tx: site.tx, ty: site.ty, ok: true };
-    else ghost = { type: type, tx: tx, ty: ty, ok: false };
-    return site;
+  function previewAt(type, tx, ty) {
+    var ok = !!(match && SIM.canPlace(match, 0, type, tx, ty));
+    if (ghost && ghost.type === type && ghost.tx === tx && ghost.ty === ty && ghost.ok === ok) return ok;
+    ghost = { type: type, tx: tx, ty: ty, ok: ok };
+    cardSig = '';
+    return ok;
   }
-  function tryPlace(x, y) {
+  function previewTap(x, y) {
     var def = SIM.DEFS[placeType];
-    if (!def) { placeType = ''; return; }
-    var tx = (x / SIM.TILE | 0) - (def.w >> 1);
-    var ty = (y / SIM.TILE | 0) - (def.h >> 1);
+    if (!def) { placeType = ''; ghost = null; cardSig = ''; return; }
+    previewAt(placeType, (x / SIM.TILE | 0) - (def.w >> 1), (y / SIM.TILE | 0) - (def.h >> 1));
+    toast(ghost.ok ? 'Green. Tap Place to build it.' : 'Red. That ground will not hold it.');
+  }
+  function confirmPlace() {
+    if (!placeType) { toast('Pick a building first'); return; }
+    if (!ghost) { toast('Tap the map to preview it'); return; }
+    if (!ghost.ok) { toast('Red. That ground will not hold it.'); return; }
     var hands = builderIds();
-    if (!hands.length) { toast('Select a hand to build'); return; }
-    var site = aimGhost(placeType, tx, ty);
-    if (!site) {
-      toast('That ground will not hold it');
-      return;
-    }
-    var res = SIM.place(match, 0, placeType, site.tx, site.ty, hands);
+    if (!hands.length) { toast('Select a worker to build'); return; }
+    var res = SIM.place(match, 0, placeType, ghost.tx, ghost.ty, hands);
     if (!res.ok) {
       toast(res.reason === 'cost' ? 'Need more ore or thatch' : 'That ground will not hold it');
-      ghost = { type: placeType, tx: site.tx, ty: site.ty, ok: false };
+      ghost.ok = false;
+      cardSig = '';
       return;
     }
     placeType = '';
@@ -345,22 +355,13 @@
     play('launch');
     cardSig = '';
   }
-  function buildNear() {
-    if (!placeType) { toast('Pick Arms, Yard, Watch, or Shrine'); return; }
-    var hands = builderIds();
-    if (!hands.length) { toast('Select a hand to build'); return; }
+  function previewNear() {
+    if (!placeType) { toast('Pick a building first'); return; }
     var site = SIM.siteNearHearth(match, 0, placeType);
-    if (!site) { toast('No open grass by the Hearth'); return; }
+    if (!site) { toast('No open grass by the Hearth'); ghost = null; cardSig = ''; return; }
     ghost = { type: placeType, tx: site.tx, ty: site.ty, ok: true };
-    var res = SIM.place(match, 0, placeType, site.tx, site.ty, hands);
-    if (!res.ok) {
-      toast(res.reason === 'cost' ? 'Need more ore or thatch' : 'That ground will not hold it');
-      return;
-    }
-    placeType = '';
-    ghost = null;
-    play('launch');
     cardSig = '';
+    toast('Green, by the Hearth. Tap Place.');
   }
 
   function runCommand(cmd) {
@@ -391,8 +392,12 @@
       cardSig = '';
       return;
     }
+    if (cmd === 'place') {
+      confirmPlace();
+      return;
+    }
     if (cmd === 'near') {
-      buildNear();
+      previewNear();
       return;
     }
     if (cmd.indexOf('build:') === 0) {
@@ -400,12 +405,9 @@
       if (!SIM.canAfford(match, 0, SIM.DEFS[type].cost)) { toast('Need more ore or thatch'); return; }
       placeType = placeType === type ? '' : type;
       attackArm = false;
+      ghost = null;
       cardSig = '';
-      if (placeType) {
-        var seeded = SIM.siteNearHearth(match, 0, placeType);
-        ghost = seeded ? { type: placeType, tx: seeded.tx, ty: seeded.ty, ok: true } : null;
-        toast('Green ground will hold it. Near drops it by the Hearth.');
-      } else ghost = null;
+      if (placeType) toast(SIM.DEFS[type].plain + '. Tap the map to preview, then Place.');
       return;
     }
     var building = selectedBuilding();
@@ -454,15 +456,27 @@
     play('click');
   }
 
-  function costText(cost) {
+  function costWords(cost) {
     if (!cost) return '';
-    return cost[0] + '/' + cost[1];
+    var bits = [];
+    if (cost[0]) bits.push(cost[0] + ' ore');
+    if (cost[1]) bits.push(cost[1] + ' thatch');
+    return bits.length ? bits.join(' · ') : 'Free';
   }
   function poor(cost) {
     return !SIM.canAfford(match, 0, cost);
   }
+  function plainName(def) {
+    return (def && (def.plain || def.name)) || '';
+  }
 
   function describe() {
+    if (placeType && SIM.DEFS[placeType]) {
+      var named = plainName(SIM.DEFS[placeType]);
+      if (!ghost) return named + ' · tap the map to preview, then Place';
+      if (!ghost.ok) return named + ' · red, that spot is blocked';
+      return named + ' · green, tap Place to build';
+    }
     var units = selectedUnits();
     var building = selectedBuilding();
     var counts = {};
@@ -479,60 +493,99 @@
       if (building.queue.length) return name + ' · ' + building.queue.length + ' in queue';
       return name + ' · ' + Math.max(0, Math.round(building.hp)) + '/' + building.hpMax;
     }
-    return placeType ? 'Tap grass to raise a ' + SIM.DEFS[placeType].name : 'Tap a hand or a building';
+    return 'Tap a hand or a building';
   }
 
   function buttonList() {
     var units = selectedUnits();
     var building = selectedBuilding();
     var buttons = [];
-    if (placeType) buttons.push({ cmd: 'cancel', label: 'Cancel', sub: 'esc', key: 'Escape' });
+    function placeBtn() {
+      return {
+        cmd: 'place',
+        label: 'Place',
+        role: !ghost ? 'Tap the map first' : (ghost.ok ? 'Build it here' : 'That spot is blocked'),
+        sub: '',
+        key: 'p',
+        poor: !ghost || !ghost.ok,
+        on: !!(ghost && ghost.ok)
+      };
+    }
+    function cancelBtn() {
+      return { cmd: 'cancel', label: 'Cancel', role: 'Stop placing', sub: '', key: 'Escape' };
+    }
+    if (placeType && !onlyWorkers(units)) {
+      buttons.push(placeBtn());
+      buttons.push(cancelBtn());
+      return buttons;
+    }
     if (!units.length && building) {
       if (!building.done) {
-        buttons.push({ cmd: 'cancelBuild', label: 'Refund', sub: '75%', key: 'x' });
+        buttons.push({ cmd: 'cancelBuild', label: 'Refund', role: 'Cancel this site', sub: 'Returns most of the cost', key: 'x' });
         return buttons;
       }
       var trains = SIM.trainsOf(match, building);
-      var keys = ['c', 'p', 'o', 'u', 'v', 'g'];
+      var keys = ['c', 'v', 'o', 'u', 'g', 'm'];
       var ki = 0;
       trains.forEach(function (type) {
         var def = SIM.DEFS[type];
-        buttons.push({ cmd: 'train:' + type, label: def.label, sub: costText(def.cost), key: keys[ki++] || '', poor: poor(def.cost) });
-      });
-      if (building.type === 'shrine' && !match.upgrades[0]) {
-        buttons.push({ cmd: 'research', label: 'Whet', sub: costText(SIM.DEFS.shrine.research), key: 'k', poor: poor(SIM.DEFS.shrine.research) });
-      }
-      if (building.queue.length) buttons.push({ cmd: 'cancelTrain', label: 'Undo', sub: 'last', key: 'x' });
-      return buttons.slice(0, 6);
-    }
-    if (onlyWorkers(units)) {
-      [['barracks', 'Arms', 'b'], ['yard', 'Yard', 'y'], ['tower', 'Watch', 't'], ['shrine', 'Shrine', 'r']].forEach(function (row) {
         buttons.push({
-          cmd: 'build:' + row[0],
-          label: row[1],
-          sub: costText(SIM.DEFS[row[0]].cost),
-          key: row[2],
-          poor: poor(SIM.DEFS[row[0]].cost),
-          on: placeType === row[0]
+          cmd: 'train:' + type,
+          label: plainName(def),
+          role: def.role || '',
+          sub: costWords(def.cost),
+          key: keys[ki++] || '',
+          poor: poor(def.cost)
         });
       });
-      if (placeType) buttons.push({ cmd: 'near', label: 'Near', sub: 'hearth', key: 'n' });
-      else buttons.push({ cmd: 'stop', label: 'Stop', sub: 's', key: 's' });
-      return buttons.slice(0, 6);
+      if (building.type === 'shrine' && !match.upgrades[0]) {
+        buttons.push({
+          cmd: 'research',
+          label: 'Whetstone',
+          role: 'Stronger attacks',
+          sub: costWords(SIM.DEFS.shrine.research),
+          key: 'k',
+          poor: poor(SIM.DEFS.shrine.research)
+        });
+      }
+      if (building.queue.length) buttons.push({ cmd: 'cancelTrain', label: 'Undo', role: 'Cancel the last train', sub: '', key: 'x' });
+      return buttons.slice(0, 8);
+    }
+    if (onlyWorkers(units)) {
+      if (placeType) {
+        buttons.push(placeBtn());
+        buttons.push(cancelBtn());
+        buttons.push({ cmd: 'near', label: 'By hearth', role: 'Preview beside home', sub: '', key: 'n' });
+      }
+      ['barracks', 'yard', 'tower', 'shrine'].forEach(function (type, index) {
+        var def = SIM.DEFS[type];
+        buttons.push({
+          cmd: 'build:' + type,
+          label: plainName(def),
+          role: def.role,
+          sub: costWords(def.cost),
+          key: ['b', 'y', 't', 'r'][index],
+          poor: poor(def.cost),
+          on: placeType === type
+        });
+      });
+      if (!placeType) buttons.push({ cmd: 'stop', label: 'Stop', role: 'Clear orders', sub: '', key: 's' });
+      return buttons.slice(0, 8);
     }
     if (units.length) {
-      buttons.push({ cmd: 'attack', label: 'Attack', sub: 'a', key: 'a', on: attackArm });
-      buttons.push({ cmd: 'stop', label: 'Stop', sub: 's', key: 's' });
-      buttons.push({ cmd: 'hold', label: 'Hold', sub: 'h', key: 'h' });
+      buttons.push({ cmd: 'attack', label: 'Attack', role: 'Then tap a target', sub: '', key: 'a', on: attackArm });
+      buttons.push({ cmd: 'stop', label: 'Stop', role: 'Clear orders', sub: '', key: 's' });
+      buttons.push({ cmd: 'hold', label: 'Hold', role: 'Stand and fight', sub: '', key: 'h' });
     }
-    return buttons.slice(0, 6);
+    return buttons.slice(0, 8);
   }
 
   function paintCard() {
     if (!match) return;
     var info = describe();
     var buttons = buttonList();
-    var sig = info + '|' + placeType + '|' + (attackArm ? 1 : 0) + '|' + buttons.map(function (b) {
+    var ghostKey = ghost ? ghost.type + ':' + ghost.tx + ',' + ghost.ty + (ghost.ok ? 'y' : 'n') : '';
+    var sig = info + '|' + placeType + '|' + ghostKey + '|' + (attackArm ? 1 : 0) + '|' + buttons.map(function (b) {
       return b.cmd + (b.poor ? '!' : '') + (b.on ? '*' : '');
     }).join(',');
     var infoNode = $('info');
@@ -549,12 +602,20 @@
       if (b.poor) btn.classList.add('is-poor');
       if (b.on) btn.classList.add('is-on');
       btn.setAttribute('aria-pressed', b.on ? 'true' : 'false');
+      btn.setAttribute('aria-label', [b.label, b.role, b.sub].filter(Boolean).join(', '));
       var name = document.createElement('b');
       name.textContent = b.label;
-      var sub = document.createElement('small');
-      sub.textContent = b.sub || '';
       btn.appendChild(name);
-      btn.appendChild(sub);
+      if (b.role) {
+        var role = document.createElement('small');
+        role.textContent = b.role;
+        btn.appendChild(role);
+      }
+      if (b.sub) {
+        var sub = document.createElement('small');
+        sub.textContent = b.sub;
+        btn.appendChild(sub);
+      }
       if (b.key) hotMap[b.key.toLowerCase()] = b.cmd;
       hotMap[String(index + 1)] = b.cmd;
       card.appendChild(btn);
@@ -570,8 +631,10 @@
     if ($('ore').textContent !== ore) $('ore').textContent = ore;
     if ($('thatch').textContent !== thatch) $('thatch').textContent = thatch;
     if ($('pop').textContent !== pop) $('pop').textContent = pop;
-    var who = SIM.FACTIONS[match.faction[0]].name + ' · ' + SIM.FACTIONS[match.faction[1]].name;
+    var who = (match.difficulty === 'easy' ? 'Easy' : 'Normal') + ' · ' + SIM.FACTIONS[match.faction[0]].name + ' · ' + SIM.FACTIONS[match.faction[1]].name;
     if ($('versus').textContent !== who) $('versus').textContent = who;
+    if (document.body.dataset.difficulty !== match.difficulty) document.body.dataset.difficulty = match.difficulty;
+    tutorWatch();
     var idle = SIM.idsWhere(match, 0, function (u) { return u.type === 'worker' && u.order === 'idle'; }).length;
     var idleLabel = 'Idle' + (idle ? ' ' + idle : '');
     if ($('btnIdle').textContent !== idleLabel) $('btnIdle').textContent = idleLabel;
@@ -691,6 +754,62 @@
     paintResume();
   }
 
+  function readLobbyDifficulty() {
+    var pressed = document.querySelector('#lobby [data-diff][aria-pressed="true"]');
+    var value = pressed ? pressed.getAttribute('data-diff') : difficulty;
+    return String(value || '').trim().toLowerCase() === 'easy' ? 'easy' : 'normal';
+  }
+
+  function tutorSeen() {
+    try { return localStorage.getItem(TUTOR_KEY) === '1'; }
+    catch (e) { return true; }
+  }
+  function tutorMark() {
+    try { localStorage.setItem(TUTOR_KEY, '1'); }
+    catch (e) { /* private mode */ }
+  }
+  function tutorShow(step) {
+    var node = $('tutor');
+    if (!node) return;
+    if (step < 0 || step > 3) {
+      tutorStep = -1;
+      node.hidden = true;
+      return;
+    }
+    tutorStep = step;
+    $('tutorText').textContent = TUTOR[step];
+    $('tutorNext').textContent = step === 3 ? 'Done' : 'Next';
+    node.hidden = false;
+  }
+  function tutorFinish() {
+    tutorMark();
+    tutorShow(-1);
+  }
+  function tutorOpen() {
+    if (tutorSeen()) { tutorShow(-1); return; }
+    tutorMark();
+    tutorShow(0);
+  }
+  function tutorAdvance() {
+    if (tutorStep < 0) return;
+    if (tutorStep >= 3) tutorFinish();
+    else tutorShow(tutorStep + 1);
+  }
+  function tutorWatch() {
+    if (tutorStep < 0 || !match) return;
+    if (tutorStep === 0 && selectedUnits().some(function (u) { return u.type === 'worker'; })) tutorShow(1);
+    else if (tutorStep === 1 && match.buildings.some(function (b) { return b.side === 0 && !b.dead && b.type !== 'hearth'; })) tutorShow(2);
+    else if (tutorStep === 2 && (
+      match.units.some(function (u) { return u.side === 0 && !u.dead && u.type !== 'worker'; }) ||
+      match.buildings.some(function (b) {
+        return b.side === 0 && b.queue && b.queue.some(function (q) { return q && q !== 'worker' && q !== 'whet'; });
+      })
+    )) tutorShow(3);
+    else if (tutorStep === 3 && match.units.some(function (u) {
+      return u.side === 0 && !u.dead && u.type !== 'worker' && (u.order === 'attack' || u.order === 'attackmove');
+    })) tutorFinish();
+  }
+
   function begin(fromSave) {
     placeType = '';
     ghost = null;
@@ -704,21 +823,30 @@
       match = SIM.restore(fromSave);
       if (!match) { toast('That save could not be read'); return; }
       faction = match.faction[0];
-      difficulty = match.difficulty;
       dayOn = !!match.dayOn;
       camX = fromSave.camX || 0;
       camY = fromSave.camY || 0;
       zoom = fromSave.zoom || 1;
+      tutorShow(-1);
     } else {
+      difficulty = readLobbyDifficulty();
+      savePrefs();
       match = SIM.create({ faction: faction, difficulty: difficulty, dayOn: dayOn, seed: (Math.random() * 0x7fffffff) | 0 });
-      match.note = { text: 'Hands are gathering. Tap them, then Arms.', life: 5 };
+      match.note = {
+        text: match.difficulty === 'easy'
+          ? 'Easy. The other banner holds off for about five minutes.'
+          : 'Hands are gathering. Tap them, then a building.',
+        life: 5
+      };
       zoom = 1.2;
+      tutorOpen();
     }
     enterLive();
     if (!fromSave) lookAtHearth(0);
     else clampCam();
     resize();
     paintPicks();
+    paintHud();
   }
 
   function paintResume() {
@@ -811,8 +939,9 @@
       } else if (event.button === 1) gesture = 'pan';
       else gesture = 'pending';
       if (placeType && event.button === 0) {
+        var down = screenToWorld(p.x, p.y);
         var def = SIM.DEFS[placeType];
-        if (def) aimGhost(placeType, (p.x / zoom + camX) / SIM.TILE - (def.w >> 1) | 0, (p.y / zoom + camY) / SIM.TILE - (def.h >> 1) | 0);
+        if (def) previewAt(placeType, (down.x / SIM.TILE | 0) - (def.w >> 1), (down.y / SIM.TILE | 0) - (def.h >> 1));
       }
     });
     canvas.addEventListener('pointermove', function (event) {
@@ -843,7 +972,8 @@
       var moved = Math.hypot((cur.x - cur.sx) * p.sx, (cur.y - cur.sy) * p.sy);
       if (gesture === 'pending' && moved > 12) {
         var start = { x: cur.lx, y: cur.ly, rect: p.rect };
-        if (cur.button === 2 || cur.button === 1 || edgeStart(start)) gesture = 'pan';
+        if (cur.button === 0 && placeType) gesture = 'preview';
+        else if (cur.button === 2 || cur.button === 1 || edgeStart(start)) gesture = 'pan';
         else gesture = 'box';
       }
       if (gesture === 'pan') {
@@ -854,10 +984,10 @@
         var x0 = Math.min(cur.lx, p.x);
         var y0 = Math.min(cur.ly, p.y);
         box = { x: x0, y: y0, w: Math.abs(p.x - cur.lx), h: Math.abs(p.y - cur.ly) };
-      } else if (placeType) {
+      } else if (placeType && (gesture === 'pending' || gesture === 'preview')) {
         var world = screenToWorld(p.x, p.y);
         var def = SIM.DEFS[placeType];
-        aimGhost(placeType, (world.x / SIM.TILE | 0) - (def.w >> 1), (world.y / SIM.TILE | 0) - (def.h >> 1));
+        if (def) previewAt(placeType, (world.x / SIM.TILE | 0) - (def.w >> 1), (world.y / SIM.TILE | 0) - (def.h >> 1));
       }
     });
     function finish(event) {
@@ -872,7 +1002,9 @@
       }
       var end = localPoint(event);
       var moved = Math.hypot((cur.x - cur.sx) * end.sx, (cur.y - cur.sy) * end.sy);
-      if (gesture === 'box' && box && (box.w > 10 || box.h > 10)) {
+      if (gesture === 'preview') {
+        onTap(end.x, end.y, cur.button, event.shiftKey);
+      } else if (gesture === 'box' && box && (box.w > 10 || box.h > 10)) {
         var a = screenToWorld(box.x, box.y);
         var b = screenToWorld(box.x + box.w, box.y + box.h);
         var ids = SIM.unitsInRect(match, a.x, a.y, b.x, b.y, 0);
@@ -939,7 +1071,7 @@
     });
     document.querySelectorAll('[data-diff]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        difficulty = btn.getAttribute('data-diff');
+        difficulty = btn.getAttribute('data-diff') === 'easy' ? 'easy' : 'normal';
         savePrefs();
         paintPicks();
       });
@@ -957,7 +1089,13 @@
     }
     $('soundLobby').addEventListener('click', flipSound);
     $('soundSheet').addEventListener('click', flipSound);
-    $('start').addEventListener('click', function () { begin(null); });
+    $('start').addEventListener('click', function () {
+      difficulty = readLobbyDifficulty();
+      savePrefs();
+      begin(null);
+    });
+    $('tutorNext').addEventListener('click', tutorAdvance);
+    $('tutorSkip').addEventListener('click', tutorFinish);
     $('resume').addEventListener('click', function () {
       var data = readSave();
       if (data) begin(data);
@@ -983,7 +1121,11 @@
       sheetOpen = false;
       leaveLive();
     });
-    $('rematch').addEventListener('click', function () { begin(null); });
+    $('rematch').addEventListener('click', function () {
+      difficulty = readLobbyDifficulty();
+      savePrefs();
+      begin(null);
+    });
     $('endLeave').addEventListener('click', leaveLive);
     window.addEventListener('keydown', onKey);
     window.addEventListener('keyup', onKeyUp);

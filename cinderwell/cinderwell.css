@@ -185,8 +185,23 @@ body.under-attack #stage::after {
   padding: 4px;
   background: #14110e;
 }
-#card { grid-template-columns: repeat(auto-fit, minmax(56px, 1fr)); }
+#card { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 #card:empty { display: none; }
+#tutor {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: #1c1917;
+  color: #f7efe0;
+  border-top: 2px solid #fdba74;
+}
+#tutor[hidden] { display: none !important; }
+#tutor p { flex: 1 1 180px; margin: 0; font: 600 13px/1.3 Inter, sans-serif; }
+.tutor-actions { display: flex; flex: 1 1 148px; gap: 6px; }
+.tutor-actions button { flex: 1 1 44px; }
 #shortcuts {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   padding-bottom: max(4px, calc(env(safe-area-inset-bottom) / var(--page-scale, 1)));
@@ -194,10 +209,13 @@ body.under-attack #stage::after {
 html[data-theme] body.cinder-page #card button,
 html[data-theme] body.cinder-page #shortcuts button,
 html[data-theme] body.cinder-page #sheet button,
-html[data-theme] body.cinder-page #end button {
-  min-height: 44px;
-  min-width: 0;
-  padding: 2px 4px;
+html[data-theme] body.cinder-page #end button,
+html[data-theme] body.cinder-page #tutor button {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  height: auto !important;
+  white-space: normal !important;
+  padding: 4px 6px;
   background: #44403c !important;
   color: #fafaf9 !important;
   border: 1px solid #a8a29e !important;
@@ -205,8 +223,9 @@ html[data-theme] body.cinder-page #end button {
   font: 700 12px/1.15 Inter, sans-serif !important;
   touch-action: manipulation;
 }
-#card button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
-#card button small { font: 600 10px/1.1 ui-monospace, monospace; color: #fde68a; }
+#card button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: visible; text-align: center; }
+#card button b { display: block; font-size: 12px !important; line-height: 1.1; font-weight: 700; }
+#card button small { display: block; max-width: 100%; font: 600 10px/1.15 Inter, sans-serif !important; color: #fde68a; white-space: normal; overflow-wrap: anywhere; }
 html[data-theme] body.cinder-page #card button.is-on { background: #9a3412 !important; border-color: #fdba74 !important; }
 html[data-theme] body.cinder-page #card button.is-poor small { color: #fecaca; }
 html[data-theme] body.cinder-page #end .primary,
