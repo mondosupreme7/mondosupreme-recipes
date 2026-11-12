@@ -10,28 +10,25 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mondosupreme">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#e7f2fb" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://ll.thespacedevs.com https://api.tidesandcurrents.noaa.gov https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<title>Search — Mondosupreme</title>
-<meta name="description" content="Ask the Butler, a cyber-butler that answers from a keyless AI line, Wikipedia, DuckDuckGo, and every corner of Mondosupreme.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
+<title>Ask Mondo — Mondosupreme</title>
+<meta name="description" content="Ask Mondo a plain-English question. Hollis looks through recipes, the weather, tides, stocks, and the rest of this site.">
 <link rel="stylesheet" href="/recipes/styles.css?v=6">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=10">
-<link rel="stylesheet" href="search.css?v=5">
 <link rel="stylesheet" href="/readable.css?v=16">
+<link rel="stylesheet" href="search.css?v=8">
 </head>
 <body class="search-page">
 <header class="site-header"><div class="wrap hdr">
- <a href="/search/" class="brand"><span class="logo">🔍</span><span>Search</span></a>
+ <a href="/search/" class="brand"><span>Search</span></a>
  <nav class="site-nav" aria-label="Site">
   <a href="/">Home</a>
   <a href="/recipes/">Recipes</a>
@@ -59,90 +56,135 @@
  </nav>
 </div></header>
 <main class="wrap ask-main">
- <div class="ask-hero">
-  <figure class="butler-card">
-   <img class="butler" src="butler.svg" width="128" height="128" alt="Ask Mondo butler" decoding="async">
-   <figcaption>Search</figcaption>
-  </figure>
-  <div class="ask-intro">
-   <p class="ask-kicker">AI Cyber-Butler</p>
-   <h1>Search</h1>
-   <p class="ask-lead">Ask about the next Cape launch, tonight's Port Canaveral tide, a recipe in the kitchen, why the top stock is on the list, or what to plant in 32927.</p>
+ <div class="ask-stage">
+  <div class="ask-hero">
+   <figure class="butler-card">
+    <svg class="hollis" viewBox="0 0 120 148" role="img" aria-labelledby="hollisTitle">
+     <title id="hollisTitle">Hollis</title>
+     <circle cx="60" cy="74" r="54" fill="#e7f2fb" stroke="#0b3d91" stroke-width="2"/>
+     <path d="M48 112h8v20h-8zM64 112h8v20h-8z" fill="#16325c"/>
+     <path d="M45 130h14v6H45zM61 130h14v6H61z" fill="#24180f"/>
+     <path d="M40 78c2-10 10-16 20-16s18 6 20 16v34H40V78z" fill="#0b3d91"/>
+     <path d="M52 64h16l-8 16z" fill="#fffdf8"/>
+     <path d="M54 74c-2 2-6 2-8 0 2 4 6 5 8 3zM66 74c2 2 6 2 8 0-2 4-6 5-8 3z" fill="#1a9b8e"/>
+     <circle cx="60" cy="75" r="2.1" fill="#0e6d62"/>
+     <circle cx="60" cy="96" r="1.5" fill="#f6c445"/>
+     <circle cx="60" cy="104" r="1.5" fill="#f6c445"/>
+     <path d="M40 82c-10 6-14 18-10 28" fill="none" stroke="#0b3d91" stroke-width="7" stroke-linecap="round"/>
+     <circle cx="28" cy="112" r="4.2" fill="#e0ac69" stroke="#24180f" stroke-width="1"/>
+     <g transform="translate(76 70)">
+      <g class="hollis-wave">
+       <path d="M2 34c8-16 16-26 30-28" fill="none" stroke="#0b3d91" stroke-width="7" stroke-linecap="round"/>
+       <circle cx="34" cy="6" r="5" fill="#e0ac69" stroke="#24180f" stroke-width="1"/>
+       <path d="M30-1v-7M34-1v-8M38 1v-6" fill="none" stroke="#e0ac69" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+     </g>
+     <circle cx="60" cy="50" r="18" fill="#e0ac69" stroke="#24180f" stroke-width="1.6"/>
+     <path d="M44 48c1-16 8-24 16-24s15 8 16 24c-3-8-9-12-16-12s-13 4-16 12z" fill="#24180f"/>
+     <path d="M46 46c4-2 8-1 10 2M64 48c2-3 6-4 10-2" fill="none" stroke="#24180f" stroke-width="1.4" stroke-linecap="round"/>
+     <circle cx="53" cy="52" r="1.8" fill="#24180f"/>
+     <circle cx="67" cy="52" r="1.8" fill="#24180f"/>
+     <circle cx="53.6" cy="51.4" r=".6" fill="#fff"/>
+     <circle cx="67.6" cy="51.4" r=".6" fill="#fff"/>
+     <path d="M55 59c2.4 3.2 7.6 3.2 10 0" fill="none" stroke="#24180f" stroke-width="1.5" stroke-linecap="round"/>
+     <ellipse cx="46" cy="58" rx="3.2" ry="2" fill="#e08989" opacity=".7"/>
+     <ellipse cx="74" cy="58" rx="3.2" ry="2" fill="#e08989" opacity=".7"/>
+    </svg>
+    <figcaption>Hollis</figcaption>
+   </figure>
+   <div class="ask-intro">
+    <h1>Ask Mondo</h1>
+    <p class="ask-lead">Ask in plain English. Hollis looks through the recipes, the tide book, the launch board, the weather, and the rest of the house.</p>
+   </div>
   </div>
+  <search class="ask-search">
+   <form class="ask-form" id="askForm" action="/search/" method="get">
+    <label class="ask-label" for="q">Ask a question</label>
+    <div class="ask-bar">
+     <input id="q" name="q" type="search" enterkeyhint="go" maxlength="140" autocomplete="off" spellcheck="true" placeholder="Ask a question…" aria-describedby="askStatus">
+     <button class="btn primary ask-go" type="submit">Ask</button>
+    </div>
+   </form>
+  </search>
+  <p class="ask-status" id="askStatus" role="status" aria-live="polite">Ask a question in plain English.</p>
+  <div class="ask-examples" role="group" aria-label="Example questions">
+   <button class="ask-example" type="button" data-q="What's tonight's Port Canaveral tide?">What's tonight's Port Canaveral tide?</button>
+   <button class="ask-example" type="button" data-q="What's the next Cape launch?">What's the next Cape launch?</button>
+   <button class="ask-example" type="button" data-q="How do I make fluffy buttermilk pancakes?">How do I make fluffy buttermilk pancakes?</button>
+   <button class="ask-example" type="button" data-q="Why is the top stock on the list?">Why is the top stock on the list?</button>
+   <button class="ask-example" type="button" data-q="Where is the weather?">Where is the weather?</button>
+  </div>
+  <details class="ask-tools" id="askTools">
+   <summary>
+    <span class="ask-tools-label">
+     <span class="ask-tools-with-voice">Dictate, topics, privacy</span>
+     <span class="ask-tools-no-voice">Topics and privacy</span>
+    </span>
+    <span class="ask-tools-state">
+     <span class="ask-mode-echo" data-mode="cook">Cooking</span>
+     <span class="ask-mode-echo" data-mode="cruise">Cruises</span>
+     <span class="ask-mode-echo" data-mode="retro">Classics</span>
+     <span class="ask-mode-echo" data-mode="tech">Tech</span>
+     <span class="ask-mode-echo" data-mode="site">On this site</span>
+     <span class="is-public">Public</span>
+     <span class="is-private">Private</span>
+    </span>
+   </summary>
+   <div class="ask-tools-body">
+    <div class="ask-actions">
+     <button class="btn ask-voice" id="voiceBtn" type="button">Dictate</button>
+     <button class="btn ask-radical" id="radicalBtn" type="button">I'm Feeling Radical!</button>
+    </div>
+    <div class="ask-priv" role="group" aria-label="Public or private search">
+     <button class="btn priv-btn" id="privPublic" type="button" aria-pressed="true">Public</button>
+     <button class="btn priv-btn" id="privPrivate" type="button" aria-pressed="false">Private</button>
+     <p id="privNote">Public questions join What Visitors Are Asking. Private questions stay on this computer.</p>
+    </div>
+    <div class="ask-modes" id="modeBar" role="group" aria-label="Topic mode">
+     <button class="btn mode-btn" type="button" data-mode="all" aria-pressed="true">All Web &amp; AI</button>
+     <button class="btn mode-btn" type="button" data-mode="cook" aria-pressed="false">Cooking &amp; Recipes</button>
+     <button class="btn mode-btn" type="button" data-mode="cruise" aria-pressed="false">Cruises &amp; Travel</button>
+     <button class="btn mode-btn" type="button" data-mode="retro" aria-pressed="false">Classics</button>
+     <button class="btn mode-btn" type="button" data-mode="tech" aria-pressed="false">Tech &amp; Finance</button>
+     <button class="btn mode-btn" type="button" data-mode="site" aria-pressed="false">Search Inside Mondosupreme</button>
+    </div>
+   </div>
+  </details>
  </div>
- <form class="ask-form" id="askForm" role="search">
-  <label class="ask-label" for="q">Search</label>
-  <div class="ask-bar">
-   <input id="q" name="q" type="search" enterkeyhint="search" maxlength="140" autocomplete="off" placeholder="Ask anything…" aria-describedby="askStatus">
-   <button class="btn primary ask-go" type="submit">Search</button>
-  </div>
- </form>
- <p class="ask-status" id="askStatus" role="status" aria-live="polite">The butler is at the door. Ask a question.</p>
- <details class="ask-tools" id="askTools">
-  <summary>
-   <span class="ask-tools-label">
-    <span class="ask-tools-with-voice">Dictate, topics, privacy</span>
-    <span class="ask-tools-no-voice">Topics and privacy</span>
-   </span>
-   <span class="ask-tools-state">
-    <span class="ask-mode-echo" data-mode="cook">Cooking</span>
-    <span class="ask-mode-echo" data-mode="cruise">Cruises</span>
-    <span class="ask-mode-echo" data-mode="retro">Classics</span>
-    <span class="ask-mode-echo" data-mode="tech">Tech</span>
-    <span class="ask-mode-echo" data-mode="site">On this site</span>
-    <span class="is-public">Public</span>
-    <span class="is-private">Private</span>
-   </span>
-  </summary>
-  <div class="ask-tools-body">
-   <div class="ask-actions">
-    <button class="btn ask-voice" id="voiceBtn" type="button">Dictate</button>
-    <button class="btn ask-radical" id="radicalBtn" type="button">I'm Feeling Radical!</button>
-   </div>
-   <div class="ask-priv" role="group" aria-label="Public or private search">
-    <button class="btn priv-btn" id="privPublic" type="button" aria-pressed="true">Public</button>
-    <button class="btn priv-btn" id="privPrivate" type="button" aria-pressed="false">Private</button>
-    <p id="privNote">Public questions join What Visitors Are Asking. Private questions stay on this computer.</p>
-   </div>
-   <div class="ask-modes" id="modeBar" role="group" aria-label="Topic mode">
-    <button class="btn mode-btn" type="button" data-mode="all" aria-pressed="true">All Web &amp; AI</button>
-    <button class="btn mode-btn" type="button" data-mode="cook" aria-pressed="false">Cooking &amp; Recipes</button>
-    <button class="btn mode-btn" type="button" data-mode="cruise" aria-pressed="false">Cruises &amp; Travel</button>
-    <button class="btn mode-btn" type="button" data-mode="retro" aria-pressed="false">Classics</button>
-    <button class="btn mode-btn" type="button" data-mode="tech" aria-pressed="false">Tech &amp; Finance</button>
-    <button class="btn mode-btn" type="button" data-mode="site" aria-pressed="false">Search Inside Mondosupreme</button>
-   </div>
-  </div>
- </details>
- <section class="ask-win" id="toolWin" hidden>
-  <h2>Instant tool bar</h2>
-  <div id="toolBody"></div>
- </section>
- <section class="ask-win" id="briefWin" aria-labelledby="briefTitle">
-  <h2 id="briefTitle">Search</h2>
-  <div id="briefBody">
-   <p>The brief lands here. If the outside AI line is slow, Wikipedia, DuckDuckGo, and this site still fill the page.</p>
-  </div>
-  <div class="ask-chips" id="chipBar" hidden></div>
- </section>
- <section class="ask-win" id="deepWin" hidden>
-  <h2>Deep Search Externally</h2>
-  <div class="deep-row" id="deepRow"></div>
- </section>
- <section class="ask-win" id="siteWin">
-  <h2>On Mondosupreme</h2>
-  <div id="siteBody"><p class="ask-empty">Recipes, wiki pages, cruise ships, Port Canaveral deals, forum posts, Marketplace listings, and site apps show up beside the web results.</p></div>
- </section>
- <section class="ask-win" id="webWin">
-  <h2>Web results</h2>
-  <div id="webBody"><p class="ask-empty">Wikipedia and DuckDuckGo instant answers land here.</p></div>
- </section>
- <section class="ask-win" id="wireWin" aria-labelledby="wireTitle">
-  <h2 id="wireTitle">What Visitors Are Asking</h2>
-  <ul class="wire-list" id="wireList"><li class="ask-empty">The wire is quiet. A public question can show up here.</li></ul>
- </section>
+ <div class="ask-results" id="askResults">
+  <section class="ask-win answer-card" id="briefWin" aria-labelledby="briefTitle">
+   <h2 id="briefTitle">You may find my answer at…</h2>
+   <p id="answerLead" class="answer-lead" hidden></p>
+   <p id="didYou" class="did-you" hidden></p>
+   <div id="briefBody"></div>
+  </section>
+  <section class="ask-win" id="toolWin" hidden>
+   <h2>Worked out</h2>
+   <div id="toolBody"></div>
+  </section>
+  <section class="ask-win" id="siteWin" aria-labelledby="siteTitle">
+   <h2 id="siteTitle">Results</h2>
+   <div id="siteBody"></div>
+  </section>
+  <section class="ask-win ask-also" id="alsoBlock" hidden>
+   <h2>People also asked</h2>
+   <div class="ask-chips" id="chipBar"></div>
+  </section>
+  <section class="ask-win" id="deepWin" hidden>
+   <h2>Deep Search Externally</h2>
+   <div class="deep-row" id="deepRow"></div>
+  </section>
+  <section class="ask-win" id="webWin" hidden>
+   <h2>Web results</h2>
+   <div id="webBody"></div>
+  </section>
+  <section class="ask-win" id="wireWin" aria-labelledby="wireTitle">
+   <h2 id="wireTitle">What Visitors Are Asking</h2>
+   <ul class="wire-list" id="wireList"><li class="ask-empty">The wire is quiet. A public question can show up here.</li></ul>
+  </section>
+ </div>
 </main>
-<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · A homemade butler, not those other search pages. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/daily-recipe/">Recipe TV</a> · <a href="/cruises/">Cruises</a> · <a href="/weather/">Weather</a> · <a href="/wordle/">Wordle</a> · <a href="/search/">Search</a> · <a href="/stocks/">Stocks</a></div></footer>
+<footer class="site-footer"><div class="wrap"><p class="studio-footer">© <span id="yr"></span> Mondosupreme.com · Ask a question in plain English. · <a href="/">Home</a> · <a href="/recipes/">Recipes</a> · <a href="/weather/">Weather</a> · <a href="/tides/">Tides</a> · <a href="/stocks/">Stocks</a> · <a href="/search/">Search</a></p></div></footer>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>
@@ -152,6 +194,6 @@
 <script src="/members.js?v=5"></script>
 <script src="/shell.js?v=17"></script>
 <script src="/backup.js"></script>
-<script src="search.js?v=6"></script>
+<script src="search.js?v=8"></script>
 </body>
 </html>

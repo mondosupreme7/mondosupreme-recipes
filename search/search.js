@@ -284,8 +284,10 @@
       ['App', 'Recipe TV', '/daily-recipe/', 'daily youtube recipe show chef'],
       ['App', 'Cruises', '/cruises/', 'royal caribbean ships harbor port canaveral'],
       ['App', 'Weather', '/weather/', 'doppler radar forecast cocoa local on the 8s'],
+      ['App', 'Tides', '/tides/', 'port canaveral tide high low surf'],
+      ['App', 'Launches', '/launches/', 'cape canaveral launch rocket liftoff'],
       ['App', 'Word Game', '/wordle/', 'daily wordle five letter puzzle'],
-      ['App', 'AI Search', '/search/', 'ask mondo jeeves cyber butler search engine'],
+      ['App', 'AI Search', '/search/', 'ask mondo hollis butler search questions'],
       ['App', 'Stocks', '/stocks/', 'oversold rsi swing screen finance'],
       ['App', 'Wiki', '/wiki/', 'encarta notes how-to notebook'],
       ['App', 'Drawing Board', '/board/', 'ms paint shared whiteboard'],
@@ -560,20 +562,30 @@
   }
   function paintChips(list) {
     var bar = $('chipBar');
-    if (!list.length) { bar.hidden = true; bar.innerHTML = ''; return; }
-    bar.hidden = false;
+    var block = $('alsoBlock');
+    if (!bar) return;
+    if (!list || !list.length) {
+      bar.innerHTML = '';
+      if (block) block.hidden = true;
+      return;
+    }
+    if (block) block.hidden = false;
     bar.innerHTML = list.map(function (q) {
       return '<button class="btn chip" type="button" data-q="' + esc(q) + '">' + esc(q) + '</button>';
     }).join('');
   }
   function paintHits(body, hits, empty) {
     if (!hits.length) { body.innerHTML = '<p class="ask-empty">' + esc(empty) + '</p>'; return; }
+    if (body && body.id === 'webBody') {
+      var webWin = $('webWin');
+      if (webWin) webWin.hidden = false;
+    }
     body.innerHTML = '<ul class="hit-list">' + hits.map(function (hit) {
       var href = safeUrl(hit.url || hit.href);
-      var img = hit.thumb && allowImg(hit.thumb) ? '<img alt="" src="' + esc(hit.thumb) + '">' : '<img alt="" src="/favicon.ico">';
+      var img = hit.thumb && allowImg(hit.thumb) ? '<img alt="" src="' + esc(hit.thumb) + '">' : '';
       var ext = hit.external || (href && href.indexOf(location.host) === -1);
       var attrs = ext ? ' target="_blank" rel="noopener noreferrer"' : '';
-      return '<li class="hit">' + img + '<div><p class="hit-kind">' + esc(hit.kind || 'Web') + '</p><p class="hit-title"><a href="' + esc(href) + '"' + attrs + '>' + esc(hit.title) + '</a></p><p>' + esc(hit.snippet || hit.text || '') + '</p></div></li>';
+      return '<li class="hit">' + img + '<div><p class="hit-kind">' + esc(hit.kind || 'Page') + '</p><p class="hit-title"><a href="' + esc(href) + '"' + attrs + '>' + esc(hit.title) + '</a></p><p>' + esc(hit.snippet || hit.text || '') + '</p></div></li>';
     }).join('') + '</ul>';
   }
   function paintDeep(q) {
@@ -636,7 +648,7 @@
     paintChips(chips.slice(0, 4));
     paintHits($('siteBody'), sites.map(function (hit) {
       return { kind: hit.kind, title: hit.title, url: hit.href, snippet: hit.text, external: hit.external };
-    }), 'No Mondosupreme page matched those words.');
+    }), 'Nothing in the house matched those words.');
     var web = wiki.map(function (hit) {
       return { kind: 'Wikipedia', title: hit.title, url: hit.url, snippet: hit.description || sentences(hit.snippet, 1)[0] || '', thumb: hit.thumb };
     });
@@ -842,7 +854,7 @@
       if (snippet) line += ' The card starts: ' + snippet;
       return {
         status: 'A matching recipe is on the card.',
-        html: briefHtml('Recipe', [line], [['Open the recipe', '/recipes/#/recipe/' + encodeURIComponent(best[0])]])
+        html: briefHtml('Recipe', [line], [[best[1] || 'Recipes', '/recipes/#/recipe/' + encodeURIComponent(best[0])]])
       };
     }).catch(function () {
       return {
@@ -894,50 +906,232 @@
     if (intent === 'plant') return answerPlant();
     return Promise.resolve(null);
   }
+  var titleWordCache = null;
+  function titleWords() {
+    if (titleWordCache && titleWordCache.n === index.length) return titleWordCache.words;
+    var seen = {};
+    var words = [];
+    index.forEach(function (item) {
+      String(item.title || '').toLowerCase().split(/[^a-z0-9]+/).forEach(function (w) {
+        if (w.length > 3 && !STOP[w] && !seen[w]) { seen[w] = 1; words.push(w); }
+      });
+    });
+    titleWordCache = { n: index.length, words: words };
+    return words;
+  }
+  function bestScore(q) {
+    var toks = tokens(q);
+    var best = 0;
+    index.forEach(function (item) {
+      var s = scoreItem(item, q, toks);
+      if (s > best) best = s;
+    });
+    return best;
+  }
+  function editDistance(a, b) {
+    if (a === b) return 0;
+    var la = a.length;
+    var lb = b.length;
+    if (!la || !lb) return Math.max(la, lb);
+    if (Math.abs(la - lb) > 2) return 9;
+    var prev = [];
+    var i;
+    var j;
+    for (j = 0; j <= lb; j++) prev[j] = j;
+    for (i = 1; i <= la; i++) {
+      var cur = [i];
+      var ca = a.charAt(i - 1);
+      for (j = 1; j <= lb; j++) {
+        var cost = ca === b.charAt(j - 1) ? 0 : 1;
+        cur[j] = Math.min(cur[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+      }
+      prev = cur;
+    }
+    return prev[lb];
+  }
+  function suggestQuery(q) {
+    var rawTokens = String(q || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    if (!rawTokens.length) return '';
+    var words = titleWords();
+    var wordSet = {};
+    words.forEach(function (w) { wordSet[w] = 1; });
+    var changed = false;
+    var next = rawTokens.map(function (tok) {
+      if (tok.length < 5 || wordSet[tok] || STOP[tok]) return tok;
+      var limit = tok.length >= 7 ? 2 : 1;
+      var best = '';
+      var bestD = limit + 1;
+      for (var n = 0; n < words.length; n++) {
+        var w = words[n];
+        if (Math.abs(w.length - tok.length) > limit) continue;
+        var d = editDistance(tok, w);
+        if (d > 0 && d < bestD) {
+          bestD = d;
+          best = w;
+          if (d === 1) break;
+        }
+      }
+      if (!best) return tok;
+      changed = true;
+      return best;
+    });
+    if (!changed) return '';
+    var phrase = next.join(' ');
+    var flat = String(q || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (phrase === flat) return '';
+    var before = bestScore(q);
+    var after = bestScore(phrase);
+    if (after <= 0 && !siteIntent(phrase)) return '';
+    if (before > 0 && after < before + 3) return '';
+    return phrase.charAt(0).toUpperCase() + phrase.slice(1);
+  }
+  function paintDidYou(q) {
+    var el = $('didYou');
+    if (!el) return;
+    var alt = suggestQuery(q);
+    if (!alt) { el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    el.innerHTML = 'Did you mean <button type="button" class="did-you-q" data-q="' + esc(alt) + '">' + esc(alt) + '?</button>';
+  }
+  function firstAnchor(html) {
+    var box = document.createElement('div');
+    box.innerHTML = html || '';
+    var a = box.querySelector('a[href]');
+    if (!a) return null;
+    return { title: String(a.textContent || '').replace(/\s+/g, ' ').trim(), href: a.getAttribute('href') || '' };
+  }
+  function paintLead(fromHtml, sites) {
+    var lead = $('answerLead');
+    var title = $('briefTitle');
+    if (!lead || !title) return;
+    var link = fromHtml ? firstAnchor(fromHtml) : null;
+    var best = null;
+    if (link && link.href) {
+      best = { title: link.title, href: link.href };
+      (sites || []).some(function (hit) {
+        if (!hit || !hit.href || !hit.title) return false;
+        var page = String(hit.href).split('#')[0];
+        if (link.href.indexOf(page) === -1 && String(page).indexOf(link.href) === -1) return false;
+        if (hit.title.length > link.title.length) best.title = hit.title;
+        return true;
+      });
+    } else if (sites && sites[0] && sites[0].href) {
+      best = { title: sites[0].title, href: sites[0].href };
+    }
+    if (!best || !best.href) {
+      title.textContent = 'Nothing in the house matched that.';
+      lead.hidden = true;
+      lead.innerHTML = '';
+      return;
+    }
+    var href = safeUrl(best.href);
+    if (!href) {
+      title.textContent = 'Nothing in the house matched that.';
+      lead.hidden = true;
+      lead.innerHTML = '';
+      return;
+    }
+    title.textContent = 'You may find my answer at…';
+    var ext = href.indexOf(location.host) === -1;
+    lead.hidden = false;
+    lead.innerHTML = '<a href="' + esc(href) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + esc(best.title) + '</a>';
+  }
+  function alsoAsked(q, sites) {
+    var out = [];
+    var seen = {};
+    function add(text) {
+      var t = cleanQ(text);
+      if (!t || t.length < 8) return;
+      var key = t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      var qkey = String(q || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      if (!key || key === qkey || seen[key]) return;
+      seen[key] = 1;
+      out.push(t);
+    }
+    (sites || []).slice(0, 6).forEach(function (hit) {
+      if (!hit || !hit.title) return;
+      if (hit.kind === 'Recipe') add('How do I make ' + hit.title + '?');
+      else if (hit.kind === 'App') add('Where is ' + hit.title + '?');
+      else add(hit.title);
+    });
+    var intent = siteIntent(q);
+    [
+      ['What is the next Cape launch?', 'launch'],
+      ['What is tonight\'s Port Canaveral tide?', 'tide'],
+      ['Why is the top stock on the list?', 'stock'],
+      ['What should I plant in 32927?', 'plant'],
+      ['Where is the weather?', ''],
+      ['How do I make fluffy buttermilk pancakes?', '']
+    ].forEach(function (row) {
+      if (row[1] && row[1] === intent) return;
+      add(row[0]);
+    });
+    return out.slice(0, 4);
+  }
   function run(raw) {
     var q = cleanQ(raw);
     var input = $('q');
     if (input && input.value !== q) input.value = q;
     if (q.length < 2) {
-      document.body.classList.remove('is-asking');
+      document.body.classList.remove('is-asking', 'has-results');
       $('askStatus').textContent = 'Ask at least two characters.';
       return;
     }
     var mine = ++ticket;
-    document.body.classList.add('is-asking');
+    document.body.classList.add('is-asking', 'has-results');
     function finishAsk() {
       if (mine !== ticket) return;
       document.body.classList.remove('is-asking');
     }
     rememberUrl(q);
-    $('askStatus').textContent = 'The butler is checking the house notes…';
+    $('askStatus').textContent = 'Hollis is checking the house notes…';
     postAsk(q);
     var intent = siteIntent(q);
+    var tools = parseTools(q);
     Promise.all([siteFacts(q), loadCatalog().catch(function () { return null; })]).then(function (parts) {
       var fact = parts[0];
       if (mine !== ticket) return;
+      var sites = [];
+      try { sites = siteHits(q); } catch (e) { sites = []; }
       if (fact) {
         $('briefBody').innerHTML = fact.html;
         $('askStatus').textContent = fact.status;
+        paintLead(fact.html, sites);
+        paintTools(tools);
+      } else if (tools.length) {
+        $('briefTitle').textContent = 'Here is what I worked out.';
+        $('answerLead').hidden = true;
+        $('answerLead').innerHTML = '';
+        $('briefBody').innerHTML = tools.map(function (tool) {
+          return '<article class="tool-card"><strong>' + esc(tool.value) + '</strong><p>' + esc(tool.label) + '</p><p class="hit-meta">' + esc(tool.detail) + '</p></article>';
+        }).join('');
+        $('askStatus').textContent = 'Hollis worked that out from the question.';
+        paintTools([]);
+      } else if (sites.length) {
+        $('briefBody').innerHTML = '';
+        $('askStatus').textContent = 'Hollis found a page in the house.';
+        paintLead('', sites);
+        paintTools([]);
       } else {
         $('briefBody').innerHTML = outsideBrief();
-        $('askStatus').textContent = 'That one is outside the butler\'s site notes.';
+        $('askStatus').textContent = 'That one is outside the house notes.';
+        paintLead('', []);
+        paintTools([]);
       }
-      paintChips([]);
-      var sites = [];
-      try { sites = siteHits(q); } catch (e) { sites = []; }
+      paintDidYou(q);
+      paintChips(alsoAsked(q, sites));
       paintHits($('siteBody'), sites.map(function (hit) {
         return { kind: hit.kind, title: hit.title, url: hit.href, snippet: hit.text, external: hit.external };
-      }), 'No other Mondosupreme page matched those words.');
-      if (intent) {
-        $('webBody').innerHTML = '<p class="ask-empty">This answer is from the site\'s own notes.</p>';
-        $('deepWin').hidden = true;
-      }
+      }), 'Nothing else in the house matched those words.');
+      $('webWin').hidden = true;
+      $('deepWin').hidden = true;
+      if (intent) $('webBody').innerHTML = '<p class="ask-empty">This answer is from the site\'s own notes.</p>';
       finishAsk();
     }).catch(function () {
       if (mine !== ticket) return;
       $('briefBody').innerHTML = outsideBrief();
       $('askStatus').textContent = 'The house notes did not answer.';
+      paintLead('', []);
       finishAsk();
     });
   }
