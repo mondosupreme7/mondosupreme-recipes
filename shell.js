@@ -904,18 +904,6 @@
     group.appendChild(reset);
     return group;
   }
-  function linkCabinets() {
-    var foot = document.querySelector('footer.site-footer .wrap');
-    if (!foot || foot.querySelector('a[href="/saltflare/"]')) return;
-    var copy = foot.querySelector('.studio-footer') || foot.querySelector('p:not(.home-visits):not(.studio-about)') || foot;
-    [['Saltflare', '/saltflare/'], ['Needlewake', '/needlewake/']].forEach(function (pair) {
-      var link = document.createElement('a');
-      link.href = pair[1];
-      link.textContent = pair[0];
-      copy.appendChild(document.createTextNode(' · '));
-      copy.appendChild(link);
-    });
-  }
   function boot() {
     writeFx({ scan: 0, stars: 0 });
     document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
@@ -1207,7 +1195,6 @@
     document.addEventListener('mondo-owner', paintOwner);
     document.addEventListener('mondo-member', paintOwner);
     linkPrivacy();
-    linkCabinets();
     function attachChip() {
       if (!appsReady() || attachChip.done) return;
       attachChip.done = true;
