@@ -26,9 +26,9 @@
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=11">
-<link rel="stylesheet" href="stocks.css?v=15">
+<link rel="stylesheet" href="stocks.css?v=16">
 <link rel="stylesheet" href="/readable.css?v=15">
-<link rel="stylesheet" href="paper/paper.css?v=1">
+<link rel="stylesheet" href="paper/paper.css?v=2">
 </head>
 <body>
 <div class="ticker quote-tape" aria-hidden="true"><div class="ticker-track" id="tapeTrack"></div></div>
@@ -71,8 +71,18 @@
    <span class="paper-meta" id="paperMeta">Flat vs $1,000.00 start · risk $19.50 · 1 working order, no fills</span>
    <span class="paper-go">Open the paper trade log</span>
   </a>
+  <section class="stretch-goal" id="stretchGoal" aria-labelledby="stretchTitle">
+   <h2 id="stretchTitle">Stretch goal</h2>
+   <p class="stretch-warn">This is an extreme stretch goal. It is very unlikely to be reached. Paper trading only. Informational, not financial advice, and not a performance claim. Swing rules are not loosened to chase it. The per-session pace is computed from the NYSE calendar when this page loads.</p>
+  </section>
   <p>The wide list is an oversold research screen. Only a name that passes the swing rules is a swing candidate, the top stock to watch, or a journal entry. A card uses the latest daily bars and, when a sheet comes back, fundamentals as notes. Informational only, not financial advice.</p>
  </div>
+ <section class="paper-log" id="paperTradeLog" aria-labelledby="paperLogTitle">
+  <h2 id="paperLogTitle">Paper trade log</h2>
+  <p class="paper-banner">Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.</p>
+  <p class="paper-log-empty">Loading the paper book…</p>
+  <p class="paper-log-more"><a href="/stocks/paper/">Open the full paper trade log</a></p>
+ </section>
  <details class="rules-card" id="swingRules">
   <summary>Swing Trading Rules</summary>
   <ol class="rules-list">
@@ -208,7 +218,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="stocks.js?v=17"></script>
-<script src="paper/paper.js?v=2"></script>
+<script src="paper/paper.js?v=4"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

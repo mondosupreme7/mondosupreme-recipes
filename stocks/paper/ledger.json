@@ -9,6 +9,14 @@
     "goalEquity": 1000000,
     "notes": "Paper only. Never place live brokerage orders or spend the user's money. Do not loosen swing gates to chase the $1,000,000 goal."
   },
+  "goal": {
+    "name": "stretch",
+    "startDate": "2026-11-12",
+    "baselineEquity": 1000,
+    "target": 1000000,
+    "targetDate": "2026-12-11",
+    "note": "Paper only. Baseline is the Nov 12, 2026 close. Target date is Dec 11, 2026, the last NYSE session before Dec 12. Do not loosen swing gates to chase this."
+  },
   "rules": {
     "method": "mondosupreme.com Stocks swing gates",
     "paramVersionAtOpen": "2026-11-11.1",
@@ -175,7 +183,9 @@
       "realizedPnlUsd",
       "realizedPnlPct",
       "cashAfter",
-      "equityAfter"
+      "equityAfter",
+      "bookPctAtEntry",
+      "reason"
     ],
     "openPositionFields": [
       "id",
@@ -191,7 +201,8 @@
       "mark",
       "markedAt",
       "unrealizedPnlUsd",
-      "unrealizedPnlPct"
+      "unrealizedPnlPct",
+      "bookPctAtEntry"
     ],
     "orderFields": [
       "id",
@@ -209,7 +220,9 @@
       "reservedCash",
       "riskUsdAtLimit",
       "placedAt",
-      "firstEligibleSession"
+      "firstEligibleSession",
+      "bookPctAtEntry",
+      "reason"
     ]
   }
 }
