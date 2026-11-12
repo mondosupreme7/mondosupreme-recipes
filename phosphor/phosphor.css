@@ -177,14 +177,27 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: safe center;
   gap: 8px;
   padding: 12px;
   text-align: center;
-  background: rgba(7, 6, 15, 0.82);
+  background: rgba(7, 6, 15, 0.92);
   color: #f4efe2;
   border-radius: inherit;
   box-sizing: border-box;
+  overflow: auto;
+}
+#entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 280px);
+}
+#entry[hidden] { display: none !important; }
+.initials-label {
+  font: 700 14px/1.2 Inter, ui-sans-serif, system-ui, sans-serif;
+  color: #f4d35e;
 }
 .overlay[hidden] { display: none !important; }
 .lede, .how, .overlay p { margin: 0; max-width: 34ch; text-wrap: pretty; font-size: 14px; line-height: 1.35; }
@@ -196,13 +209,16 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .slots button.is-on { background: #f4d35e; color: #1a1400; }
 .letter-ctl { display: flex; gap: 8px; }
 #initials {
-  width: 6.5rem;
-  font-size: 16px;
+  width: min(100%, 12rem);
+  min-height: 48px;
+  font-size: 22px;
   letter-spacing: 0.28em;
   text-align: center;
   text-transform: uppercase;
-  background: #fff;
+  background: #fffef6;
   color: #142033;
+  border: 3px solid #f4d35e;
+  border-radius: 12px;
 }
 #boardList {
   list-style: none;
