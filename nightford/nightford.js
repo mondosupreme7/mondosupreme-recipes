@@ -185,7 +185,7 @@
     snareOn = false;
     snare = 0;
     popups = [];
-    safe = 2.2;
+    safe = level < 2 ? 12 : 2.2;
   }
   function popup(text, x, y) {
     popups.push({
@@ -223,9 +223,18 @@
     return player && player.ride && player.ride.it === it;
   }
   function moveLanes(dt) {
+    var grace = level < 2 && safe > 0;
+    var center = centerX(START.c);
     lanes.forEach(function (lane) {
+      if (grace && lane.kind === 'log') {
+        seatBeginnerLogs(lane);
+        return;
+      }
       var spd = speedOf(lane) * lane.dir;
       lane.items.forEach(function (it) {
+        if (grace && lane.kind === 'car' && center + 26 > it.x && center - 26 < it.x + it.w) {
+          it.x = lane.dir > 0 ? center - 26 - it.w - 10 : center + 26 + 10;
+        }
         it.x += spd * dt;
         if (it.kind === 'pad') it.phase = (it.phase + dt * 0.32) % 1;
         var riding = ridden(it);
@@ -917,8 +926,9 @@
     }
     return 'up';
   }
-  function beginnerRuns(runs) {
+  function beginnerRuns(runs, delay) {
     var n = runs || 10;
+    var gap = typeof delay === 'number' ? delay : 0.35;
     var clears = 0;
     var details = [];
     var sound = store.sound;
@@ -938,20 +948,19 @@
         lane.items.forEach(function (it) { it.x += shift; });
       });
       phase = 'play';
-      safe = 2.2;
       var pending = null;
-      var wait = 0.2 + Math.random() * 0.35;
+      var wait = gap;
       var t = 0;
-      while (t < 110 && level === 1 && phase !== 'over') {
+      while (t < 160 && level === 1 && phase !== 'over') {
         var choice = beginnerChoice();
         if (choice !== pending) {
           pending = choice;
-          wait = 0.35 + (Math.random() - 0.5) * 0.1;
+          wait = gap + (Math.random() - 0.5) * Math.min(0.12, gap * 0.15);
         }
         if (pending && wait <= 0 && phase === 'play') {
           hopTo(pending);
           pending = null;
-          wait = 0.35;
+          wait = gap;
         }
         update(STEP);
         t += STEP;
@@ -977,7 +986,7 @@
     phase = 'title';
     show('title');
     paintHud();
-    return { clears: clears, runs: n, details: details };
+    return { clears: clears, runs: n, delay: gap, details: details };
   }
 
   window.NIGHTFORD = {
