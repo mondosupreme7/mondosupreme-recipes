@@ -246,9 +246,55 @@ html[data-theme] body.wiki-page .hero p{
 .wiki-crumbs li{display:flex;align-items:center;min-height:44px;max-width:100%}
 .wiki-crumbs li+li::before{content:"/";margin-right:6px;color:var(--w-muted)}
 .wiki-crumbs [aria-current="page"]{color:var(--w-ink);overflow-wrap:anywhere}
-.wiki-tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
-.wiki-tools .btn{min-height:44px}
-.wiki-edited{margin:.2rem 0 .85rem;color:var(--w-muted);font-size:.95rem;max-width:75ch}
+.wiki-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:stretch;
+  gap:0 2px;
+  margin:0 0 2px;
+  border-bottom:1px solid var(--w-rule);
+}
+html[data-theme] body.wiki-page .wiki-tabs a,
+html[data-theme] body.wiki-page .wiki-tabs button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:8px 10px;
+  background:transparent !important;
+  color:var(--w-link) !important;
+  border:0 !important;
+  border-bottom:2px solid transparent !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  font:400 1rem/1.2 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  text-decoration:none !important;
+  cursor:pointer;
+}
+html[data-theme] body.wiki-page .wiki-tabs [aria-current="page"]{
+  color:var(--w-ink) !important;
+  font-weight:600 !important;
+  border-bottom-color:var(--w-ink) !important;
+}
+html[data-theme] body.wiki-page .wiki-tabs #btnDelete{color:var(--w-red) !important}
+.wiki-edited{
+  margin:0 0 .45rem;
+  color:var(--w-muted);
+  font-size:.8rem;
+  line-height:1.35;
+  max-width:75ch;
+}
+.wiki-lock{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  height:16px;
+  margin-left:4px;
+  vertical-align:-3px;
+  color:var(--w-muted);
+}
+.wiki-lock svg{display:block}
 .lock-note{color:var(--w-muted);font-size:.95rem;max-width:75ch}
 html[data-theme="dark"] body.wiki-page :is(.lock-note, .meta, .wiki-h, .wiki-note),
 html[data-theme="harbor"] body.wiki-page :is(.lock-note, .meta, .wiki-h, .wiki-note){
@@ -374,6 +420,27 @@ html[data-theme] body.wiki-page button.wiki-section-toggle{
   overflow-wrap:anywhere;
 }
 .wiki-infobox th{width:38%;font-weight:600}
+.wiki-info-title{
+  margin:0;
+  padding:8px 10px 4px;
+  font-weight:700;
+  text-align:center;
+}
+.wiki-infobox .wiki-thumb{
+  width:auto;
+  max-width:100%;
+  margin:0;
+  border:0;
+  border-bottom:1px solid var(--w-rule);
+  background:transparent;
+}
+.wiki-infobox .wiki-thumb img{
+  width:auto;
+  max-width:100%;
+  max-height:140px;
+  margin:0 auto;
+  object-fit:contain;
+}
 
 .wiki-thumb{
   display:block;
@@ -505,10 +572,10 @@ html[data-theme="harbor"] body.wiki-page #tagBar .tag[aria-pressed="true"]{
 .history-card{border:1px solid var(--w-rule);padding:10px;max-width:100%}
 .owner-error{color:var(--w-red);font-weight:700}
 
-html[data-theme] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list) a:not(.btn){
+html[data-theme] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list, .wiki-tabs) a:not(.btn){
   color:var(--w-link) !important;
 }
-html[data-theme] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list) a:not(.btn):visited{
+html[data-theme] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list, .wiki-tabs) a:not(.btn):visited{
   color:var(--w-visited) !important;
 }
 html[data-theme] body.wiki-page a.wiki-link.is-missing,
@@ -516,12 +583,12 @@ html[data-theme] body.wiki-page a.wiki-link.is-missing:visited{
   color:var(--w-red) !important;
   text-decoration:underline;
 }
-html[data-theme="dark"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list) a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
-html[data-theme="harbor"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list) a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a){
+html[data-theme="dark"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list, .wiki-tabs) a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
+html[data-theme="harbor"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list, .wiki-tabs) a:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a){
   color:var(--w-link) !important;
 }
-html[data-theme="dark"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list) a:visited:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
-html[data-theme="harbor"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list) a:visited:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a){
+html[data-theme="dark"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list, .wiki-tabs) a:visited:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
+html[data-theme="harbor"] body.wiki-page :is(.wiki-body, .wiki-toc, .wiki-cats, .wiki-backlinks, .wiki-crumbs, .wiki-suggest, .wiki-list, .wiki-tabs) a:visited:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a){
   color:var(--w-visited) !important;
 }
 html[data-theme="dark"] body.wiki-page a.wiki-link.is-missing:not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
@@ -540,23 +607,33 @@ html[data-theme]:not([data-theme="retro"]) body.wiki-page dialog h2{
   background:transparent !important;
   color:var(--ink) !important;
 }
+html[data-theme] body.wiki-page .wiki-tabs a[aria-current="page"],
+html[data-theme] body.wiki-page .wiki-tabs a[aria-current="page"]:visited,
+html[data-theme="dark"] body.wiki-page .wiki-tabs a[aria-current="page"]:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
+html[data-theme="dark"] body.wiki-page .wiki-tabs a[aria-current="page"]:visited:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
+html[data-theme="harbor"] body.wiki-page .wiki-tabs a[aria-current="page"]:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a),
+html[data-theme="harbor"] body.wiki-page .wiki-tabs a[aria-current="page"]:visited:not(.btn):not(.qbadge):not(.rule-chip):not(.status-card):not(.cat-card):not(.shell-hit):not(.recipe-row):not(.recipe-tile):not(.studio-dock a):not(.studio-app):not(.home-chip):not(.home-app):not(.home-row):not(.ship-callout a){
+  color:var(--w-ink) !important;
+  border-bottom-color:var(--w-ink) !important;
+}
 
 @media (min-width:880px){
-  .wiki-body:has(.wiki-infobox){
+  .wiki-body:has(.wiki-infobox),
+  .wiki-prose:has(.wiki-infobox){max-width:min(100%, calc(75ch + 304px))}
+  .wiki-prose:has(.wiki-infobox){
     display:grid;
     grid-template-columns:minmax(0, 75ch) minmax(200px, 280px);
     column-gap:24px;
     align-items:start;
-    max-width:min(100%, calc(75ch + 304px));
   }
-  .wiki-infobox{grid-column:2;grid-row:1;width:auto;margin:0}
-  .wiki-prose{grid-column:1;grid-row:1;max-width:none}
+  .wiki-prose:has(.wiki-infobox) > :not(.wiki-infobox){grid-column:1}
+  .wiki-infobox{grid-column:2;grid-row:1 / span 8;width:auto;margin:0;align-self:start}
 }
 @media (prefers-reduced-motion:reduce){
   .wiki-section-toggle::after{transition:none}
 }
 @media print{
-  .wiki-topbar,.wiki-suggest,.hlp-chrome,.wiki-tools,.studio-nav,.studio-dock,.sync-banner{display:none !important}
+  .wiki-topbar,.wiki-suggest,.hlp-chrome,.wiki-tabs,.studio-nav,.studio-dock,.sync-banner{display:none !important}
   .wiki-section-panel,.wiki-section-panel[hidden]{display:block !important}
   body.wiki-page,body.wiki-page main.wrap{background:#fff !important;color:#000 !important}
   .wiki-body a{color:#000 !important}

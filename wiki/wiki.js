@@ -41,20 +41,17 @@ const PREVIOUS_WELCOME = [
   'New pages show up for everyone once server sync is on. Until then, this browser keeps a local copy. A page named [[Kitchen notes]] links by title, and the bottom of each page lists what links here.'
 ].join('\n');
 const WELCOME = [
-  'This is a shared notebook of notes and how-tos. Pages are read-only unless you are an admin. Export still makes a backup.',
+  '**Welcome** is a shared notebook of notes and how-tos. Pages are read-only unless you are an admin. Export still makes a backup.',
   '',
   '```infobox',
+  'image: /icon-192.png',
+  'caption: Home screen icon, 192 by 192 pixels',
   'Kind: Shared notes and how-tos',
   'Read: Anyone',
   'Changes: Admin only',
-  'Local cache: mondosupreme.wiki.v1',
-  'Sync: Firebase Realtime Database',
-  'History: Last five saves',
   '```',
   '',
   '## Write',
-  '',
-  '![Home screen icon, 192 by 192 pixels](/icon-192.png)',
   '',
   'An admin taps **New page**. The title is the page name. Write the note in Markdown, then tap **Preview** to check it while you edit.',
   '',
@@ -367,8 +364,11 @@ function renderBlocks(lines, ctx) {
       html += '<' + tag + '>' + items.map(item => {
         const task = item.match(/^\[([ xX])\]\s*(.*)$/);
         if (!ordered && task) {
-          const mark = task[1].toLowerCase() === 'x' ? ' checked' : '';
-          return '<li class="task"><input type="checkbox" disabled' + mark + '> ' + renderInline(task[2], ctx) + '</li>';
+          if (ctx && ctx.checkable) {
+            const mark = task[1].toLowerCase() === 'x' ? ' checked' : '';
+            return '<li class="task"><input type="checkbox" disabled' + mark + '> ' + renderInline(task[2], ctx) + '</li>';
+          }
+          return '<li>' + renderInline(task[2], ctx) + '</li>';
         }
         return '<li>' + renderInline(item, ctx) + '</li>';
       }).join('') + '</' + tag + '>';
@@ -382,13 +382,14 @@ function renderBlocks(lines, ctx) {
   }
   return html;
 }
-function renderMarkdown(src, pageList, notes) {
+function renderMarkdown(src, pageList, notes, extra) {
   const text = String(src || '').replace(/\r\n?/g, '\n');
   return renderBlocks(text.split('\n'), {
     pages: Array.isArray(pageList) ? pageList : [],
     links: true,
     notes: Array.isArray(notes) ? notes : [],
-    citeCount: {}
+    citeCount: {},
+    checkable: !!(extra && extra.checkable)
   });
 }
 function splitArticle(src) {
@@ -396,6 +397,8 @@ function splitArticle(src) {
   const infobox = [];
   const notes = [];
   const body = [];
+  let image = '';
+  let caption = '';
   let fence = false;
   let info = false;
   for (const line of lines) {
@@ -404,7 +407,14 @@ function splitArticle(src) {
     if (info) {
       if (/^```\s*$/.test(trimmed)) { info = false; fence = false; continue; }
       const row = line.match(/^\s*([^:\n]{1,80}):\s*(.*)$/);
-      if (row && row[1].trim()) infobox.push({ label: row[1].trim(), value: row[2].trim() });
+      if (row && row[1].trim()) {
+        const key = row[1].trim();
+        const value = row[2].trim();
+        const low = key.toLowerCase();
+        if (low === 'image') image = value;
+        else if (low === 'caption') caption = value;
+        else infobox.push({ label: key, value });
+      }
       continue;
     }
     const def = !fence && line.match(/^\[\^([A-Za-z0-9_-]{1,32})\]:\s*(\S.*)$/);
@@ -412,7 +422,7 @@ function splitArticle(src) {
     if (/^```/.test(trimmed)) fence = !fence;
     body.push(line);
   }
-  return { body: body.join('\n'), infobox, notes };
+  return { body: body.join('\n'), infobox, image, caption, notes };
 }
 function sanitizedTree(html) {
   const doc = document.implementation.createHTMLDocument('');
@@ -481,7 +491,7 @@ function sanitizedTree(html) {
 }
 function paintMarkdown(el, md, list, opts) {
   if (!el) return;
-  const tree = sanitizedTree(renderMarkdown(md, list, opts && opts.notes));
+  const tree = sanitizedTree(renderMarkdown(md, list, opts && opts.notes, { checkable: !!(opts && opts.checkable) }));
   el.replaceChildren();
   [...tree.childNodes].forEach(node => el.appendChild(document.importNode(node, true)));
   el.classList.toggle('can-check', !!(opts && opts.checkable));
@@ -676,7 +686,7 @@ let fellBack = false, listening = false;
 function isStock(p) {
   if (!p || p.id !== 'welcome' || cleanTitle(p.title) !== 'Welcome') return false;
   const b = String(p.body || '');
-  return b === WELCOME || b === PREVIOUS_WELCOME || b.includes('Pages in this wiki stay in this browser') || b.includes('## Saved on this device');
+  return b === WELCOME || b === PREVIOUS_WELCOME || b.includes('Local cache: mondosupreme.wiki.v1') || b.includes('Pages in this wiki stay in this browser') || b.includes('## Saved on this device');
 }
 function canMutate() { return !!isOwner; }
 function isAdminNow() { return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner()); }
@@ -1199,36 +1209,82 @@ function placeToc(root) {
   if (first) root.insertBefore(nav, first);
   else root.appendChild(nav);
 }
-function buildInfobox(rows, title) {
+function buildInfobox(rows, title, image, caption) {
+  const src = safeImage(image || '');
+  const fields = (rows || []).filter(row => row && row.label);
+  if (!src && !fields.length) return null;
   const aside = document.createElement('aside');
   aside.className = 'wiki-infobox';
-  const scroll = document.createElement('div');
-  scroll.className = 'wiki-scroll';
-  scroll.tabIndex = 0;
-  scroll.setAttribute('role', 'region');
   const capId = 'wikiInfoCap';
-  scroll.setAttribute('aria-labelledby', capId);
-  const table = document.createElement('table');
-  const cap = document.createElement('caption');
-  cap.id = capId;
-  cap.textContent = title || 'Details';
-  table.appendChild(cap);
-  const body = document.createElement('tbody');
-  rows.forEach(row => {
-    const tr = document.createElement('tr');
-    const th = document.createElement('th');
-    th.scope = 'row';
-    th.textContent = row.label;
-    const td = document.createElement('td');
-    td.textContent = row.value;
-    tr.appendChild(th);
-    tr.appendChild(td);
-    body.appendChild(tr);
-  });
-  table.appendChild(body);
-  scroll.appendChild(table);
-  aside.appendChild(scroll);
+  const heading = document.createElement('p');
+  heading.className = 'wiki-info-title';
+  heading.id = capId;
+  heading.textContent = title || 'Details';
+  aside.appendChild(heading);
+  if (src) {
+    const fig = document.createElement('figure');
+    fig.className = 'wiki-thumb';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = caption || '';
+    fig.appendChild(img);
+    if (caption) {
+      const note = document.createElement('figcaption');
+      note.textContent = caption;
+      fig.appendChild(note);
+      img.alt = '';
+    }
+    aside.appendChild(fig);
+  }
+  if (fields.length) {
+    const scroll = document.createElement('div');
+    scroll.className = 'wiki-scroll';
+    scroll.tabIndex = 0;
+    scroll.setAttribute('role', 'region');
+    scroll.setAttribute('aria-labelledby', capId);
+    const table = document.createElement('table');
+    const body = document.createElement('tbody');
+    fields.forEach(row => {
+      const tr = document.createElement('tr');
+      const th = document.createElement('th');
+      th.scope = 'row';
+      th.textContent = row.label;
+      const td = document.createElement('td');
+      td.textContent = row.value;
+      tr.appendChild(th);
+      tr.appendChild(td);
+      body.appendChild(tr);
+    });
+    table.appendChild(body);
+    scroll.appendChild(table);
+    aside.appendChild(scroll);
+  }
   return aside;
+}
+function boldLead(prose, title) {
+  const name = cleanTitle(title);
+  if (!prose || !name) return;
+  const para = [...prose.children].find(node => node.tagName === 'P');
+  if (!para) return;
+  const already = [...para.querySelectorAll('strong')].some(node => node.textContent.toLowerCase().indexOf(name.toLowerCase()) >= 0);
+  if (already) return;
+  const walk = document.createTreeWalker(para, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walk.nextNode())) {
+    const parent = node.parentElement;
+    if (parent && parent.closest('strong, a, code')) continue;
+    const raw = node.textContent;
+    const idx = raw.toLowerCase().indexOf(name.toLowerCase());
+    if (idx < 0) continue;
+    const strong = document.createElement('strong');
+    strong.textContent = raw.slice(idx, idx + name.length);
+    const frag = document.createDocumentFragment();
+    if (idx > 0) frag.appendChild(document.createTextNode(raw.slice(0, idx)));
+    frag.appendChild(strong);
+    if (idx + name.length < raw.length) frag.appendChild(document.createTextNode(raw.slice(idx + name.length)));
+    node.parentNode.replaceChild(frag, node);
+    break;
+  }
 }
 function buildReferences(notes, list) {
   const section = document.createElement('section');
@@ -1271,13 +1327,21 @@ function buildReferences(notes, list) {
 function fillArticle(host, md, list, title, opts) {
   const parts = splitArticle(md);
   host.replaceChildren();
-  if (parts.infobox.length) host.appendChild(buildInfobox(parts.infobox, title));
   const prose = document.createElement('div');
   prose.className = 'wiki-prose';
   paintMarkdown(prose, parts.body, list, { notes: parts.notes, checkable: !!(opts && opts.checkable) });
+  boldLead(prose, title);
   foldSections(prose);
   if (parts.notes.length) prose.appendChild(buildReferences(parts.notes, list));
   placeToc(prose);
+  const box = buildInfobox(parts.infobox, title, parts.image, parts.caption);
+  if (box) {
+    const toc = prose.querySelector('.wiki-toc');
+    const first = prose.querySelector('.wiki-section');
+    if (toc && toc.parentNode === prose) toc.after(box);
+    else if (first) prose.insertBefore(box, first);
+    else prose.appendChild(box);
+  }
   applySectionState(prose);
   host.appendChild(prose);
 }
@@ -1327,59 +1391,64 @@ function showPage(id, keepScroll) {
   crumbList.appendChild(crumbHere);
   crumbs.appendChild(crumbList);
   article.appendChild(crumbs);
-  const tools = document.createElement('div');
-  tools.className = 'wiki-tools no-print';
-  const all = document.createElement('a');
-  all.className = 'btn ghost';
-  all.href = '#/';
-  all.textContent = 'All pages';
-  tools.appendChild(all);
+  const tabs = document.createElement('nav');
+  tabs.className = 'wiki-tabs no-print';
+  tabs.setAttribute('aria-label', 'Article');
+  const read = document.createElement('a');
+  read.href = '#/page/' + p.id;
+  read.textContent = 'Read';
+  read.setAttribute('aria-current', 'page');
+  tabs.appendChild(read);
   if (own) {
     const edit = document.createElement('a');
-    edit.className = 'btn ghost';
     edit.href = '#/edit/' + p.id;
     edit.textContent = 'Edit';
-    tools.appendChild(edit);
+    tabs.appendChild(edit);
     const hist = document.createElement('button');
     hist.type = 'button';
-    hist.className = 'btn ghost';
     hist.id = 'btnHistory';
     hist.textContent = 'History';
-    tools.appendChild(hist);
+    tabs.appendChild(hist);
   }
+  const all = document.createElement('a');
+  all.href = '#/';
+  all.textContent = 'All pages';
+  tabs.appendChild(all);
   const printBtn = document.createElement('button');
   printBtn.type = 'button';
-  printBtn.className = 'btn ghost';
   printBtn.id = 'btnPrint';
   printBtn.textContent = 'Print';
-  tools.appendChild(printBtn);
+  tabs.appendChild(printBtn);
   if (own) {
     const del = document.createElement('button');
     del.type = 'button';
-    del.className = 'btn danger';
     del.id = 'btnDelete';
     del.textContent = 'Delete';
-    tools.appendChild(del);
+    tabs.appendChild(del);
   }
+  article.appendChild(tabs);
   const h1 = document.createElement('h1');
   h1.id = 'wikiTitle';
   h1.tabIndex = -1;
   h1.textContent = p.title;
   article.appendChild(h1);
   const edited = editedSentence(p.updated);
-  if (edited) {
+  if (edited || !isOwner) {
     const meta = document.createElement('p');
     meta.className = 'wiki-edited';
-    meta.textContent = edited;
+    if (edited) meta.append(document.createTextNode(edited));
+    if (!isOwner) {
+      if (edited) meta.append(document.createTextNode(' '));
+      const lock = document.createElement('span');
+      lock.className = 'wiki-lock';
+      lock.setAttribute('role', 'img');
+      lock.setAttribute('aria-label', 'This page is read-only. Only an admin can change it.');
+      lock.title = 'This page is read-only. Only an admin can change it.';
+      lock.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+      meta.appendChild(lock);
+    }
     article.appendChild(meta);
   }
-  if (!isOwner) {
-    const note = document.createElement('p');
-    note.className = 'lock-note';
-    note.textContent = 'This page is read-only. Only an admin can change it.';
-    article.appendChild(note);
-  }
-  article.appendChild(tools);
   const body = document.createElement('div');
   body.className = 'wiki-body';
   body.id = 'wikiBody';
