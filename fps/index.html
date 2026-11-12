@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css?v=6">
-<link rel="stylesheet" href="fps.css?v=7">
+<link rel="stylesheet" href="fps.css?v=8">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=11">
@@ -80,15 +80,15 @@
    <p id="localStats" class="local-stats"></p>
    <div class="srv-head" aria-hidden="true"><span>Server</span><span>Game</span><span>Map</span><span>Players</span></div>
    <button type="button" class="srv" data-mode="hl">
-    <span class="srv-name">Sector C Labs</span>
-    <span class="srv-mode">Half-Life</span>
-    <span class="srv-map">HEV suit, crowbar, tau cannon</span>
+    <span class="srv-name">Solo campaign · Sector C Labs</span>
+    <span class="srv-mode">Campaign</span>
+    <span class="srv-map">Clear the lab. Crowbar, sidearm, beam gun.</span>
     <span class="srv-pop" id="pop-hl">bots</span>
    </button>
    <button type="button" class="srv" data-mode="cs">
     <span class="srv-name">de_sandstorm</span>
-    <span class="srv-mode">Counter-Strike 1.6</span>
-    <span class="srv-map">Buy menu, bomb site, AWP</span>
+    <span class="srv-mode">Bomb round</span>
+    <span class="srv-map">Buy menu, bomb site, bolt rifle</span>
     <span class="srv-pop" id="pop-cs">bots</span>
    </button>
    <button type="button" class="srv" data-mode="tfc">
@@ -135,15 +135,18 @@
  <section id="play" hidden>
   <div id="playbar">
    <span id="serverName">Server</span>
+   <button type="button" id="gearBtn" aria-expanded="false" aria-controls="gear" aria-label="Settings">⚙</button>
+  </div>
+  <div id="gear" hidden>
    <button type="button" id="sndPlay" aria-pressed="false">Sound off</button>
    <button type="button" id="disc">Disconnect</button>
-  </div>
-  <div id="gear">
    <label>Look<input id="lookSens" type="range" min="40" max="220" value="100" aria-label="Look sensitivity"></label>
    <button type="button" id="btnAssist" aria-pressed="false">Assist</button>
+  </div>
+  <div id="actrow">
    <button type="button" id="btnAim">Scope</button>
    <button type="button" id="btnUse">Use</button>
-   <button type="button" id="btnSpecial">Buy</button>
+   <button type="button" id="btnSpecial">Weapon</button>
   </div>
   <div id="hudline">
    <p id="matchInfo" role="status"></p>
@@ -157,11 +160,11 @@
     <h2>[B] Buy Menu</h2>
     <p id="cashLine">$800</p>
     <div class="buy-grid">
-     <button type="button" data-buy="deagle">Desert Eagle<span>$700</span></button>
-     <button type="button" data-buy="mp5n">MP5-Navy<span>$1500</span></button>
-     <button type="button" data-buy="ak">AK-47<span>$2500</span></button>
-     <button type="button" data-buy="m4">M4A1<span>$3100</span></button>
-     <button type="button" data-buy="awp">AWP Sniper<span>$4750</span></button>
+     <button type="button" data-buy="deagle">Heavy Pistol<span>$700</span></button>
+     <button type="button" data-buy="mp5n">Navy SMG<span>$1500</span></button>
+     <button type="button" data-buy="ak">Rifle<span>$2500</span></button>
+     <button type="button" data-buy="m4">Carbine<span>$3100</span></button>
+     <button type="button" data-buy="awp">Bolt Rifle<span>$4750</span></button>
      <button type="button" data-buy="kevlar">Kevlar+Helmet<span>$650</span></button>
      <button type="button" data-buy="kit">Defuse Kit<span>$400</span></button>
     </div>
@@ -199,7 +202,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/mondo-juice.js?v=1"></script>
-<script src="fps.js?v=7"></script>
+<script src="fps.js?v=8"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>

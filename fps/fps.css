@@ -136,19 +136,30 @@ html body.fps-page.fps-live main.wrap {
 #play[hidden] { display: none !important; }
 #playbar { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; padding: 4px 8px; background: #0c0c0c; color: #d5d5d5; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
 #playbar span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#playbar button, #touch button, #replay, #buy .btn, #buy-grid button { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
-#playbar button { min-height: 44px; min-width: 44px; background: #222; color: #eee; border: 1px solid #666; padding: 4px 8px; }
-#gear{display:flex;flex-wrap:wrap;gap:4px;align-items:center;flex:0 0 auto;padding:0 4px 4px;background:#0c0c0c}
-#gear label{display:flex;align-items:center;gap:6px;min-height:44px;flex:1 1 150px;color:#ddd;font-size:12px;font-weight:700}
+#playbar button, #touch button, #actrow button, #replay, #buy .btn, #buy-grid button { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+#playbar button, #gearBtn { min-height: 44px; min-width: 44px; background: #222; color: #eee; border: 1px solid #666; padding: 4px 8px; font-size: 22px; }
+#gear{
+  position: absolute; z-index: 7; right: 6px; top: 52px;
+  display: flex; flex-direction: column; gap: 6px;
+  width: min(280px, calc(100% - 12px));
+  padding: 8px; background: #141414; border: 2px solid #888;
+}
+#gear[hidden]{display:none !important}
+#gear label{display:flex;align-items:center;gap:6px;min-height:44px;color:#f4f4f5;font-size:14px;font-weight:700}
 #gear input[type="range"]{flex:1;min-width:72px;height:44px}
 #gear button{min-height:44px;min-width:44px;padding:4px 8px;background:#222;color:#eee;border:1px solid #666;font-weight:700}
 #gear button[aria-pressed="true"]{background:#1e3a8a;color:#fff;border-color:#93c5fd}
+#actrow{
+  display:grid; grid-template-columns:repeat(3, minmax(44px, 1fr)); gap:4px;
+  flex:0 0 auto; padding:0 4px 4px; background:#0c0c0c;
+}
+#actrow button{min-height:44px;min-width:44px;padding:4px;background:#222;color:#eee;border:1px solid #666;font-weight:700;font-size:14px}
 html[data-theme] #gear button[aria-pressed="true"],
 html[data-theme] #btnCrouch[aria-pressed="true"]{
   background:#1e3a8a !important;color:#fff !important;border-color:#bfdbfe !important
 }
 html[data-theme] #btnFire{background:#7f1d1d !important;color:#fff !important;border-color:#fecaca !important}
-#hudline { display: flex; align-items: baseline; gap: 8px; flex: 0 0 auto; min-width: 0; padding: 2px 8px 0; }
+#hudline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; flex: 0 0 auto; min-width: 0; padding: 2px 8px 0; }
 #stage { position: relative; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; background: #000; touch-action: none; overflow: hidden; }
 #view { display: block; width: 100%; height: 100%; max-width: none; max-height: none; aspect-ratio: auto; image-rendering: pixelated; image-rendering: crisp-edges; background: #000; touch-action: none; }
 #stick {
@@ -164,9 +175,9 @@ html[data-theme] #btnFire{background:#7f1d1d !important;color:#fff !important;bo
   touch-action: none;
 }
 #matchInfo, #ammoLine, #feed { pointer-events: none; position: static; margin: 0; max-width: none; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; text-shadow: none; }
-#matchInfo { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; font-size: 14px; letter-spacing: 0; color: #f2f2f2; }
+#matchInfo { flex: 1 1 160px; min-width: 0; overflow: visible; white-space: normal; line-height: 1.2; text-align: left; font-size: 13px; letter-spacing: 0; color: #f2f2f2; }
 #stage.mode-hl #matchInfo { color: #ffbf1f; font-size: 14px; letter-spacing: 0; }
-#ammoLine { flex: 0 0 auto; font-size: 13px; color: #f4e2a0; }
+#ammoLine { flex: 0 0 auto; margin-left: auto; font-size: 28px; font-weight: 800; line-height: 1; color: #fde68a; letter-spacing: 0.02em; }
 #feed { display: flex; flex-wrap: wrap; justify-content: flex-end; align-content: flex-start; gap: 4px; flex: 0 0 auto; list-style: none; padding: 0 8px 4px; max-height: 2.8em; overflow: hidden; text-align: right; }
 #feed li { background: rgba(0, 0, 0, 0.45); margin: 0; padding: 1px 4px; font-size: 12px; }
 .wico { display: inline-block; width: 16px; height: 8px; margin: 0 4px; vertical-align: middle; background: #ccc; }
