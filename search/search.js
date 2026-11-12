@@ -259,7 +259,9 @@
     if (indexSeen[key]) return;
     indexSeen[key] = 1;
     item.text = String(item.text || '').replace(/\s+/g, ' ').trim().slice(0, 400);
+    item.blurb = String(item.blurb || '').replace(/\s+/g, ' ').trim().slice(0, 220);
     item.title = String(item.title).replace(/\s+/g, ' ').trim().slice(0, 160);
+    item.asked = Array.isArray(item.asked) ? item.asked.map(function (q) { return cleanQ(q); }).filter(Boolean).slice(0, 3) : [];
     index.push(item);
   }
   function eachRecord(raw, fn) {
@@ -277,41 +279,60 @@
     if (typeof value === 'string') return value;
     return '';
   }
+  function oneLine(value) {
+    var text = String(value || '').replace(/[#>*_`\[\]]/g, ' ').replace(/\s+/g, ' ').trim();
+    var sentence = text.match(/^[^.!?]+[.!?]?/);
+    var line = sentence ? sentence[0].trim() : text;
+    if (line.length > 180) line = line.slice(0, 177) + '…';
+    return line;
+  }
   function seedStatic() {
     [
-      ['App', 'Home', '/', 'landing welcome mondosupreme'],
-      ['App', 'Recipes', '/recipes/', 'kitchen cookbook mastercook food dinner'],
-      ['App', 'Recipe TV', '/daily-recipe/', 'daily youtube recipe show chef'],
-      ['App', 'Cruises', '/cruises/', 'royal caribbean ships harbor port canaveral'],
-      ['App', 'Weather', '/weather/', 'doppler radar forecast cocoa local on the 8s'],
-      ['App', 'Tides', '/tides/', 'port canaveral tide high low surf'],
-      ['App', 'Launches', '/launches/', 'cape canaveral launch rocket liftoff'],
-      ['App', 'Word Game', '/wordle/', 'daily wordle five letter puzzle'],
-      ['App', 'AI Search', '/search/', 'ask mondo hollis butler search questions'],
-      ['App', 'Stocks', '/stocks/', 'oversold rsi swing screen finance'],
-      ['App', 'Wiki', '/wiki/', 'encarta notes how-to notebook'],
-      ['App', 'Drawing Board', '/board/', 'ms paint shared whiteboard'],
-      ['App', 'Chat', '/chat/', 'aim chat room talk'],
-      ['App', 'Arcade', '/arcade/', '90s games neon cabinet'],
-      ['App', 'Virtual Pet', '/pet/', 'virtual pet egg tamagotchi'],
-      ['App', 'Forum', '/forum/', 'bulletin board posts blog'],
-      ['App', 'Marketplace', '/market/', 'classifieds for sale ebay listings'],
-      ['App', 'Mystic 8-Ball', '/8ball/', 'magic eight ball fortune'],
-      ['App', 'Craft', '/mmo/', 'pixel mmo realm'],
-      ['App', 'Half Strike Fortress', '/fps/', 'fps fortress labs'],
-      ['App', 'Cinderlatch', '/escape/', 'cinderlatch escape door'],
-      ['App', 'Saltflare', '/saltflare/', 'formation shooter moths flare skiff'],
-      ['App', 'Needlewake', '/needlewake/', 'vector shards glass needle field'],
-      ['App', 'Phosphor Halls', '/phosphor/', 'maze lamp moth crumbs wardens cold lamp'],
-      ['App', 'Night Ford', '/nightford/', 'hopper cricket barges porch lights carts river'],
-      ['App', 'Planting', '/planting/', 'garden planting zone 10a 32927 cocoa vegetables herbs flowers fruit calendar']
-    ].forEach(function (row) { addItem({ kind: row[0], title: row[1], href: row[2], text: row[3] }); });
-    [
-      ['sample-1', 'Supreme Tomato Basil Pasta', 'Dinner pasta tomatoes basil garlic vegetarian', '400 g spaghetti, olive oil, garlic, San Marzano tomatoes, basil, Parmesan'],
-      ['sample-2', 'Fluffy Buttermilk Pancakes', 'Breakfast brunch pancakes buttermilk maple syrup', '2 cups flour, sugar, baking powder, buttermilk, eggs, melted butter'],
-      ['sample-3', 'Chickpea Coconut Curry', 'Dinner vegan curry chickpeas coconut milk spinach rice', 'onion, garlic, ginger, curry powder, chickpeas, coconut milk, tomatoes']
+      ['Home', '/', 'landing welcome mondosupreme', 'Mondosupreme — recipes, a daily YouTube recipe show, cruise ship positions, weather, puzzles, search, stocks, a wiki, and the games.', ['What is on the home page?']],
+      ['Recipes', '/recipes/', 'kitchen cookbook mastercook food dinner backyard chef', 'Mondosupreme Recipes — your personal recipe collection at Mondosupreme.com', ['How do I make fluffy buttermilk pancakes?', 'Where are the Backyard Chef recipes?']],
+      ['Recipe TV', '/daily-recipe/', 'daily youtube recipe show chef', 'Recipe TV plays a different YouTube recipe every day.', ['What is playing on Recipe TV?']],
+      ['Cruises', '/cruises/', 'royal caribbean ships harbor port canaveral', 'Last-known position of every Royal Caribbean International ship, plus Port Canaveral cruise deals.', ['Where are the Royal Caribbean ships?']],
+      ['Weather', '/weather/', 'doppler radar forecast cocoa local on the 8s', 'Weather, a WeatherStar 4000 style Doppler radar and local forecast. Cocoa and Port Canaveral by default, plus any ZIP or city.', ["What's the weather in Cocoa today?", "What's the forecast for Port Canaveral?"]],
+      ['Tides', '/tides/', 'port canaveral tide high low surf', 'Port Canaveral tide predictions, a 48-hour curve, and Cocoa Beach swell, wind, and sunrise.', ["What's tonight's Port Canaveral tide?", 'When is the next high tide at Port Canaveral?']],
+      ['Launches', '/launches/', 'cape canaveral launch rocket liftoff', 'Cape Canaveral Launch Control. Upcoming KSC and CCSFS launches, a T-minus clock, and a Cocoa 32927 viewing guide.', ["What's the next Cape launch?", 'When is the next liftoff from Cape Canaveral?']],
+      ['Word Game', '/wordle/', 'daily wordle five letter puzzle', 'Word Game, a daily 5-letter word puzzle in a game-show grid, plus free play and a 90s, cruise, and kitchen bonus word.', ["What's today's five-letter puzzle?"]],
+      ['Ask Mondo', '/search/', 'ask mondo hollis butler search questions', 'Ask Mondo a plain-English question. Hollis looks through recipes, the weather, tides, stocks, and the rest of this site.', ['What can Hollis answer?']],
+      ['Stocks', '/stocks/', 'oversold rsi swing screen finance buy zone', 'Stocks, a swing screen of US common stocks on Nasdaq, the NYSE, and NYSE American. Informational only, not financial advice.', ['Why is the top stock on the list?', "What is the top pick's buy zone?"]],
+      ['Wiki', '/wiki/', 'notes articles launches tides arcade recipes', 'Short articles about Space Coast launches, Port Canaveral tides, the arcade, and Backyard Chef.', ['What articles are in the wiki?']],
+      ['Paint', '/board/', 'paint shared drawing board whiteboard', 'Paint style shared drawing board on Mondosupreme.', ['How do I open the drawing board?']],
+      ['Chat', '/chat/', 'chat room talk public', 'Chat style public chat on Mondosupreme.', ['How do I join the public chat?']],
+      ['Arcade', '/arcade/', 'arcade games high seas cruiser kitchen rush brick breaker saltflare needlewake phosphor halls night ford', 'Arcade — High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker, plus Saltflare, Needlewake, Phosphor Halls, and Night Ford.', ['What games are in the arcade?']],
+      ['Saltflare', '/saltflare/', 'formation shooter moths flare skiff', 'Saltflare — a formation shooter. Slide a flare skiff along the night marsh and clear the moth line.', ['How do you play Saltflare?']],
+      ['Needlewake', '/needlewake/', 'vector shards glass needle field', 'Needlewake — a vector shard shooter. Pilot a glass needle through a field of spinning shards.', ['How do you play Needlewake?']],
+      ['Phosphor Halls', '/phosphor/', 'maze lamp moth crumbs wardens cold lamp', 'Phosphor Halls — a lamp moth eats crumbs while four wardens hunt. A cold lamp turns them.', ['How do you play Phosphor Halls?']],
+      ['Night Ford', '/nightford/', 'hopper cricket barges porch lights carts river', 'Night Ford — hop a lantern cricket across night carts and river barges until every porch light is burning.', ['How do you play Night Ford?']],
+      ['Virtual Pet', '/pet/', 'virtual pet egg tamagotchi', 'Virtual Pet — a live virtual pet. Feed it, dress it, and wave at friends in the Pet Park.', ['How does the virtual pet work?']],
+      ['Forum', '/forum/', 'bulletin board posts blog', 'Mondosupreme Bulletin Board for recipes, cruises, games, and site news.', ['What is the bulletin board for?']],
+      ['Marketplace', '/market/', 'classifieds for sale listings', 'Marketplace — post things for sale, add photos from your phone, and message the seller on the listing.', ['How do Marketplace listings work?']],
+      ['Mystic 8-Ball', '/8ball/', 'magic eight ball fortune', 'Mystic 8-Ball — classic fortunes, a cyber oracle, and cruise and kitchen fate.', ['What does the 8-Ball say?']],
+      ['Craft', '/mmo/', 'pixel mmo realm goldhaven', 'Craft — a pixel realm. Pick a faction and class, quest from Goldhaven to the Molten Core, and meet other heroes.', ['What is Craft?']],
+      ['Half Strike Fortress', '/fps/', 'fps fortress labs sandstorm', 'Half Strike Fortress — a first-person blast. Sector C Labs, de_sandstorm, and 2Fort.', ['What maps does Half Strike Fortress have?']],
+      ['Cinderlatch', '/escape/', 'cinderlatch escape door', 'A door in the house that does not introduce itself.', ['What is Cinderlatch?']],
+      ['Planting', '/planting/', 'garden planting zone 10a 32927 cocoa vegetables herbs flowers fruit calendar', 'What to plant in ZIP 32927, Port St. John and Cocoa, Florida. USDA zone 10a and the Central Florida calendar, by month.', ['What should I plant in 32927?']]
     ].forEach(function (row) {
-      addItem({ kind: 'Recipe', title: row[1], href: '/recipes/#/recipe/' + row[0], text: row[2] + ' ' + row[3] });
+      addItem({ kind: 'App', title: row[0], href: row[1], text: row[2], blurb: row[3], asked: row[4] });
+    });
+    [
+      ['sample-1', 'Sample: Supreme Tomato Basil Pasta', 'Dinner pasta tomatoes basil garlic vegetarian spaghetti', 'Dinner recipe in the kitchen notebook.', 10, 20, 4],
+      ['sample-2', 'Sample: Fluffy Buttermilk Pancakes', 'Breakfast brunch pancakes buttermilk maple syrup fluffy', 'Breakfast recipe in the kitchen notebook.', 10, 15, 4],
+      ['sample-3', 'Sample: Chickpea Coconut Curry', 'Dinner vegan curry chickpeas coconut milk spinach rice', 'Dinner recipe in the kitchen notebook.', 15, 25, 4]
+    ].forEach(function (row) {
+      addItem({
+        kind: 'Recipe',
+        title: row[1],
+        href: '/recipes/#/recipe/' + row[0],
+        text: row[2],
+        blurb: row[3],
+        prep: row[4],
+        cook: row[5],
+        servings: row[6],
+        asked: ['How do I make ' + row[1].replace(/^Sample:\s*/, '') + '?']
+      });
     });
   }
   function absorbLocal() {
@@ -319,19 +340,29 @@
       if (!row || typeof row !== 'object') return;
       delete row.photo;
       if (!row.title) return;
-      addItem({ kind: 'Recipe', title: row.title, href: '/recipes/#/recipe/' + encodeURIComponent(row.id || ''), text: [row.category, textOf(row.ingredients), textOf(row.steps), row.notes, textOf(row.tags)].join(' ') });
+      addItem({
+        kind: 'Recipe',
+        title: row.title,
+        href: '/recipes/#/recipe/' + encodeURIComponent(row.id || ''),
+        text: [row.category, textOf(row.ingredients), textOf(row.steps), row.notes, textOf(row.tags)].join(' '),
+        blurb: row.category ? row.category + ' recipe in the kitchen notebook.' : oneLine(row.notes),
+        prep: typeof row.prep === 'number' ? row.prep : undefined,
+        cook: typeof row.cook === 'number' ? row.cook : undefined,
+        servings: typeof row.servings === 'number' ? row.servings : undefined,
+        asked: ['How do I make ' + row.title + '?']
+      });
     });
     eachRecord(readJson('mondosupreme.wiki.v1'), function (row) {
       if (!row || !row.title) return;
-      addItem({ kind: 'Wiki', title: row.title, href: '/wiki/#/page/' + encodeURIComponent(row.id || ''), text: textOf(row.body).slice(0, 400) });
+      addItem({ kind: 'Wiki', title: row.title, href: '/wiki/#/page/' + encodeURIComponent(row.id || ''), text: textOf(row.body).slice(0, 400), blurb: oneLine(row.body) });
     });
     eachRecord(readJson('mondosupreme.forum.v1'), function (row) {
       if (!row || !row.title) return;
-      addItem({ kind: 'Forum', title: row.title, href: '/forum/#/t/' + encodeURIComponent(row.id || ''), text: [row.category, row.body, row.name].join(' ') });
+      addItem({ kind: 'Forum', title: row.title, href: '/forum/#/t/' + encodeURIComponent(row.id || ''), text: [row.category, row.body, row.name].join(' '), blurb: oneLine(row.body) });
     });
     eachRecord(readJson('mondosupreme.market.v1'), function (row) {
       if (!row || !row.title) return;
-      addItem({ kind: 'Marketplace', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || ''), text: [row.category, row.price, row.description, row.location].join(' ') });
+      addItem({ kind: 'Marketplace', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || ''), text: [row.category, row.price, row.description, row.location].join(' '), blurb: oneLine(row.description) });
     });
   }
   function loadJson(url) {
@@ -345,7 +376,14 @@
     catalogReady = Promise.all([
       loadJson('/cruises/fleet.json').then(function (data) {
         (data.ships || []).forEach(function (ship) {
-          addItem({ kind: 'Ship', title: ship.name, href: '/cruises/', text: 'Royal Caribbean ' + ship.class + ' class ' + (ship.year || '') + ' cruise ship' });
+          addItem({
+            kind: 'Ship',
+            title: ship.name,
+            href: '/cruises/',
+            text: 'Royal Caribbean ' + ship.class + ' class ' + (ship.year || '') + ' cruise ship',
+            blurb: 'Royal Caribbean ' + (ship.class ? ship.class + ' class ' : '') + 'ship' + (ship.year ? ', ' + ship.year : '') + '.',
+            asked: ['Which Royal Caribbean ship is ' + ship.name + '?']
+          });
         });
       }).catch(function () {}),
       loadJson('/cruises/canaveral-deals.json').then(function (data) {
@@ -355,7 +393,8 @@
             title: (deal.ship ? deal.ship + ' — ' : '') + (deal.title || 'Port Canaveral sailing'),
             href: deal.url || '/cruises/',
             external: !!deal.url,
-            text: [deal.portsLabel, deal.sailDate, deal.nights ? deal.nights + ' nights' : '', deal.startingPrice ? '$' + deal.startingPrice : '', 'Port Canaveral'].join(' ')
+            text: [deal.portsLabel, deal.sailDate, deal.nights ? deal.nights + ' nights' : '', deal.startingPrice ? '$' + deal.startingPrice : '', 'Port Canaveral'].join(' '),
+            blurb: [deal.portsLabel, deal.sailDate, deal.nights ? deal.nights + ' nights' : ''].filter(Boolean).join(' · ') || 'Port Canaveral sailing.'
           });
         });
       }).catch(function () {})
@@ -381,19 +420,27 @@
     }
     take('recipes/items', function (row, key) {
       if (!row.title) return;
-      addItem({ kind: 'Recipe', title: row.title, href: '/recipes/#/recipe/' + encodeURIComponent(row.id || key), text: [row.category, textOf(row.ingredients), row.notes].join(' ') });
+      addItem({
+        kind: 'Recipe', title: row.title, href: '/recipes/#/recipe/' + encodeURIComponent(row.id || key),
+        text: [row.category, textOf(row.ingredients), row.notes].join(' '),
+        blurb: row.category ? row.category + ' recipe in the kitchen notebook.' : oneLine(row.notes),
+        prep: typeof row.prep === 'number' ? row.prep : undefined,
+        cook: typeof row.cook === 'number' ? row.cook : undefined,
+        servings: typeof row.servings === 'number' ? row.servings : undefined,
+        asked: ['How do I make ' + row.title + '?']
+      });
     });
     take('wiki/items', function (row, key) {
       if (!row.title) return;
-      addItem({ kind: 'Wiki', title: row.title, href: '/wiki/#/page/' + encodeURIComponent(row.id || key), text: textOf(row.body).slice(0, 400) });
+      addItem({ kind: 'Wiki', title: row.title, href: '/wiki/#/page/' + encodeURIComponent(row.id || key), text: textOf(row.body).slice(0, 400), blurb: oneLine(row.body) });
     });
     take('forum/threads', function (row, key) {
       if (!row.title) return;
-      addItem({ kind: 'Forum', title: row.title, href: '/forum/#/t/' + encodeURIComponent(row.id || key), text: [row.category, row.body].join(' ') });
+      addItem({ kind: 'Forum', title: row.title, href: '/forum/#/t/' + encodeURIComponent(row.id || key), text: [row.category, row.body].join(' '), blurb: oneLine(row.body) });
     });
     take('market/items', function (row, key) {
       if (!row.title) return;
-      addItem({ kind: 'Marketplace', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || key), text: [row.category, row.price, row.description, row.location, row.sold ? 'sold' : ''].join(' ') });
+      addItem({ kind: 'Marketplace', title: row.title, href: '/market/#/item/' + encodeURIComponent(row.id || key), text: [row.category, row.price, row.description, row.location, row.sold ? 'sold' : ''].join(' '), blurb: oneLine(row.description) });
     });
   }
   function scoreItem(item, q, toks) {
@@ -589,7 +636,8 @@
       var img = hit.thumb && allowImg(hit.thumb) ? '<img alt="" src="' + esc(hit.thumb) + '">' : '';
       var ext = hit.external || (href && href.indexOf(location.host) === -1);
       var attrs = ext ? ' target="_blank" rel="noopener noreferrer"' : '';
-      return '<li class="hit">' + img + '<div><p class="hit-kind">' + esc(hit.kind || 'Page') + '</p><p class="hit-title"><a href="' + esc(href) + '"' + attrs + '>' + esc(hit.title) + '</a></p><p>' + esc(hit.snippet || hit.text || '') + '</p></div></li>';
+      var snip = hit.snippet || hit.blurb || '';
+      return '<li class="hit">' + img + '<div><p class="hit-kind">' + esc(hit.kind || 'Page') + '</p><p class="hit-title"><a href="' + esc(href) + '"' + attrs + '>' + esc(hit.title) + '</a></p>' + (snip ? '<p>' + esc(snip) + '</p>' : '') + '</div></li>';
     }).join('') + '</ul>';
   }
   function paintDeep(q) {
@@ -651,7 +699,7 @@
     if (mode === 'site') sites.slice(0, 3).forEach(function (hit) { chips.push(hit.title); });
     paintChips(chips.slice(0, 4));
     paintHits($('siteBody'), sites.map(function (hit) {
-      return { kind: hit.kind, title: hit.title, url: hit.href, snippet: hit.text, external: hit.external };
+      return { kind: hit.kind, title: hit.title, url: hit.href, snippet: hit.blurb || '', external: hit.external };
     }), 'Nothing in the house matched those words.');
     var web = wiki.map(function (hit) {
       return { kind: 'Wikipedia', title: hit.title, url: hit.url, snippet: hit.description || sentences(hit.snippet, 1)[0] || '', thumb: hit.thumb };
@@ -711,12 +759,100 @@
   }
   function siteIntent(q) {
     var s = q.toLowerCase();
-    if (/launch|liftoff|cape|rocket|falcon|artemis|spacex/.test(s)) return 'launch';
+    if (/\b(weather|forecast|temperature|raining|rain|doppler)\b/.test(s)) return 'weather';
+    if (/launch|liftoff|\bcape\b|rocket|falcon|artemis|spacex/.test(s)) return 'launch';
     if (/tide|high tide|low tide/.test(s)) return 'tide';
     if (/stock|ticker|buy zone|oversold|screener/.test(s) || /why/.test(s) && /list|pick|stock|screen/.test(s)) return 'stock';
     if (/\b(plant|planting|garden|sow)\b/.test(s) || (/32927/.test(s) && /\b(grow|growing)\b/.test(s))) return 'plant';
-    if (/recipe|cook|chicken|beef|pork|dinner|dish|pasta|ingredient|backyard|chef/.test(s)) return 'recipe';
+    if (/recipe|cook|pancake|bake|breakfast|chicken|beef|pork|dinner|dish|pasta|ingredient|backyard|chef/.test(s)) return 'recipe';
     return '';
+  }
+  function factResult(opts) {
+    return {
+      status: opts.status || '',
+      heading: opts.heading || '',
+      answer: opts.answer || '',
+      linkTitle: opts.linkTitle || '',
+      href: opts.href || '',
+      extra: opts.extra || []
+    };
+  }
+  function skyName(code) {
+    if (typeof code !== 'number' || !isFinite(code)) return '';
+    if (code === 0) return 'Clear';
+    if (code <= 3) return 'Cloudy';
+    if (code <= 48) return 'Fog';
+    if (code <= 67) return 'Rain';
+    if (code <= 77) return 'Snow';
+    if (code <= 82) return 'Showers';
+    return 'Thunder';
+  }
+  function weatherPlace(q) {
+    var places = [
+      { name: 'Cocoa', lat: 28.38612, lon: -80.742, test: /cocoa|32927/ },
+      { name: 'Port Canaveral', lat: 28.4103, lon: -80.6188, test: /port canaveral|\bcanaveral\b/ },
+      { name: 'Orlando', lat: 28.5383, lon: -81.3792, test: /\borlando\b/ },
+      { name: 'Miami', lat: 25.7617, lon: -80.1918, test: /\bmiami\b/ },
+      { name: 'CocoCay / Nassau', lat: 25.43, lon: -77.65, test: /cococay|nassau/ },
+      { name: 'Caribbean', lat: 18.2, lon: -70.5, test: /\bcaribbean\b/ }
+    ];
+    var s = String(q || '').toLowerCase();
+    var i;
+    for (i = 0; i < places.length; i++) if (places[i].test.test(s)) return places[i];
+    var named = s.match(/\b(?:in|for|at)\s+([a-z][a-z .'-]{1,40})/);
+    if (named) {
+      var place = named[1].replace(/\b(today|tonight|now|right now|this morning|this afternoon|the)\b/g, ' ').replace(/\s+/g, ' ').trim();
+      if (place && !/^(my|our|this|that|town|area|house|kitchen)$/.test(place)) return null;
+    }
+    return places[0];
+  }
+  function answerWeather(q) {
+    var place = weatherPlace(q);
+    var link = { linkTitle: 'Weather', href: '/weather/' };
+    if (!place) {
+      return Promise.resolve(factResult({
+        status: 'That place is not one of the saved Weather presets. The Weather page can look it up.',
+        linkTitle: link.linkTitle,
+        href: link.href
+      }));
+    }
+    var meteo = 'https://api.open-meteo.com/v1/forecast?latitude=' + place.lat + '&longitude=' + place.lon +
+      '&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto';
+    var points = 'https://api.weather.gov/points/' + place.lat.toFixed(4) + ',' + place.lon.toFixed(4);
+    var conditions = withTimeout(fetch(points, { headers: { Accept: 'application/geo+json' } }).then(function (res) {
+      if (!res.ok) throw new Error('nws');
+      return res.json();
+    }).then(function (data) {
+      var forecast = data.properties && data.properties.forecast;
+      if (!forecast) throw new Error('nws');
+      return fetch(forecast, { headers: { Accept: 'application/geo+json' } }).then(function (res) {
+        if (!res.ok) throw new Error('nws');
+        return res.json();
+      });
+    }).then(function (cast) {
+      var periods = (cast.properties && cast.properties.periods) || [];
+      return (periods[0] && periods[0].shortForecast) || '';
+    }), 4000);
+    return Promise.all([getJSON(meteo), conditions]).then(function (pair) {
+      var cur = (pair[0] && pair[0].current) || {};
+      var temp = typeof cur.temperature_2m === 'number' ? Math.round(cur.temperature_2m) + '°' : '';
+      var cond = pair[1] || skyName(cur.weather_code);
+      if (!temp && !cond) throw new Error('empty');
+      var line = temp && cond ? temp + ' and ' + cond : (temp || cond);
+      return factResult({
+        status: 'The current ' + place.name + ' weather is on the card.',
+        heading: 'Weather',
+        answer: line + ' in ' + place.name + '.',
+        linkTitle: link.linkTitle,
+        href: link.href
+      });
+    }).catch(function () {
+      return factResult({
+        status: 'The forecast did not answer. The Weather page is still there.',
+        linkTitle: link.linkTitle,
+        href: link.href
+      });
+    });
   }
   function briefHtml(title, paragraphs, links) {
     return '<div class="brief-local"><h3>' + esc(title) + '</h3>' +
@@ -731,27 +867,33 @@
     ], [['Launches', '/launches/'], ['Tides', '/tides/'], ['Recipes', '/recipes/'], ['Stocks', '/stocks/'], ['Planting', '/planting/'], ['Weather', '/weather/']]);
   }
   function answerLaunch() {
+    var link = { linkTitle: 'Launches', href: '/launches/' };
     return getJSON('https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=8').then(function (data) {
       var best = null;
       (data.results || []).forEach(function (row) {
         var when = new Date(row.net || row.window_start || '');
         if (isNaN(when.getTime()) || when.getTime() < Date.now() - 3600000) return;
-        if (!best || when < best.when) best = { when: when, name: row.name || 'Launch', pad: (row.pad && row.pad.name) || 'the Cape' };
+        if (!best || when < best.when) best = { when: when, name: row.name || 'Launch' };
       });
       if (!best) throw new Error('empty');
-      var ms = best.when.getTime() - Date.now();
-      var hours = Math.floor(Math.abs(ms) / 3600000);
-      var mins = Math.floor(Math.abs(ms) / 60000) % 60;
-      var phrase = hours > 0 ? 'in ' + hours + 'h ' + mins + 'm' : 'in ' + mins + 'm';
-      return {
+      var whenText = '';
+      try {
+        whenText = best.when.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+      } catch (e) { whenText = best.when.toLocaleString(); }
+      if (!whenText) throw new Error('empty');
+      return factResult({
         status: 'The next Cape launch is on the card.',
-        html: briefHtml('Next launch', [best.name + ' from ' + best.pad + ', ' + phrase + '.'], [['Launch calendar', '/launches/']])
-      };
+        heading: 'Next launch',
+        answer: best.name + ' — ' + whenText + '.',
+        linkTitle: link.linkTitle,
+        href: link.href
+      });
     }).catch(function () {
-      return {
-        status: 'The launch wire did not answer. The calendar is still there.',
-        html: briefHtml('Next launch', ['The launch list did not answer just now. The Cape calendar is on the Launches page.'], [['Launch calendar', '/launches/']])
-      };
+      return factResult({
+        status: 'The launch list did not answer. The calendar is still there.',
+        linkTitle: link.linkTitle,
+        href: link.href
+      });
     });
   }
   function answerTide() {
@@ -778,93 +920,208 @@
       if (!next) throw new Error('empty');
       var clock = ((next.hour % 12) || 12) + ':' + next.minute + (next.hour >= 12 ? ' PM' : ' AM');
       var kind = next.type === 'H' ? 'High' : 'Low';
-      return {
-        status: 'Tonight\'s Port Canaveral tide is on the card.',
-        html: briefHtml('Port Canaveral tide', [kind + ' tide ' + clock + ', ' + next.v.toFixed(1) + ' ft.'], [['Tide & Surf', '/tides/']])
-      };
+      return factResult({
+        status: 'The next Port Canaveral tide is on the card.',
+        heading: 'Next tide',
+        answer: 'Next ' + kind.toLowerCase() + ' tide at ' + clock + '.',
+        linkTitle: 'Tides',
+        href: '/tides/'
+      });
     }).catch(function () {
-      return {
+      return factResult({
         status: 'The tide station did not answer.',
-        html: briefHtml('Port Canaveral tide', ['The tide station did not answer just now. Highs and lows are on the Tide page.'], [['Tide & Surf', '/tides/']])
-      };
+        linkTitle: 'Tides',
+        href: '/tides/'
+      });
     });
+  }
+  function confirmingSignals(row) {
+    return (row.swingSignals || []).filter(function (label) {
+      return label !== 'Near 52w low' && label !== 'Pullback from high' && label !== 'Uptrend pullback';
+    });
+  }
+  function shockFromSeries(row) {
+    if (!row) return false;
+    if (row.shock) return true;
+    if ((row.flags || []).indexOf('Falling knife') !== -1) return true;
+    if (typeof row.dayChange === 'number' && row.dayChange <= -9) return true;
+    var closes = row.series && row.series.c;
+    if (!closes || closes.length < 2) return false;
+    var start = Math.max(1, closes.length - 8);
+    var i;
+    for (i = start; i < closes.length; i++) {
+      if (!(closes[i - 1] > 0)) continue;
+      if ((closes[i] / closes[i - 1] - 1) * 100 <= -9) return true;
+    }
+    return false;
+  }
+  function displayActionable(row) {
+    if (!row || row.swingEligible !== true) return false;
+    if (typeof row.swingScore !== 'number' || row.swingScore < 36) return false;
+    if (row.above200 !== true || row.sma200Rising === false) return false;
+    if (typeof row.vsSma200 !== 'number' || row.vsSma200 < 5) return false;
+    if (typeof row.drop21 === 'number' && row.drop21 <= -15) return false;
+    if (typeof row.avgDollarVolume !== 'number' || row.avgDollarVolume < 20000000) return false;
+    if ((row.flags || []).indexOf('Earnings within 7 days') !== -1 || shockFromSeries(row) || row.planStyle === 'none') return false;
+    if (typeof row.rewardRisk !== 'number' || row.rewardRisk < 2) return false;
+    var signals = confirmingSignals(row);
+    return signals.indexOf('Volume reversal') !== -1 && signals.length >= 2;
   }
   function answerStock() {
+    var link = { linkTitle: 'Stocks', href: '/stocks/' };
     return getJSON('/stocks/oversold.json').then(function (data) {
-      var list = (data.stocks || []).filter(function (row) { return row && row.symbol && typeof row.price === 'number'; });
-      list.sort(function (a, b) {
-        var aSwing = a.swingEligible && typeof a.swingScore === 'number' && a.swingScore >= 20 ? 1 : 0;
-        var bSwing = b.swingEligible && typeof b.swingScore === 'number' && b.swingScore >= 20 ? 1 : 0;
-        if (aSwing !== bSwing) return bSwing - aSwing;
-        var left = typeof a.rankScore === 'number' ? a.rankScore : (a.score || 0);
-        var right = typeof b.rankScore === 'number' ? b.rankScore : (b.score || 0);
-        return right - left || String(a.symbol).localeCompare(String(b.symbol));
+      var market = data.market || {};
+      if (typeof market.vsSma200 === 'number' && market.vsSma200 < 0) {
+        return factResult({
+          status: 'This pass does not name a top stock.',
+          heading: 'Top stock',
+          answer: 'SPY is under its 200-day, so this pass does not name a top stock to watch.',
+          linkTitle: link.linkTitle,
+          href: link.href
+        });
+      }
+      var list = (data.stocks || []).filter(displayActionable).sort(function (a, b) {
+        var score = (b.swingScore || 0) - (a.swingScore || 0);
+        if (score) return score;
+        return String(a.symbol).localeCompare(String(b.symbol));
       });
       var row = list[0];
-      if (!row) throw new Error('empty');
-      var because = row.swingEligible ? 'it is a swing-bottom setup' : 'it leads the latest screen';
-      if (typeof row.rankScore === 'number') because += ', rank ' + String(row.rankScore).replace(/\.0$/, '');
-      var signals = (row.swingSignals || []).filter(function (label) {
-        return label !== 'Near 52w low' && label !== 'Pullback from high' && label !== 'Uptrend pullback';
-      }).slice(0, 3);
-      if (signals.length) because += ', ' + signals.join(', ');
-      var change = '';
-      if (typeof row.dayChange === 'number') {
-        change = ' ' + (row.dayChange > 0 ? '+' : '') + row.dayChange.toFixed(1).replace(/\.0$/, '') + '% today.';
+      if (!row) {
+        return factResult({
+          status: 'This pass does not name a top stock.',
+          heading: 'Top stock',
+          answer: 'No name passes the swing rules on this pass.',
+          linkTitle: link.linkTitle,
+          href: link.href
+        });
       }
-      var zone = (typeof row.entryLow === 'number' && typeof row.entryHigh === 'number')
-        ? ' Buy zone $' + row.entryLow.toFixed(2) + '–$' + row.entryHigh.toFixed(2) + '.' : '';
-      var stop = typeof row.stop === 'number' ? ' Stop $' + row.stop.toFixed(2) + '.' : '';
-      var target = typeof row.target === 'number' ? ' Target $' + row.target.toFixed(2) + '.' : '';
-      var sentence = row.symbol + ' is the top name because ' + because + '. Last $' + row.price.toFixed(2) + '.' + change + zone + stop + target + ' Informational only, not financial advice.';
-      return {
-        status: row.symbol + ' is the top name on the screen.',
-        html: briefHtml('Top stock', [sentence], [['Stocks', '/stocks/']])
-      };
+      if (typeof row.entryLow !== 'number' || typeof row.entryHigh !== 'number') {
+        return factResult({
+          status: row.symbol + ' is the top pick. The screen did not include a buy zone.',
+          linkTitle: link.linkTitle,
+          href: link.href
+        });
+      }
+      return factResult({
+        status: row.symbol + ' is the top pick.',
+        heading: 'Top stock',
+        answer: row.symbol + ' buy zone $' + row.entryLow.toFixed(2) + '–$' + row.entryHigh.toFixed(2) + '. Not financial advice.',
+        linkTitle: link.linkTitle,
+        href: link.href
+      });
     }).catch(function () {
-      return {
+      return factResult({
         status: 'The stock screen did not answer.',
-        html: briefHtml('Top stock', ['The screener file did not answer just now. The list is on the Stocks page.'], [['Stocks', '/stocks/']])
-      };
+        linkTitle: link.linkTitle,
+        href: link.href
+      });
     });
   }
+  function recipeLine(rec) {
+    if (!rec || !rec.title) return '';
+    var hasPrep = typeof rec.prep === 'number' && isFinite(rec.prep);
+    var hasCook = typeof rec.cook === 'number' && isFinite(rec.cook);
+    var hasServ = typeof rec.servings === 'number' && isFinite(rec.servings) && rec.servings > 0;
+    if (!hasPrep && !hasCook && !hasServ) return '';
+    var bits = [];
+    if (hasPrep || hasCook) bits.push(((hasPrep ? rec.prep : 0) + (hasCook ? rec.cook : 0)) + ' min total');
+    if (hasServ) bits.push(rec.servings + (rec.servings === 1 ? ' serving' : ' servings'));
+    return rec.title + ' — ' + bits.join(', ') + '.';
+  }
+  function recipeWords(q) {
+    return String(q || '').toLowerCase().split(/[^a-z0-9]+/).filter(function (word) {
+      return word.length > 2 && !/^(the|and|for|from|with|dish|recipe|cook|what|whats|how|tonight|some|any|make|fluffy)$/.test(word);
+    });
+  }
+  function scoreRecipe(title, blob, words) {
+    var score = 0;
+    words.forEach(function (word) {
+      if (title.indexOf(word) !== -1) score += 3;
+      else if (blob.indexOf(word) !== -1) score += 1;
+    });
+    return score;
+  }
   function answerRecipe(q) {
+    var linkHome = { linkTitle: 'Recipes', href: '/recipes/' };
+    var words = recipeWords(q);
+    var best = null;
+    var bestScore = 0;
+    function consider(row, score) {
+      if (score > bestScore) { bestScore = score; best = row; }
+    }
+    index.forEach(function (item) {
+      if (!item || item.kind !== 'Recipe') return;
+      var title = String(item.title || '').toLowerCase();
+      consider({
+        title: item.title,
+        href: item.href,
+        prep: item.prep,
+        cook: item.cook,
+        servings: item.servings,
+        ready: true
+      }, scoreRecipe(title, title + ' ' + String(item.text || '').toLowerCase(), words));
+    });
     return getJSON('/recipes/collections/backyard-chef-index.json').then(function (data) {
-      var words = q.toLowerCase().split(/[^a-z0-9]+/).filter(function (word) {
-        return word.length > 2 && !/^(the|and|for|from|with|dish|recipe|cook|what|whats|how|tonight|some|any)$/.test(word);
-      });
-      var best = null;
-      var bestScore = 0;
       (data.items || []).forEach(function (item) {
         var title = String(item[1] || '').toLowerCase();
         var blob = title + ' ' + String(item[2] || '') + ' ' + String(item[6] || '') + ' ' + String(item[7] || '');
-        var score = 0;
-        words.forEach(function (word) {
-          if (title.indexOf(word) !== -1) score += 3;
-          else if (blob.indexOf(word) !== -1) score += 1;
-        });
-        if (score > bestScore) { bestScore = score; best = item; }
+        consider({
+          id: item[0],
+          title: item[1],
+          href: '/recipes/#/recipe/' + encodeURIComponent(item[0] || ''),
+          part: item[4] || 0,
+          ready: false
+        }, scoreRecipe(title, blob, words));
       });
-      if (!best || !bestScore) {
-        return {
-          status: 'No recipe in the kitchen matched that.',
-          html: briefHtml('Recipes', ['Nothing in the Backyard Chef cards matched those words. Search the recipe box directly.'], [['Recipes', '/recipes/']])
-        };
-      }
-      var snippet = String(best[6] || '').replace(/\s+/g, ' ').trim();
-      if (snippet.length > 140) snippet = snippet.slice(0, 137) + '…';
-      var where = [best[7], best[2]].filter(Boolean).join(' · ');
-      var line = best[1] + (where ? ' (' + where + ').' : '.');
-      if (snippet) line += ' The card starts: ' + snippet;
-      return {
-        status: 'A matching recipe is on the card.',
-        html: briefHtml('Recipe', [line], [[best[1] || 'Recipes', '/recipes/#/recipe/' + encodeURIComponent(best[0])]])
-      };
+      return finishRecipe(best, bestScore, linkHome);
     }).catch(function () {
-      return {
+      if (best && bestScore) return finishRecipe(best, bestScore, linkHome);
+      return factResult({
         status: 'The recipe box did not answer.',
-        html: briefHtml('Recipes', ['The recipe index did not answer just now. The kitchen is on the Recipes page.'], [['Recipes', '/recipes/']])
-      };
+        linkTitle: linkHome.linkTitle,
+        href: linkHome.href
+      });
+    });
+  }
+  function finishRecipe(best, bestScore, linkHome) {
+    if (!best || !bestScore) {
+      return factResult({
+        status: 'No recipe in the kitchen matched that.',
+        linkTitle: linkHome.linkTitle,
+        href: linkHome.href
+      });
+    }
+    function pack(line) {
+      if (!line) {
+        return factResult({
+          status: 'That card does not list a total time or servings.',
+          linkTitle: best.title || linkHome.linkTitle,
+          href: best.href || linkHome.href
+        });
+      }
+      return factResult({
+        status: 'The recipe time and servings are on the card.',
+        heading: 'Recipe',
+        answer: line,
+        linkTitle: best.title || linkHome.linkTitle,
+        href: best.href || linkHome.href
+      });
+    }
+    if (best.ready) return pack(recipeLine(best));
+    var part = best.part || 0;
+    return getJSON('/recipes/collections/backyard-chef-' + (part + 1) + '.json').then(function (data) {
+      var full = null;
+      (data.recipes || []).some(function (row) {
+        if (row && row.id === best.id) { full = row; return true; }
+        return false;
+      });
+      return pack(recipeLine(full || best));
+    }).catch(function () {
+      return factResult({
+        status: 'That recipe card did not answer.',
+        linkTitle: best.title || linkHome.linkTitle,
+        href: best.href || linkHome.href
+      });
     });
   }
   function answerPlant() {
@@ -890,19 +1147,25 @@
       });
       var zone = doc.zone || {};
       var lead = 'In ' + names[month - 1] + ', ZIP ' + doc.zip + ' is Central Florida, zone ' + zone.code + ' (' + zone.range + ').';
-      return {
+      return factResult({
         status: 'The ' + names[month - 1] + ' planting list is on the card.',
-        html: briefHtml('Planting', [lead].concat(lines.length ? lines : ['The calendar has no named crops for this month.']), [['Planting', '/planting/#' + month]])
-      };
+        heading: 'Planting',
+        answer: lead,
+        linkTitle: 'Planting',
+        href: '/planting/#' + month,
+        extra: lines.length ? lines : ['The calendar has no named crops for this month.']
+      });
     }).catch(function () {
-      return {
+      return factResult({
         status: 'The planting notes did not answer.',
-        html: briefHtml('Planting', ['The planting file did not answer just now. The month list is on the Planting page.'], [['Planting', '/planting/']])
-      };
+        linkTitle: 'Planting',
+        href: '/planting/'
+      });
     });
   }
   function siteFacts(q) {
     var intent = siteIntent(q);
+    if (intent === 'weather') return answerWeather(q);
     if (intent === 'launch') return answerLaunch();
     if (intent === 'tide') return answerTide();
     if (intent === 'stock') return answerStock();
@@ -970,6 +1233,7 @@
         if (Math.abs(w.length - tok.length) > limit) continue;
         var d = editDistance(tok, w);
         if (d > 0 && d < bestD) {
+          if ((tok.indexOf(w) !== -1 || w.indexOf(tok) !== -1) && Math.abs(tok.length - w.length) > 1) continue;
           bestD = d;
           best = w;
           if (d === 1) break;
@@ -989,56 +1253,51 @@
     if (before > 0 && after < before + 3) return '';
     return phrase.charAt(0).toUpperCase() + phrase.slice(1);
   }
-  function paintDidYou(q) {
+  function normPhrase(value) {
+    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function paintDidYou(q, titles) {
     var el = $('didYou');
     if (!el) return;
     var alt = suggestQuery(q);
-    if (!alt) { el.hidden = true; el.innerHTML = ''; return; }
+    var altKey = normPhrase(alt);
+    var answered = $('answerFact') && !$('answerFact').hidden && $('answerFact').textContent.trim();
+    var already = altKey && (titles || []).some(function (title) { return normPhrase(title) === altKey; });
+    if (!alt || already || answered) { el.hidden = true; el.innerHTML = ''; return; }
     el.hidden = false;
     el.innerHTML = 'Did you mean <button type="button" class="did-you-q" data-q="' + esc(alt) + '">' + esc(alt) + '?</button>';
   }
-  function firstAnchor(html) {
-    var box = document.createElement('div');
-    box.innerHTML = html || '';
-    var a = box.querySelector('a[href]');
-    if (!a) return null;
-    return { title: String(a.textContent || '').replace(/\s+/g, ' ').trim(), href: a.getAttribute('href') || '' };
-  }
-  function paintLead(fromHtml, sites) {
-    var lead = $('answerLead');
+  function paintFact(fact) {
     var title = $('briefTitle');
-    if (!lead || !title) return;
-    var link = fromHtml ? firstAnchor(fromHtml) : null;
-    var best = null;
-    if (link && link.href) {
-      best = { title: link.title, href: link.href };
-      (sites || []).some(function (hit) {
-        if (!hit || !hit.href || !hit.title) return false;
-        var page = String(hit.href).split('#')[0];
-        if (link.href.indexOf(page) === -1 && String(page).indexOf(link.href) === -1) return false;
-        if (hit.title.length > link.title.length) best.title = hit.title;
-        return true;
-      });
-    } else if (sites && sites[0] && sites[0].href) {
-      best = { title: sites[0].title, href: sites[0].href };
+    var factEl = $('answerFact');
+    var lead = $('answerLead');
+    var body = $('briefBody');
+    if (!title || !lead) return '';
+    var answer = fact && fact.answer ? String(fact.answer) : '';
+    var href = fact && fact.href ? safeUrl(fact.href) : '';
+    var linkTitle = fact && fact.linkTitle ? String(fact.linkTitle) : '';
+    if (factEl) {
+      factEl.hidden = !answer;
+      factEl.textContent = answer;
     }
-    if (!best || !best.href) {
-      title.textContent = 'Nothing in the house matched that.';
+    if (answer) title.textContent = (fact && fact.heading) || 'Answer';
+    else if (href) title.textContent = 'You may find my answer at…';
+    else title.textContent = 'Nothing in the house matched that.';
+    if (href && linkTitle) {
+      var ext = href.indexOf(location.host) === -1;
+      lead.hidden = false;
+      lead.innerHTML = '<a href="' + esc(href) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + esc(linkTitle) + '</a>';
+    } else {
       lead.hidden = true;
       lead.innerHTML = '';
-      return;
     }
-    var href = safeUrl(best.href);
-    if (!href) {
-      title.textContent = 'Nothing in the house matched that.';
-      lead.hidden = true;
-      lead.innerHTML = '';
-      return;
+    var extra = (fact && fact.extra) || [];
+    if (body) {
+      body.innerHTML = extra.length
+        ? '<div class="brief-local">' + extra.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>'
+        : '';
     }
-    title.textContent = 'You may find my answer at…';
-    var ext = href.indexOf(location.host) === -1;
-    lead.hidden = false;
-    lead.innerHTML = '<a href="' + esc(href) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + esc(best.title) + '</a>';
+    return linkTitle;
   }
   function alsoAsked(q, sites) {
     var out = [];
@@ -1046,30 +1305,23 @@
     function add(text) {
       var t = cleanQ(text);
       if (!t || t.length < 8) return;
-      var key = t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-      var qkey = String(q || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-      if (!key || key === qkey || seen[key]) return;
+      var key = normPhrase(t);
+      if (!key || key === normPhrase(q) || seen[key]) return;
       seen[key] = 1;
       out.push(t);
     }
-    (sites || []).slice(0, 6).forEach(function (hit) {
-      if (!hit || !hit.title) return;
-      if (hit.kind === 'Recipe') add('How do I make ' + hit.title + '?');
-      else if (hit.kind === 'App') add('Where is ' + hit.title + '?');
-      else add(hit.title);
+    (sites || []).forEach(function (hit) {
+      if (!hit) return;
+      (hit.asked || []).forEach(add);
+      if (hit.kind === 'Recipe' && hit.title) add('How do I make ' + String(hit.title).replace(/^Sample:\s*/, '') + '?');
+      else if (hit.kind === 'Ship' && hit.title) add('Which Royal Caribbean ship is ' + hit.title + '?');
     });
-    var intent = siteIntent(q);
-    [
-      ['What is the next Cape launch?', 'launch'],
-      ['What is tonight\'s Port Canaveral tide?', 'tide'],
-      ['Why is the top stock on the list?', 'stock'],
-      ['What should I plant in 32927?', 'plant'],
-      ['Where is the weather?', ''],
-      ['How do I make fluffy buttermilk pancakes?', '']
-    ].forEach(function (row) {
-      if (row[1] && row[1] === intent) return;
-      add(row[0]);
-    });
+    if (out.length < 4) {
+      index.forEach(function (item) {
+        if (!item || !item.asked) return;
+        item.asked.forEach(function (text) { if (out.length < 4) add(text); });
+      });
+    }
     return out.slice(0, 4);
   }
   function run(raw) {
@@ -1097,13 +1349,14 @@
       if (mine !== ticket) return;
       var sites = [];
       try { sites = siteHits(q); } catch (e) { sites = []; }
-      if (fact) {
-        $('briefBody').innerHTML = fact.html;
-        $('askStatus').textContent = fact.status;
-        paintLead(fact.html, sites);
+      var cardTitle = '';
+      if (fact && (fact.answer || fact.href)) {
+        cardTitle = paintFact(fact);
+        $('askStatus').textContent = fact.status || 'Hollis checked the house notes.';
         paintTools(tools);
       } else if (tools.length) {
         $('briefTitle').textContent = 'Here is what I worked out.';
+        if ($('answerFact')) { $('answerFact').hidden = true; $('answerFact').textContent = ''; }
         $('answerLead').hidden = true;
         $('answerLead').innerHTML = '';
         $('briefBody').innerHTML = tools.map(function (tool) {
@@ -1112,20 +1365,22 @@
         $('askStatus').textContent = 'Hollis worked that out from the question.';
         paintTools([]);
       } else if (sites.length) {
-        $('briefBody').innerHTML = '';
+        cardTitle = paintFact({ href: sites[0].href, linkTitle: sites[0].title });
         $('askStatus').textContent = 'Hollis found a page in the house.';
-        paintLead('', sites);
         paintTools([]);
       } else {
+        paintFact(null);
         $('briefBody').innerHTML = outsideBrief();
         $('askStatus').textContent = 'That one is outside the house notes.';
-        paintLead('', []);
         paintTools([]);
       }
-      paintDidYou(q);
+      var didTitles = [];
+      if (cardTitle) didTitles.push(cardTitle);
+      if (sites[0] && sites[0].title) didTitles.push(sites[0].title);
+      paintDidYou(q, didTitles);
       paintChips(alsoAsked(q, sites));
       paintHits($('siteBody'), sites.map(function (hit) {
-        return { kind: hit.kind, title: hit.title, url: hit.href, snippet: hit.text, external: hit.external };
+        return { kind: hit.kind, title: hit.title, url: hit.href, snippet: hit.blurb || '', external: hit.external };
       }), 'Nothing else in the house matched those words.');
       $('webWin').hidden = true;
       $('deepWin').hidden = true;
@@ -1133,9 +1388,9 @@
       finishAsk();
     }).catch(function () {
       if (mine !== ticket) return;
+      paintFact(null);
       $('briefBody').innerHTML = outsideBrief();
       $('askStatus').textContent = 'The house notes did not answer.';
-      paintLead('', []);
       finishAsk();
     });
   }
