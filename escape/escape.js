@@ -124,6 +124,42 @@ const ALT = {
   lantern: 'A small lantern room, one cold lantern, and a brass plate.',
   road: 'The door open onto a wet road and moonlight.'
 };
+const TIP_KEY = 'mondosupreme.escape.pocketsTip.v1';
+const HITS = {
+  foyer: [
+    { id: 'coat', x: 34, y: 16, w: 16, h: 28 },
+    { id: 'hook', x: 36, y: 8, w: 14, h: 10 },
+    { id: 'clock', x: 54, y: 6, w: 20, h: 22 },
+    { id: 'book', x: 16, y: 52, w: 16, h: 12 },
+    { id: 'cupboard', x: 52, y: 34, w: 22, h: 18 },
+    { id: 'hearth', x: 76, y: 24, w: 24, h: 28 },
+    { id: 'mat', x: 98, y: 52, w: 20, h: 14 },
+    { id: 'study-door', x: 100, y: 12, w: 18, h: 40 },
+    { sconce: 'star', x: 12, y: 2, w: 14, h: 12 },
+    { sconce: 'moon', x: 32, y: 2, w: 14, h: 12 },
+    { sconce: 'wave', x: 72, y: 2, w: 14, h: 12 },
+    { sconce: 'bell', x: 88, y: 2, w: 12, h: 12 }
+  ],
+  study: [
+    { id: 'shelf', x: 4, y: 6, w: 40, h: 26 },
+    { id: 'safe', x: 4, y: 34, w: 16, h: 20 },
+    { id: 'desk', x: 22, y: 28, w: 48, h: 28 },
+    { id: 'portrait', x: 76, y: 6, w: 26, h: 32 },
+    { id: 'plaque', x: 80, y: 38, w: 18, h: 12 },
+    { id: 'gallery-door', x: 104, y: 16, w: 14, h: 40 }
+  ],
+  gallery: [
+    { id: 'canvas-1', x: 6, y: 14, w: 24, h: 30 },
+    { id: 'canvas-2', x: 34, y: 16, w: 20, h: 26 },
+    { id: 'canvas-3', x: 58, y: 18, w: 16, h: 22 },
+    { id: 'canvas-4', x: 78, y: 20, w: 14, h: 18 },
+    { id: 'stair', x: 96, y: 14, w: 22, h: 42 }
+  ],
+  lantern: [
+    { id: 'plate', x: 8, y: 18, w: 26, h: 20 },
+    { id: 'lantern', x: 46, y: 6, w: 28, h: 40 }
+  ]
+};
 const MARK = {
   star: 'M32 6 L36 26 L56 26 L40 38 L46 58 L32 46 L18 58 L24 38 L8 26 L28 26 Z',
   moon: 'M36 8 A20 20 0 1 0 36 56 A16 16 0 1 1 36 8 Z',
@@ -495,8 +531,10 @@ function paintFoyer(ctx, now) {
   if (has('sconces')) fill(ctx, 104, 50, 12, 2, '#f0c36a');
   fill(ctx, 100, 56, 18, 6, '#3a3028');
   fill(ctx, 104, 57, 8, 3, '#e6dcc8');
+  fill(ctx, 18, 54, 12, 8, '#3a2418');
+  fill(ctx, 23, 54, 2, 8, '#c4924a');
   [[16, 6], [36, 6], [76, 6], [94, 8]].forEach(([x, y], i) => {
-    const names = ['bell', 'star', 'wave', 'moon'];
+    const names = ['star', 'moon', 'wave', 'bell'];
     const on = has('sconces') || seq.includes(names[i]);
     fill(ctx, x, y, 5, 7, '#3a3028');
     if (on) fill(ctx, x + 1, y + 1, 3, 4, '#ffb060');
@@ -639,6 +677,58 @@ function paintVisible(now) {
   const view = visibleScene();
   paintCanvas(view.canvas, view.scene, now || performance.now());
 }
+function setLive(on) {
+  document.body.classList.toggle('cinder-live', on);
+  document.documentElement.classList.toggle('cinder-live', on);
+  syncViewport();
+}
+function tipSeen() {
+  try { return localStorage.getItem(TIP_KEY) === '1'; }
+  catch { return true; }
+}
+function dismissTip() {
+  try { localStorage.setItem(TIP_KEY, '1'); } catch { /* private mode */ }
+  const tip = $('#pocketTip');
+  if (tip) tip.hidden = true;
+}
+function syncTip() {
+  const tip = $('#pocketTip');
+  if (!tip) return;
+  tip.hidden = $('#play').hidden || !state.inventory.length || tipSeen();
+}
+function artPoint(event) {
+  const canvas = $('#roomArt');
+  if (!canvas) return null;
+  const rect = canvas.getBoundingClientRect();
+  const scale = Math.min(rect.width / W, rect.height / H);
+  if (!scale) return null;
+  const drawnW = W * scale;
+  const drawnH = H * scale;
+  const originX = rect.left + (rect.width - drawnW) / 2;
+  const originY = rect.top + (rect.height - drawnH) / 2;
+  const x = (event.clientX - originX) / scale;
+  const y = (event.clientY - originY) / scale;
+  if (x < 0 || y < 0 || x >= W || y >= H) return null;
+  return { x, y };
+}
+function hitAt(point) {
+  const hits = HITS[state.room] || [];
+  for (let i = hits.length - 1; i >= 0; i--) {
+    const hit = hits[i];
+    if (point.x >= hit.x && point.x < hit.x + hit.w && point.y >= hit.y && point.y < hit.y + hit.h) return hit;
+  }
+  return null;
+}
+function onArt(event) {
+  if ($('#play').hidden) return;
+  const point = artPoint(event);
+  if (!point) return;
+  const hit = hitAt(point);
+  if (!hit) return;
+  if (hit.sconce) { tapSconce(hit.sconce); return; }
+  if (state.selected) useItem(state.selected, hit.id);
+  else examine(hit.id);
+}
 function applyShake() {
   let x = 0;
   let y = 0;
@@ -755,12 +845,14 @@ function render() {
     });
   }
   $('#timer').textContent = formatDuration(elapsed());
+  syncTip();
   wake();
 }
 function showPlay() {
   $('#splash').hidden = true;
   $('#ending').hidden = true;
   $('#play').hidden = false;
+  setLive(true);
   render();
   armTick();
 }
@@ -781,6 +873,7 @@ function showEnding() {
   $('#endingLine').textContent = 'The lantern takes the flame. Rain thins. The road is only water and moonlight, and it is enough.';
   $('#ending').hidden = false;
   $('#endingTime').textContent = 'You were in the dark for ' + formatDuration(state.endedElapsed) + '.';
+  setLive(true);
   if (heard && window.MONDO_JUICE && MONDO_JUICE.play) MONDO_JUICE.play('win');
   wake();
 }
@@ -837,6 +930,7 @@ function resetAll() {
   $('#hintOut').textContent = '';
   renderedRoom = '';
   clearEndingCopy();
+  setLive(false);
   wake();
 }
 
@@ -1209,6 +1303,7 @@ function bootSplash(raw) {
   $('#begin').hidden = saved;
   $('#resume').hidden = !saved;
   $('#wipe').hidden = !saved;
+  setLive(false);
   wake();
 }
 function boot() {
@@ -1237,6 +1332,8 @@ function boot() {
   $('#padOk').addEventListener('click', tryPad);
   $('#pad').addEventListener('click', onPad);
   $('#play').addEventListener('click', onClick);
+  $('#roomArt').addEventListener('click', onArt);
+  $('#pocketTipClose').addEventListener('click', dismissTip);
   $('#menuBtn').addEventListener('click', (e) => {
     e.stopPropagation();
     if ($('#menu').hidden) openMenu();
