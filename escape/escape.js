@@ -128,17 +128,17 @@ const TIP_KEY = 'mondosupreme.escape.pocketsTip.v1';
 const HITS = {
   foyer: [
     { id: 'coat', x: 34, y: 16, w: 16, h: 28 },
-    { id: 'hook', x: 36, y: 8, w: 14, h: 10 },
+    { id: 'hook', x: 36, y: 18, w: 14, h: 16 },
     { id: 'clock', x: 54, y: 6, w: 20, h: 22 },
     { id: 'book', x: 16, y: 52, w: 16, h: 12 },
     { id: 'cupboard', x: 52, y: 34, w: 22, h: 18 },
     { id: 'hearth', x: 76, y: 24, w: 24, h: 28 },
     { id: 'mat', x: 98, y: 52, w: 20, h: 14 },
     { id: 'study-door', x: 100, y: 12, w: 18, h: 40 },
-    { sconce: 'star', x: 12, y: 2, w: 14, h: 12 },
-    { sconce: 'moon', x: 32, y: 2, w: 14, h: 12 },
-    { sconce: 'wave', x: 72, y: 2, w: 14, h: 12 },
-    { sconce: 'bell', x: 88, y: 2, w: 12, h: 12 }
+    { sconce: 'star', x: 4, y: 0, w: 14, h: 10 },
+    { sconce: 'moon', x: 22, y: 0, w: 14, h: 10 },
+    { sconce: 'wave', x: 80, y: 0, w: 14, h: 10 },
+    { sconce: 'bell', x: 104, y: 0, w: 14, h: 10 }
   ],
   study: [
     { id: 'shelf', x: 4, y: 6, w: 40, h: 26 },
@@ -189,6 +189,9 @@ let audio = null;
 let tick = null;
 let raf = 0;
 let shock = 0;
+let combining = false;
+let pulse = null;
+const introAt = {};
 const motes = Array.from({ length: 18 }, () => ({
   x: Math.random() * W,
   y: Math.random() * H,
@@ -533,11 +536,11 @@ function paintFoyer(ctx, now) {
   fill(ctx, 104, 57, 8, 3, '#e6dcc8');
   fill(ctx, 18, 54, 12, 8, '#3a2418');
   fill(ctx, 23, 54, 2, 8, '#c4924a');
-  [[16, 6], [36, 6], [76, 6], [94, 8]].forEach(([x, y], i) => {
-    const names = ['star', 'moon', 'wave', 'bell'];
-    const on = has('sconces') || seq.includes(names[i]);
-    fill(ctx, x, y, 5, 7, '#3a3028');
-    if (on) fill(ctx, x + 1, y + 1, 3, 4, '#ffb060');
+  [[4, 'star'], [22, 'moon'], [80, 'wave'], [104, 'bell']].forEach(([x, name]) => {
+    const on = has('sconces') || seq.includes(name);
+    fill(ctx, x, 0, 14, 10, '#2a2118');
+    fill(ctx, x + 4, 2, 6, 6, on ? '#ffb060' : '#5c4632');
+    if (on) fill(ctx, x + 6, 4, 2, 2, '#fff4d2');
   });
   glow(ctx, 18, 20, 30, 'rgba(180,210,230,0.4)');
   if (has('hearth')) glow(ctx, 90, 40, 24, 'rgba(255,150,70,0.5)');
@@ -647,6 +650,7 @@ function paintScene(ctx, scene, now) {
     fill(ctx, mote.x, mote.y, 1, 1, '#f6e6d0');
   });
   ctx.globalAlpha = 1;
+  drawHotspots(ctx, scene, now);
   if (shock > 0 && !reduced()) {
     shock -= 1;
     for (let i = 0; i < 46; i++) {
@@ -696,6 +700,9 @@ function syncTip() {
   if (!tip) return;
   tip.hidden = $('#play').hidden || !state.inventory.length || tipSeen();
 }
+function hitKey(hit) {
+  return hit.sconce ? 'sconce:' + hit.sconce : hit.id;
+}
 function artPoint(event) {
   const canvas = $('#roomArt');
   if (!canvas) return null;
@@ -709,15 +716,51 @@ function artPoint(event) {
   const x = (event.clientX - originX) / scale;
   const y = (event.clientY - originY) / scale;
   if (x < 0 || y < 0 || x >= W || y >= H) return null;
-  return { x, y };
+  return { x, y, scale };
+}
+function hitBox(hit, scale) {
+  const min = 44 / Math.max(scale, 0.5);
+  const cx = hit.x + hit.w / 2;
+  const cy = hit.y + hit.h / 2;
+  return { cx, cy, hw: Math.max(hit.w, min) / 2, hh: Math.max(hit.h, min) / 2 };
 }
 function hitAt(point) {
   const hits = HITS[state.room] || [];
-  for (let i = hits.length - 1; i >= 0; i--) {
-    const hit = hits[i];
-    if (point.x >= hit.x && point.x < hit.x + hit.w && point.y >= hit.y && point.y < hit.y + hit.h) return hit;
-  }
-  return null;
+  let best = null;
+  let bestD = Infinity;
+  hits.forEach(hit => {
+    const box = hitBox(hit, point.scale);
+    if (Math.abs(point.x - box.cx) > box.hw || Math.abs(point.y - box.cy) > box.hh) return;
+    const d = (point.x - box.cx) ** 2 + (point.y - box.cy) ** 2;
+    if (d < bestD) { bestD = d; best = hit; }
+  });
+  return best;
+}
+function pulseHit(hit) {
+  pulse = { key: hitKey(hit), until: performance.now() + (reduced() ? 0 : 520) };
+  if (!reduced()) wake();
+}
+function drawHotspots(ctx, scene, now) {
+  if (!HITS[scene] || scene !== state.room) return;
+  const started = introAt[scene];
+  const intro = started && now - started < 2600;
+  HITS[scene].forEach(hit => {
+    const key = hitKey(hit);
+    const hot = pulse && pulse.key === key && now < pulse.until;
+    if (!intro && !hot) return;
+    let alpha = 0.45;
+    if (hot) alpha = 0.95;
+    else if (!reduced()) alpha = 0.22 + 0.28 * (0.5 + 0.5 * Math.sin(now / 160));
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    const color = hot ? '#fff4d2' : '#e0b060';
+    ctx.fillStyle = color;
+    ctx.fillRect(hit.x, hit.y, hit.w, hot ? 2 : 1);
+    ctx.fillRect(hit.x, hit.y + hit.h - 1, hit.w, hot ? 2 : 1);
+    ctx.fillRect(hit.x, hit.y, hot ? 2 : 1, hit.h);
+    ctx.fillRect(hit.x + hit.w - 1, hit.y, hot ? 2 : 1, hit.h);
+    ctx.restore();
+  });
 }
 function onArt(event) {
   if ($('#play').hidden) return;
@@ -725,6 +768,8 @@ function onArt(event) {
   if (!point) return;
   const hit = hitAt(point);
   if (!hit) return;
+  pulseHit(hit);
+  combining = false;
   if (hit.sconce) { tapSconce(hit.sconce); return; }
   if (state.selected) useItem(state.selected, hit.id);
   else examine(hit.id);
@@ -795,6 +840,7 @@ function render() {
     glitch();
   }
   renderedRoom = state.room;
+  if (!introAt[state.room]) introAt[state.room] = performance.now();
   const room = ROOMS[state.room];
   $('#roomTitle').textContent = room.title;
   $('#roomLine').textContent = room.line;
@@ -845,6 +891,13 @@ function render() {
     });
   }
   $('#timer').textContent = formatDuration(elapsed());
+  const useBtn = $('#useWith');
+  if (useBtn) {
+    const canCombine = !!(state.selected && state.inventory.length > 1);
+    useBtn.hidden = !canCombine;
+    useBtn.setAttribute('aria-pressed', combining && canCombine ? 'true' : 'false');
+    useBtn.textContent = combining && canCombine ? 'Pick the other' : 'Use with…';
+  }
   syncTip();
   wake();
 }
@@ -1127,6 +1180,7 @@ function revealPainting(id) {
   render();
 }
 function combine(a, b) {
+  combining = false;
   const pair = [a, b].sort().join('|');
   if (pair === 'lens|ring') {
     take('lens');
@@ -1176,6 +1230,7 @@ async function tapSconce(name) {
   if (has('sconces')) { say('The sconces stay lit.'); return; }
   if (!has('hearth')) { say('The sconces stay cold. The hearth has not spoken.'); return; }
   seq.push(name);
+  say(name.charAt(0).toUpperCase() + name.slice(1) + '.');
   $('#sconcePips').textContent = seq.map(() => '●').join(' ');
   document.querySelectorAll('[data-sconce]').forEach(btn => {
     const on = seq.includes(btn.dataset.sconce);
@@ -1275,14 +1330,25 @@ function onClick(e) {
   const itemBtn = e.target.closest('[data-item]');
   if (itemBtn) {
     const id = itemBtn.dataset.item;
-    if (state.selected && state.selected !== id) { combine(state.selected, id); return; }
-    state.selected = state.selected === id ? null : id;
-    say(state.selected ? 'Using the ' + ITEMS[id].toLowerCase() + '. Tap where it goes.' : 'You put it away.');
+    if (combining && state.selected && state.selected !== id) {
+      combine(state.selected, id);
+      return;
+    }
+    if (state.selected === id) {
+      combining = false;
+      state.selected = null;
+      say('You put it away.');
+    } else {
+      combining = false;
+      state.selected = id;
+      say('Using the ' + ITEMS[id].toLowerCase() + '. Tap where it goes.');
+    }
     render();
     return;
   }
   const hot = e.target.closest('[data-hot]');
   if (!hot) return;
+  combining = false;
   if (state.selected) useItem(state.selected, hot.dataset.hot);
   else examine(hot.dataset.hot);
 }
@@ -1333,6 +1399,13 @@ function boot() {
   $('#pad').addEventListener('click', onPad);
   $('#play').addEventListener('click', onClick);
   $('#roomArt').addEventListener('click', onArt);
+  $('#useWith').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!state.selected || state.inventory.length < 2) return;
+    combining = !combining;
+    say(combining ? 'Tap the other item in Pockets.' : 'Using the ' + ITEMS[state.selected].toLowerCase() + '. Tap where it goes.');
+    render();
+  });
   $('#pocketTipClose').addEventListener('click', dismissTip);
   $('#menuBtn').addEventListener('click', (e) => {
     e.stopPropagation();
