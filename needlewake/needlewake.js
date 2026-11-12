@@ -369,8 +369,10 @@
     if (!run || phase !== 'play' || run.ship.inv > 0) return;
     var ship = run.ship;
     ship.lives -= 1;
-    ship.inv = 2;
-    run.flash = reduced() ? 0.2 : 0.12;
+    ship.inv = 2.6;
+    run.flash = reduced() ? 0.32 : 0.22;
+    run.cue = { text: 'HIT', t: 0.85 };
+    run.ring = 1;
     run.combo = 0;
     run.comboT = 0;
     if (rock) {
@@ -400,7 +402,8 @@
       gameOver();
       return;
     }
-    say('Needle cracked. ' + ship.lives + (ship.lives === 1 ? ' life' : ' lives') + ' left');
+    popup('SAFE', ship.x, ship.y - 16);
+    say('Hit. Safe while the ring holds. ' + ship.lives + (ship.lives === 1 ? ' life' : ' lives') + ' left');
   }
   function shoot() {
     if (run.shots.length >= 3) return;
@@ -442,6 +445,12 @@
     var spawned = [];
     ship.inv = Math.max(0, ship.inv - dt);
     run.flash = Math.max(0, run.flash - dt);
+    if (run.ring > 0) run.ring = Math.max(0, run.ring - dt * 1.4);
+    if (run.cue) {
+      run.cue.t -= dt;
+      if (run.cue.t <= 0) run.cue = null;
+      else if (ship.inv > 0 && run.cue.t < 0.45) run.cue.text = 'SAFE';
+    }
     run.puff = Math.max(0, run.puff - dt);
     run.comboT = Math.max(0, run.comboT - dt);
     if (run.comboT <= 0) run.combo = 0;
@@ -619,7 +628,14 @@
   function hudText() {
     if (!run || phase === 'attract') return 'Best ' + bestScore();
     var combo = run.combo > 1 ? ' · x' + run.combo : '';
-    return 'Score ' + run.score + combo + ' · Lives ' + Math.max(0, run.ship.lives) + ' · Field ' + run.wave;
+    var safe = run.ship.inv > 0 ? ' · SAFE' : '';
+    return 'Score ' + run.score + combo + ' · Lives ' + Math.max(0, run.ship.lives) + ' · Field ' + run.wave + safe;
+  }
+  function openInitials() {
+    initials.value = '';
+    initials.placeholder = 'AAA';
+    delete initials.dataset.typed;
+    setTimeout(function () { initials.focus(); }, 40);
   }
   function gameOver() {
     if (phase === 'over') return;
@@ -633,13 +649,7 @@
     endBtn.hidden = true;
     backBtn.hidden = false;
     freshName = '';
-    if (run && run.score > 0) {
-      initials.value = store.initials || '';
-      setTimeout(function () {
-        initials.focus();
-        if (initials.select) initials.select();
-      }, 40);
-    }
+    if (run && run.score > 0) openInitials();
     show('score');
     renderBoard();
     paintHud('Score ' + (run ? run.score : 0));
@@ -832,8 +842,47 @@
         ctx.lineTo(b.x - b.vx * 0.03, b.y - b.vy * 0.03);
         ctx.stroke();
       });
+      if (run.ring > 0) {
+        ctx.strokeStyle = 'rgba(255,246,216,' + run.ring.toFixed(2) + ')';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(run.ship.x, run.ship.y, 8 + (1 - run.ring) * 26, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      if (run.ship.inv > 0) {
+        ctx.strokeStyle = '#fff6d8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(run.ship.x, run.ship.y, reduced() ? 14 : 12 + (Math.floor(now / 100) % 3), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      if (input.drag && phase === 'play') {
+        var aimLen = run.thrusting ? 34 : 18;
+        ctx.strokeStyle = run.thrusting ? '#ffb15a' : '#8ef6e4';
+        ctx.lineWidth = run.thrusting ? 2 : 1.25;
+        ctx.beginPath();
+        ctx.moveTo(run.ship.x, run.ship.y);
+        ctx.lineTo(run.ship.x + Math.cos(run.ship.a) * aimLen, run.ship.y + Math.sin(run.ship.a) * aimLen);
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(input.drag.x - 2, input.drag.y - 2, 4, 4);
+        ctx.strokeStyle = 'rgba(142,246,228,0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(input.drag.x, input.drag.y);
+        ctx.lineTo(run.ship.x, run.ship.y);
+        ctx.stroke();
+      }
       ctx.strokeStyle = run.ship.inv > 0 ? '#fff6d8' : '#d7fff6';
       drawShip(ctx, run.ship, run.thrusting, now);
+      if (run.cue && run.cue.t > 0) {
+        ctx.globalAlpha = Math.min(1, run.cue.t * 2);
+        ctx.fillStyle = '#fff6d8';
+        ctx.font = '700 12px ui-monospace, monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(run.cue.text, run.ship.x, run.ship.y - 18);
+        ctx.globalAlpha = 1;
+      }
       var k = kit();
       if (k) k.drawParticles(ctx);
       ctx.textAlign = 'center';
@@ -929,9 +978,36 @@
   });
   backBtn.addEventListener('click', backTitle);
   scoreForm.addEventListener('submit', saveScore);
+  initials.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    if (ev.key === 'Backspace' || ev.key === 'Delete') return;
+    if (ev.key.length !== 1) return;
+    var ch = ev.key.toUpperCase();
+    if (!/^[A-Z]$/.test(ch)) { ev.preventDefault(); return; }
+    ev.preventDefault();
+    var cur = cleanName(initials.value);
+    var start = initials.selectionStart == null ? cur.length : initials.selectionStart;
+    var end = initials.selectionEnd == null ? start : initials.selectionEnd;
+    if (!initials.dataset.typed && start === end && cur.length >= 3) {
+      initials.value = ch;
+      initials.dataset.typed = '1';
+      if (initials.setSelectionRange) initials.setSelectionRange(1, 1);
+      return;
+    }
+    var next = (cur.slice(0, start) + ch + cur.slice(end)).slice(0, 3);
+    initials.dataset.typed = '1';
+    initials.value = next;
+    var caret = Math.min(next.length, start + 1);
+    if (initials.setSelectionRange) initials.setSelectionRange(caret, caret);
+  });
   initials.addEventListener('input', function () {
+    var caret = initials.selectionStart || 0;
+    var before = cleanName(initials.value.slice(0, caret));
     var next = cleanName(initials.value);
-    if (initials.value !== next) initials.value = next;
+    if (initials.value !== next) {
+      initials.value = next;
+      if (initials.setSelectionRange) initials.setSelectionRange(before.length, before.length);
+    } else if (next) initials.dataset.typed = '1';
   });
   muteBtn.addEventListener('click', function () {
     if (audible()) soundOn = false;
