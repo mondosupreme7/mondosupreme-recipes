@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T02:34:31Z",
+ "updated": "2026-11-12T03:34:03Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -52,9 +52,8 @@
   {
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
-   "ok": false,
-   "count": 0,
-   "error": "TimeoutError"
+   "ok": true,
+   "count": 12
   },
   {
    "name": "Canaveral Port Authority",
@@ -70,6 +69,20 @@
   }
  ],
  "events": [
+  {
+   "id": "71cde7d739cde067",
+   "title": "Space Coast State Fair",
+   "start": "2026-10-29T21:00:00Z",
+   "end": "2026-11-16T03:00:00Z",
+   "town": "Melbourne",
+   "venue": "SPACE COAST DAILY PARK, 5775 Stadium Parkway, Melbourne, FL, 32940",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/space-coast-state-fair-2/",
+   "description": "Join us at the Space Coast State Fair! This is your CHANCE to experience the Space Coast State Fair before it\u2019s gone! Join us for unforgettable fun with rides, games, delicious food, and FREE shows for the whole family! Event Dates: October 29 \u2013 November 15, 2026 Event Hours: Monday \u2013Thursday: 5 PM \u2013 10 PM Friday: 5 PM \u2013 11 PM Saturday: 1 PM \u2013 11:30 PM Sunday: 1 PM \u2013 10 PM Veterans Day: Wed, Nov 1",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
   {
    "id": "7c300ac7333876d7",
    "title": "City of Rockledge Holiday Food Drive",
@@ -281,6 +294,20 @@
    "kind": "launch"
   },
   {
+   "id": "11ed3146a0a0809a",
+   "title": "Rocky Water Welcome Brewers Party at Intracoastal Brewing Company",
+   "start": "2026-11-13T19:00:00Z",
+   "end": "2026-11-14T03:00:00Z",
+   "town": "Melbourne",
+   "venue": "Intracoastal Brewing Company, 652 W Eau Gallie Blvd, Melbourne, FL, 32935, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/rocky-water-welcome-brewers-party-at-intracoastal-brewing-company/",
+   "description": "Rocky Water Brewer\u2019s Party 2026! Get ready for our favorite weekend of the year at Intracoastal Brewing Company! Friday, November 13th is the Rocky Water Welcome Brewers Party! This event is open to the public and we\u2019ll have The Syndicate Band LIVE from 2-5pm & Hot Pink from 6-9pm! And Saturday, November 14th is the Rocky Water Brew Fest! Enjoy unlimited tastes from 40 breweries from around the st",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
    "id": "7198f8da6b9a1cb1",
    "title": "Food Truck Friday",
    "start": "2026-11-13T21:30:00Z",
@@ -292,6 +319,20 @@
    "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2980",
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "c13365cf09c757bb",
+   "title": "Keep Them Flying: A 1941 Gala & Fundraiser",
+   "start": "2026-11-13T22:00:00Z",
+   "end": "2026-11-14T02:00:00Z",
+   "town": "Titusville",
+   "venue": "Warbird Air Museum, 6600 Tico Road, Titusville, FL, 32780, United States",
+   "category": "Sports",
+   "url": "https://www.visitspacecoast.com/event/keep-them-flying-a-1941-gala-fundraiser/",
+   "description": "Valiant Air Command, Inc. Warbird Museum will host its Keep Them Flying \u2013 1941 Gala & Fundraiser on Friday, November 13, 2026, from 5:00 p.m. to 9:00 p.m. at Venue on the Horizon at the Valiant Air Command, Inc. Warbird Museum, 6600 Tico Road in Titusville. The special fundraising evening will transport guests back to 1941 for a night surrounded by historic military aircraft and aviation history. ",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   },
   {
@@ -379,6 +420,20 @@
    "kind": "cruise"
   },
   {
+   "id": "39c594f8e2e8b2d1",
+   "title": "Veterans Open House Weekend",
+   "start": "2026-11-14T14:00:00Z",
+   "end": "2026-11-15T22:00:00Z",
+   "town": "Titusville",
+   "venue": "Warbird Air Museum, 6600 Tico Road, Titusville, FL, 32780, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/veterans-open-house-weekend/",
+   "description": "Veterans and Florida residents get free admission. We request a non-perishable food donation. Various veteran related exhibitors, live music, simulators, open cockpits, food. There will be special events on Saturday including breakfast available 8:00-10:00, a fly by at noon and blood mobile on Saturday 10:00-3:00",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
    "id": "78fee4d989656e5a",
    "title": "Food Drive Collection Event at Publix",
    "start": "2026-11-14T15:00:00Z",
@@ -390,6 +445,76 @@
    "description": "Join Team Cocoa at Publix as we collect items for the Food Drive. https://www.cocoafl.gov/calendar.aspx?EID=6368",
    "source": "City of Cocoa",
    "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "3212bb865f01c788",
+   "title": "North Brevard Art League Holiday Artisan Market",
+   "start": "2026-11-14T15:00:00Z",
+   "end": "2026-11-15T20:00:00Z",
+   "town": "Titusville",
+   "venue": "North Brevard Art League Studio, 1421 Draa Rd, Titusville, FL, 32796, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/north-brevard-art-league-holiday-artisan-market/",
+   "description": "Get a head start on holiday shopping while supporting local artists and makers at the North Brevard Holiday Artisan Market, taking place Saturday, November 14, from 10 a.m. to 3 p.m., and Sunday, November 15, from 12 p.m. to 3 p.m. at the North Brevard Art League, 1421 Draa Road in Titusville. Admission and parking are free. The Holiday Artisan Market will bring together talented local artists, ar",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "125d74a9d5e4c680",
+   "title": "Parade of Gems",
+   "start": "2026-11-14T15:00:00Z",
+   "end": "2026-11-15T21:00:00Z",
+   "town": "Melbourne",
+   "venue": "MELBOURNE AUDITORIUM, 625 E Hibiscus Blvd 32901, Melbourne, FL, 32901",
+   "category": "Family",
+   "url": "https://www.visitspacecoast.com/event/annual-parade-of-gems/",
+   "description": "Parade of Gems is the largest Mineral and Gem show in Melbourne Held Nov. 14th & 15th at the Melbourne Auditorium. This annual event is hosted by the Canaveral Mineral & Gem Society. There is something for everyone: kid\u2019s corner, vendors selling gifts, lapidary materials, jewelry, silent auction & Grand prize drawing. Saturday, Nov. 14th \u2013 10-5 pm Sunday, Nov. 15th \u2013 10-4 pm Entry fee/donation $5 ",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "40a7e0c9fb5ba12c",
+   "title": "Cocoa Village Saturday Art Market",
+   "start": "2026-11-14T16:00:00Z",
+   "end": "2026-11-14T22:00:00Z",
+   "town": "Cocoa",
+   "venue": "MYRT THARPE SQUARE, 12 Stone St, Cocoa, FL, 32922",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/cocoa-village-saturday-art-market-2/2026-11-14/",
+   "description": "Enjoy this weekly Saturday Cocoa Village Art Market in the heart of Cocoa Village with an array of artisans. Come browse and shop original local artwork by area artists! Spend the day in Cocoa Village also visiting the many shops and eateries.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "431088b4bfa72d03",
+   "title": "Rocky Water Brew Fest 2026",
+   "start": "2026-11-14T18:00:00Z",
+   "end": "2026-11-14T22:00:00Z",
+   "town": "Melbourne",
+   "venue": "Intracoastal Brewing Company, 652 W Eau Gallie Blvd, Melbourne, FL, 32935, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/rocky-water-brew-fest/",
+   "description": "The Rocky Water Brew Fest returns for its 12th year, bringing together some of the best small craft breweries from across Florida! Hosted by the Eau Gallie Rotary Club and Intracoastal Brewing Company, this outdoor event offers unlimited 2\u20134 oz tastings of craft beer from all over the state, all included with your ticket. You\u2019ll also receive a commemorative tasting glass to take home. A variety of",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "436de4ea2ca59953",
+   "title": "Red White and Brass",
+   "start": "2026-11-14T23:00:00Z",
+   "end": "2026-11-15T01:00:00Z",
+   "town": "Merritt Island",
+   "venue": "Merritt Island Veterans Memorial Amphitheater, 555 Fortenberry Rd, Merritt Island, FL, 32952, United States",
+   "category": "Launches",
+   "url": "https://www.visitspacecoast.com/event/red-white-and-brass/",
+   "description": "A soaring, FREE patriotic celebration presented by SpaceX, honoring our Armed Forces with stirring music, magnificent voices and a community united in song. SpaceX, the Merritt Island Redevelopment Agency and your Space Coast Symphony present Red, White & Brass, launching an exciting new concert series with an evening dedicated to Brevard County veterans. Aaron Collins leads your Space Coast Symph",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   },
   {
@@ -631,6 +756,20 @@
    "kind": "event"
   },
   {
+   "id": "fc1762fc61ce8ca4",
+   "title": "Pints & Pottery: Gingerbread - at Playalinda Brewing Co.",
+   "start": "2026-11-18T23:00:00Z",
+   "end": "2026-11-19T01:00:00Z",
+   "town": "Titusville",
+   "venue": "Playalinda Brewing Company, 5220 S Washington Ave, Titusville, FL, 32780, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/pints-pottery-playalinda-brewing-company/",
+   "description": "Gingerbread, but make it pottery! Join us at Playalinda Brewing Company for a special hands-on evening with Nicki and the team from Space Coast Ceramics on Wednesday, November 18th from 6-8pm This interactive workshop includes: One drink of your choice \u2013 beer, cocktail, mocktail, or wine! Your choice of one of eight gingerbread pottery pieces Use of all glazes, brushes, and tools Step-by-step guid",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
    "id": "7b6e78dc304414e2",
    "title": "Disney Wish in port",
    "start": "2026-11-20T11:00:00Z",
@@ -701,6 +840,20 @@
    "kind": "cruise"
   },
   {
+   "id": "3963a8b6d97da9f9",
+   "title": "Holiday Lights at Brevard Zoo",
+   "start": "2026-11-20T13:00:00Z",
+   "end": "2027-01-02T22:00:00Z",
+   "town": "Melbourne",
+   "venue": "BREVARD ZOO, 8225 N. Wickham Rd, Melbourne, FL, 32935, United States",
+   "category": "Family",
+   "url": "https://www.visitspacecoast.com/event/holiday-lights-at-brevard-zoo/",
+   "description": "Select Nights: November 20, 2026 \u2013 January 2, 2027 Event Hours: 6:00 PM \u2013 9:00 PM | Final Admission: 8:00 PM November 20 \u2013 December 12: Friday and Saturday evenings December 18 \u2013 January 2: Nightly, excluding Christmas Eve and Christmas Day Make new family memories under the glow of sparkling lights during this all-new nighttime experience. Immerse yourself in the magic of the holidays as visions ",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
    "id": "edca3ecce36e4fc4",
    "title": "Food Drive Collection Event at Sam's Club",
    "start": "2026-11-20T15:00:00Z",
@@ -712,6 +865,20 @@
    "description": "Join Team Cocoa as we collect items for the Food Drive. https://www.cocoafl.gov/calendar.aspx?EID=6369",
    "source": "City of Cocoa",
    "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "0d1172e52e8a896d",
+   "title": "Friday Fest Downtown Cocoa Beach",
+   "start": "2026-11-20T18:00:00Z",
+   "end": "2026-11-20T22:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "DOWNTOWN COCOA BEACH, 20 N. Brevard Avenue, Cocoa Beach, FL, 32931",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/friday-fest-cocoa-beach/",
+   "description": "A free, family friendly street party in downtown Cocoa Beach. Live music, food trucks and unique vendors line the streets.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   },
   {
