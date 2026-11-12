@@ -40,7 +40,9 @@
     { kind: 'Game', title: 'Half Strike Fortress — de_sandstorm', href: '/fps/', text: 'fps half strike fortress bomb sandstorm' },
     { kind: 'Game', title: 'Half Strike Fortress — 2Fort', href: '/fps/', text: 'fps half strike fortress sentry 2fort' },
 { kind: 'Game', title: 'Cinderlatch', href: '/escape/', text: 'cinderlatch escape room door' },
-    { kind: 'Game', title: 'Cinderwell', href: '/cinderwell/', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch hearth' }
+    { kind: 'Game', title: 'Cinderwell', href: '/cinderwell/', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch hearth' },
+    { kind: 'Game', title: 'Saltflare', href: '/saltflare/', text: 'saltflare formation shooter moths flare skiff marsh' },
+    { kind: 'Game', title: 'Needlewake', href: '/needlewake/', text: 'needlewake vector shards glass needle field' }
   ];
 
   function addItem(list, item) {
@@ -453,7 +455,9 @@
     { title: 'Craft', href: '/mmo/', icon: 'sword', group: 'Game Studio', text: 'craft mmo mondocraft faction class goldhaven realm' },
     { title: 'Half Strike Fortress', href: '/fps/', icon: 'gun', group: 'Game Studio', text: 'half strike fortress fps shooter labs' },
 { title: 'Cinderlatch', href: '/escape/', icon: 'door', group: 'Game Studio', text: 'cinderlatch escape door locked room begin' },
-    { title: 'Cinderwell', href: '/cinderwell/', icon: 'banner', group: 'Game Studio', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch' }
+    { title: 'Cinderwell', href: '/cinderwell/', icon: 'banner', group: 'Game Studio', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch' },
+    { title: 'Saltflare', href: '/saltflare/', icon: 'flare', group: 'Game Studio', text: 'saltflare formation shooter moths flare skiff' },
+    { title: 'Needlewake', href: '/needlewake/', icon: 'needle', group: 'Game Studio', text: 'needlewake vector shards glass needle' }
   ];
   var toyLinks = [
     { title: '56k Dial-Up', href: '/#dialup', icon: 'modem' },
@@ -498,7 +502,9 @@
     sprout: [[7,2,2,3,'#166534'],[4,5,8,3,'#22c55e'],[6,8,4,3,'#15803d'],[7,11,2,3,'#854d0e']],
     storm: [[2,3,12,4,'#c0c0c0'],[5,8,4,2,'#ffff00'],[6,10,2,4,'#000080']],
     chart: [[2,12,3,2,'#00aa00'],[6,8,3,6,'#00aa00'],[10,5,3,9,'#00aa00'],[2,14,12,1,'#000']],
-    forum: [[1,2,10,7,'#fff'],[3,4,6,1,'#000080'],[3,6,5,1,'#000080'],[1,9,6,4,'#c0c0c0'],[8,6,7,6,'#ffffcc']]
+    forum: [[1,2,10,7,'#fff'],[3,4,6,1,'#000080'],[3,6,5,1,'#000080'],[1,9,6,4,'#c0c0c0'],[8,6,7,6,'#ffffcc']],
+    flare: [[6,1,4,2,'#ffb703'],[7,3,2,2,'#fff3c4'],[4,6,8,3,'#146e72'],[3,9,10,3,'#e6c27a'],[2,12,3,2,'#8d6840'],[11,12,3,2,'#8d6840']],
+    needle: [[7,1,2,7,'#d7fff6'],[5,8,6,2,'#7ee0ff'],[3,11,3,3,'#9db4ff'],[10,12,3,2,'#ffd59a']]
   };
   /* Self-hosted line icons. 24px grid, uniform 2px stroke, Lucide/Phosphor style. Original drawings, no CDN. */
   var LINE = {
@@ -538,7 +544,9 @@
     sprout: '<path d="M12 21V10"/><path d="M12 14c-3-1-5-3.5-5-6 3.2 0 5 2 5 6z"/><path d="M12 12c3-.6 5.5-2.6 6-5.5-3.4.2-5.4 2.2-6 5.5z"/>',
     storm: '<path d="M8 16h8.2a3.6 3.6 0 0 0 .3-7.2 5 5 0 0 0-9.6 1.6A3.1 3.1 0 0 0 8 16z"/><path d="m11 9.5 2.6 3.4H11L13.2 17"/>',
     chart: '<path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/>',
-    forum: '<path d="M6 16.5 3.5 19V6.5A2.5 2.5 0 0 1 6 4h8a2.5 2.5 0 0 1 2.5 2.5V14a2.5 2.5 0 0 1-2.5 2.5z"/><path d="M10 16.5V18a2 2 0 0 0 2 2h5.2L20.5 22v-8A2 2 0 0 0 18.5 12H16"/>'
+    forum: '<path d="M6 16.5 3.5 19V6.5A2.5 2.5 0 0 1 6 4h8a2.5 2.5 0 0 1 2.5 2.5V14a2.5 2.5 0 0 1-2.5 2.5z"/><path d="M10 16.5V18a2 2 0 0 0 2 2h5.2L20.5 22v-8A2 2 0 0 0 18.5 12H16"/>',
+    flare: '<path d="M12 3c1.2 2 2 3.2 2 4.5a2 2 0 0 1-4 0C10 6.2 10.8 5 12 3z"/><path d="M8 11h8v3H8z"/><path d="M5 14h14l-2 4H7z"/>',
+    needle: '<path d="M12 3 16 14 12 12 8 14z"/><path d="M4 18h4M16 18h4M6 21h3M15 21h3"/>'
   };
   /* Tile fill plus a dark stroke. Same pair in light and dark so the icon never sits white-on-navy. */
   var ACCENT = {
@@ -578,7 +586,9 @@
     sprout: ['#dcfce7', '#14532d'],
     storm: ['#ddd6fe', '#4c1d95'],
     chart: ['#ecfccb', '#3f6212'],
-    forum: ['#e2e8f0', '#1e293b']
+    forum: ['#e2e8f0', '#1e293b'],
+    flare: ['#ffedd5', '#9a3412'],
+    needle: ['#cffafe', '#155e75']
   };
   function lineSvg(name, className) {
     var cls = className ? ' class="' + className + '"' : '';
@@ -734,7 +744,7 @@
     else if (path.indexOf('/stocks') === 0) section = 'studio-finance';
     else if (path.indexOf('/search') === 0 || path.indexOf('/wiki') === 0) section = 'studio-editorial';
     else if (path.indexOf('/forum') === 0 || path.indexOf('/chat') === 0 || path.indexOf('/market') === 0 || path.indexOf('/board') === 0) section = 'studio-community';
-    else if (path.indexOf('/arcade') === 0 || path.indexOf('/pet') === 0 || path.indexOf('/mmo') === 0 || path.indexOf('/fps') === 0 || path.indexOf('/wordle') === 0 || path.indexOf('/crossword') === 0 || path.indexOf('/8ball') === 0 || path.indexOf('/escape') === 0 || path.indexOf('/cinderwell') === 0) section = 'studio-game';
+    else if (path.indexOf('/arcade') === 0 || path.indexOf('/pet') === 0 || path.indexOf('/mmo') === 0 || path.indexOf('/fps') === 0 || path.indexOf('/wordle') === 0 || path.indexOf('/crossword') === 0 || path.indexOf('/8ball') === 0 || path.indexOf('/escape') === 0 || path.indexOf('/cinderwell') === 0 || path.indexOf('/saltflare') === 0 || path.indexOf('/needlewake') === 0) section = 'studio-game';
     document.body.classList.add(section);
   }
   function linkPrivacy() {
@@ -894,6 +904,18 @@
     group.appendChild(reset);
     return group;
   }
+  function linkCabinets() {
+    var foot = document.querySelector('footer.site-footer .wrap');
+    if (!foot || foot.querySelector('a[href="/saltflare/"]')) return;
+    var copy = foot.querySelector('.studio-footer') || foot.querySelector('p:not(.home-visits):not(.studio-about)') || foot;
+    [['Saltflare', '/saltflare/'], ['Needlewake', '/needlewake/']].forEach(function (pair) {
+      var link = document.createElement('a');
+      link.href = pair[1];
+      link.textContent = pair[0];
+      copy.appendChild(document.createTextNode(' · '));
+      copy.appendChild(link);
+    });
+  }
   function boot() {
     writeFx({ scan: 0, stars: 0 });
     document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
@@ -929,6 +951,8 @@
       ['Search', '/search/'],
       ['Community', '/forum/'],
       ['Games', '/arcade/'],
+      ['Saltflare', '/saltflare/'],
+      ['Needlewake', '/needlewake/'],
       ['Cinderwell', '/cinderwell/']
     ].forEach(function (pair) {
       var a = document.createElement('a');
@@ -960,7 +984,7 @@
       ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Planting', 'Tropics']],
       ['Finance & Search', ['Stocks', 'Search', 'Wiki']],
       ['Community', ['Bulletin Forum', 'Chat', 'Paint', 'Marketplace', 'Radio']],
-['Game Studio', ['Arcade', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', 'Half Strike Fortress', 'Cinderlatch', 'Cinderwell']]
+['Game Studio', ['Arcade', 'Saltflare', 'Needlewake', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', 'Half Strike Fortress', 'Cinderlatch', 'Cinderwell']]
     ];
     groups.forEach(function (group) {
       var block = document.createElement('section');
@@ -1183,6 +1207,7 @@
     document.addEventListener('mondo-owner', paintOwner);
     document.addEventListener('mondo-member', paintOwner);
     linkPrivacy();
+    linkCabinets();
     function attachChip() {
       if (!appsReady() || attachChip.done) return;
       attachChip.done = true;

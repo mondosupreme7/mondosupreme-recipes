@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script src="/theme-boot.js"></script>
+<script src="/ga.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mondosupreme">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Needlewake — Mondosupreme</title>
+<meta name="description" content="Needlewake — a vector shard shooter on Mondosupreme. Pilot a glass needle through a field of spinning shards.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+<link rel="stylesheet" href="/recipes/styles.css">
+<link rel="stylesheet" href="/retro.css">
+<link rel="stylesheet" href="/retro-theme.css">
+<link rel="stylesheet" href="/shell.css?v=8">
+<link rel="stylesheet" href="/readable.css?v=14">
+<link rel="stylesheet" href="needlewake.css?v=1">
+<script>
+(function () {
+  document.documentElement.classList.add('cab-root');
+  function fit() {
+    var vv = window.visualViewport;
+    var root = document.documentElement;
+    root.style.setProperty('--vv-top', ((vv && vv.offsetTop) || 0) + 'px');
+    root.style.setProperty('--vv-h', ((vv && vv.height) || window.innerHeight) + 'px');
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', fit);
+    window.visualViewport.addEventListener('scroll', fit);
+  }
+})();
+</script>
+</head>
+<body class="cab needle-page">
+<div class="ticker"><div class="ticker-track">
+ <p><span class="flame" aria-hidden="true"></span> ~*~ Needlewake ~*~ ★ Glass needle ★ Shard field ★</p>
+ <p aria-hidden="true"><span class="flame" aria-hidden="true"></span> ~*~ Needlewake ~*~ ★ Glass needle ★ Shard field ★</p>
+</div></div>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/needlewake/" class="brand"><span class="logo" aria-hidden="true">✧</span><span>Needlewake</span></a>
+ <nav class="site-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/arcade/">Arcade</a>
+  <a href="/saltflare/">Saltflare</a>
+  <a href="/needlewake/" aria-current="page">Needlewake</a>
+  <a href="/cinderwell/">Cinderwell</a>
+ </nav>
+</div></header>
+<main class="wrap">
+ <div id="app">
+  <div class="topbar">
+   <h1>Needlewake</h1>
+   <button type="button" id="mute" aria-pressed="true">Mute</button>
+   <button type="button" id="crt" aria-pressed="false">Scan</button>
+   <button type="button" id="scoresBtn">Scores</button>
+  </div>
+  <div id="stage">
+   <canvas id="screen" width="180" height="300" aria-label="Needlewake playfield" aria-describedby="hud"></canvas>
+   <p id="hud">Best 0</p>
+   <p id="status" class="sr" aria-live="polite"></p>
+   <div id="veil" class="veil">
+    <section id="titleCard">
+     <p class="kicker">Shard field</p>
+     <h2>Needlewake</h2>
+     <p class="lede">Drag to aim and thrust. The needle fires on its own. Break every shard. Large shards split.</p>
+     <p class="help">Buttons rotate, thrust, and fire. Keys: arrows, A D, W, space, M mute, C scanlines.</p>
+     <button type="button" id="start">Start</button>
+     <button type="button" id="openScores">High scores</button>
+    </section>
+    <section id="scoreCard" hidden>
+     <h2 id="scoreHeading">High scores</h2>
+     <p id="overLine" hidden></p>
+     <form id="scoreForm" hidden>
+      <label>Initials
+       <input id="initials" maxlength="3" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Initials">
+      </label>
+      <button type="submit" id="saveScore">Save score</button>
+     </form>
+     <ol id="board"></ol>
+     <div class="row">
+      <button type="button" id="resume" hidden>Resume</button>
+      <button type="button" id="again" hidden>Play again</button>
+      <button type="button" id="endRun" hidden>End run</button>
+      <button type="button" id="backTitle">Title</button>
+     </div>
+    </section>
+   </div>
+  </div>
+  <div id="pad" hidden>
+   <button type="button" id="rotL" aria-label="Rotate left">↺</button>
+   <button type="button" id="rotR" aria-label="Rotate right">↻</button>
+   <button type="button" id="thrust" aria-label="Thrust">Thrust</button>
+   <button type="button" id="fire" aria-label="Fire">Fire</button>
+  </div>
+ </div>
+</main>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme · <a href="/arcade/">Arcade</a> · <a href="/saltflare/">Saltflare</a> · <a href="/needlewake/">Needlewake</a></div></footer>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/mondo-juice.js?v=1"></script>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/members.js?v=5"></script>
+<script src="/shell.js?v=15"></script>
+<script src="needlewake.js?v=1"></script>
+</body>
+</html>

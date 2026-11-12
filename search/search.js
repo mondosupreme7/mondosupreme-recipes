@@ -300,6 +300,8 @@
       ['App', 'Craft', '/mmo/', 'pixel mmo realm'],
       ['App', 'Half Strike Fortress', '/fps/', 'fps fortress labs'],
       ['App', 'Cinderlatch', '/escape/', 'cinderlatch escape door'],
+      ['App', 'Saltflare', '/saltflare/', 'formation shooter moths flare skiff'],
+      ['App', 'Needlewake', '/needlewake/', 'vector shards glass needle field'],
       ['App', 'Planting', '/planting/', 'garden planting zone 10a 32927 cocoa vegetables herbs flowers fruit calendar']
     ].forEach(function (row) { addItem({ kind: row[0], title: row[1], href: row[2], text: row[3] }); });
     [
