@@ -574,18 +574,27 @@
       return;
     }
     var account = readAccount();
-    var risk = entry - stop;
+    var distance = entry - stop;
     if (!(account > 0)) {
-      out.textContent = 'Enter an account size to sketch the share count.';
+      out.textContent = 'Enter paper equity to sketch the share count.';
       return;
     }
-    var one = Math.floor((account * 0.01) / risk);
-    var two = Math.floor((account * 0.02) / risk);
-    if (one < 1 && two < 1) {
-      out.textContent = 'The stop is ' + money(risk) + ' away. That is wider than 2% of this account, so the sketch is 0 shares.';
+    var sizer = window.PAPER_LEDGER && window.PAPER_LEDGER.sizePaperOrder;
+    if (!sizer) {
+      out.textContent = 'The paper sizing sketch is not available.';
       return;
     }
-    out.textContent = one + ' shares at 1% risk (' + money(account * 0.01) + '), ' + two + ' shares at 2% risk (' + money(account * 0.02) + '). Risk per share is ' + money(risk) + '.';
+    var low = sizer({ equity: account, cash: account, entry: entry, stop: stop, strength: 0 });
+    var high = sizer({ equity: account, cash: account, entry: entry, stop: stop, strength: 1 });
+    if (!low.shares && !high.shares) {
+      out.textContent = 'The stop is ' + money(distance) + ' away. Even at the top of the risk band, that does not buy a whole share inside the cash cap. No margin.';
+      return;
+    }
+    out.textContent = low.shares + ' shares at the ' + low.riskTargetPct + '% minimum ('
+      + money(low.riskUsd) + ' at risk, ' + low.bookPct + '% of the book). '
+      + high.shares + ' shares at the ' + high.riskTargetPct + '% maximum for the strongest setup ('
+      + money(high.riskUsd) + ' at risk, ' + high.bookPct + '% of the book). '
+      + 'Sized by the stop distance and capped by cash. A few losses in a row can cut the book sharply.';
   }
   function paintFacts(row) {
     var box = document.getElementById('detailFacts');

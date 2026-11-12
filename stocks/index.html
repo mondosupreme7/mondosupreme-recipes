@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="/shell.css?v=11">
 <link rel="stylesheet" href="stocks.css?v=16">
 <link rel="stylesheet" href="/readable.css?v=15">
-<link rel="stylesheet" href="paper/paper.css?v=2">
+<link rel="stylesheet" href="paper/paper.css?v=3">
 </head>
 <body>
 <div class="ticker quote-tape" aria-hidden="true"><div class="ticker-track" id="tapeTrack"></div></div>
@@ -91,7 +91,7 @@
    <li id="rule-3">Avoid holding through earnings.</li>
    <li id="rule-4">Plan your entry, stop, and target before you buy.</li>
    <li id="rule-5">Take only trades with at least 2:1 reward-to-risk.</li>
-   <li id="rule-6">Risk 1–2% of your account per trade at most.</li>
+   <li id="rule-6">Each paper trade risks 25% or more of the paper book, sized by the stop distance and capped by cash.</li>
    <li id="rule-7">Always use a stop and never lower it.</li>
    <li id="rule-8">Take partial profits and trail the rest.</li>
    <li id="rule-9">Exit if the trade stalls for 5–10 days.</li>
@@ -99,7 +99,8 @@
    <li id="rule-11">No emotional, FOMO, or revenge trades.</li>
    <li id="rule-12">Journal and review every trade.</li>
   </ol>
-  <p class="rules-foot">General education, not financial advice.</p>
+  <p class="stretch-warn" id="paperRiskWarn">This is a very aggressive, high-variance setting for a stretch goal. A few losses in a row can cut the book sharply. Stronger setups may risk up to 50% of the paper book. There is no margin, so a trade cannot exceed the book. Paper only. Informational, not financial advice.</p>
+  <p class="rules-foot">The other swing rules stay as they are. General education, not financial advice.</p>
  </details>
  <div class="quote-main">
  <p id="fresh" class="quote-fresh" aria-busy="true">Loading the screener…</p>
@@ -176,9 +177,9 @@
   <p id="detailVerdict" class="detail-verdict"></p>
   <div id="detailPlan" class="trade-plan"></div>
   <div id="sizeHelper" class="size-helper" hidden>
-   <label for="accountSize">Account size (USD)</label>
+   <label for="accountSize">Paper equity (USD)</label>
    <input id="accountSize" name="accountSize" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-describedby="sizeHelp">
-   <p id="sizeHelp" class="size-help">Share count at 1% and 2% of this account, from the planned entry to the stop. A sketch of Rule 6, not a recommendation.</p>
+   <p id="sizeHelp" class="size-help">Share count from the planned entry to the stop. Each trade risks 25% or more of this paper equity, up to 50% for the strongest setup, then capped by cash. A sketch, not a recommendation.</p>
    <p id="sizeOut" class="size-out" aria-live="polite"></p>
   </div>
   <div id="detailFacts" class="detail-facts"></div>
@@ -217,8 +218,8 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="stocks.js?v=17"></script>
-<script src="paper/paper.js?v=4"></script>
+<script src="stocks.js?v=18"></script>
+<script src="paper/paper.js?v=5"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

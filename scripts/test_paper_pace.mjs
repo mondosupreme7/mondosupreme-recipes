@@ -119,6 +119,9 @@ assert.equal(rows[0].fill, null);
 assert.equal(rows[0].bookPct, null);
 assert.match(rows[0].reason, /Not a fill/);
 assert.equal(rows[0].shares, 5);
+assert.equal(rows[0].riskPct, 1.95);
+assert.equal(rows[0].riskUsd, 19.5);
+assert.match(rows[0].reason, /Not a fill/);
 
 assert.deepEqual(paper.tradeLogRows({}), []);
 
@@ -183,5 +186,74 @@ assert.equal(loss[0].tone, 'down');
 assert.equal(loss[0].resultUsd, -2);
 assert.equal(loss[0].balanceAfter, 998);
 assert.match(loss[0].reason, /Stop/);
+
+const pySizes = JSON.parse(execFileSync('python3', ['-c', `
+import json, sys
+sys.path.insert(0, "scripts")
+import paper_settlement as settle
+cases = [
+    {"equity": 10000, "cash_available": 10000, "entry": 20, "stop": 10, "strength": 0},
+    {"equity": 10000, "cash_available": 10000, "entry": 20, "stop": 10, "strength": 1},
+    {"equity": 1000, "cash_available": 200, "entry": 20, "stop": 10, "strength": 0},
+    {"equity": 1000, "cash_available": 5000, "entry": 10, "stop": 5, "strength": 1},
+    {"equity": 1000, "cash_available": 1000, "entry": 46.65, "stop": 42.75, "strength": 0},
+    {"equity": 1000, "cash_available": 1000, "entry": 40, "stop": 40, "strength": 0},
+    {"equity": 1000, "cash_available": 0, "entry": 20, "stop": 10, "strength": 0},
+]
+print(json.dumps([settle.size_paper_order(**case) for case in cases]))
+`], { cwd: root, encoding: 'utf8' }));
+
+const jsSizes = [
+  { equity: 10000, cash: 10000, entry: 20, stop: 10, strength: 0 },
+  { equity: 10000, cash: 10000, entry: 20, stop: 10, strength: 1 },
+  { equity: 1000, cash: 200, entry: 20, stop: 10, strength: 0 },
+  { equity: 1000, cash: 5000, entry: 10, stop: 5, strength: 1 },
+  { equity: 1000, cash: 1000, entry: 46.65, stop: 42.75, strength: 0 },
+  { equity: 1000, cash: 1000, entry: 40, stop: 40, strength: 0 },
+  { equity: 1000, cash: 0, entry: 20, stop: 10, strength: 0 }
+].map((item) => paper.sizePaperOrder(item));
+
+assert.equal(pySizes.length, jsSizes.length);
+pySizes.forEach((expected, index) => {
+  const actual = jsSizes[index];
+  assert.equal(actual.shares, expected.shares, 'shares ' + index);
+  assert.equal(actual.riskTargetPct, expected.riskTargetPct, 'target ' + index);
+  assert.equal(actual.riskPct, expected.riskPct, 'risk ' + index);
+  assert.equal(actual.riskUsd, expected.riskUsd, 'risk usd ' + index);
+  assert.equal(actual.bookPct, expected.bookPct, 'book ' + index);
+  assert.equal(actual.notional, expected.notional, 'notional ' + index);
+  assert.equal(actual.cappedByCash, expected.cappedByCash, 'cash cap ' + index);
+  assert.equal(actual.cappedByBook, expected.cappedByBook, 'book cap ' + index);
+  assert.equal(actual.reason, expected.reason, 'reason ' + index);
+});
+assert.equal(jsSizes[0].shares, 250);
+assert.equal(jsSizes[1].bookPct, 100);
+assert.notEqual(jsSizes[4].shares, 5);
+assert.match(paper.sizingWarning({ min: 25, max: 50 }), /25% or more/);
+assert.match(paper.sizingWarning({ min: 25, max: 50 }), /few losses in a row/i);
+assert.match(paper.sizingWarning({ min: 25, max: 50 }), /Paper only/);
+assert.equal(paper.sizingWarning({ min: 25, max: 50 }).includes('1–2%'), false);
+assert.deepEqual(paper.paperRiskBand(ledger.rules), { min: 25, max: 50 });
+
+const closedRisk = paper.tradeLogRows({
+  closedTrades: [{
+    id: 'sized',
+    symbol: 'AAA',
+    shares: 10,
+    entryPrice: 20,
+    exitPrice: 10,
+    realizedPnlUsd: -100,
+    realizedPnlPct: -50,
+    equityAfter: 900,
+    bookPctAtEntry: 20,
+    riskPctAtLimit: 10,
+    riskUsdAtLimit: 100,
+    reason: 'Stop. The session low was at or below the stop.'
+  }]
+});
+assert.equal(closedRisk[0].bookPct, 20);
+assert.equal(closedRisk[0].riskPct, 10);
+assert.equal(closedRisk[0].riskUsd, 100);
+assert.match(closedRisk[0].reason, /Stop/);
 
 console.log('paper pace ok', shown, 'across', baseline.sessionCount, 'sessions');

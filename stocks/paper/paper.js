@@ -568,6 +568,163 @@
     return name.charAt(0).toUpperCase() + name.slice(1) + '.';
   }
 
+  var MIN_RISK_PCT = 25;
+  var MAX_RISK_PCT = 50;
+
+  function centsOf(value) {
+    var number = Number(value);
+    if (!isFinite(number)) return 0;
+    return Math.round(number * 100 + (number >= 0 ? 1e-8 : -1e-8));
+  }
+
+  function pctNumber(partCents, wholeCents) {
+    if (!wholeCents) return 0;
+    return Math.round((partCents / wholeCents) * 10000) / 100;
+  }
+
+  function bandNumber(value, fallback) {
+    var number = Number(value);
+    if (!isFinite(number) || number <= 0) return fallback;
+    return number;
+  }
+
+  function paperRiskBand(rules) {
+    rules = rules && typeof rules === 'object' ? rules : {};
+    var minimum = rules.minRiskPerTradePct != null ? bandNumber(rules.minRiskPerTradePct, null) : null;
+    if (minimum == null) minimum = bandNumber(rules.riskPerTradePct, MIN_RISK_PCT);
+    var maximum = bandNumber(rules.maxRiskPerTradePct, MAX_RISK_PCT);
+    if (maximum < minimum) maximum = minimum;
+    if (minimum > 100) minimum = 100;
+    if (maximum > 100) maximum = 100;
+    return { min: minimum, max: maximum };
+  }
+
+  function swingStrength(score) {
+    var value = Number(score);
+    if (!isFinite(value)) return 0;
+    if (value <= 36) return 0;
+    if (value >= 100) return 1;
+    return (value - 36) / 64;
+  }
+
+  function roundPct(value) {
+    return Math.round(Number(value) * 100) / 100;
+  }
+
+  function sizeReason(sized) {
+    if (!sized.shares) {
+      return 'No shares. One share would use more risk budget or more cash than this paper book allows.';
+    }
+    var text = 'Paper size. Target risk '
+      + Number(sized.riskTargetPct).toFixed(2) + '% of equity, '
+      + sized.shares + ' shares, '
+      + Number(sized.riskPct).toFixed(2) + '% actually at risk, '
+      + Number(sized.bookPct).toFixed(2) + '% of the book.';
+    if (sized.cappedByBook) text += ' Capped at 100% of the book. No margin.';
+    else if (sized.cappedByCash) text += ' Capped by available cash.';
+    return text;
+  }
+
+  function sizePaperOrder(options) {
+    options = options || {};
+    var band = paperRiskBand({
+      minRiskPerTradePct: options.minPct,
+      maxRiskPerTradePct: options.maxPct,
+      riskPerTradePct: options.minPct
+    });
+    if (options.minPct == null && options.maxPct == null && root.PAPER_LEDGER && root.PAPER_LEDGER.riskBand) {
+      band = root.PAPER_LEDGER.riskBand;
+    }
+    if (options.minPct != null || options.maxPct != null) {
+      band = paperRiskBand({
+        minRiskPerTradePct: options.minPct == null ? band.min : options.minPct,
+        maxRiskPerTradePct: options.maxPct == null ? band.max : options.maxPct
+      });
+    }
+    var strength = options.strength;
+    if (strength == null && options.score != null) strength = swingStrength(options.score);
+    if (strength == null || !isFinite(Number(strength))) strength = 0;
+    strength = Math.min(1, Math.max(0, Number(strength)));
+    var target = roundPct(band.min + (band.max - band.min) * strength);
+    var entryCents = centsOf(options.entry);
+    var stopCents = centsOf(options.stop);
+    var equityCents = centsOf(options.equity);
+    var cashCents = centsOf(options.cash == null ? 0 : options.cash);
+    var distance = entryCents - stopCents;
+    var sized = {
+      shares: 0,
+      riskTargetPct: target,
+      riskPct: 0,
+      riskUsd: 0,
+      bookPct: 0,
+      notional: 0,
+      cappedByCash: false,
+      cappedByBook: false
+    };
+    if (entryCents <= 0 || distance <= 0 || equityCents <= 0) {
+      sized.reason = 'No shares. The entry has to be above the stop, and the book has to have equity.';
+      return sized;
+    }
+    var riskBudget = Math.round(equityCents * target / 100);
+    var rawShares = Math.floor(riskBudget / distance);
+    var cashShares = cashCents > 0 ? Math.floor(cashCents / entryCents) : 0;
+    var bookShares = Math.floor(equityCents / entryCents);
+    var shares = rawShares;
+    var cappedCash = shares > cashShares;
+    if (cappedCash) shares = cashShares;
+    var cappedBook = shares >= bookShares && rawShares >= bookShares && bookShares > 0;
+    if (shares > bookShares) shares = bookShares;
+    if (shares < 0) shares = 0;
+    var riskCents = shares * distance;
+    var notional = shares * entryCents;
+    sized.shares = shares;
+    sized.riskPct = shares ? pctNumber(riskCents, equityCents) : 0;
+    sized.riskUsd = riskCents / 100;
+    sized.bookPct = shares ? pctNumber(notional, equityCents) : 0;
+    sized.notional = notional / 100;
+    sized.cappedByCash = cappedCash;
+    sized.cappedByBook = cappedBook;
+    sized.reason = sizeReason(sized);
+    return sized;
+  }
+
+  function sizingWarning(band) {
+    band = band || { min: MIN_RISK_PCT, max: MAX_RISK_PCT };
+    var minText = Number(band.min).toString();
+    var maxText = Number(band.max).toString();
+    return 'Each new trade risks ' + minText + '% or more of the paper book, sized by the stop distance and capped by cash. Stronger setups may risk up to '
+      + maxText + '%. This is a very aggressive, high-variance setting for a stretch goal. A few losses in a row can cut the book sharply. Paper only. Informational, not financial advice.';
+  }
+
+  function recordRiskPct(record) {
+    if (!record) return null;
+    if (num(record.riskPctAtLimit) != null) return num(record.riskPctAtLimit);
+    if (num(record.riskPct) != null) return num(record.riskPct);
+    return null;
+  }
+
+  function recordRiskUsd(record) {
+    if (!record) return null;
+    if (num(record.riskUsdAtLimit) != null) return num(record.riskUsdAtLimit);
+    if (num(record.riskUsd) != null) return num(record.riskUsd);
+    return null;
+  }
+
+  function recordBookPct(record) {
+    if (!record) return null;
+    if (num(record.bookPctAtEntry) != null) return num(record.bookPctAtEntry);
+    if (num(record.bookPct) != null) return num(record.bookPct);
+    return null;
+  }
+
+  function orderById(book, id) {
+    var found = null;
+    groupOrders(orderLog(book || {})).forEach(function (group) {
+      if (group.id === String(id || '')) found = group.records[group.records.length - 1];
+    });
+    return found;
+  }
+
   function tradeLogRows(book) {
     var rows = [];
     var seen = Object.create(null);
@@ -576,6 +733,7 @@
       if (!trade || typeof trade !== 'object') return;
       if (trade.id) seen[String(trade.id)] = 1;
       var pnl = tradePnl(trade);
+      var prior = orderById(book, trade.id);
       rows.push({
         id: trade.id ? String(trade.id) : '',
         symbol: trade.symbol || '',
@@ -585,7 +743,9 @@
         entryAt: trade.entryAt || '',
         exitAt: trade.exitAt || trade.closedAt || '',
         shares: num(trade.shares),
-        bookPct: num(trade.bookPctAtEntry),
+        bookPct: recordBookPct(trade),
+        riskPct: recordRiskPct(trade) != null ? recordRiskPct(trade) : recordRiskPct(prior),
+        riskUsd: recordRiskUsd(trade) != null ? recordRiskUsd(trade) : recordRiskUsd(prior),
         fill: num(trade.entryPrice),
         stop: num(trade.stop),
         target: num(trade.target),
@@ -599,6 +759,7 @@
     positions.forEach(function (position) {
       if (!position || typeof position !== 'object') return;
       if (position.id) seen[String(position.id)] = 1;
+      var openedFrom = orderById(book, position.id);
       rows.push({
         id: position.id ? String(position.id) : '',
         symbol: position.symbol || '',
@@ -608,7 +769,9 @@
         entryAt: position.entryAt || position.filledAt || '',
         exitAt: '',
         shares: num(position.shares),
-        bookPct: num(position.bookPctAtEntry),
+        bookPct: recordBookPct(position),
+        riskPct: recordRiskPct(position) != null ? recordRiskPct(position) : recordRiskPct(openedFrom),
+        riskUsd: recordRiskUsd(position) != null ? recordRiskUsd(position) : recordRiskUsd(openedFrom),
         fill: num(position.entryPrice),
         stop: num(position.stop),
         target: num(position.target),
@@ -649,7 +812,9 @@
         entryAt: order.placedAt || order.at || '',
         exitAt: ended,
         shares: num(order.shares),
-        bookPct: null,
+        bookPct: recordBookPct(order),
+        riskPct: recordRiskPct(order),
+        riskUsd: recordRiskUsd(order),
         fill: null,
         stop: num(order.stop),
         target: num(order.target),
@@ -691,7 +856,11 @@
     stretchWarning: stretchWarning,
     formatMultiple: formatMultiple,
     formatGainPct: formatGainPct,
-    tradeLogRows: tradeLogRows
+    tradeLogRows: tradeLogRows,
+    paperRiskBand: paperRiskBand,
+    swingStrength: swingStrength,
+    sizePaperOrder: sizePaperOrder,
+    sizingWarning: sizingWarning
   };
 
   if (typeof document === 'undefined') return;
@@ -1008,6 +1177,14 @@
     return wrap;
   }
 
+  function riskFact(row) {
+    if (row.riskPct == null && row.riskUsd == null) return '\u2014';
+    if (row.riskPct == null) return money(row.riskUsd);
+    var text = plainPct(row.riskPct) + ' of the book';
+    if (row.riskUsd == null) return text;
+    return money(row.riskUsd) + ' \u00b7 ' + text;
+  }
+
   function sharesAndBook(row) {
     var shares = sharesLabel(row.shares);
     if (row.bookPct == null) return shares;
@@ -1092,6 +1269,7 @@
     title.id = titleId;
     mount.appendChild(title);
     mount.appendChild(el('p', 'paper-banner', 'Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.'));
+    mount.appendChild(el('p', 'stretch-warn', sizingWarning(root.PAPER_LEDGER && root.PAPER_LEDGER.riskBand)));
     var from = spec ? formatDay(spec.startDate) : 'Nov 12, 2026';
     mount.appendChild(el('p', 'paper-fine',
       'Every paper trade from ' + from + ' on is listed here, along with any order that is still working. Entry and exit times are America/New_York. A fill or exit from the daily bar is recorded at 4:05 p.m. Eastern on that session.'));
@@ -1114,6 +1292,8 @@
         var exitLabel = row.status.indexOf('Expired') === 0 ? 'Expired' : 'Exit';
         facts.appendChild(logFact(exitLabel, row.exitAt ? timeNode(row.exitAt) : '\u2014', true));
         facts.appendChild(logFact('Shares', sharesAndBook(row), false));
+        facts.appendChild(logFact('Book', row.bookPct == null ? '\u2014' : plainPct(row.bookPct) + ' of the book', false));
+        facts.appendChild(logFact('Risk', riskFact(row), false));
         facts.appendChild(logFact('Fill', row.fill == null ? '\u2014' : money(row.fill), false));
         facts.appendChild(logFact('Stop', money(row.stop), false));
         facts.appendChild(logFact('Target', money(row.target), false));
@@ -1246,6 +1426,20 @@
     }
   }
 
+  function paintRiskCopy(book) {
+    var band = paperRiskBand(book && book.rules);
+    var rule = document.getElementById('rule-6');
+    if (rule) {
+      rule.textContent = 'Each paper trade risks ' + Number(band.min) + '% or more of the paper book, sized by the stop distance and capped by cash.';
+    }
+    var help = document.getElementById('sizeHelp');
+    if (help) {
+      help.textContent = 'Share count from the planned entry to the stop. Each trade risks '
+        + Number(band.min) + '% or more of this paper equity, up to ' + Number(band.max)
+        + '% for the strongest setup, then capped by cash. A sketch, not a recommendation.';
+    }
+  }
+
   function paintStrip(summary) {
     var equity = document.getElementById('paperEquity');
     var meta = document.getElementById('paperMeta');
@@ -1276,6 +1470,8 @@
       if (!response.ok) throw new Error('status ' + response.status);
       return response.json();
     }).then(function (book) {
+      root.PAPER_LEDGER.riskBand = paperRiskBand(book && book.rules);
+      paintRiskCopy(book);
       if (strip) paintStrip(summarize(book));
       if (stretch && stretch !== app) renderStretch(book, stretch);
       if (log && (!app || !app.contains(log))) renderTradeLog(book, log);

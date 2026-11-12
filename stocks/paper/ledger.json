@@ -20,7 +20,10 @@
   "rules": {
     "method": "mondosupreme.com Stocks swing gates",
     "paramVersionAtOpen": "2026-11-11.1",
-    "riskPerTradePct": 2,
+    "minRiskPerTradePct": 25,
+    "maxRiskPerTradePct": 50,
+    "riskPerTradePct": 25,
+    "sizing": "Each new paper trade aims to risk at least 25% of equity, and up to 50% for the strongest swing score. Shares are floor(risk dollars / (entry - stop)), then capped by available cash and by 100% of the book. No margin. The recorded ZD order keeps the size it was given.",
     "minRewardRisk": 2,
     "earningsWindowDays": 7,
     "sectorCap": 1,
