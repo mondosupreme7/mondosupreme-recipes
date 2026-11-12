@@ -155,14 +155,12 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 }
 #screen {
   display: block;
-  max-width: 100%;
-  max-height: 100%;
-  aspect-ratio: 180 / 252;
   background: #07060f;
   touch-action: none;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+.overlay, #over, #over input, #board, #initials { touch-action: manipulation; }
 .scan {
   pointer-events: none;
   position: absolute;
