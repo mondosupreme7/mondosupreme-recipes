@@ -302,6 +302,8 @@
       ['App', 'Cinderlatch', '/escape/', 'cinderlatch escape door'],
       ['App', 'Saltflare', '/saltflare/', 'formation shooter moths flare skiff'],
       ['App', 'Needlewake', '/needlewake/', 'vector shards glass needle field'],
+      ['App', 'Phosphor Halls', '/phosphor/', 'maze lamp moth crumbs wardens cold lamp'],
+      ['App', 'Night Ford', '/nightford/', 'hopper cricket barges porch lights carts river'],
       ['App', 'Planting', '/planting/', 'garden planting zone 10a 32927 cocoa vegetables herbs flowers fruit calendar']
     ].forEach(function (row) { addItem({ kind: row[0], title: row[1], href: row[2], text: row[3] }); });
     [
