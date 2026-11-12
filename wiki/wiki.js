@@ -40,7 +40,7 @@ const PREVIOUS_WELCOME = [
   '',
   'New pages show up for everyone once server sync is on. Until then, this browser keeps a local copy. A page named [[Kitchen notes]] links by title, and the bottom of each page lists what links here.'
 ].join('\n');
-const WELCOME = [
+const PREVIOUS_WELCOME_ARTICLE = [
   '**Welcome** is a shared notebook of notes and how-tos. Pages are read-only unless you are an admin. Export still makes a backup.',
   '',
   '```infobox',
@@ -97,6 +97,209 @@ const WELCOME = [
   '',
   '[^1]: [Site notes](/README.md). Shared notes and how-tos, stored with recipes, the board, and chat. Local cache key mondosupreme.wiki.v1 until board/database.rules.json is published.'
 ].join('\n');
+const WELCOME = [
+  '**Welcome** is the front of this wiki: short articles about pages on this site.',
+  '',
+  '```infobox',
+  'Kind: Site articles',
+  'Read: Anyone',
+  'Changes: Admin only',
+  '```',
+  '',
+  '## Articles',
+  '',
+  '- [[Space Coast launches]] — Cape Canaveral Launch Control, a T-minus clock, and a Cocoa 32927 viewing guide.',
+  '- [[Port Canaveral tides]] — NOAA station 8721604 at Trident Pier, plus Cocoa Beach swell and the sun.',
+  '- [[Arcade games]] — High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker.',
+  '- [[Backyard Chef]] — the recipe notebook and the Backyard Chef cards.',
+  '',
+  '## Read these pages',
+  '',
+  'Pages are read-only unless you are an admin. [[Editing pages]] is the note for adding and changing a page.',
+  '',
+  '## See also',
+  '',
+  '- [Search](/search/)',
+  '- [Weather](/weather/)',
+  '- [Recipes](/recipes/)',
+  '- [Launches](/launches/)',
+  '- [Tides](/tides/)',
+  '- [Arcade](/arcade/)'
+].join('\n');
+const LAUNCHES_PAGE = [
+  '**Space Coast launches** is the Cape Canaveral Launch Control page. It lists upcoming rockets from Kennedy Space Center and Cape Canaveral Space Force Station.',
+  '',
+  '```infobox',
+  'Place: Kennedy Space Center and Cape Canaveral Space Force Station',
+  'Pads: LC-39A, SLC-40, SLC-41',
+  'Viewing: Cocoa 32927',
+  'Clock: T-minus on the page',
+  'Page: /launches/',
+  '```',
+  '',
+  '## What the page shows',
+  '',
+  'The page is a backyard viewing guide, not an official range product. A T-minus clock tracks the selected launch. The pad sketch marks LC-39A, SLC-40, and SLC-41, with Cocoa 32927 and Port Canaveral on the same map.',
+  '',
+  'From Cocoa 32927, the notes give a compass look toward the Cape for the selected pad: northeast for LC-39A and SLC-41, and east for SLC-40.',
+  '',
+  '## Where the times come from',
+  '',
+  'When the live list answers, times come from Launch Library 2 for location ids 12 and 27. If that list does not answer, the page says live data is unavailable and shows its backup schedule.',
+  '',
+  'A viewing check-in can log a screen name, a pad, a look direction, and a short note.',
+  '',
+  '## See also',
+  '',
+  '- [Launches](/launches/)',
+  '- [[Port Canaveral tides]]',
+  '- [Weather](/weather/)'
+].join('\n');
+const TIDES_PAGE = [
+  '**Port Canaveral tides** is the tide and surf page. It shows live predictions for NOAA station 8721604, Trident Pier at Port Canaveral, plus Cocoa Beach swell, wind, UV, and the sun.',
+  '',
+  '```infobox',
+  'Station: NOAA 8721604',
+  'Place: Trident Pier, Port Canaveral',
+  'Datum: MLLW',
+  'Curve: 48 hours',
+  'Also listed: wave height, wave period, wind, UV, sunrise, sunset',
+  'Page: /tides/',
+  '```',
+  '',
+  '## What the page shows',
+  '',
+  'The page leads with the next high, the next low, water level, and water temp when those readings arrive. A curve covers 48 hours. Teal marks highs and amber marks lows.',
+  '',
+  'The footer says the predictions are not a navigation product.',
+  '',
+  '## See also',
+  '',
+  '- [Tides](/tides/)',
+  '- [[Space Coast launches]]',
+  '- [Weather](/weather/)'
+].join('\n');
+const ARCADE_PAGE = [
+  '**Arcade games** is a three-cartridge cabinet: High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker.',
+  '',
+  '```infobox',
+  'Cartridges: High Seas Cruiser; Supreme Kitchen Rush; Cyber Brick Breaker',
+  'Scores: Personal bests on this device',
+  'Shared board: Top 10, once the rules are published',
+  'Page: /arcade/',
+  '```',
+  '',
+  '## High Seas Cruiser',
+  '',
+  'Dodge islands, rogue waves, and whirlpools. Collect stars, passengers, and port bonuses. Speed climbs every level.',
+  '',
+  '## Supreme Kitchen Rush',
+  '',
+  'Catch the ingredients for the dish on the order. Dodge burnt toast and bombs. Combos multiply the score.',
+  '',
+  '## Cyber Brick Breaker',
+  '',
+  'Move the paddle. Space or Enter launches the ball and fires lasers. A and D move left and right. Grab multi-ball, wide paddle, and laser drops.',
+  '',
+  '## Scores',
+  '',
+  'Personal bests stay in this browser under `mondosupreme.arcade.v1`. Shared top-10 scores use the same Firebase project once `board/database.rules.json` is published. Only the owner can clear a board.',
+  '',
+  '## See also',
+  '',
+  '- [Arcade](/arcade/)',
+  '- [[Backyard Chef]]'
+].join('\n');
+const CHEF_PAGE = [
+  '**Backyard Chef** is a source tab in the recipe notebook. The page calls that notebook a shared kitchen. The recipes are read-only unless you are an admin. Saving one, or a favorite, stays on this device.',
+  '',
+  '```infobox',
+  'Page: /recipes/',
+  'Source tab: Backyard Chef',
+  'Categories: Beef, Breakfast, Chicken, Dessert, Other, Pork, Sauces and Rubs, Seafood, Sides',
+  'Credit: Backyard Chef on YouTube',
+  'Also here: favorites, Grocery List, Recipe TV',
+  '```',
+  '',
+  '## The notebook',
+  '',
+  'Search, filter, import, and export still work. Favorites stay in this browser. Until `board/database.rules.json` is published, the page keeps a local copy.',
+  '',
+  'A recipe card can show prep time, cook time, a total, and servings. Those numbers appear when the card has them.',
+  '',
+  '## Backyard Chef cards',
+  '',
+  'The Backyard Chef tab lists cards from that YouTube kitchen. A card can include a category, a cuisine, ingredients, and steps. The page credits each one with "From Backyard Chef on YouTube" and can link the video. Some cards are marked partial and point back to the video.',
+  '',
+  '[Recipe TV](/daily-recipe/) plays a different YouTube recipe every day.',
+  '',
+  '## See also',
+  '',
+  '- [Recipes](/recipes/)',
+  '- [Recipe TV](/daily-recipe/)',
+  '- [Grocery List](/grocery/)',
+  '- [[Arcade games]]'
+].join('\n');
+const EDITING_PAGE = [
+  '**Editing pages** is the note for an admin who adds or changes a wiki page. Readers can open every page. Export still makes a backup.',
+  '',
+  '```infobox',
+  'Who can change pages: Admin',
+  'Who can read: Anyone',
+  'Backup: Export',
+  '```',
+  '',
+  '## Write',
+  '',
+  'An admin taps **New page**. The title is the page name. Write the note in Markdown, then tap **Preview** to check it while you edit.',
+  '',
+  '- **bold** and *italic*',
+  '- lists and checklists',
+  '- `inline code`',
+  '- links such as [Recipes](/recipes/)',
+  '',
+  '```',
+  'code stays as you typed it',
+  '```',
+  '',
+  '- [x] Export a backup after you add something you want to keep',
+  '- [ ] Try a checklist of your own',
+  '',
+  '## Link another page',
+  '',
+  'Write [[Kitchen notes]] to link a page by its title. A custom label looks like [[Kitchen notes|the kitchen]]. A link to a page that is not here yet is marked as missing. Tap it, fill the new page in, and save it.',
+  '',
+  '## Find and rename',
+  '',
+  'Search covers every title, tag, and the text of every page. Home also lists all pages and the ones edited recently. Add tags in the editor, separated by commas.',
+  '',
+  'To rename a page, edit it and change the title. Links written as [[the old title]] are updated to the new name.',
+  '',
+  '## Print',
+  '',
+  'Open a page and tap **Print** when you want a paper copy.',
+  '',
+  '## Shared pages',
+  '',
+  'Pages are stored for everyone once server sync is on. Until board/database.rules.json is published, this browser keeps a local copy under `mondosupreme.wiki.v1`. The same Firebase project is used for recipes, the board, and chat.',
+  '',
+  'The bottom of each page lists what links here.',
+  '',
+  '## See also',
+  '',
+  '- [[Welcome]]',
+  '- [Recipes](/recipes/)',
+  '- [Search](/search/)'
+].join('\n');
+const SEEDS = [
+  { id: 'welcome', title: 'Welcome', tags: ['start'], body: WELCOME, blurb: 'Short articles about pages on this site.', previous: [PREVIOUS_WELCOME, PREVIOUS_WELCOME_ARTICLE] },
+  { id: 'space-coast-launches', title: 'Space Coast launches', tags: ['launches'], body: LAUNCHES_PAGE, blurb: 'Cape Canaveral Launch Control, a T-minus clock, and a Cocoa 32927 viewing guide.' },
+  { id: 'port-canaveral-tides', title: 'Port Canaveral tides', tags: ['tides'], body: TIDES_PAGE, blurb: 'NOAA station 8721604 at Trident Pier, plus Cocoa Beach swell and the sun.' },
+  { id: 'arcade-games', title: 'Arcade games', tags: ['games'], body: ARCADE_PAGE, blurb: 'High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker.' },
+  { id: 'backyard-chef', title: 'Backyard Chef', tags: ['recipes'], body: CHEF_PAGE, blurb: 'The recipe notebook and the Backyard Chef cards.' },
+  { id: 'editing-pages', title: 'Editing pages', tags: ['how-to'], body: EDITING_PAGE, blurb: 'How an admin adds, links, and exports a page.' }
+];
+const FEATURED_IDS = ['space-coast-launches', 'port-canaveral-tides', 'arcade-games', 'backyard-chef'];
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -683,10 +886,54 @@ let quota = { n: 0, day: 0 }, quotaLoaded = false, quotaStop = false;
 let heldPages = [], chain = Promise.resolve(), itemsRef = null, syncStarted = false, migrating = false, lastCreate = 0;
 const pendingCreates = new Set(), unsynced = new Set();
 let fellBack = false, listening = false;
+function seedById(id) {
+  return SEEDS.find(seed => seed.id === id) || null;
+}
+function seedBodies(id) {
+  const seed = seedById(id);
+  if (!seed) return [];
+  return [seed.body].concat(seed.previous || []);
+}
+function isUnchangedSeed(p) {
+  if (!p) return false;
+  const bodies = seedBodies(p.id);
+  if (!bodies.length) return false;
+  const body = String(p.body || '');
+  if (bodies.includes(body)) return true;
+  if (p.id === 'welcome' && (body.includes('Local cache: mondosupreme.wiki.v1') || body.includes('Pages in this wiki stay in this browser') || body.includes('## Saved on this device'))) return true;
+  return false;
+}
 function isStock(p) {
-  if (!p || p.id !== 'welcome' || cleanTitle(p.title) !== 'Welcome') return false;
-  const b = String(p.body || '');
-  return b === WELCOME || b === PREVIOUS_WELCOME || b.includes('Local cache: mondosupreme.wiki.v1') || b.includes('Pages in this wiki stay in this browser') || b.includes('## Saved on this device');
+  return isUnchangedSeed(p);
+}
+function blankStamp(p) {
+  if (!p.updated || p.updated === STOCK_EDITED) p.updated = '';
+  if (!p.created || p.created === STOCK_EDITED) p.created = '';
+}
+function freshSeed(seed) {
+  return { id: seed.id, title: seed.title, body: seed.body, tags: seed.tags.slice(), created: '', updated: '', history: [] };
+}
+function ensureSeeds() {
+  let changed = false;
+  SEEDS.forEach(seed => {
+    const page = pages.find(p => p && p.id === seed.id);
+    if (!page) {
+      pages.push(freshSeed(seed));
+      changed = true;
+      return;
+    }
+    if (!isUnchangedSeed(page)) return;
+    if (page.body !== seed.body || page.title !== seed.title) {
+      page.title = seed.title;
+      page.body = seed.body;
+      page.tags = seed.tags.slice();
+      changed = true;
+    }
+    const before = page.updated || '';
+    blankStamp(page);
+    if ((page.updated || '') !== before) changed = true;
+  });
+  return changed;
 }
 function canMutate() { return !!isOwner; }
 function isAdminNow() { return !!(window.MONDO_MEMBER && window.MONDO_MEMBER.isOwner && window.MONDO_MEMBER.isOwner()); }
@@ -898,8 +1145,9 @@ function applySnapshot(val) {
       top.push(p);
     }
     pages = [...top, ...remote.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))];
+    ensureSeeds();
     save();
-  }
+  } else if (ensureSeeds()) save();
   refreshViews();
   migrateHeld(remoteIds);
 }
@@ -986,20 +1234,18 @@ function load() {
   let data = null;
   try { data = JSON.parse(localStorage.getItem(KEY)); } catch { data = null; }
   if (!Array.isArray(data)) {
-    const now = new Date().toISOString();
-    pages = [{ id: 'welcome', title: 'Welcome', body: WELCOME, tags: ['start'], created: STOCK_EDITED, updated: STOCK_EDITED }];
+    pages = SEEDS.map(freshSeed);
     save();
     return;
   }
   pages = data.filter(p => p && typeof p === 'object' && !Array.isArray(p) && typeof p.id === 'string' && typeof p.title === 'string');
-  let upgraded = false;
-  pages.forEach(p => {
-    if (!isStock(p)) return;
-    if (p.body !== WELCOME) { p.body = WELCOME; p.tags = ['start']; upgraded = true; }
-    p.created = STOCK_EDITED;
-    p.updated = STOCK_EDITED;
-  });
-  if (upgraded) save();
+  if (ensureSeeds()) save();
+}
+function savedWhen(p) {
+  if (!p || isUnchangedSeed(p)) return '';
+  const iso = p.updated;
+  if (!iso || iso === STOCK_EDITED) return '';
+  return iso;
 }
 function editedSentence(iso) {
   const t = Date.parse(iso);
@@ -1022,7 +1268,7 @@ function matches(p) {
   return [p.title, p.body, ...(p.tags || [])].join('\n').toLowerCase().includes(q);
 }
 function row(p) {
-  const when = editedLabel(p.updated);
+  const when = editedLabel(savedWhen(p));
   const tags = (p.tags || []).map(t => '<span class="tag">#' + esc(t) + '</span>').join('');
   return '<a class="wiki-row" href="#/page/' + esc(p.id) + '"><span class="wiki-row-title">' + esc(p.title) + '</span>' +
     (when ? '<span class="meta">Edited ' + esc(when) + '</span>' : '') +
@@ -1069,6 +1315,13 @@ function applyHlp() {
   const indexOnly = hlpMode === 'index';
   const showingHistory = hlpMode === 'history';
   if (history) history.hidden = !showingHistory;
+  const showFeatured = !showingHistory && !indexOnly && hlpMode !== 'find';
+  const articleBox = $('#articles');
+  const helpBox = $('#helpPages');
+  if (articleBox) articleBox.hidden = !showFeatured;
+  if ($('#articlesHead')) $('#articlesHead').hidden = !showFeatured || !articleBox || !articleBox.innerHTML;
+  if (helpBox) helpBox.hidden = !showFeatured;
+  if ($('#helpHead')) $('#helpHead').hidden = !showFeatured || !helpBox || !helpBox.innerHTML;
   if ($('#recent')) $('#recent').hidden = showingHistory || indexOnly;
   if ($('#recentHead') && (showingHistory || indexOnly)) $('#recentHead').hidden = true;
   if ($('#all')) $('#all').hidden = showingHistory;
@@ -1089,10 +1342,32 @@ function setHlp(mode) {
   }
   if (hlpMode !== 'history') renderHome();
 }
+function paintFeatured(filtered) {
+  const articles = $('#articles');
+  const help = $('#helpPages');
+  if (!articles || !help) return;
+  const allowed = new Set((filtered || pages).map(p => p.id));
+  const articleHtml = FEATURED_IDS.filter(id => allowed.has(id)).map(id => {
+    const page = pages.find(p => p.id === id);
+    const seed = seedById(id);
+    if (!page) return '';
+    const blurb = seed && seed.blurb ? seed.blurb : '';
+    return '<a class="wiki-row" href="#/page/' + esc(page.id) + '"><span class="wiki-row-title">' + esc(page.title) + '</span>' +
+      (blurb ? '<span class="meta">' + esc(blurb) + '</span>' : '') + '</a>';
+  }).join('');
+  articles.innerHTML = articleHtml;
+  const editing = pages.find(p => p.id === 'editing-pages');
+  const editingSeed = seedById('editing-pages');
+  help.innerHTML = editing && allowed.has(editing.id)
+    ? '<a class="wiki-row" href="#/page/editing-pages"><span class="wiki-row-title">' + esc(editing.title) + '</span>' +
+      (editingSeed && editingSeed.blurb ? '<span class="meta">' + esc(editingSeed.blurb) + '</span>' : '') + '</a>'
+    : '';
+}
 function renderHome() {
   if ($('#homeView').hidden) return;
   const filtered = pages.filter(matches);
-  const recent = filtered.slice().sort((a, b) => Date.parse(b.updated) - Date.parse(a.updated)).slice(0, 8);
+  paintFeatured(filtered);
+  const recent = filtered.filter(p => savedWhen(p)).sort((a, b) => Date.parse(b.updated) - Date.parse(a.updated)).slice(0, 8);
   const all = filtered.slice().sort((a, b) => a.title.localeCompare(b.title));
   const tags = [...new Set(pages.flatMap(p => p.tags || []))].sort();
   const bar = $('#tagBar');
@@ -1432,7 +1707,7 @@ function showPage(id, keepScroll) {
   h1.tabIndex = -1;
   h1.textContent = p.title;
   article.appendChild(h1);
-  const edited = editedSentence(p.updated);
+  const edited = editedSentence(savedWhen(p));
   if (edited || !isOwner) {
     const meta = document.createElement('p');
     meta.className = 'wiki-edited';

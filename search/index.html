@@ -16,7 +16,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://ll.thespacedevs.com https://api.tidesandcurrents.noaa.gov https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://ll.thespacedevs.com https://api.tidesandcurrents.noaa.gov https://api.open-meteo.com https://api.weather.gov https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://text.pollinations.ai https://*.wikipedia.org https://*.wikimedia.org https://api.duckduckgo.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Ask Mondo — Mondosupreme</title>
 <meta name="description" content="Ask Mondo a plain-English question. Hollis looks through recipes, the weather, tides, stocks, and the rest of this site.">
 <link rel="stylesheet" href="/recipes/styles.css?v=6">
@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=10">
 <link rel="stylesheet" href="/readable.css?v=16">
-<link rel="stylesheet" href="search.css?v=8">
+<link rel="stylesheet" href="search.css?v=9">
 </head>
 <body class="search-page">
 <header class="site-header"><div class="wrap hdr">
@@ -97,11 +97,12 @@
     <p class="ask-lead">Ask in plain English. Hollis looks through the recipes, the tide book, the launch board, the weather, and the rest of the house.</p>
    </div>
   </div>
+  <p class="hollis-say" id="hollisSay">Good day! What may I find for you?</p>
   <search class="ask-search">
    <form class="ask-form" id="askForm" action="/search/" method="get">
     <label class="ask-label" for="q">Ask a question</label>
     <div class="ask-bar">
-     <input id="q" name="q" type="search" enterkeyhint="go" maxlength="140" autocomplete="off" spellcheck="true" placeholder="Ask a question…" aria-describedby="askStatus">
+     <input id="q" name="q" type="search" enterkeyhint="go" maxlength="140" autocomplete="off" spellcheck="true" placeholder="Ask a question…" aria-describedby="hollisSay askStatus">
      <button class="btn primary ask-go" type="submit">Ask</button>
     </div>
    </form>
@@ -112,7 +113,7 @@
    <button class="ask-example" type="button" data-q="What's the next Cape launch?">What's the next Cape launch?</button>
    <button class="ask-example" type="button" data-q="How do I make fluffy buttermilk pancakes?">How do I make fluffy buttermilk pancakes?</button>
    <button class="ask-example" type="button" data-q="Why is the top stock on the list?">Why is the top stock on the list?</button>
-   <button class="ask-example" type="button" data-q="Where is the weather?">Where is the weather?</button>
+   <button class="ask-example" type="button" data-q="What's the weather in Cocoa today?">What's the weather in Cocoa today?</button>
   </div>
   <details class="ask-tools" id="askTools">
    <summary>
@@ -154,6 +155,7 @@
  <div class="ask-results" id="askResults">
   <section class="ask-win answer-card" id="briefWin" aria-labelledby="briefTitle">
    <h2 id="briefTitle">You may find my answer at…</h2>
+   <p id="answerFact" class="answer-fact" hidden></p>
    <p id="answerLead" class="answer-lead" hidden></p>
    <p id="didYou" class="did-you" hidden></p>
    <div id="briefBody"></div>
@@ -194,6 +196,6 @@
 <script src="/members.js?v=5"></script>
 <script src="/shell.js?v=17"></script>
 <script src="/backup.js"></script>
-<script src="search.js?v=8"></script>
+<script src="search.js?v=9"></script>
 </body>
 </html>
