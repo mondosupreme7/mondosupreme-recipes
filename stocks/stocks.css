@@ -182,9 +182,10 @@ button.swing-card[hidden]{display:none !important}
 a.rule-chip{text-decoration:none;color:#111827}
 @media(min-width:960px){
  .quote-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;column-gap:16px;align-items:start}
- .quote-hero{grid-column:1;grid-row:1}
- .rules-card{grid-column:2;grid-row:1 / span 2;position:sticky;top:72px;max-height:calc((100vh / var(--page-scale, 1)) - 88px);overflow:auto;margin:0}
- .quote-main{grid-column:1;grid-row:2;min-width:0}
+ .quote-hero{grid-column:1;grid-row:1;min-width:0}
+ .paper-log{grid-column:1;grid-row:2;min-width:0}
+ .rules-card{grid-column:2;grid-row:1 / span 3;position:sticky;top:72px;max-height:calc((100vh / var(--page-scale, 1)) - 88px);max-height:calc((100dvh / var(--page-scale, 1)) - 88px);overflow:auto;margin:0}
+ .quote-main{grid-column:1;grid-row:3;min-width:0}
 }
 td.quote-row{display:flex;align-items:center;gap:8px;min-height:44px;width:100%}
 .quote-line{display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
@@ -509,6 +510,8 @@ html[data-theme] .size-helper input{background:var(--surface)!important;color:va
 /* Phone: the fixed header and tab bar cover the viewport edges. Scroll-padding has to live on the scroll container. Safe-area insets stay 0 in Firefox for iOS, so --vv-top/--vv-bottom (measured from the visual viewport in stocks.js) cover that browser's toolbars. */
 @media (max-width:900px){
   html,body{
+    min-height:100vh;
+    min-height:100dvh;
     scroll-padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px) + 16px);
     scroll-padding-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 32px)
   }

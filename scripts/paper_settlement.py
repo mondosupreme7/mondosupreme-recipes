@@ -75,6 +75,14 @@ Marks and accounting
     riskUsdAtLimit of working orders, plus max(0, entry - stop) * shares for
     open longs. Versus start is equity minus starting cash. Goal progress is
     equity / goalEquity.
+    An optional top-level goal object (stretch dates, baseline, and target) is
+    kept as stored. Settlement does not rewrite it, and it does not use it to
+    size an order or to relax a gate.
+    On a fill, the position records bookPctAtEntry: the fill notional divided
+    by equity just before that fill. On a close, the closed trade keeps that
+    percent when it was recorded, and always records exitAt, realized P&L,
+    equityAfter (the book balance after the exit), and a one-line reason.
+    Older records that lack the newer fields still settle.
     Events, the original order records, and closed trades are append-only.
     Balances are the current snapshot. An open position's mark is current
     state; each session's mark event is the history. A closed position leaves
@@ -337,6 +345,20 @@ def session_count(start, end):
     return len(session_dates(start, end))
 
 
+def stretch_sessions(goal):
+    """NYSE sessions after the baseline date through the target date.
+
+    The baseline close is the starting mark, not a compounding step. The
+    target date counts when it is itself a session. Dec 11, 2026 is that
+    session for a target of Dec 11; Dec 12 is a Saturday and is not a step.
+    """
+    if not isinstance(goal, dict):
+        raise SettlementError("stretch goal is missing")
+    start = parse_day(goal.get("startDate")) + timedelta(days=1)
+    end = parse_day(goal.get("targetDate"))
+    return session_dates(start, end)
+
+
 def last_closed_session(now):
     moment = as_eastern(now)
     day = moment.date()
@@ -596,6 +618,7 @@ def apply_expiry(book, order, day, stamp, window):
     record["at"] = stamp
     record["expiredOn"] = day.isoformat()
     record["note"] = "Expired unfilled on " + day.isoformat() + ". Not a fill."
+    record["reason"] = "Expired unfilled. Not a fill."
     book.setdefault("workingOrders", []).append(record)
     shares = share_count(order)
     append_event(book, {
@@ -619,6 +642,25 @@ def apply_expiry(book, order, day, stamp, window):
             + ". Not a fill."
         ),
     })
+
+
+def book_percent(notional_cents, equity_cents):
+    """Fill notional as a percent of equity, half-up to a hundredth of a percent."""
+    percent, _text = fmt_pct(notional_cents, equity_cents)
+    return percent
+
+
+def exit_reason_line(reason, from_above):
+    """One line for the public log. The longer bar note stays on the event."""
+    if reason == "stop":
+        return "Stop. The session low was at or below the stop."
+    if reason == "target" and from_above:
+        return "Target. The close reached the target after the limit filled below the open."
+    if reason == "target":
+        return "Target. The session high reached the target."
+    if reason == "time":
+        return "Time stop. Still open when the time stop came due, so the exit is the close."
+    return "Closed."
 
 
 def record_exit(book, position, day, stamp, reason, price, bar, from_above, cash):
@@ -658,7 +700,10 @@ def record_exit(book, position, day, stamp, reason, price, bar, from_above, cash
         "realizedPnlPct": percent,
         "cashAfter": from_cents(cash),
         "equityAfter": from_cents(equity),
+        "reason": exit_reason_line(reason, from_above),
     }
+    if position.get("bookPctAtEntry") is not None:
+        trade["bookPctAtEntry"] = position["bookPctAtEntry"]
     book.setdefault("closedTrades", []).append(trade)
     append_event(book, {
         "at": stamp,
@@ -809,8 +854,14 @@ def apply_session(book, day, bars):
         window = rule_int(order, book, "fillWindowTradingDays", "fillWindowTradingDays", 5)
         if bar["low"] <= limit:
             price = min(bar["open"], limit)
+            equity_before = cash + market_cents(book)
             spent, position = apply_fill(book, order, bar, day, stamp, price)
             cash -= spent
+            if equity_before > 0:
+                position["bookPctAtEntry"] = book_percent(spent, equity_before)
+                filled = book["workingOrders"][-1]
+                if filled.get("id") == order.get("id"):
+                    filled["bookPctAtEntry"] = position["bookPctAtEntry"]
             filled_from_above[position["id"]] = bar["open"] > limit
         elif session_count(parse_day(order["firstEligibleSession"]), day) >= window:
             apply_expiry(book, order, day, stamp, window)

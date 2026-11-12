@@ -19,6 +19,8 @@ on:
     paths:
       - scripts/paper_settlement.py
       - scripts/test_paper_settlement.py
+      - scripts/test_paper_pace.mjs
+      - stocks/paper/paper.js
       - .github/workflows/paper-settlement.yml
       - stocks/paper/ledger.json
   schedule:
@@ -41,6 +43,9 @@ jobs:
 
       - name: Test paper settlement
         run: python3 -m unittest scripts/test_paper_settlement.py
+
+      - name: Test paper pace
+        run: node scripts/test_paper_pace.mjs
 
   settle:
     needs: test

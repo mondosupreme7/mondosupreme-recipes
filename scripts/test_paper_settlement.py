@@ -350,6 +350,7 @@ class PaperSettlementTest(unittest.TestCase):
         done, applied = settle.settle_book(early, quiet_bars, at("2026-11-17T16:30:00-05:00"))
         self.assertEqual(applied, ["2026-11-17"])
         self.assertEqual(done["workingOrders"][-1]["status"], "expired")
+        self.assertEqual(done["workingOrders"][-1]["reason"], "Expired unfilled. Not a fill.")
         self.assertNotIn("fillPrice", done["workingOrders"][-1])
         self.assertEqual(done["openPositions"], [])
         self.assertEqual(done["closedTrades"], [])
@@ -492,6 +493,87 @@ class PaperSettlementTest(unittest.TestCase):
             code = settle.main(["--ledger", str(path), "--now", "2026-11-11T07:44:00-05:00"])
             self.assertEqual(code, 0)
             self.assertEqual(path.read_bytes(), before)
+
+    def test_stretch_goal_ends_on_dec_11_and_survives_settlement(self):
+        book = json.loads(PRODUCTION_TEXT)
+        goal = book["goal"]
+        self.assertEqual(goal["startDate"], "2026-11-12")
+        self.assertEqual(goal["baselineEquity"], 1000)
+        self.assertEqual(goal["target"], 1000000)
+        self.assertEqual(goal["targetDate"], "2026-12-11")
+        sessions = settle.stretch_sessions(goal)
+        self.assertEqual(
+            [day.isoformat() for day in sessions],
+            [
+                "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20",
+                "2026-11-23", "2026-11-24", "2026-11-25", "2026-11-27", "2026-11-30",
+                "2026-12-01", "2026-12-02", "2026-12-03", "2026-12-04",
+                "2026-12-07", "2026-12-08", "2026-12-09", "2026-12-10", "2026-12-11",
+            ],
+        )
+        self.assertNotIn(date(2026, 11, 12), sessions)
+        self.assertNotIn(date(2026, 11, 26), sessions)
+        self.assertIn(date(2026, 11, 27), sessions)
+        self.assertNotIn(date(2026, 12, 12), sessions)
+        self.assertEqual(sessions[-1], date(2026, 12, 11))
+        ratio = (goal["target"] / goal["baselineEquity"]) ** (1 / len(sessions))
+        self.assertAlmostEqual(ratio, 1000 ** (1 / 20), places=10)
+        self.assertGreater(ratio, 1.40)
+        self.assertLess(ratio, 1.43)
+        # A calendar-day compounding through Dec 12 is the 1.26 figure this book does not use.
+        self.assertLess(1000 ** (1 / 30), 1.27)
+        self.assertGreater(ratio - (1000 ** (1 / 30)), 0.14)
+        original = self.book()
+        updated, applied = settle.settle_book(
+            original,
+            {"ZD": {"2026-11-11": bar(50.10, 51.40, 46.66, 49.80)}},
+            at("2026-11-11T16:30:00-05:00"),
+        )
+        self.assertEqual(applied, ["2026-11-11"])
+        self.assertEqual(updated["goal"], original["goal"])
+        self.assertEqual(updated["rules"], original["rules"])
+        self.assertEqual(updated["workingOrders"][0]["shares"], original["workingOrders"][0]["shares"])
+        self.assertEqual(updated["workingOrders"][0]["limitPrice"], original["workingOrders"][0]["limitPrice"])
+        self.assertNotIn("bookPctAtEntry", updated["workingOrders"][0])
+
+    def test_close_writes_exit_time_result_balance_reason_and_book_percent(self):
+        opened = self.filled()
+        self.assertEqual(opened["openPositions"][0]["entryAt"], "2026-11-11T16:05:00-05:00")
+        self.assertEqual(opened["openPositions"][0]["bookPctAtEntry"], 23.33)
+        self.assertEqual(opened["workingOrders"][-1]["bookPctAtEntry"], 23.33)
+        updated, applied = settle.settle_book(
+            opened,
+            {"ZD": {"2026-11-12": bar(45, 45.50, 42, 43)}},
+            at("2026-11-12T16:30:00-05:00"),
+        )
+        self.assertEqual(applied, ["2026-11-12"])
+        trade = updated["closedTrades"][0]
+        self.assertEqual(trade["entryAt"], "2026-11-11T16:05:00-05:00")
+        self.assertEqual(trade["exitAt"], "2026-11-12T16:05:00-05:00")
+        self.assertEqual(trade["realizedPnlUsd"], -19.5)
+        self.assertEqual(trade["realizedPnlPct"], -8.36)
+        self.assertEqual(trade["equityAfter"], 980.5)
+        self.assertEqual(trade["cashAfter"], 980.5)
+        self.assertEqual(trade["bookPctAtEntry"], 23.33)
+        self.assertEqual(trade["reason"], "Stop. The session low was at or below the stop.")
+        self.assertEqual(trade["exitReason"], "stop")
+        targeted, _applied = settle.settle_book(
+            opened,
+            {"ZD": {"2026-11-12": bar(54, 56.20, 53, 55.90)}},
+            at("2026-11-12T16:30:00-05:00"),
+        )
+        self.assertEqual(targeted["closedTrades"][0]["reason"], "Target. The session high reached the target.")
+        self.assertEqual(targeted["closedTrades"][0]["equityAfter"], 1045.8)
+        self.assertEqual(targeted["closedTrades"][0]["exitAt"], "2026-11-12T16:05:00-05:00")
+        self.assertEqual(
+            settle.exit_reason_line("target", True),
+            "Target. The close reached the target after the limit filled below the open.",
+        )
+        self.assertEqual(
+            settle.exit_reason_line("time", False),
+            "Time stop. Still open when the time stop came due, so the exit is the close.",
+        )
+        self.assertEqual(updated["goal"], opened["goal"])
 
     def test_production_ledger_is_still_the_unfilled_zd_order(self):
         self.assertEqual(LEDGER.read_text(encoding="utf-8"), PRODUCTION_TEXT)
