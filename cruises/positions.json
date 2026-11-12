@@ -3,9 +3,10 @@
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
     "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
+    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
-  "heard": 0,
+  "heard": 1,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -189,16 +190,16 @@
     },
     "311000267": {
       "aisName": "QUANTUM OF THE SEAS",
-      "cog": 265.1,
+      "cog": 121.1,
       "destination": "AUBNE",
       "eta": "11-12 15:30",
       "heading": 238,
       "lat": -27.38161,
       "lon": 153.15634,
       "navStatus": 5,
-      "seen": "2026-11-12T20:11:32Z",
+      "seen": "2026-11-12T20:56:29Z",
       "sog": 0.0,
-      "source": "aisstream",
+      "source": "openwaters.io",
       "trail": [
         {
           "lat": -26.47173,
@@ -489,15 +490,15 @@
     },
     "311001259": {
       "aisName": "UTOPIA OF THE SEAS",
-      "cog": 8.3,
+      "cog": 1.2,
       "destination": "USPCV",
       "eta": "11-13 10:00",
-      "heading": 6,
-      "lat": 26.00791,
-      "lon": -79.77911,
+      "heading": 356,
+      "lat": 26.13721,
+      "lon": -79.76676,
       "navStatus": 0,
-      "seen": "2026-11-12T20:12:14Z",
-      "sog": 10.4,
+      "seen": "2026-11-12T20:57:34Z",
+      "sog": 10.1,
       "source": "openwaters.io",
       "trail": [
         {
@@ -569,21 +570,26 @@
           "lat": 26.00791,
           "lon": -79.77911,
           "seen": "2026-11-12T20:12:14Z"
+        },
+        {
+          "lat": 26.13721,
+          "lon": -79.76676,
+          "seen": "2026-11-12T20:57:34Z"
         }
       ]
     },
     "311001551": {
       "aisName": "STAR OF THE SEAS",
-      "cog": 290.2,
+      "cog": 248.1,
       "destination": "MX CZM>>>BS COC",
       "eta": "11-14 11:00",
       "heading": 357,
-      "lat": 20.48256,
+      "lat": 20.48255,
       "lon": -86.97594,
       "navStatus": 5,
-      "seen": "2026-11-12T20:07:31Z",
+      "seen": "2026-11-12T20:55:32Z",
       "sog": 0.0,
-      "source": "aishub",
+      "source": "aisstream",
       "trail": [
         {
           "lat": 25.06855,
@@ -596,9 +602,9 @@
           "seen": "2026-11-12T11:34:36Z"
         },
         {
-          "lat": 20.48256,
+          "lat": 20.48255,
           "lon": -86.97594,
-          "seen": "2026-11-12T20:07:31Z"
+          "seen": "2026-11-12T20:55:32Z"
         }
       ]
     },
@@ -639,15 +645,15 @@
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 187.7,
+      "cog": 3.4,
       "destination": "US PEF",
       "eta": "11-13 10:00",
-      "heading": 188,
-      "lat": 25.64957,
-      "lon": -79.60243,
+      "heading": 4,
+      "lat": 25.68109,
+      "lon": -79.67016,
       "navStatus": 0,
-      "seen": "2026-11-12T20:10:01Z",
-      "sog": 6.1,
+      "seen": "2026-11-12T20:55:20Z",
+      "sog": 10.4,
       "source": "aishub",
       "trail": [
         {
@@ -714,19 +720,24 @@
           "lat": 25.64957,
           "lon": -79.60243,
           "seen": "2026-11-12T20:10:01Z"
+        },
+        {
+          "lat": 25.68109,
+          "lon": -79.67016,
+          "seen": "2026-11-12T20:55:20Z"
         }
       ]
     },
     "311020700": {
       "aisName": "ALLURE OF THE SEAS",
-      "cog": 323.0,
+      "cog": 44.9,
       "destination": "US MIA",
       "eta": "11-09 11:30",
-      "heading": 271,
+      "heading": 270,
       "lat": 18.33103,
       "lon": -64.95446,
       "navStatus": 5,
-      "seen": "2026-11-12T20:12:13Z",
+      "seen": "2026-11-12T20:57:32Z",
       "sog": 0.0,
       "source": "openwaters.io",
       "trail": [
@@ -1009,16 +1020,16 @@
     },
     "311583000": {
       "aisName": "JEWEL OF THE SEAS",
-      "cog": 229.4,
+      "cog": 88.0,
       "destination": "USTPA",
       "eta": "11-12 08:00",
-      "heading": 252,
-      "lat": 27.94221,
-      "lon": -82.44725,
-      "navStatus": 5,
-      "seen": "2026-11-12T20:07:54Z",
-      "sog": 0.0,
-      "source": "aishub",
+      "heading": 255,
+      "lat": 27.94215,
+      "lon": -82.44712,
+      "navStatus": 0,
+      "seen": "2026-11-12T20:57:23Z",
+      "sog": 0.3,
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 20.71701,
@@ -1061,9 +1072,9 @@
           "seen": "2026-11-12T10:41:48Z"
         },
         {
-          "lat": 27.94221,
-          "lon": -82.44725,
-          "seen": "2026-11-12T11:31:54Z"
+          "lat": 27.94215,
+          "lon": -82.44712,
+          "seen": "2026-11-12T20:57:23Z"
         }
       ]
     },
@@ -1115,5 +1126,5 @@
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-12T20:12:17Z"
+  "updated": "2026-11-12T20:57:42Z"
 }
