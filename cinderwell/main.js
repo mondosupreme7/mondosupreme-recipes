@@ -36,6 +36,7 @@
   var pinch = null;
   var ghost = null;
   var idleCursor = 0;
+  var lastAlarm = 0;
   var soundOn = true;
   var reduced = false;
   var faction = 'kiln';
@@ -162,6 +163,10 @@
     clampCam();
   }
 
+  function lookAtAlarm() {
+    if (match && match.alert && match.alert.life > 0) centerOn(match.alert.x, match.alert.y);
+    else lookAtHearth(0);
+  }
   function lookAtHearth(side) {
     var i, b;
     for (i = 0; i < match.buildings.length; i++) {
@@ -293,18 +298,50 @@
     if (selectedUnits().length) orderAt(hit, world);
   }
 
+  function builderIds() {
+    var hands = [];
+    selectedUnits().forEach(function (u) { if (u.type === 'worker') hands.push(u.id); });
+    return hands;
+  }
+  function aimGhost(type, tx, ty) {
+    var site = SIM.nearestSite(match, 0, type, tx, ty, 7);
+    if (site) ghost = { type: type, tx: site.tx, ty: site.ty, ok: true };
+    else ghost = { type: type, tx: tx, ty: ty, ok: false };
+    return site;
+  }
   function tryPlace(x, y) {
     var def = SIM.DEFS[placeType];
     if (!def) { placeType = ''; return; }
     var tx = (x / SIM.TILE | 0) - (def.w >> 1);
     var ty = (y / SIM.TILE | 0) - (def.h >> 1);
-    var hands = [];
-    selectedUnits().forEach(function (u) { if (u.type === 'worker') hands.push(u.id); });
+    var hands = builderIds();
     if (!hands.length) { toast('Select a hand to build'); return; }
-    var res = SIM.place(match, 0, placeType, tx, ty, hands);
+    var site = aimGhost(placeType, tx, ty);
+    if (!site) {
+      toast('That ground will not hold it');
+      return;
+    }
+    var res = SIM.place(match, 0, placeType, site.tx, site.ty, hands);
     if (!res.ok) {
       toast(res.reason === 'cost' ? 'Need more ore or thatch' : 'That ground will not hold it');
-      ghost = { type: placeType, tx: tx, ty: ty, ok: false };
+      ghost = { type: placeType, tx: site.tx, ty: site.ty, ok: false };
+      return;
+    }
+    placeType = '';
+    ghost = null;
+    play('launch');
+    cardSig = '';
+  }
+  function buildNear() {
+    if (!placeType) { toast('Pick Arms, Yard, Watch, or Shrine'); return; }
+    var hands = builderIds();
+    if (!hands.length) { toast('Select a hand to build'); return; }
+    var site = SIM.siteNearHearth(match, 0, placeType);
+    if (!site) { toast('No open grass by the Hearth'); return; }
+    ghost = { type: placeType, tx: site.tx, ty: site.ty, ok: true };
+    var res = SIM.place(match, 0, placeType, site.tx, site.ty, hands);
+    if (!res.ok) {
+      toast(res.reason === 'cost' ? 'Need more ore or thatch' : 'That ground will not hold it');
       return;
     }
     placeType = '';
@@ -341,14 +378,21 @@
       cardSig = '';
       return;
     }
+    if (cmd === 'near') {
+      buildNear();
+      return;
+    }
     if (cmd.indexOf('build:') === 0) {
       var type = cmd.slice(6);
       if (!SIM.canAfford(match, 0, SIM.DEFS[type].cost)) { toast('Need more ore or thatch'); return; }
       placeType = placeType === type ? '' : type;
       attackArm = false;
-      ghost = null;
       cardSig = '';
-      if (placeType) toast('Tap open grass');
+      if (placeType) {
+        var seeded = SIM.siteNearHearth(match, 0, placeType);
+        ghost = seeded ? { type: placeType, tx: seeded.tx, ty: seeded.ty, ok: true } : null;
+        toast('Green ground will hold it. Near drops it by the Hearth.');
+      } else ghost = null;
       return;
     }
     var building = selectedBuilding();
@@ -459,7 +503,8 @@
           on: placeType === row[0]
         });
       });
-      buttons.push({ cmd: 'stop', label: 'Stop', sub: 's', key: 's' });
+      if (placeType) buttons.push({ cmd: 'near', label: 'Near', sub: 'hearth', key: 'n' });
+      else buttons.push({ cmd: 'stop', label: 'Stop', sub: 's', key: 's' });
       return buttons.slice(0, 6);
     }
     if (units.length) {
@@ -519,14 +564,21 @@
     if ($('btnIdle').textContent !== idleLabel) $('btnIdle').textContent = idleLabel;
     var alert = $('alert');
     var line = '';
-    if (match.alert && match.alert.life > 0) line = match.alert.text;
+    var attack = match.alert && match.alert.life > 0;
+    if (attack) line = match.alert.text;
     else if (match.note && match.note.life > 0) line = match.note.text;
+    if (attack && match.alert.seq !== lastAlarm) {
+      lastAlarm = match.alert.seq;
+      play('hurt');
+      var kitAlarm = juice();
+      if (kitAlarm && !reduced) kitAlarm.shake(5, 220);
+    }
+    document.body.classList.toggle('under-attack', !!attack);
     if (alert.dataset.line !== line) {
       alert.dataset.line = line;
-      if (line) {
-        alert.textContent = line;
-        alert.classList.add('show');
-      } else alert.classList.remove('show');
+      alert.textContent = line;
+      if (line) alert.classList.add('show');
+      else alert.classList.remove('show');
     }
     if (match.over && !endShown) {
       endShown = true;
@@ -547,7 +599,7 @@
     var shake = kit && !reduced ? kit.shakeOffset() : { x: 0, y: 0 };
     DRAW.world(ctx, match, {
       camX: camX - shake.x, camY: camY - shake.y, zoom: zoom, w: viewW, h: viewH,
-      sel: sel, ghost: ghost, box: box, reduced: reduced
+      sel: sel, ghost: ghost, box: box, reduced: reduced, alarm: !!(match.alert && match.alert.life > 0)
     });
     if (miniCtx && performance.now() > miniT) {
       miniT = performance.now() + 140;
@@ -744,6 +796,10 @@
         box = null;
       } else if (event.button === 1) gesture = 'pan';
       else gesture = 'pending';
+      if (placeType && event.button === 0) {
+        var def = SIM.DEFS[placeType];
+        if (def) aimGhost(placeType, (p.x / zoom + camX) / SIM.TILE - (def.w >> 1) | 0, (p.y / zoom + camY) / SIM.TILE - (def.h >> 1) | 0);
+      }
     });
     canvas.addEventListener('pointermove', function (event) {
       var cur = pointers.get(event.pointerId);
@@ -788,9 +844,7 @@
       } else if (placeType) {
         var world = screenToWorld(p.x, p.y);
         var def = SIM.DEFS[placeType];
-        var tx = (world.x / SIM.TILE | 0) - (def.w >> 1);
-        var ty = (world.y / SIM.TILE | 0) - (def.h >> 1);
-        ghost = { type: placeType, tx: tx, ty: ty, ok: SIM.canPlace(match, 0, placeType, tx, ty) };
+        aimGhost(placeType, (world.x / SIM.TILE | 0) - (def.w >> 1), (world.y / SIM.TILE | 0) - (def.h >> 1));
       }
     });
     function finish(event) {
@@ -903,6 +957,7 @@
     $('btnArmy').addEventListener('click', selectArmy);
     $('btnStop').addEventListener('click', function () { runCommand('stop'); });
     $('btnMenu').addEventListener('click', toggleSheet);
+    $('alert').addEventListener('click', lookAtAlarm);
     $('sheetClose').addEventListener('click', toggleSheet);
     $('giveUp').addEventListener('click', function () {
       if (!match || match.over) return;

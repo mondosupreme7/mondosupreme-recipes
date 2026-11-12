@@ -37,12 +37,17 @@
   function tileColor(kind, x, y, dim) {
     var n = hash(x, y);
     var c;
-    if (kind === 1) c = (n % 3 === 0) ? '#14384f' : (n % 3 === 1) ? '#1a4d68' : '#18445e';
-    else if (kind === 2) c = (n & 2) ? '#5c564c' : '#4a453c';
-    else if (kind === 4) c = '#5e584e';
-    else c = ['#2b572e', '#336434', '#3c713c', '#264e2b'][n % 4];
+    if (kind === 1) c = (n % 3 === 0) ? '#1a78b5' : (n % 3 === 1) ? '#2490c8' : '#15608f';
+    else if (kind === 2) c = (n & 2) ? '#6e675c' : '#4e483f';
+    else if (kind === 3) c = (n % 2) ? '#1c5a28' : '#246b32';
+    else if (kind === 4) c = '#c49a3a';
+    else if (kind === 5) c = (n % 2) ? '#c4a06a' : '#a88448';
+    else c = ['#3e7a3a', '#4c8c42', '#2f6a34', '#5aa04a'][n % 4];
     if (!dim) return c;
-    return kind === 0 || kind === 3 ? '#1a2c1c' : (kind === 1 ? '#102430' : '#24211c');
+    if (kind === 1) return '#12344a';
+    if (kind === 4) return '#6a5424';
+    if (kind === 5) return '#5c4a30';
+    return '#1a2c1c';
   }
 
   function drawGround(ctx, state, view, SIM) {
@@ -69,7 +74,7 @@
         }
         dim = fog[i] !== 2;
         kind = state.terrain[i];
-        ctx.fillStyle = tileColor(kind === 3 ? 0 : kind, x, y, dim);
+        ctx.fillStyle = tileColor(kind, x, y, dim);
         ctx.fillRect(sx, sy, tile * z + 1, tile * z + 1);
         n = hash(x, y);
         if (!dim && kind !== 1 && kind !== 2 && kind !== 4 && n % 11 === 0) {
@@ -77,9 +82,15 @@
           ctx.fillRect(sx + (n % 20) * ps, sy + ((n >> 4) % 18) * ps, ps, ps * 2);
         }
         if (kind === 1 && !dim) {
-          var wave = view.reduced ? 0 : Math.sin(state.time * 1.6 + x * 0.7 + y) * 3 * z;
-          ctx.fillStyle = 'rgba(186, 230, 240, 0.35)';
-          ctx.fillRect(sx + 4 * z, sy + tile * z * 0.45 + wave, tile * z * 0.55, Math.max(1, z));
+          var wave = view.reduced ? 2 * z : Math.sin(state.time * 1.6 + x * 0.7 + y) * 3 * z;
+          ctx.fillStyle = 'rgba(224, 248, 255, 0.72)';
+          ctx.fillRect(sx + 3 * z, sy + tile * z * 0.28 + wave, tile * z * 0.7, Math.max(2, 2 * z));
+          ctx.fillStyle = 'rgba(8, 40, 64, 0.45)';
+          ctx.fillRect(sx, sy, tile * z + 1, Math.max(2, 2 * z));
+        }
+        if (kind === 5 && !dim) {
+          ctx.fillStyle = '#7a5a32';
+          ctx.fillRect(sx + 6 * z, sy + tile * z * 0.42, tile * z - 12 * z, Math.max(2, 3 * z));
         }
         if (kind === 2) {
           ctx.fillStyle = dim ? '#161410' : '#2c2822';
@@ -88,13 +99,14 @@
           ctx.fillRect(sx, sy, tile * z + 1, Math.max(1, 2 * z));
         }
         if (kind === 4 && state.ore[i] > 0) {
-          ctx.fillStyle = dim ? '#3a342c' : '#6d675c';
-          ctx.fillRect(sx + 8 * z, sy + 10 * z, 16 * z, 12 * z);
-          ctx.fillStyle = dim ? '#5c5338' : '#f0c14a';
-          ctx.fillRect(sx + 12 * z, sy + 14 * z, 4 * z, 3 * z);
-          if (!dim && !view.reduced && ((state.time * 3 + n) | 0) % 7 === 0) {
-            ctx.fillStyle = '#fff4c2';
-            ctx.fillRect(sx + 18 * z, sy + 12 * z, 2 * z, 2 * z);
+          ctx.fillStyle = dim ? '#5a4a28' : '#8d6a2a';
+          ctx.fillRect(sx + 6 * z, sy + 8 * z, 20 * z, 16 * z);
+          ctx.fillStyle = dim ? '#a89040' : '#ffe08a';
+          ctx.fillRect(sx + 10 * z, sy + 12 * z, 8 * z, 6 * z);
+          ctx.fillRect(sx + 18 * z, sy + 16 * z, 5 * z, 4 * z);
+          if (!dim) {
+            ctx.fillStyle = '#fff6c8';
+            ctx.fillRect(sx + 12 * z, sy + 13 * z, 3 * z, 2 * z);
           }
         }
       }
@@ -484,6 +496,12 @@
         }
       }
     }
+    if (view.alarm) {
+      var pulse = view.reduced ? 0.65 : (0.45 + 0.4 * Math.abs(Math.sin(state.time * 7)));
+      ctx.strokeStyle = 'rgba(239, 68, 68, ' + pulse + ')';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(4, 4, view.w - 8, view.h - 8);
+    }
     if (view.box) {
       ctx.strokeStyle = '#f7efe0';
       ctx.lineWidth = 1;
@@ -547,10 +565,11 @@
     var z = view.zoom;
     var x = (view.ghost.tx * SIM.TILE - view.camX) * z;
     var y = (view.ghost.ty * SIM.TILE - view.camY) * z;
-    ctx.fillStyle = view.ghost.ok ? 'rgba(134, 239, 172, 0.35)' : 'rgba(252, 165, 165, 0.35)';
+    ctx.fillStyle = view.ghost.ok ? 'rgba(74, 222, 128, 0.45)' : 'rgba(248, 113, 113, 0.45)';
     ctx.fillRect(x, y, d.w * SIM.TILE * z, d.h * SIM.TILE * z);
-    ctx.strokeStyle = view.ghost.ok ? '#86efac' : '#fca5a5';
-    ctx.strokeRect(x, y, d.w * SIM.TILE * z, d.h * SIM.TILE * z);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = view.ghost.ok ? '#bbf7d0' : '#fecaca';
+    ctx.strokeRect(x + 1, y + 1, d.w * SIM.TILE * z - 2, d.h * SIM.TILE * z - 2);
   }
 
   function drawMini(ctx, state, view) {

@@ -11,6 +11,7 @@
   var CLIFF = 2;
   var TREE = 3;
   var ORE = 4;
+  var PATH = 5;
   var DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 
   var FACTIONS = {
@@ -109,7 +110,7 @@
     for (y = 0; y < h; y++) {
       for (x = 0; x < w; x++) {
         i = tileIndex(tx + x, ty + y);
-        if (state.terrain[i] !== GRASS || state.occ[i]) return false;
+        if ((state.terrain[i] !== GRASS && state.terrain[i] !== PATH) || state.occ[i]) return false;
       }
     }
     return true;
@@ -127,13 +128,49 @@
   }
 
   function visibleFoot(state, side, tx, ty, w, h) {
-    var x, y;
+    var fog = state.fog[side];
+    var cx = tx + (w >> 1);
+    var cy = ty + (h >> 1);
+    var x, y, seen;
+    if (!inMap(cx, cy) || fog[tileIndex(cx, cy)] !== 2) return false;
     for (y = 0; y < h; y++) {
       for (x = 0; x < w; x++) {
-        if (state.fog[side][tileIndex(tx + x, ty + y)] !== 2) return false;
+        seen = fog[tileIndex(tx + x, ty + y)];
+        if (!seen) return false;
       }
     }
     return true;
+  }
+
+  /* The footprint is several tiles. A tap on open grass often covers a hand, a tree, or a dim corner. */
+  function nearestSite(state, side, type, tx, ty, radius) {
+    var limit = radius == null ? 7 : radius;
+    var best = null;
+    var bestD = 1e9;
+    var r, dy, dx, d;
+    for (r = 0; r <= limit; r++) {
+      for (dy = -r; dy <= r; dy++) {
+        for (dx = -r; dx <= r; dx++) {
+          if (r && Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          if (!canPlace(state, side, type, tx + dx, ty + dy)) continue;
+          d = dx * dx + dy * dy;
+          if (d < bestD) { bestD = d; best = { tx: tx + dx, ty: ty + dy }; }
+        }
+      }
+      if (best) return best;
+    }
+    return null;
+  }
+
+  function siteNearHearth(state, side, type) {
+    var home = null;
+    var i, b;
+    for (i = 0; i < state.buildings.length; i++) {
+      b = state.buildings[i];
+      if (b.side === side && b.type === 'hearth' && !b.dead) home = b;
+    }
+    if (!home) return null;
+    return nearestSite(state, side, type, home.tx, home.ty + home.h + 1, 9);
   }
 
   function canPlace(state, side, type, tx, ty) {
@@ -457,18 +494,16 @@
 
   function alertPlayer(state, x, y, text) {
     if (state.time < state.alertAt) return;
-    state.alertAt = state.time + 4;
-    state.alert = { x: x, y: y, text: text, life: 2.4 };
+    state.alertAt = state.time + 5;
+    state.alertSeq = (state.alertSeq || 0) + 1;
+    state.alert = { x: x, y: y, text: text, life: 3.4, seq: state.alertSeq };
   }
 
   function deal(state, target, amount, fromSide) {
     if (!living(target) || amount <= 0 || target.side === fromSide) return;
     target.hp -= amount;
     target.flash = 0.14;
-    if (target.side === 0) {
-      var label = target.isB ? DEFS[target.type].name : 'Forces';
-      alertPlayer(state, centerOf(target).x, centerOf(target).y, label + ' under attack');
-    }
+    if (target.side === 0) alertPlayer(state, centerOf(target).x, centerOf(target).y, 'Under attack — tap to look');
     if (target.hp <= 0) kill(state, target);
   }
 
@@ -1201,14 +1236,15 @@
       else if (!easy && army.filter(function (a) { return DEFS[a.type].cls === 'mythic'; }).length < 1 && army.length >= 6) train(state, shrine.id, mythicOf(state.faction[side]));
     }
 
-    var need = easy ? 8 : 4;
-    var attackAt = easy ? 62 : 32;
-    if (state.time >= attackAt && army.length >= need && state.time >= state.aiRetreat) {
+    var grace = easy ? 330 : 90;
+    var waveCap = easy ? ((state.aiWaves || 0) === 0 ? 3 : 4) : 5;
+    var ready = easy ? 2 : 4;
+    if (state.time >= grace && state.time >= (state.aiNext || 0) && army.length >= ready) {
       var idleA = [];
       for (i = 0; i < army.length; i++) {
         if (army[i].order === 'idle' || army[i].order === 'hold') idleA.push(army[i].id);
       }
-      if (idleA.length >= Math.min(army.length, easy ? 6 : 3)) {
+      if (idleA.length >= Math.min(army.length, easy ? 2 : 3)) {
         var foeHome = null;
         for (i = 0; i < state.buildings.length; i++) {
           b = state.buildings[i];
@@ -1216,7 +1252,9 @@
         }
         if (foeHome) {
           var fc = centerOf(foeHome);
-          issue(state, idleA, 'attackmove', fc.x, fc.y + 20);
+          issue(state, idleA.slice(0, waveCap), 'attackmove', fc.x, fc.y + 20);
+          state.aiWaves = (state.aiWaves || 0) + 1;
+          state.aiNext = state.time + (easy ? 80 : 32);
         }
       }
     }
@@ -1377,7 +1415,7 @@
     for (x = 1; x < W - 1; x++) {
       var ford = (x >= 15 && x <= 20) || (x >= 35 && x <= 40);
       if (ford) continue;
-      for (y = 26; y <= 29; y++) terrain[tileIndex(x, y)] = WATER;
+      for (y = 25; y <= 30; y++) terrain[tileIndex(x, y)] = WATER;
     }
     paintDisk(terrain, 8, 18, 4, WATER, rng, 0.85);
     paintDisk(terrain, 48, 40, 3, WATER, rng, 0.8);
@@ -1410,7 +1448,43 @@
         }
       }
     }
+    carvePath(terrain, tree, ore, 12, 46, 18, 31);
+    carvePath(terrain, tree, ore, 18, 31, 18, 24);
+    carvePath(terrain, tree, ore, 44, 13, 37, 24);
     return { terrain: terrain, tree: tree, ore: ore };
+  }
+
+  function carvePath(terrain, tree, ore, x0, y0, x1, y1) {
+    var x = x0;
+    var y = y0;
+    var dx = Math.abs(x1 - x0);
+    var dy = Math.abs(y1 - y0);
+    var sx = x0 < x1 ? 1 : -1;
+    var sy = y0 < y1 ? 1 : -1;
+    var err = dx - dy;
+    var guard = 0;
+    while (guard < 80) {
+      stampPath(terrain, tree, ore, x, y);
+      if (x === x1 && y === y1) break;
+      var e2 = 2 * err;
+      if (e2 > -dy) { err -= dy; x += sx; }
+      if (e2 < dx) { err += dx; y += sy; }
+      guard += 1;
+    }
+  }
+
+  function stampPath(terrain, tree, ore, x, y) {
+    var nx, ny, i;
+    for (ny = y; ny <= y + 1; ny++) {
+      for (nx = x; nx <= x + 1; nx++) {
+        if (!inMap(nx, ny)) continue;
+        i = tileIndex(nx, ny);
+        if (terrain[i] === CLIFF || terrain[i] === WATER) continue;
+        terrain[i] = PATH;
+        tree[i] = 0;
+        ore[i] = 0;
+      }
+    }
   }
 
   function freshUnitFields(side, type, x, y, rng) {
@@ -1460,6 +1534,9 @@
       cells: new Map(),
       aiT: 0.4,
       aiRetreat: 0,
+      aiNext: 0,
+      aiWaves: 0,
+      alertSeq: 0,
       alertAt: 0,
       alert: null,
       note: null
@@ -1532,7 +1609,9 @@
       fog: [packBytes(explored[0]), packBytes(explored[1])],
       units: units,
       buildings: buildings,
-      nextId: state.nextId
+      nextId: state.nextId,
+      aiWaves: state.aiWaves || 0,
+      aiNext: state.aiNext || 0
     };
   }
 
@@ -1564,7 +1643,8 @@
       var i;
       for (i = 0; i < W * H; i++) {
         if (state.terrain[i] === TREE || state.terrain[i] === ORE) state.terrain[i] = GRASS;
-        if (state.tree[i] > 0 && state.terrain[i] === GRASS) state.terrain[i] = TREE;
+        if (state.terrain[i] === PATH) { state.tree[i] = 0; state.ore[i] = 0; }
+        else if (state.tree[i] > 0 && state.terrain[i] === GRASS) state.terrain[i] = TREE;
         else if (state.ore[i] > 0 && state.terrain[i] === GRASS) state.terrain[i] = ORE;
       }
       for (i = 0; i < data.buildings.length; i++) {
@@ -1610,6 +1690,8 @@
         state.byId[u.id] = u;
       }
       state.nextId = data.nextId;
+      state.aiWaves = data.aiWaves || 0;
+      state.aiNext = data.aiNext || 0;
       var f0 = unpackBytes(data.fog[0], W * H);
       var f1 = unpackBytes(data.fog[1], W * H);
       for (i = 0; i < W * H; i++) {
@@ -1712,9 +1794,9 @@
 
   root.CINDER_SIM = {
     W: W, H: H, TILE: TILE, WORLD: WORLD,
-    GRASS: GRASS, WATER: WATER, CLIFF: CLIFF, TREE: TREE, ORE: ORE,
+    GRASS: GRASS, WATER: WATER, CLIFF: CLIFF, TREE: TREE, ORE: ORE, PATH: PATH,
     FACTIONS: FACTIONS, DEFS: DEFS,
-    create: create, step: step, issue: issue, place: place, canPlace: canPlace, train: train,
+    create: create, step: step, issue: issue, place: place, canPlace: canPlace, nearestSite: nearestSite, siteNearHearth: siteNearHearth, train: train,
     research: research, cancelBuild: cancelBuild, cancelTrain: cancelTrain, abandon: abandon, supply: supply, canAfford: canAfford,
     serialize: serialize, restore: restore, pick: pick, unitsInRect: unitsInRect,
     idsWhere: idsWhere, trainsOf: trainsOf, centerOf: centerOf, uniqueOf: uniqueOf,
