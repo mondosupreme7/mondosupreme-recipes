@@ -75,6 +75,21 @@ Marks and accounting
     riskUsdAtLimit of working orders, plus max(0, entry - stop) * shares for
     open longs. Versus start is equity minus starting cash. Goal progress is
     equity / goalEquity.
+    An optional top-level goal object (stretch dates, baseline, and target) is
+    kept as stored. Settlement does not rewrite it, and it does not use it to
+    size an order or to relax a gate.
+    On a fill, the position records bookPctAtEntry: the fill notional divided
+    by equity just before that fill. On a close, the closed trade keeps that
+    percent when it was recorded, and always records exitAt, realized P&L,
+    equityAfter (the book balance after the exit), and a one-line reason.
+    Older records that lack the newer fields still settle.
+    New paper orders are sized by size_paper_order. The aim is at least 25%
+    of equity at risk, up to the configured maximum (50% unless the book says
+    otherwise), scaled by swing-score strength. Share count is
+    floor(risk dollars / (entry - stop)), then the lesser of that count, the
+    shares available cash can buy, and the shares that would use 100% of the
+    book. There is no margin. Settlement does not resize an order that is
+    already on the ledger.
     Events, the original order records, and closed trades are append-only.
     Balances are the current snapshot. An open position's mark is current
     state; each session's mark event is the history. A closed position leaves
@@ -337,6 +352,20 @@ def session_count(start, end):
     return len(session_dates(start, end))
 
 
+def stretch_sessions(goal):
+    """NYSE sessions after the baseline date through the target date.
+
+    The baseline close is the starting mark, not a compounding step. The
+    target date counts when it is itself a session. Dec 11, 2026 is that
+    session for a target of Dec 11; Dec 12 is a Saturday and is not a step.
+    """
+    if not isinstance(goal, dict):
+        raise SettlementError("stretch goal is missing")
+    start = parse_day(goal.get("startDate")) + timedelta(days=1)
+    end = parse_day(goal.get("targetDate"))
+    return session_dates(start, end)
+
+
 def last_closed_session(now):
     moment = as_eastern(now)
     day = moment.date()
@@ -524,7 +553,7 @@ def exit_fill(bar, stop, target, from_above):
 
 
 def position_from_fill(order, price, day, stamp, hold_days):
-    return {
+    position = {
         "id": order["id"],
         "symbol": order["symbol"],
         "name": order.get("name") or order["symbol"],
@@ -541,6 +570,11 @@ def position_from_fill(order, price, day, stamp, hold_days):
         "unrealizedPnlUsd": 0,
         "unrealizedPnlPct": 0,
     }
+    if order.get("riskPctAtLimit") is not None:
+        position["riskPctAtLimit"] = order["riskPctAtLimit"]
+    if order.get("riskUsdAtLimit") is not None:
+        position["riskUsdAtLimit"] = order["riskUsdAtLimit"]
+    return position
 
 
 def apply_fill(book, order, bar, day, stamp, price):
@@ -596,6 +630,7 @@ def apply_expiry(book, order, day, stamp, window):
     record["at"] = stamp
     record["expiredOn"] = day.isoformat()
     record["note"] = "Expired unfilled on " + day.isoformat() + ". Not a fill."
+    record["reason"] = "Expired unfilled. Not a fill."
     book.setdefault("workingOrders", []).append(record)
     shares = share_count(order)
     append_event(book, {
@@ -619,6 +654,180 @@ def apply_expiry(book, order, day, stamp, window):
             + ". Not a fill."
         ),
     })
+
+
+MIN_RISK_PCT = Decimal("25")
+MAX_RISK_PCT = Decimal("50")
+SCORE_FLOOR = Decimal("36")
+SCORE_CEILING = Decimal("100")
+
+
+def _pct_decimal(value, default):
+    if isinstance(value, bool) or value is None:
+        return default
+    try:
+        number = Decimal(str(value))
+    except (ArithmeticError, ValueError):
+        return default
+    if number <= 0:
+        return default
+    return number
+
+
+def paper_risk_band(rules=None):
+    """Minimum and maximum risk percent for a new paper order.
+
+    The minimum defaults to 25% of equity. The maximum defaults to 50%.
+    A single riskPerTradePct is the minimum when the explicit minimum is absent.
+    """
+    rules = rules if isinstance(rules, dict) else {}
+    minimum = _pct_decimal(rules.get("minRiskPerTradePct"), None)
+    if minimum is None:
+        minimum = _pct_decimal(rules.get("riskPerTradePct"), MIN_RISK_PCT)
+    maximum = _pct_decimal(rules.get("maxRiskPerTradePct"), MAX_RISK_PCT)
+    if maximum < minimum:
+        maximum = minimum
+    if minimum > 100:
+        minimum = Decimal(100)
+    if maximum > 100:
+        maximum = Decimal(100)
+    return minimum, maximum
+
+
+def swing_strength(score):
+    """0 at the existing swing-score floor of 36, 1 at 100. A missing score is 0."""
+    if score is None or isinstance(score, bool):
+        return Decimal(0)
+    try:
+        value = Decimal(str(score))
+    except (ArithmeticError, ValueError):
+        return Decimal(0)
+    if value <= SCORE_FLOOR:
+        return Decimal(0)
+    if value >= SCORE_CEILING:
+        return Decimal(1)
+    return (value - SCORE_FLOOR) / (SCORE_CEILING - SCORE_FLOOR)
+
+
+def size_paper_order(equity, cash_available, entry, stop, strength=0, min_pct=None, max_pct=None):
+    """Share count for a new paper order. Does not read or write the ledger.
+
+    Risk dollars are equity times a percent between the minimum and the maximum.
+    strength 0 uses the minimum and strength 1 uses the maximum. Shares are
+    floor(risk dollars / (entry - stop)). Available cash and 100% of equity
+    then cap the count. Cash above equity cannot lever the book.
+    """
+    minimum = MIN_RISK_PCT if min_pct is None else _pct_decimal(min_pct, MIN_RISK_PCT)
+    maximum = MAX_RISK_PCT if max_pct is None else _pct_decimal(max_pct, MAX_RISK_PCT)
+    if maximum < minimum:
+        maximum = minimum
+    if minimum > 100:
+        minimum = Decimal(100)
+    if maximum > 100:
+        maximum = Decimal(100)
+    try:
+        weight = Decimal(str(0 if isinstance(strength, bool) else strength))
+    except (ArithmeticError, ValueError, TypeError):
+        weight = Decimal(0)
+    if weight < 0:
+        weight = Decimal(0)
+    if weight > 1:
+        weight = Decimal(1)
+    target = (minimum + (maximum - minimum) * weight).quantize(CENT, rounding=ROUND_HALF_UP)
+    entry_cents = to_cents(entry)
+    stop_cents = to_cents(stop)
+    equity_cents = to_cents(equity)
+    cash_cents = to_cents(0 if cash_available is None else cash_available)
+    distance = entry_cents - stop_cents
+    empty = {
+        "shares": 0,
+        "riskTargetPct": json_number(target),
+        "riskPct": 0,
+        "riskUsd": 0,
+        "bookPct": 0,
+        "notional": 0,
+        "cappedByCash": False,
+        "cappedByBook": False,
+    }
+    if entry_cents <= 0 or distance <= 0 or equity_cents <= 0:
+        empty["reason"] = "No shares. The entry has to be above the stop, and the book has to have equity."
+        return empty
+    risk_budget = int((Decimal(equity_cents) * target / Decimal(100)).quantize(PENNY, rounding=ROUND_HALF_UP))
+    raw_shares = risk_budget // distance if distance else 0
+    cash_shares = cash_cents // entry_cents if cash_cents > 0 else 0
+    book_shares = equity_cents // entry_cents
+    shares = raw_shares
+    capped_cash = shares > cash_shares
+    if capped_cash:
+        shares = cash_shares
+    capped_book = shares >= book_shares and raw_shares >= book_shares and book_shares > 0
+    if shares > book_shares:
+        shares = book_shares
+    if shares < 0:
+        shares = 0
+    risk_cents = shares * distance
+    notional = shares * entry_cents
+    result = {
+        "shares": shares,
+        "riskTargetPct": json_number(target),
+        "riskPct": book_percent(risk_cents, equity_cents) if shares else 0,
+        "riskUsd": from_cents(risk_cents),
+        "bookPct": book_percent(notional, equity_cents) if shares else 0,
+        "notional": from_cents(notional),
+        "cappedByCash": capped_cash,
+        "cappedByBook": capped_book,
+    }
+    result["reason"] = size_reason(result)
+    return result
+
+
+def size_reason(sized):
+    """One line for a newly sized paper order."""
+    if not sized.get("shares"):
+        return "No shares. One share would use more risk budget or more cash than this paper book allows."
+    text = (
+        "Paper size. Target risk "
+        + _plain_pct(sized.get("riskTargetPct"))
+        + " of equity, "
+        + str(sized["shares"])
+        + " shares, "
+        + _plain_pct(sized.get("riskPct"))
+        + " actually at risk, "
+        + _plain_pct(sized.get("bookPct"))
+        + " of the book."
+    )
+    if sized.get("cappedByBook"):
+        text += " Capped at 100% of the book. No margin."
+    elif sized.get("cappedByCash"):
+        text += " Capped by available cash."
+    return text
+
+
+def _plain_pct(value):
+    try:
+        number = Decimal(str(value)).quantize(CENT, rounding=ROUND_HALF_UP)
+    except (ArithmeticError, ValueError, TypeError):
+        return "0.00%"
+    return f"{number:.2f}%"
+
+
+def book_percent(notional_cents, equity_cents):
+    """Fill notional as a percent of equity, half-up to a hundredth of a percent."""
+    percent, _text = fmt_pct(notional_cents, equity_cents)
+    return percent
+
+
+def exit_reason_line(reason, from_above):
+    """One line for the public log. The longer bar note stays on the event."""
+    if reason == "stop":
+        return "Stop. The session low was at or below the stop."
+    if reason == "target" and from_above:
+        return "Target. The close reached the target after the limit filled below the open."
+    if reason == "target":
+        return "Target. The session high reached the target."
+    if reason == "time":
+        return "Time stop. Still open when the time stop came due, so the exit is the close."
+    return "Closed."
 
 
 def record_exit(book, position, day, stamp, reason, price, bar, from_above, cash):
@@ -658,7 +867,14 @@ def record_exit(book, position, day, stamp, reason, price, bar, from_above, cash
         "realizedPnlPct": percent,
         "cashAfter": from_cents(cash),
         "equityAfter": from_cents(equity),
+        "reason": exit_reason_line(reason, from_above),
     }
+    if position.get("bookPctAtEntry") is not None:
+        trade["bookPctAtEntry"] = position["bookPctAtEntry"]
+    if position.get("riskPctAtLimit") is not None:
+        trade["riskPctAtLimit"] = position["riskPctAtLimit"]
+    if position.get("riskUsdAtLimit") is not None:
+        trade["riskUsdAtLimit"] = position["riskUsdAtLimit"]
     book.setdefault("closedTrades", []).append(trade)
     append_event(book, {
         "at": stamp,
@@ -809,8 +1025,14 @@ def apply_session(book, day, bars):
         window = rule_int(order, book, "fillWindowTradingDays", "fillWindowTradingDays", 5)
         if bar["low"] <= limit:
             price = min(bar["open"], limit)
+            equity_before = cash + market_cents(book)
             spent, position = apply_fill(book, order, bar, day, stamp, price)
             cash -= spent
+            if equity_before > 0:
+                position["bookPctAtEntry"] = book_percent(spent, equity_before)
+                filled = book["workingOrders"][-1]
+                if filled.get("id") == order.get("id"):
+                    filled["bookPctAtEntry"] = position["bookPctAtEntry"]
             filled_from_above[position["id"]] = bar["open"] > limit
         elif session_count(parse_day(order["firstEligibleSession"]), day) >= window:
             apply_expiry(book, order, day, stamp, window)

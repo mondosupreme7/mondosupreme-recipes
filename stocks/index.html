@@ -26,9 +26,9 @@
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=11">
-<link rel="stylesheet" href="stocks.css?v=15">
+<link rel="stylesheet" href="stocks.css?v=16">
 <link rel="stylesheet" href="/readable.css?v=15">
-<link rel="stylesheet" href="paper/paper.css?v=1">
+<link rel="stylesheet" href="paper/paper.css?v=3">
 <link rel="stylesheet" href="swot.css?v=1">
 </head>
 <body>
@@ -72,8 +72,18 @@
    <span class="paper-meta" id="paperMeta">Flat vs $1,000.00 start · risk $19.50 · 1 working order, no fills</span>
    <span class="paper-go">Open the paper trade log</span>
   </a>
+  <section class="stretch-goal" id="stretchGoal" aria-labelledby="stretchTitle">
+   <h2 id="stretchTitle">Stretch goal</h2>
+   <p class="stretch-warn">This is an extreme stretch goal. It is very unlikely to be reached. Paper trading only. Informational, not financial advice, and not a performance claim. Swing rules are not loosened to chase it. The per-session pace is computed from the NYSE calendar when this page loads.</p>
+  </section>
   <p>The wide list is an oversold research screen. Only a name that passes the swing rules is a swing candidate, the top stock to watch, or a journal entry. A card uses the latest daily bars and, when a sheet comes back, fundamentals as notes. Informational only, not financial advice.</p>
  </div>
+ <section class="paper-log" id="paperTradeLog" aria-labelledby="paperLogTitle">
+  <h2 id="paperLogTitle">Paper trade log</h2>
+  <p class="paper-banner">Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.</p>
+  <p class="paper-log-empty">Loading the paper book…</p>
+  <p class="paper-log-more"><a href="/stocks/paper/">Open the full paper trade log</a></p>
+ </section>
  <details class="rules-card" id="swingRules">
   <summary>Swing Trading Rules</summary>
   <ol class="rules-list">
@@ -82,7 +92,7 @@
    <li id="rule-3">Avoid holding through earnings.</li>
    <li id="rule-4">Plan your entry, stop, and target before you buy.</li>
    <li id="rule-5">Take only trades with at least 2:1 reward-to-risk.</li>
-   <li id="rule-6">Risk 1–2% of your account per trade at most.</li>
+   <li id="rule-6">Each paper trade risks 25% or more of the paper book, sized by the stop distance and capped by cash.</li>
    <li id="rule-7">Always use a stop and never lower it.</li>
    <li id="rule-8">Take partial profits and trail the rest.</li>
    <li id="rule-9">Exit if the trade stalls for 5–10 days.</li>
@@ -90,7 +100,8 @@
    <li id="rule-11">No emotional, FOMO, or revenge trades.</li>
    <li id="rule-12">Journal and review every trade.</li>
   </ol>
-  <p class="rules-foot">General education, not financial advice.</p>
+  <p class="stretch-warn" id="paperRiskWarn">This is a very aggressive, high-variance setting for a stretch goal. A few losses in a row can cut the book sharply. Stronger setups may risk up to 50% of the paper book. There is no margin, so a trade cannot exceed the book. Paper only. Informational, not financial advice.</p>
+  <p class="rules-foot">The other swing rules stay as they are. General education, not financial advice.</p>
  </details>
  <div class="quote-main">
  <p id="fresh" class="quote-fresh" aria-busy="true">Loading the screener…</p>
@@ -169,9 +180,9 @@
   <div id="detailSwot" class="swot-slot"></div>
   <div id="detailPlan" class="trade-plan"></div>
   <div id="sizeHelper" class="size-helper" hidden>
-   <label for="accountSize">Account size (USD)</label>
+   <label for="accountSize">Paper equity (USD)</label>
    <input id="accountSize" name="accountSize" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-describedby="sizeHelp">
-   <p id="sizeHelp" class="size-help">Share count at 1% and 2% of this account, from the planned entry to the stop. A sketch of Rule 6, not a recommendation.</p>
+   <p id="sizeHelp" class="size-help">Share count from the planned entry to the stop. Each trade risks 25% or more of this paper equity, up to 50% for the strongest setup, then capped by cash. A sketch, not a recommendation.</p>
    <p id="sizeOut" class="size-out" aria-live="polite"></p>
   </div>
   <div id="detailFacts" class="detail-facts"></div>
@@ -211,8 +222,8 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="swot.js?v=1"></script>
-<script src="stocks.js?v=18"></script>
-<script src="paper/paper.js?v=2"></script>
+<script src="stocks.js?v=19"></script>
+<script src="paper/paper.js?v=6"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

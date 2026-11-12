@@ -13,19 +13,19 @@
   var START = { c: 7, r: 13 };
   var MAZE = [
     '###############',
-    '#o...........o#',
-    '#.###.###.###.#',
-    '#             #',
-    '#.#.#.#.#.#.#.#',
-    '#.#.###D###.#.#',
-    '#.#.##HHH##.#.#',
-    '#...#HHHHH#...#',
-    '#.#.#######.#.#',
-    '#             #',
-    '#.###.#.#.###.#',
-    '#o....#.#....o#',
-    '#.#.#.#.#.#.#.#',
+    '#######......o#',
+    '#######.#####.#',
+    '#######.#.....#',
+    '#.......#######',
+    '#.#####D#######',
+    '#.####HHH######',
+    '#.###HHHHH#####',
+    '#.#############',
     '#.............#',
+    '#############.#',
+    '#............o#',
+    '#.#############',
+    '#o......#######',
     '###############'
   ];
   var DIRS = {
@@ -164,8 +164,8 @@
   function speeds() {
     var lv = level - 1;
     return {
-      player: 61 + lv * 3,
-      ghost: level === 1 ? 11 : 32 + (level - 2) * 4,
+      player: level === 1 ? 40 : 61 + (lv - 1) * 3,
+      ghost: level === 1 ? 4 : 32 + (level - 2) * 4,
       fright: 29,
       eyes: 88,
       pen: 33
@@ -186,7 +186,7 @@
         name: g.name,
         color: g.color,
         corner: g.corner,
-        leave: g.name !== 'Ash' && level < 2 ? 9999 : (g.name === 'Ash' && level === 1 ? 8 : g.leave),
+        leave: g.name !== 'Ash' && level < 2 ? 9999 : (g.name === 'Ash' && level === 1 ? 50 : g.leave),
         x: g.c * TILE + TILE / 2,
         y: g.r * TILE + TILE / 2,
         dir: 'up',
@@ -225,7 +225,8 @@
       mode: 'scatter',
       nectar: 12,
       nectarOn: false,
-      nectarUsed: false
+      nectarUsed: false,
+      lampEaten: false
     };
     placeActors();
   }
@@ -348,6 +349,7 @@
     grid[t.r][t.c] = ' ';
     dots -= 1;
     if (ch === 'o') {
+      run.lampEaten = true;
       score += 50;
       run.fright = frightTime();
       run.chain = 0;
@@ -526,8 +528,13 @@
     var d = DIRS[dir];
     if (!d) return;
     ctx.fillStyle = '#ffe14a';
-    ctx.fillRect(x + d.x * 12 - 1, y + d.y * 12 - 1, 3, 3);
-    ctx.fillRect(x + d.x * 16 - 2, y + d.y * 16 - 2, 5, 5);
+    var ax = x + d.x * 16;
+    var ay = y + d.y * 16;
+    ctx.fillStyle = '#1a1400';
+    ctx.fillRect(ax - 5, ay - 5, 11, 11);
+    ctx.fillStyle = '#fff36a';
+    ctx.fillRect(ax - 4, ay - 4, 9, 9);
+    ctx.fillRect(x + d.x * 11 - 2, y + d.y * 11 - 2, 5, 5);
   }
   function placeSharp(canvas, logicalW, logicalH, host) {
     var availW = Math.max(1, host.clientWidth);
@@ -675,11 +682,11 @@
         var bob = reduce ? 0 : (frame % 2 ? 1 : 0);
         drawMoth(ctx, player.x, player.y, bob);
       }
-      if (player.inv > 0) {
+      if (player.inv > 0 && phase !== 'ready') {
         ctx.fillStyle = '#e0f7ff';
         ctx.font = '700 9px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('SAFE', player.x, player.y - 14);
+        ctx.fillText('SAFE', player.x, player.y - 16);
         ctx.strokeStyle = '#7ee0ff';
         ctx.lineWidth = 2;
         ctx.strokeRect(player.x - 9, player.y - 10, 18, 18);
@@ -701,15 +708,23 @@
       ctx.fillRect(0, 0, WORLD_W, WORLD_H);
     }
     if (phase === 'ready') {
-      ctx.fillStyle = 'rgba(8, 6, 20, 0.82)';
-      ctx.fillRect(8, WORLD_H / 2 - 32, WORLD_W - 16, 64);
+      ctx.fillStyle = 'rgba(8, 6, 20, 0.92)';
+      ctx.fillRect(4, 2, WORLD_W - 8, 22);
       ctx.strokeStyle = '#f4d35e';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(8, WORLD_H / 2 - 32, WORLD_W - 16, 64);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(4, 2, WORLD_W - 8, 22);
       ctx.fillStyle = '#f4d35e';
-      ctx.font = '700 22px JetBrains Mono, ui-monospace, monospace';
+      ctx.font = '700 14px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('READY!', WORLD_W / 2, WORLD_H / 2 + 8);
+      ctx.fillText('READY!', WORLD_W / 2, 17);
+    }
+    if (phase === 'play' && level === 1 && run && !run.lampEaten) {
+      ctx.fillStyle = 'rgba(8, 6, 20, 0.8)';
+      ctx.fillRect(2, 2, WORLD_W - 4, 14);
+      ctx.fillStyle = '#e0f7ff';
+      ctx.font = '700 8px JetBrains Mono, ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('EAT A LAMP TO SCARE ASH', WORLD_W / 2, 12);
     }
     if (kit) kit.drawParticles(ctx);
     paintHud();
@@ -810,7 +825,13 @@
   }
   function commitScore() {
     var typed = ($('initials').value || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
-    var name = typed || letters.join('') || 'AAA';
+    if (!typed) {
+      announce('Type initials, then press Save score');
+      if ($('entry')) $('entry').hidden = false;
+      try { $('initials').focus(); } catch (err) { /* already gone */ }
+      return;
+    }
+    var name = typed;
     store.name = name;
     store.scores.push({ name: name, score: score, at: Date.now() });
     store.scores.sort(function (a, b) { return b.score - a.score || a.at - b.at; });
@@ -826,7 +847,7 @@
   }
   function startGame() {
     score = 0;
-    lives = 3;
+    lives = 5;
     level = 1;
     flash = 0;
     savedMark = -1;
@@ -988,6 +1009,91 @@
   paintBoard();
   requestAnimationFrame(loop);
 
+  function beginnerDir(sticky) {
+    if (phase !== 'play' || !player) return null;
+    var t = tileOf(player.x, player.y);
+    var bestS = -1;
+    var tied = [];
+    Object.keys(DIRS).forEach(function (dir) {
+      var d = DIRS[dir];
+      var c = t.c + d.x;
+      var r = t.r + d.y;
+      if (!walkable(c, r, 'player')) return;
+      var ch = cell(c, r);
+      var s = 1;
+      if (ch === '.') s += 6;
+      if (ch === 'o') s += 10;
+      if (dir === player.dir) s += 0.25;
+      ghosts.forEach(function (g) {
+        if (g.state !== 'play' || (run && run.fright > 0)) return;
+        var gt = tileOf(g.x, g.y);
+        if (gt.c === ((c % COLS) + COLS) % COLS && gt.r === r) s -= 40;
+      });
+      if (s > bestS + 0.01) {
+        bestS = s;
+        tied = [dir];
+      } else if (Math.abs(s - bestS) <= 0.01) tied.push(dir);
+    });
+    if (sticky && tied.indexOf(sticky) >= 0) return sticky;
+    if (!tied.length) return null;
+    return tied[(Math.random() * tied.length) | 0];
+  }
+  function beginnerRuns(runs) {
+    var n = runs || 10;
+    var clears = 0;
+    var details = [];
+    var sound = store.sound;
+    store.sound = false;
+    var i;
+    for (i = 0; i < n; i++) {
+      score = 0;
+      lives = 5;
+      level = 1;
+      holdDir = null;
+      queued = null;
+      freshRun();
+      phase = 'play';
+      player.inv = 2;
+      var pending = null;
+      var wait = 0.2 + Math.random() * 0.3;
+      var t = 0;
+      while (t < 240 && level === 1 && phase !== 'over') {
+        var choice = beginnerDir(pending);
+        if (choice !== pending) {
+          pending = choice;
+          wait = 0.35 + (Math.random() - 0.5) * 0.1;
+        }
+        if (pending && wait <= 0 && phase === 'play' && player) {
+          player.want = pending;
+          if (!player.dir) player.dir = pending;
+          pending = null;
+          wait = 0.35;
+        }
+        update(STEP);
+        t += STEP;
+        wait -= STEP;
+      }
+      var clear = level > 1 || phase === 'win' || dots === 0;
+      if (clear) clears += 1;
+      details.push({
+        clear: clear,
+        seconds: Math.round(t * 10) / 10,
+        lives: lives,
+        dots: dots,
+        phase: phase
+      });
+    }
+    store.sound = sound;
+    score = 0;
+    lives = 5;
+    level = 1;
+    holdDir = null;
+    phase = 'title';
+    player = null;
+    show('title');
+    return { clears: clears, runs: n, details: details };
+  }
+
   window.PHOSPHOR = {
     snap: function () {
       return {
@@ -1011,4 +1117,5 @@
       };
     }
   };
+  if (/[?&]dev=1(?:&|$)/.test(location.search)) window.PHOSPHOR.beginner = beginnerRuns;
 })();
