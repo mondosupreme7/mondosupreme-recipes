@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
 <link rel="stylesheet" href="/recipes/styles.css?v=6">
-<link rel="stylesheet" href="cinderwell.css?v=4">
+<link rel="stylesheet" href="cinderwell.css?v=7">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=10">
@@ -52,7 +52,7 @@
  <section id="lobby" class="lobby" aria-labelledby="gameTitle">
   <p class="kicker">Skirmish</p>
   <h1 id="gameTitle">Cinderwell</h1>
-  <p class="lede">Two banners over a drowned basin. Gather ore and thatch, raise a hearth, and break the other keep.</p>
+  <p class="lede">Gather ore and thatch, raise a hearth, break the other keep.</p>
   <div class="pick" role="group" aria-label="Banner">
    <button type="button" class="faction" data-faction="kiln" aria-pressed="true">Kilnward<span>Furnace Guards and a walking kiln</span></button>
    <button type="button" class="faction" data-faction="reed" aria-pressed="false">Reedhost<span>Mist Skiffs that cross the river</span></button>
@@ -67,17 +67,15 @@
    <button type="button" id="resume" hidden>Resume skirmish</button>
    <button type="button" id="soundLobby" aria-pressed="true">Sound on</button>
   </div>
-  <p class="how">Tap to select. Drag a box around your own troops. Tap the ground to move, or to attack-move an army. Two fingers, or a drag from the screen edge, pans the basin.</p>
+  <p class="how">Tap to select. Drag a box. Tap ground to move. Two fingers pan.</p>
   <details>
    <summary>Controls</summary>
    <ul>
-    <li>Phone: the command card under the map has at most six actions. Idle finds a hand with nothing to do. Army selects every fighter.</li>
-    <li>Desktop: drag a box, right-click to command, arrows pan, wheel zooms. S stop, H hold, A attack-move, F idle hands, Q whole army, Space centers, 1–6 press the card, Esc cancels, M menu.</li>
-    <li>Pikes chew rams. Bows pick off pikes if they keep the range. Rams crack buildings. Kilnward’s Furnace Guard shrugs off arrows. Reedhost’s Mist Skiff runs the river down and hunts rams.</li>
-    <li>The shrine unlocks the ram and the mythic, plus a whetstone. Destroy the enemy hearth to win. Progress stays in this browser.</li>
+    <li>The card has at most six actions. Near drops the building by the Hearth. Idle finds a free hand. Army selects every fighter. Tap the under-attack line to look there.</li>
+    <li>Desktop: right-click commands, arrows pan, wheel zooms. S stop, H hold, A attack-move, F idle, Q army, N near the Hearth, Esc cancels.</li>
+    <li>Pikes chew rams. Bows pick off pikes. Rams crack buildings. Guards shrug off arrows. Skiffs cross the river. Pixel sprites are drawn in this page.</li>
    </ul>
   </details>
-  <p class="credit">Pixel sprites are drawn for Cinderwell in this page. No outside art.</p>
  </section>
 
  <section id="play" hidden>
@@ -90,7 +88,7 @@
   <div id="stage">
    <canvas id="world" aria-label="Cinderwell battlefield" tabindex="0"></canvas>
    <canvas id="cwMap" aria-label="Minimap. Tap to look there."></canvas>
-   <p id="alert" role="status"></p>
+   <button type="button" id="alert"></button>
    <p id="toast" role="status"></p>
    <div id="end" hidden>
     <h2 id="endTitle">The basin is quiet</h2>
@@ -122,9 +120,9 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="/mondo-juice.js?v=1"></script>
-<script src="sim.js?v=3"></script>
-<script src="render.js?v=3"></script>
-<script src="main.js?v=6"></script>
+<script src="sim.js?v=7"></script>
+<script src="render.js?v=7"></script>
+<script src="main.js?v=7"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
