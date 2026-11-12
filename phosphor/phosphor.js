@@ -72,6 +72,8 @@
   var popups = [];
   var flash = 0;
   var deadT = 0;
+  var readyT = 0;
+  var queued = null;
   var winT = 0;
   var holdDir = null;
   var acc = 0;
@@ -168,8 +170,8 @@
   function speeds() {
     var lv = level - 1;
     return {
-      player: 96 + lv * 4,
-      ghost: 50 + lv * 6,
+      player: 92 + lv * 4,
+      ghost: level === 1 ? 18 : 54 + (level - 2) * 6,
       fright: 44,
       eyes: 132,
       pen: 50
@@ -190,7 +192,7 @@
         name: g.name,
         color: g.color,
         corner: g.corner,
-        leave: level > 1 || g.name === 'Ash' ? g.leave : 9999,
+        leave: g.name !== 'Ash' && level < 2 ? 9999 : (g.name === 'Ash' && level === 1 ? 10 : g.leave),
         x: g.c * TILE + TILE / 2,
         y: g.r * TILE + TILE / 2,
         dir: 'up',
@@ -206,7 +208,7 @@
       dir: null,
       want: null,
       acc: 0,
-      inv: 1.6
+      inv: 2
     };
     ghosts = makeGhosts();
     run.t = 0;
@@ -295,31 +297,33 @@
     });
     g.dir = best;
   }
-  function choosePlayer() {
-    if (!atCenter(player)) return;
-    if (player.want && canStep(player, player.want, 'player')) player.dir = player.want;
-    else if (!player.dir || !canStep(player, player.dir, 'player')) player.dir = null;
+  function nearestCenter(ent) {
+    var cx = Math.round((ent.x - TILE / 2) / TILE) * TILE + TILE / 2;
+    var cy = Math.round((ent.y - TILE / 2) / TILE) * TILE + TILE / 2;
+    if (cx < 0) cx += WORLD_W;
+    if (cx >= WORLD_W) cx -= WORLD_W;
+    return {
+      x: cx,
+      y: cy,
+      near: Math.abs(ent.x - cx) <= 5 && Math.abs(ent.y - cy) <= 5
+    };
   }
-  function maybeSnap() {
+  /* Queue the next facing and take it as the moth reaches the junction, or immediately if it is stopped. */
+  function applyBufferedTurn() {
     if (!player.want) return;
+    if (player.dir === player.want) return;
+    var spot = nearestCenter(player);
+    if (player.dir && !spot.near) return;
+    var t = tileOf(spot.x, spot.y);
     var d = DIRS[player.want];
-    var cur = player.dir ? DIRS[player.dir] : null;
-    if (cur && d.x === cur.x && d.y === cur.y) return;
-    var cx = Math.round((player.x - TILE / 2) / TILE) * TILE + TILE / 2;
-    var cy = Math.round((player.y - TILE / 2) / TILE) * TILE + TILE / 2;
-    if (cx < 0 || cx >= WORLD_W) return;
-    if (Math.abs(player.x - cx) > 1 || Math.abs(player.y - cy) > 1) return;
-    var t = tileOf(cx, cy);
     if (!walkable(t.c + d.x, t.r + d.y, 'player')) return;
-    player.x = cx;
-    player.y = cy;
+    player.x = spot.x;
+    player.y = spot.y;
     player.dir = player.want;
   }
   function stepOne(ent, who) {
-    if (who === 'player') {
-      maybeSnap();
-      choosePlayer();
-    } else chooseGhost(ent);
+    if (who === 'player') applyBufferedTurn();
+    else chooseGhost(ent);
     if (!ent.dir) return;
     var d = DIRS[ent.dir];
     var nx = ent.x + d.x;
@@ -393,7 +397,7 @@
       return;
     }
     phase = 'dead';
-    deadT = 0.75;
+    deadT = 0.4;
   }
   function beginClear() {
     score += 1000 * level;
@@ -413,9 +417,15 @@
     popup('HALL ' + level, WORLD_W / 2, 40);
     announce('Hall ' + level);
   }
+  function armReady() {
+    phase = 'ready';
+    readyT = 0.9;
+    if (queued) player.want = queued;
+    announce('Ready');
+  }
   function respawn() {
     placeActors();
-    phase = 'play';
+    armReady();
     announce('Lives ' + lives);
   }
   function updatePlay() {
@@ -496,6 +506,14 @@
       deadT -= dt;
       flash = Math.max(0, flash - dt);
       if (deadT <= 0) respawn();
+    } else if (phase === 'ready') {
+      readyT -= dt;
+      if (holdDir) player.want = holdDir;
+      if (readyT <= 0) {
+        phase = 'play';
+        player.inv = 2;
+        if (player.want && !player.dir) player.dir = player.want;
+      }
     } else if (phase === 'win') {
       winT -= dt;
       flash = Math.max(0, flash - dt);
@@ -623,9 +641,17 @@
     }
     var frame = Math.floor((run ? run.t : attract) * 12);
     ghosts.forEach(function (g) { drawWarden(ctx, g, frame); });
-    if (player && (player.inv <= 0 || Math.floor(player.inv * 12) % 2 === 0)) {
+    if (player) {
+      var pulse = player.inv > 0 && !reduce && Math.floor(player.inv * 6) % 2 === 0;
+      ctx.globalAlpha = pulse ? 0.28 : 1;
       var bob = reduce ? 0 : (frame % 2 ? 1 : 0);
       drawMoth(ctx, player.x, player.y, bob);
+      ctx.globalAlpha = 1;
+      if (player.inv > 0) {
+        ctx.strokeStyle = pulse ? '#7ee0ff' : '#fff7d6';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(player.x - 7, player.y - 8, 14, 15);
+      }
     } else if (!player) {
       drawMoth(ctx, 7 * TILE + 6, 19 * TILE + 6 + (reduce ? 0 : Math.sin(attract * 3) * 2), 0);
     }
@@ -640,6 +666,14 @@
     if (flash > 0) {
       ctx.fillStyle = 'rgba(255,255,255,' + Math.min(0.45, flash) + ')';
       ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+    }
+    if (phase === 'ready') {
+      ctx.fillStyle = 'rgba(7,6,15,0.45)';
+      ctx.fillRect(0, WORLD_H / 2 - 18, WORLD_W, 28);
+      ctx.fillStyle = '#f4d35e';
+      ctx.font = '700 14px JetBrains Mono, ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Ready!', WORLD_W / 2, WORLD_H / 2 + 4);
     }
     if (kit) kit.drawParticles(ctx);
     paintHud();
@@ -692,38 +726,55 @@
       list.appendChild(li);
     });
   }
-  function syncLetters() {
+  function paintSlots(writeInput) {
     var box = $('slots');
+    var shown = letters.slice();
+    while (shown.length < 3) shown.push('');
     box.innerHTML = '';
-    letters.forEach(function (ch, i) {
+    shown.forEach(function (ch, i) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.textContent = ch;
-      b.setAttribute('aria-label', 'Initial ' + (i + 1) + ' ' + ch);
+      b.textContent = ch || '·';
+      b.setAttribute('aria-label', 'Initial ' + (i + 1) + ' ' + (ch || 'blank'));
       if (i === slot) b.className = 'is-on';
-      b.addEventListener('click', function () { slot = i; syncLetters(); });
+      b.addEventListener('click', function () { slot = i; paintSlots(false); });
       box.appendChild(b);
     });
-    $('initials').value = letters.join('');
+    if (writeInput) $('initials').value = letters.join('');
   }
   function setFromInput() {
-    var raw = $('initials').value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
-    letters = (raw + 'AAA').slice(0, 3).split('');
-    syncLetters();
+    var el = $('initials');
+    var pos = el.selectionStart || 0;
+    var raw = el.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+    if (el.value !== raw) {
+      el.value = raw;
+      try { el.setSelectionRange(Math.min(pos, raw.length), Math.min(pos, raw.length)); } catch (err) { /* older input */ }
+    }
+    letters = raw.split('');
+    paintSlots(false);
+  }
+  function nudgeLetter(delta) {
+    while (letters.length < 3) letters.push('A');
+    var i = Math.max(0, Math.min(2, slot));
+    var code = (letters[i] || 'A').charCodeAt(0);
+    if (code < 65 || code > 90) code = 65;
+    letters[i] = String.fromCharCode(((code - 65 + delta + 26) % 26) + 65);
+    paintSlots(true);
   }
   function showOver() {
     savedMark = -1;
     var ok = qualifies(score);
     $('overScore').textContent = 'Score ' + score + (ok ? '' : ' · short of the book');
     $('entry').hidden = !ok;
-    letters = (store.name || 'AAA').toUpperCase().replace(/[^A-Z]/g, '').padEnd(3, 'A').slice(0, 3).split('');
+    letters = [];
     slot = 0;
-    syncLetters();
+    paintSlots(true);
     show('over');
     paintCrt();
   }
   function commitScore() {
-    var name = letters.join('').replace(/[^A-Z]/g, '').slice(0, 3) || 'AAA';
+    var typed = ($('initials').value || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+    var name = typed || letters.join('') || 'AAA';
     store.name = name;
     store.scores.push({ name: name, score: score, at: Date.now() });
     store.scores.sort(function (a, b) { return b.score - a.score || a.at - b.at; });
@@ -744,7 +795,8 @@
     flash = 0;
     savedMark = -1;
     freshRun();
-    phase = 'play';
+    queued = null;
+    armReady();
     show('play');
     announce('Hall 1');
     blip('launch', { pitch: 440, dur: 0.07 });
@@ -772,29 +824,36 @@
   }
   function setWant(dir) {
     if (!DIRS[dir]) return;
-    if (phase === 'title') return;
-    if (phase !== 'play') return;
+    if (phase !== 'play' && phase !== 'ready' && phase !== 'dead') return;
+    queued = dir;
+    if (!player) return;
     player.want = dir;
-    if (!player.dir) player.dir = dir;
+    if (phase === 'play' && !player.dir) player.dir = dir;
   }
   function bindPad(btn) {
     var dir = btn.getAttribute('data-dir');
-    function down(e) {
-      if (e.button && e.button !== 0) return;
-      e.preventDefault();
+    var lastAct = 0;
+    function act(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      var now = performance.now();
+      if (now - lastAct < 70) return;
+      lastAct = now;
       holdDir = dir;
       setWant(dir);
+      var kit = juice();
+      if (kit) kit.unlock();
     }
-    function up(e) {
-      if (holdDir === dir) holdDir = null;
-      if (e && e.currentTarget && e.currentTarget.releasePointerCapture && e.pointerId != null) {
-        try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
-      }
-    }
-    btn.addEventListener('pointerdown', down);
+    function up() { if (holdDir === dir) holdDir = null; }
+    btn.addEventListener('pointerdown', function (e) {
+      try { btn.setPointerCapture(e.pointerId); } catch (err) { /* already gone */ }
+      act(e);
+    });
+    btn.addEventListener('click', act);
     btn.addEventListener('pointerup', up);
     btn.addEventListener('pointercancel', up);
-    btn.addEventListener('lostpointercapture', function () { if (holdDir === dir) holdDir = null; });
   }
   function onKey(e) {
     var map = {
@@ -824,22 +883,25 @@
     }
   }
   var swipe = null;
-  stage.addEventListener('pointerdown', function (e) {
-    if (e.target.closest('button, a, input, form')) return;
+  function beginSwipe(e) {
+    if (e.target.closest('button, a, input, label, .bar, .pad')) return;
+    if (!stage.contains(e.target)) return;
     swipe = { id: e.pointerId, x: e.clientX, y: e.clientY };
-  });
-  stage.addEventListener('pointerup', function (e) {
-    if (!swipe || swipe.id !== e.pointerId) return;
+    try { stage.setPointerCapture(e.pointerId); } catch (err) { /* mouse without capture */ }
+  }
+  function finishSwipe(e) {
+    if (!swipe || (e.pointerId != null && swipe.id !== e.pointerId)) return;
     var dx = e.clientX - swipe.x;
     var dy = e.clientY - swipe.y;
     swipe = null;
-    if (Math.hypot(dx, dy) < 18) return;
+    if (Math.hypot(dx, dy) < 10) return;
     var dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
-    if (phase === 'title') return;
     setWant(dir);
     var kit = juice();
     if (kit) kit.unlock();
-  });
+  }
+  stage.addEventListener('pointerdown', beginSwipe);
+  stage.addEventListener('pointerup', finishSwipe);
   stage.addEventListener('pointercancel', function () { swipe = null; });
 
   document.querySelectorAll('.pad button').forEach(bindPad);
@@ -859,14 +921,8 @@
     save();
     paintCrt();
   });
-  $('letterUp').addEventListener('click', function () {
-    letters[slot] = String.fromCharCode(((letters[slot].charCodeAt(0) - 65 + 1) % 26) + 65);
-    syncLetters();
-  });
-  $('letterDown').addEventListener('click', function () {
-    letters[slot] = String.fromCharCode(((letters[slot].charCodeAt(0) - 65 + 25) % 26) + 65);
-    syncLetters();
-  });
+  $('letterUp').addEventListener('click', function () { nudgeLetter(1); });
+  $('letterDown').addEventListener('click', function () { nudgeLetter(-1); });
   $('initials').addEventListener('input', setFromInput);
   $('over').addEventListener('submit', function (e) {
     e.preventDefault();
