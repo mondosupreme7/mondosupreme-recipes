@@ -552,6 +552,8 @@
     if (kind === 'raptor') bump('hunt', 'r', 4);
     if (kind === 'boar') bump('hunt', 'b', 3);
     if (kind === 'boss') bump('fire', 'n', 1);
+    paintQuestChrome();
+    if ($('panelQuest') && !$('panelQuest').hidden) renderQuestLog();
   }
   function syncBoss(dmg) {
     if (!realmLive || !myUid || typeof firebase === 'undefined') return;
@@ -655,11 +657,73 @@
   }
   function questProgress(id) {
     var st = player.quests[id];
-    if (id === 'hunt') return 'Sunscale Raptors ' + st.r + '/4 · Bristleback Boars ' + st.b + '/3';
+    if (id === 'hunt') return 'Sunscale Raptors ' + (st.r || 0) + '/4 · Bristleback Boars ' + (st.b || 0) + '/3';
     return Q[id].obj + ' ' + (st.n || 0) + '/' + Q[id].need;
+  }
+  /* cinder-live is the shared play-state hook from cinderwell. It hides the page-size bar and footer. */
+  function syncRealmChrome() {
+    var sheet = $('menuSheet');
+    var menuUp = !!(sheet && !sheet.hidden && playing);
+    var live = playing && !menuUp;
+    document.body.classList.toggle('cinder-live', live);
+    document.documentElement.classList.toggle('cinder-live', live);
+  }
+  function inFight() {
+    if (!player) return false;
+    if (chase) return true;
+    var cur = targeted();
+    if (cur && cur.hostile && !cur.dead) return true;
+    var i;
+    for (i = 0; i < ents.length; i++) {
+      var e = ents[i];
+      if (e.dead || !e.hostile) continue;
+      if (dist(e, player) < (e.boss ? 200 : 64)) return true;
+    }
+    return false;
+  }
+  function focusedQuest() {
+    var i, id, st;
+    for (i = 0; i < QORDER.length; i++) {
+      id = QORDER[i];
+      st = player.quests[id];
+      if (st && st.s === 'p') return id;
+    }
+    for (i = 0; i < QORDER.length; i++) {
+      id = QORDER[i];
+      st = player.quests[id];
+      if (st && st.s === 'r') return id;
+    }
+    return '';
+  }
+  function paintQuestChrome() {
+    if (!player) return;
+    var track = $('questTrack');
+    var id = focusedQuest();
+    if (track) {
+      if (!id) {
+        track.hidden = true;
+        track.textContent = '';
+      } else {
+        var st = player.quests[id];
+        var line = st.s === 'r'
+          ? (Q[id].title + ' — ready to turn in')
+          : (Q[id].title + ' — ' + questProgress(id));
+        if (track.textContent !== line) track.textContent = line;
+        track.hidden = false;
+      }
+    }
+    var box = $('questDialog');
+    if (box && !box.hidden && dialogQuest && Q[dialogQuest] && player.quests[dialogQuest]) {
+      var progress = questProgress(dialogQuest);
+      if ($('questObj').textContent !== progress) $('questObj').textContent = progress;
+      var mode = player.quests[dialogQuest].s;
+      $('questAccept').hidden = mode !== 'a';
+      $('questComplete').hidden = mode !== 'r';
+    }
   }
   function openQuest(ent) {
     if (!ent || !ent.giver) return;
+    if (inFight()) { log('quest', 'Finish the fight, then talk.'); return; }
     if (dist(ent, player) > 90) { log('quest', 'Too far away to talk.'); return; }
     var offer = offerFor(ent.giver);
     var box = $('questDialog');
@@ -672,6 +736,12 @@
       $('questComplete').hidden = true;
       box.hidden = false;
       dialogQuest = '';
+      return;
+    }
+    if (offer.mode === 'progress') {
+      $('questDialog').hidden = true;
+      log('quest', Q[offer.id].title + ' — ' + questProgress(offer.id));
+      paintQuestChrome();
       return;
     }
     var q = Q[offer.id];
@@ -692,6 +762,7 @@
     $('questDialog').hidden = true;
     saveBoth();
     renderQuestLog();
+    paintQuestChrome();
   }
   function completeQuest() {
     if (!dialogQuest || player.quests[dialogQuest].s !== 'r') return;
@@ -707,6 +778,7 @@
     saveBoth();
     renderQuestLog();
     renderChar();
+    paintQuestChrome();
   }
   function talkNearest() {
     var best = null;
@@ -954,10 +1026,10 @@
     $('talkBtn').hidden = !near;
     refreshAct();
     stepSparks(dt);
-    if (!$('questDialog').hidden && dialogQuest) {
-      var giver = Q[dialogQuest].giver;
-      var npc = ents.filter(function (e) { return e.giver === giver; })[0];
-      if (!npc || dist(npc, player) > 140) $('questDialog').hidden = true;
+    if (!$('questDialog').hidden && (inFight() || (dialogQuest && Q[dialogQuest]))) {
+      var giver = dialogQuest && Q[dialogQuest] ? Q[dialogQuest].giver : '';
+      var npc = giver ? ents.filter(function (e) { return e.giver === giver; })[0] : null;
+      if (inFight() || !npc || dist(npc, player) > 140) $('questDialog').hidden = true;
     }
   }
   function usePortal(side) {
@@ -1084,25 +1156,23 @@
       });
       if (near) {
         targetId = near.id;
-        if (near.hostile) { chase = true; autoOn = true; }
+        if (near.hostile) { chase = true; autoOn = true; $('questDialog').hidden = true; }
         if (near.giver) openQuest(near);
       }
     }
   }
   function syncViewport() {
     var root = document.documentElement;
-    if (!document.body.classList.contains('is-playing')) {
-      root.style.removeProperty('--vv-top');
-      root.style.removeProperty('--vv-h');
-      root.style.removeProperty('--mmo-nav');
-      return;
-    }
     var vv = window.visualViewport;
     var top = vv ? vv.offsetTop : 0;
     var h = vv ? vv.height : window.innerHeight;
     var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : Math.round;
     root.style.setProperty('--vv-top', cssPx(top) + 'px');
-    root.style.setProperty('--vv-h', cssPx(h) + 'px');
+    root.style.setProperty('--vv-h', cssPx(Math.max(1, h)) + 'px');
+    if (!document.body.classList.contains('is-playing')) {
+      root.style.removeProperty('--mmo-nav');
+      return;
+    }
     var nav = document.querySelector('.studio-nav');
     var navH = nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;
     var fromScreen = navH >= 36;
@@ -1182,7 +1252,7 @@
     var pal = palFor(kind, faction, cls);
     var flash = anim.flash;
     ctx.save();
-    ctx.translate(sx, sy);
+    ctx.translate(Math.round(sx), Math.round(sy));
     ctx.imageSmoothingEnabled = false;
     if ((anim.face || 1) < 0) ctx.scale(-1, 1);
     ctx.fillStyle = 'rgba(0,0,0,.3)';
@@ -1208,12 +1278,12 @@
     var badge = window.MONDO_MEMBER ? window.MONDO_MEMBER.badgeText(uid) : '';
     return badge ? (name + ' ' + badge) : name;
   }
-  function drawName(x, y, text, color) {
+  function drawName(x, y, text, color, lift) {
     ctx.font = '700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#000';
     var px = Math.round(x * viewScale - cam.x);
-    var py = Math.round(y * viewScale - cam.y) - Math.round(24 * viewScale);
+    var py = Math.round(y * viewScale - cam.y) - Math.round((26 + (lift || 0)) * viewScale);
     ctx.fillText(text, px + 1, py + 1);
     ctx.fillStyle = color;
     ctx.fillText(text, px, py);
@@ -1320,6 +1390,16 @@
       ctx.fillRect(x + 6, y + flap, 3, 2);
     });
   }
+  function cameraZoom() {
+    var narrow = Math.min(viewW, viewH) <= 520;
+    var tilesX = narrow ? 6 : 12;
+    var tilesY = narrow ? 7 : 9;
+    var zx = viewW / (tilesX * TILE);
+    var zy = viewH / (tilesY * TILE);
+    var zoom = Math.max(1, Math.round(Math.max(zx, zy)));
+    if (narrow) zoom = Math.max(2, zoom);
+    return zoom;
+  }
   function render() {
     if (!ctx || !world || !player) return;
     if (window.MONDO_JUICE) window.MONDO_JUICE.sharpCanvas(canvas, viewW, viewH);
@@ -1330,11 +1410,11 @@
     ctx.save();
     ctx.translate(Math.round(sh.x), Math.round(sh.y));
     var tNow = now();
-    viewScale = Math.max(1, h / (world.h * TILE));
+    viewScale = cameraZoom();
     var mapW = world.w * TILE * viewScale;
     var mapH = world.h * TILE * viewScale;
-    cam.x = clamp(player.x * viewScale - w / 2, 0, Math.max(0, mapW - w));
-    cam.y = clamp(player.y * viewScale - h / 2, 0, Math.max(0, mapH - h));
+    cam.x = Math.round(clamp(player.x * viewScale - w / 2, 0, Math.max(0, mapW - w)));
+    cam.y = Math.round(clamp(player.y * viewScale - h / 2, 0, Math.max(0, mapH - h)));
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, w, h);
     ctx.save();
@@ -1393,7 +1473,10 @@
         ctx.fillRect(hx - 14, hy, 28 * clamp(ent.hp / ent.maxHp, 0, 1), 3);
       }
       var showName = !ent.hostile || ent.id === targetId || ent.hp < ent.maxHp || ent.boss;
-      if (showName) drawName(ent.x, ent.y, ent.name, ent.hostile ? '#ffd100' : '#fff');
+      if (showName) {
+        var lift = player && dist(ent, player) < 48 ? 16 : 0;
+        drawName(ent.x, ent.y, ent.name, ent.hostile ? '#ffd100' : '#fff', lift);
+      }
       if (ent.giver) {
         var mark = markerFor(ent.giver);
         if (mark) {
@@ -1506,6 +1589,7 @@
     $('autoBtn').classList.toggle('on', autoOn);
     drawPortrait($('playerPortrait'), player.cls, player.faction);
     drawPortrait($('targetPortrait'), target ? (target.kind || target.cls || 'npc') : '', target && target.faction);
+    paintQuestChrome();
   }
   function drawPortrait(cv, kind, faction) {
     if (!cv) return;
@@ -1632,6 +1716,7 @@
       if (best.hostile && !best.dead) {
         chase = true;
         autoOn = true;
+        $('questDialog').hidden = true;
       } else {
         chase = false;
         dest = { x: best.x, y: best.y - 18 };
@@ -1654,6 +1739,7 @@
     if (resName() !== 'rage' && player.res == null) player.res = 100;
     playing = true;
     document.body.classList.add('is-playing');
+    syncRealmChrome();
     $('create').hidden = true;
     $('play').hidden = false;
     loadZone(player.zone || 'goldhaven');
@@ -1845,10 +1931,14 @@
       var sheet = $('menuSheet');
       sheet.hidden = !sheet.hidden;
       $('menuBtn').setAttribute('aria-expanded', sheet.hidden ? 'false' : 'true');
+      syncRealmChrome();
+      syncViewport();
     });
     $('menuClose').addEventListener('click', function () {
       $('menuSheet').hidden = true;
       $('menuBtn').setAttribute('aria-expanded', 'false');
+      syncRealmChrome();
+      syncViewport();
     });
     $('actBtn').addEventListener('click', doAct);
     $('heroName').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); newHero(); } });
@@ -1865,6 +1955,10 @@
     $('questClose').addEventListener('click', function () { $('questDialog').hidden = true; });
     $('reroll').addEventListener('click', function () {
       if (!window.confirm('Retire this hero and create a new one on this device?')) return;
+      playing = false;
+      document.body.classList.remove('is-playing');
+      $('menuSheet').hidden = true;
+      syncRealmChrome();
       try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
       location.reload();
     });
@@ -1988,6 +2082,7 @@
       }, true);
     }
     bootAuth();
+    syncViewport();
     resize();
     queueLoop();
 

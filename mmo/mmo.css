@@ -26,7 +26,7 @@
 .fill.energy{background:#e1c14a}
 .fill.xp{background:#f5c518}
 .stage{position:relative}
-#world{width:100%;height:420px;background:#000;display:block;touch-action:none}
+#world{width:100%;height:420px;background:#000;display:block;touch-action:none;image-rendering:pixelated;image-rendering:crisp-edges}
 #joy{position:absolute;left:8px;bottom:8px;width:128px;height:128px;touch-action:none;background:transparent}
 #yell{margin:6px 0;background:#4a0800;color:#fde047;border:3px ridge #ff6600;text-align:center;font:700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;padding:6px}
 .peek{min-height:22px;margin:4px 0;color:#f4ead2;font:700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif}
@@ -315,11 +315,22 @@ html body.mmo-page.is-playing #play{
 .hud-top{flex:0 0 auto; padding:4px 6px 0; background:#101614}
 .zone-row{display:flex; align-items:center; gap:6px}
 .zone-row .zone-label{flex:1 1 auto; min-width:0}
-.hud-top .frames{margin:0; flex-wrap:nowrap}
-.hud-top .frame{min-width:0; flex:1 1 0; padding:3px}
-.hud-top .zone-label{font-size:13px; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.hud-top .frame-bars > div:first-child{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.hud-top #targetMeta{font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.hud-top .frames{margin:0; flex-wrap:nowrap; align-items:stretch}
+.hud-top .frame{min-width:0; flex:1 1 0; padding:3px; align-items:flex-start}
+.hud-top .frame-bars{min-width:0; flex:1 1 auto}
+.hud-top .zone-label{font-size:13px; margin:0; white-space:normal; overflow:visible; text-overflow:clip; line-height:1.25; text-wrap:balance}
+.hud-top .frame-bars > div:first-child{
+  display:flex; flex-wrap:wrap; column-gap:6px; align-items:baseline;
+  white-space:normal; overflow:visible; text-overflow:clip; line-height:1.2; font-size:13px;
+}
+.hud-top .frame-bars strong{min-width:0; overflow-wrap:break-word}
+.hud-top .lv{white-space:normal; margin-left:0}
+.hud-top #targetMeta{font-size:12px; white-space:normal; overflow:visible; text-overflow:clip; line-height:1.2}
+.quest-track{
+  margin:4px 0 0; padding:4px 8px; background:#24180f; color:#fde047; border:2px solid #c9a227;
+  font:700 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;
+}
+.quest-track[hidden]{display:none !important}
 html body.mmo-page.is-playing .stage{flex:1 1 auto; min-height:0; position:relative}
 html body.mmo-page.is-playing #world{width:100%; height:100%; min-height:0}
 html body.mmo-page.is-playing #joy{display:none !important}
@@ -337,18 +348,141 @@ html body.mmo-page.is-playing .slot{min-width:0; min-height:44px}
 }
 #menuBtn{min-height:44px; min-width:64px; align-self:center}
 html body.mmo-page.is-playing #yell{
-  position:absolute; left:8px; right:8px; top:72px; z-index:5; margin:0;
+  position:absolute; left:8px; right:8px; top:8px; z-index:5; margin:0; pointer-events:none;
 }
 html body.mmo-page.is-playing #peek{
-  position:absolute; left:6px; right:8px; bottom:56px; z-index:4; margin:0; min-height:0;
+  position:absolute; left:6px; right:8px; top:auto; bottom:6px; z-index:4; margin:0; min-height:0;
   pointer-events:none; text-shadow:0 1px 0 #000;
 }
-html body.mmo-page.is-playing #questDialog{
-  position:absolute; left:8px; right:8px; bottom:60px; z-index:9; max-height:46%; overflow:auto; margin:0;
+html body.mmo-page.is-playing #questDialog:not([hidden]){
+  position:relative; left:auto; right:auto; top:auto; bottom:auto; z-index:2;
+  display:flex; flex-direction:column; flex:0 0 auto;
+  max-height:min(52%, 280px); overflow:hidden; margin:0 6px 4px;
 }
+.quest-copy{min-height:0; overflow:auto}
+.quest-dialog h3{margin:0 0 4px; font-size:16px; line-height:1.2}
+.quest-dialog p{margin:0 0 4px; font-size:14px; line-height:1.3}
+.quest-dialog .panel-actions{flex:0 0 auto}
+.quest-dialog .panel-actions .btn{min-height:44px; min-width:44px}
+html body.mmo-page.is-playing #questDialog[hidden]{display:none !important}
 @media (prefers-reduced-motion: reduce){
   #yell{letter-spacing:0}
 }
 @media (prefers-color-scheme: dark){
   .mmo-shell{background:#0c1210;color:#f4ead2}
+}
+
+/* Character create fits the visible phone viewport, including the dock. */
+@media (max-width:900px){
+  html body.mmo-page:not(.is-playing){
+    height:var(--vv-h, calc(100svh / var(--page-scale, 1)));
+    max-height:var(--vv-h, calc(100svh / var(--page-scale, 1)));
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    box-sizing:border-box;
+  }
+  html body.mmo-page:not(.is-playing) main.wrap{
+    flex:1 1 auto;
+    min-height:0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    padding:4px 8px 0 !important;
+    margin:0 !important;
+  }
+  html body.mmo-page:not(.is-playing) .sync-banner{
+    margin:0 0 4px;
+    padding:4px 8px;
+    font-size:12px;
+    line-height:1.25;
+  }
+  html body.mmo-page:not(.is-playing) .mmo-shell{
+    flex:1 1 auto;
+    min-height:0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    padding:6px;
+    border-width:2px;
+  }
+  html body.mmo-page:not(.is-playing) #create{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    overflow:hidden;
+  }
+  html body.mmo-page:not(.is-playing) #create h1{
+    font-size:1.35rem !important;
+    line-height:1.05 !important;
+    margin:0 !important;
+    text-wrap:balance;
+  }
+  html body.mmo-page:not(.is-playing) #create > p{
+    margin:0;
+    font-size:0.78rem;
+    line-height:1.25;
+    text-wrap:pretty;
+  }
+  html body.mmo-page:not(.is-playing) #create label{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    margin:0;
+    font-size:0.8rem;
+    line-height:1.2;
+  }
+  html body.mmo-page:not(.is-playing) #create input{
+    min-height:44px;
+    width:100%;
+    box-sizing:border-box;
+    font-size:16px;
+    padding:8px 10px;
+  }
+  html body.mmo-page:not(.is-playing) #create .hint{
+    margin:0;
+    font-size:0.75rem;
+    line-height:1.2;
+  }
+  html body.mmo-page:not(.is-playing) #create .pick-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+  }
+  html body.mmo-page:not(.is-playing) #create .pick{
+    min-height:44px;
+    min-width:44px;
+    padding:6px 8px;
+    font-size:14px;
+    line-height:1.15;
+    text-align:left;
+  }
+  html body.mmo-page:not(.is-playing) #create .pick small{
+    font-size:11px;
+    line-height:1.15;
+  }
+  html body.mmo-page:not(.is-playing) #create .blurb{
+    margin:0;
+    min-height:0;
+    font-size:12px;
+    line-height:1.25;
+  }
+  html body.mmo-page:not(.is-playing) #enterWorld{
+    min-height:44px;
+    width:100%;
+    margin-top:auto;
+  }
+  html body.mmo-page:not(.is-playing) .site-footer{
+    flex:0 0 auto;
+    margin:0 !important;
+    padding:2px 8px 4px !important;
+    font-size:11px;
+    line-height:1.2;
+  }
+}
+@media (max-width:360px){
+  .hud-top .frames{flex-wrap:wrap}
+  .hud-top .frame{flex:1 1 100%}
 }
