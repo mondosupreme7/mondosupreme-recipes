@@ -282,10 +282,10 @@
     run.ox = (W - (cols - 1) * gapX) / 2;
     run.oy = 34;
     run.dir = 1;
-    run.grace = n === 1 ? 1.5 : 0.4;
-    run.diveIn = n === 1 ? 6 : Math.max(0.85, 2.3 - n * 0.18);
-    run.shotIn = 0.45;
-    run.ship.inv = Math.max(run.ship.inv, n === 1 ? 1.15 : 0.65);
+    run.grace = n <= 1 ? 5.4 : (n === 2 ? 2.6 : Math.max(0.55, 1.7 - (n - 3) * 0.2));
+    run.diveIn = n <= 1 ? 12 : (n === 2 ? 7.2 : diveGap(n));
+    run.shotIn = n <= 1 ? 1.4 : 0.55;
+    run.ship.inv = Math.max(run.ship.inv, n <= 1 ? 1.8 : 1.1);
     run.banner = { text: 'WAVE ' + n, t: 1.05 };
     if (n % 4 === 0) {
       run.moths = [];
@@ -304,6 +304,19 @@
     say('Wave ' + n);
   }
   function gapX() { return run.cols >= 6 ? 24 : 28; }
+  function shotGap(wave) {
+    if (wave <= 1) return 3.3;
+    if (wave === 2) return 2.4;
+    return Math.max(1, 2.5 - (wave - 2) * 0.26);
+  }
+  function diveGap(wave) {
+    if (wave <= 1) return 6.8;
+    if (wave === 2) return 4.4;
+    return Math.max(1.25, 3.8 - (wave - 2) * 0.32);
+  }
+  function shotVy(wave) { return 32 + wave * 6; }
+  function diveVy(wave) { return 44 + wave * 7; }
+  var FINGER_LIFT = 46;
   function layout() {
     var g = gapX();
     run.moths.forEach(function (m) {
@@ -369,10 +382,14 @@
   function hurt() {
     if (!run || phase !== 'play' || run.ship.inv > 0) return;
     run.ship.lives -= 1;
-    run.ship.inv = 1.55;
-    run.flash = reduced() ? 0.2 : 0.12;
+    run.ship.inv = 2.5;
+    run.flash = reduced() ? 0.28 : 0.18;
+    run.cue = { text: 'SAFE', t: 1.1 };
     run.combo = 0;
     run.comboT = 0;
+    run.foes = run.foes.filter(function (b) {
+      return Math.abs(b.x - run.ship.x) > 34 || Math.abs(b.y - run.ship.y) > 42;
+    });
     noise(0.16, 0.07);
     tone(96, 0.18, 'sawtooth', 0.05);
     var k = kit();
@@ -434,6 +451,10 @@
     run.comboT = Math.max(0, run.comboT - dt);
     if (run.comboT <= 0) run.combo = 0;
     if (run.grace > 0) run.grace -= dt;
+    if (run.cue) {
+      run.cue.t -= dt;
+      if (run.cue.t <= 0) run.cue = null;
+    }
     if (run.banner) {
       run.banner.t -= dt;
       if (run.banner.t <= 0) run.banner = null;
@@ -447,13 +468,18 @@
       if (run.clearT <= 0) beginWave(run.wave + 1);
     }
 
-    if (input.drag) ship.x += (input.drag.x - ship.x) * Math.min(1, dt * 16);
-    else {
+    if (input.drag) {
+      ship.x += (input.drag.x - ship.x) * Math.min(1, dt * 16);
+      var wantY = input.drag.y - FINGER_LIFT;
+      ship.y += (wantY - ship.y) * Math.min(1, dt * 12);
+    } else {
       var v = 150;
       if (input.keyLeft || input.padLeft) ship.x -= v * dt;
       if (input.keyRight || input.padRight) ship.x += v * dt;
+      ship.y += ((H - 26) - ship.y) * Math.min(1, dt * 6);
     }
     ship.x = clamp(ship.x, 12, W - 12);
+    ship.y = clamp(ship.y, H * 0.7, H - 16);
 
     var rate = run.rapid > 0 ? 0.09 : 0.2;
     if (input.keyFire) rate *= 0.8;
@@ -512,15 +538,17 @@
     } else if (run.moths.length) {
       var total = run.moths.length;
       var alive = aliveCount();
-      var speed = (18 + run.wave * 4) * (0.8 + (total - alive) / Math.max(1, total) * 0.9);
+      var speed = (8 + run.wave * 3.2) * (0.9 + (total - alive) / Math.max(1, total) * 0.55);
       run.ox += run.dir * speed * dt;
       layout();
       var box = bounds();
-      if (box && box.max > W - 12 && run.dir > 0) { run.dir = -1; run.oy += 12; layout(); }
-      else if (box && box.min < 12 && run.dir < 0) { run.dir = 1; run.oy += 12; layout(); }
+      var drop = run.wave <= 2 ? 8 : 12;
+      if (box && box.max > W - 12 && run.dir > 0) { run.dir = -1; run.oy += drop; layout(); }
+      else if (box && box.min < 12 && run.dir < 0) { run.dir = 1; run.oy += drop; layout(); }
       var low = false;
+      var line = run.wave <= 1 ? H - 30 : H - 42;
       run.moths.forEach(function (m) {
-        if (m.alive && !m.diving && m.y > H - 70) low = true;
+        if (m.alive && !m.diving && m.y > line) low = true;
       });
       if (low) {
         hurt();
@@ -529,29 +557,35 @@
       }
       run.diveIn -= dt;
       if (run.grace <= 0 && run.diveIn <= 0) {
-        run.diveIn = Math.max(0.85, 3.2 - run.wave * 0.32);
+        run.diveIn = diveGap(run.wave);
         startDive();
       }
       run.shotIn -= dt;
-      if (run.grace <= 0 && run.shotIn <= 0 && run.foes.length < 3) {
-        run.shotIn = Math.max(0.75, 2.15 - run.wave * 0.18);
+      var shotCap = run.wave <= 1 ? 1 : (run.wave === 2 ? 2 : 3);
+      if (run.grace <= 0 && run.shotIn <= 0 && run.foes.length < shotCap) {
+        run.shotIn = shotGap(run.wave);
         var pool = run.moths.filter(function (m) { return m.alive && !m.diving; });
         if (pool.length) {
-          pool.sort(function (a, b) { return Math.abs(a.x - ship.x) - Math.abs(b.x - ship.x); });
-          var shooter = pool[0];
-          run.foes.push({ x: shooter.x, y: shooter.y + 6, vy: 50 + run.wave * 7, vx: 0 });
+          var shooter;
+          if (run.wave <= 2) shooter = pool[(Math.random() * pool.length) | 0];
+          else {
+            pool.sort(function (a, b) { return Math.abs(a.x - ship.x) - Math.abs(b.x - ship.x); });
+            shooter = pool[0];
+          }
+          run.foes.push({ x: shooter.x, y: shooter.y + 6, vy: shotVy(run.wave), vx: 0 });
           tone(170, 0.05, 'square', 0.025);
         }
       }
       run.moths.forEach(function (m) {
         if (!m.alive || !m.diving) return;
         m.diveT += dt;
-        m.x = m.sx + Math.sin(m.diveT * 5) * 26 + (ship.x - m.sx) * Math.min(0.8, m.diveT * 0.32);
-        m.y = m.sy + m.diveT * (76 + run.wave * 7);
-        if (!m.shot && m.diveT > 0.42 && run.foes.length < 4) {
+        var home = run.wave <= 1 ? 0.22 : (run.wave === 2 ? 0.45 : Math.min(0.8, m.diveT * 0.32));
+        m.x = m.sx + Math.sin(m.diveT * 4) * 22 + (ship.x - m.sx) * home;
+        m.y = m.sy + m.diveT * diveVy(run.wave);
+        if (run.wave >= 3 && !m.shot && m.diveT > 0.5 && run.foes.length < shotCap + 1) {
           m.shot = true;
-          var vx = clamp((ship.x - m.x) * 0.45, -32, 32);
-          run.foes.push({ x: m.x, y: m.y, vy: 68, vx: vx });
+          var vx = clamp((ship.x - m.x) * 0.35, -26, 26);
+          run.foes.push({ x: m.x, y: m.y, vy: diveVy(run.wave) * 0.7, vx: vx });
         }
         if (m.y > H + 10) m.diving = false;
       });
@@ -619,9 +653,16 @@
     if (!run || phase === 'attract') return 'Best ' + bestScore();
     var combo = run.combo > 1 ? ' · x' + run.combo : '';
     var rapid = run.rapid > 0 ? ' · RAPID' : '';
-    return 'Score ' + run.score + combo + ' · Lives ' + Math.max(0, run.ship.lives) + ' · Wave ' + run.wave + rapid;
+    var safe = run.ship.inv > 0 ? ' · SAFE' : '';
+    return 'Score ' + run.score + combo + ' · Lives ' + Math.max(0, run.ship.lives) + ' · Wave ' + run.wave + rapid + safe;
   }
 
+  function openInitials() {
+    initials.value = '';
+    initials.placeholder = 'AAA';
+    delete initials.dataset.typed;
+    setTimeout(function () { initials.focus(); }, 40);
+  }
   function gameOver() {
     if (phase === 'over') return;
     phase = 'over';
@@ -634,13 +675,7 @@
     endBtn.hidden = true;
     backBtn.hidden = false;
     freshName = '';
-    if (run && run.score > 0) {
-      initials.value = store.initials || '';
-      setTimeout(function () {
-        initials.focus();
-        if (initials.select) initials.select();
-      }, 40);
-    }
+    if (run && run.score > 0) openInitials();
     show('score');
     renderBoard();
     paintHud('Score ' + (run ? run.score : 0));
@@ -733,13 +768,31 @@
     ctx.fillRect(x - 1, y - 3, 1, 1);
     ctx.fillRect(x + 1, y - 3, 1, 1);
   }
-  function drawShip(ctx, x, y, inv) {
+  function drawShip(ctx, x, y, inv, now) {
     x = Math.round(x);
     y = Math.round(y);
-    if (inv > 0) {
-      ctx.strokeStyle = '#fff4d2';
+    var glow = inv > 0 || (input.drag && phase === 'play');
+    if (glow) {
+      var pulse = reduced() || inv <= 0 ? 13 : 12 + (Math.floor(now / 120) % 2);
+      ctx.strokeStyle = inv > 0 ? '#fff6d8' : '#ffb703';
+      ctx.lineWidth = inv > 0 ? 2 : 1.5;
+      ctx.beginPath();
+      ctx.arc(x, y - 3, pulse, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = inv > 0 ? 'rgba(255,246,216,0.35)' : 'rgba(255,183,3,0.28)';
+      ctx.beginPath();
+      ctx.arc(x, y - 3, pulse + 5, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    if (input.drag && phase === 'play') {
+      ctx.strokeStyle = 'rgba(255,246,216,0.55)';
       ctx.lineWidth = 1;
-      ctx.strokeRect(x - 11, y - 10, 22, 16);
+      ctx.beginPath();
+      ctx.moveTo(input.drag.x, input.drag.y);
+      ctx.lineTo(x, y + 8);
+      ctx.stroke();
+      ctx.fillStyle = '#fff6d8';
+      ctx.fillRect(input.drag.x - 3, input.drag.y - 2, 6, 4);
     }
     ctx.fillStyle = '#e6c27a';
     ctx.fillRect(x - 8, y - 2, 16, 5);
@@ -817,7 +870,15 @@
     ctx.fillRect(0, H - 16, W, 4);
     ctx.fillStyle = '#1c5960';
     ctx.fillRect(0, H - 11, W, 2);
-    drawShip(ctx, run ? run.ship.x : W / 2, run ? run.ship.y : H - 26, run ? run.ship.inv : 0);
+    drawShip(ctx, run ? run.ship.x : W / 2, run ? run.ship.y : H - 26, run ? run.ship.inv : 0, now);
+    if (run && run.cue && run.cue.t > 0) {
+      ctx.globalAlpha = Math.min(1, run.cue.t * 2);
+      ctx.fillStyle = '#fff6d8';
+      ctx.font = '700 12px ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(run.cue.text, run.ship.x, run.ship.y - 22);
+      ctx.globalAlpha = 1;
+    }
     var k = kit();
     if (k) k.drawParticles(ctx);
     if (run) {
@@ -912,9 +973,36 @@
   });
   backBtn.addEventListener('click', backTitle);
   scoreForm.addEventListener('submit', saveScore);
+  initials.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    if (ev.key === 'Backspace' || ev.key === 'Delete') return;
+    if (ev.key.length !== 1) return;
+    var ch = ev.key.toUpperCase();
+    if (!/^[A-Z]$/.test(ch)) { ev.preventDefault(); return; }
+    ev.preventDefault();
+    var cur = cleanName(initials.value);
+    var start = initials.selectionStart == null ? cur.length : initials.selectionStart;
+    var end = initials.selectionEnd == null ? start : initials.selectionEnd;
+    if (!initials.dataset.typed && start === end && cur.length >= 3) {
+      initials.value = ch;
+      initials.dataset.typed = '1';
+      if (initials.setSelectionRange) initials.setSelectionRange(1, 1);
+      return;
+    }
+    var next = (cur.slice(0, start) + ch + cur.slice(end)).slice(0, 3);
+    initials.dataset.typed = '1';
+    initials.value = next;
+    var caret = Math.min(next.length, start + 1);
+    if (initials.setSelectionRange) initials.setSelectionRange(caret, caret);
+  });
   initials.addEventListener('input', function () {
+    var caret = initials.selectionStart || 0;
+    var before = cleanName(initials.value.slice(0, caret));
     var next = cleanName(initials.value);
-    if (initials.value !== next) initials.value = next;
+    if (initials.value !== next) {
+      initials.value = next;
+      if (initials.setSelectionRange) initials.setSelectionRange(before.length, before.length);
+    } else if (next) initials.dataset.typed = '1';
   });
   muteBtn.addEventListener('click', function () {
     if (audible()) soundOn = false;
