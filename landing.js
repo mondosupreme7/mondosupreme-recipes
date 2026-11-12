@@ -174,7 +174,7 @@
     if (year) year.textContent = String(new Date().getFullYear());
     paintCached();
     connectHits();
-    var ring = ['/recipes/', '/grocery/', '/daily-recipe/', '/cruises/', '/weather/', '/launches/', '/wordle/', '/crossword/', '/search/', '/stocks/', '/wiki/', '/board/', '/chat/', '/arcade/', '/pet/', '/radio/', '/forum/', '/market/', '/8ball/', '/mmo/', '/fps/', '/cinderwell/', '/escape/', '/saltflare/', '/needlewake/'];
+    var ring = ['/recipes/', '/grocery/', '/daily-recipe/', '/cruises/', '/weather/', '/launches/', '/wordle/', '/crossword/', '/search/', '/stocks/', '/wiki/', '/board/', '/chat/', '/arcade/', '/pet/', '/radio/', '/forum/', '/market/', '/8ball/', '/mmo/', '/fps/', '/cinderwell/', '/escape/', '/saltflare/', '/needlewake/', '/phosphor/', '/nightford/'];
     var rand = document.getElementById('ringRand');
     if (rand) rand.href = ring[Math.floor(Math.random() * ring.length)];
   });
