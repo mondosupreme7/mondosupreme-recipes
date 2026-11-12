@@ -620,8 +620,14 @@
     root.style.setProperty('--fps-nav', (fromScreen ? cssPx(navH) : navH) + 'px');
   }
 
+  function setLiveHook(on) {
+    document.body.classList.toggle('cinder-live', !!on);
+    document.documentElement.classList.toggle('cinder-live', !!on);
+  }
+
   function showPlay() {
     document.body.classList.add('fps-live', 'is-playing');
+    setLiveHook(true);
     $('browser').hidden = true;
     $('lobby').hidden = true;
     $('play').hidden = false;
@@ -640,13 +646,30 @@
     state.resume = !!resume;
     $('browser').hidden = true;
     $('play').hidden = true;
-    $('lobby').hidden = false;
     $('lobby').classList.toggle('mode-cs', state.mode === 'cs');
     $('lobby').classList.toggle('mode-tfc', state.mode === 'tfc');
+    syncLobbyChoices();
+    $('lobby').hidden = false;
     $('lobbyTitle').textContent = MAPS[state.mode].title;
     if (!resume) document.body.classList.remove('fps-live', 'is-playing');
+    setLiveHook(false);
     syncPlayViewport();
     paintPicks();
+  }
+
+  function syncLobbyChoices() {
+    var cs = state.mode === 'cs';
+    var tfc = state.mode === 'tfc';
+    var teams = document.querySelectorAll('#lobby [data-team]');
+    for (var i = 0; i < teams.length; i++) {
+      var team = teams[i].getAttribute('data-team');
+      var show = cs ? (team === 'ct' || team === 't') : (tfc && (team === 'red' || team === 'blue'));
+      teams[i].hidden = !show;
+    }
+    var classHead = document.querySelector('#lobby .class-head');
+    var classRow = document.getElementById('classRow');
+    if (classHead) classHead.hidden = !tfc;
+    if (classRow) classRow.hidden = !tfc;
   }
 
   function connect(mode) {
@@ -695,6 +718,7 @@
     if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
     $('buy').hidden = true;
     document.body.classList.remove('fps-live', 'is-playing');
+    setLiveHook(false);
     syncPlayViewport();
     paintStats();
   }
@@ -1612,8 +1636,14 @@
   function render() {
     var view = $('view');
     if (!view || !player) return;
-    var ctx = window.MONDO_JUICE
-      ? window.MONDO_JUICE.placeCanvas(view, VIEW_W, VIEW_H, $('stage'))
+    var stage = $('stage');
+    var box = stage ? stage.getBoundingClientRect() : null;
+    if (!box || box.width < 2 || box.height < 2) return;
+    var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : function (n) { return Math.round(n); };
+    VIEW_W = Math.max(2, cssPx(box.width));
+    VIEW_H = Math.max(2, cssPx(box.height));
+    var ctx = window.MONDO_JUICE && window.MONDO_JUICE.sharpCanvas
+      ? (window.MONDO_JUICE.sharpCanvas(view, VIEW_W, VIEW_H), view.getContext('2d'))
       : view.getContext('2d');
     var w = VIEW_W;
     var h = VIEW_H;
@@ -1723,11 +1753,11 @@
     });
     bots.forEach(function (b) {
       var color = b.team === 'ct' ? '#3a74c4' : b.team === 't' ? '#d0843a' : b.team === 'red' ? '#d02828' : '#2a62d0';
-      pushSprite(b, color, 1, b.name);
+      pushSprite(b, color, 2.4, b.name);
     });
     remotes.forEach(function (r) {
       var color = r.team === 'ct' ? '#8ec0ff' : r.team === 't' ? '#ffb060' : r.team === 'red' ? '#ff6868' : r.team === 'blue' ? '#68a0ff' : '#d0d0d0';
-      pushSprite(r, color, 1, taggedName(r.uid, r.name));
+      pushSprite(r, color, 2.4, taggedName(r.uid, r.name));
     });
     sentries.forEach(function (s) { pushSprite(s, s.team === 'blue' ? '#7aa0c8' : '#c08080', 0.62, 'Sentry'); });
     rockets.forEach(function (r) { sprites.push({ x: r.x, y: r.y, color: '#f0e080', size: 0.28, label: '' }); });
@@ -1865,24 +1895,24 @@
     if (kind === 'headcrab') rows = ['..yyyy..', 'yyyyyyyy', '.ye..ey.', 'yy.yy.yy'];
     else if (kind === 'turret' || kind === 'sentry') rows = ['...mm...', '..mmmm..', 'mmmmmmmm', '.m.mm.m.', '..mmmm..'];
     else rows = [
-      '..hhhhhh..',
-      '.hheeeehh.',
-      '.hhheehhh.',
-      '..ssssss..',
-      '.dssssssd.',
-      'ddsswwssdd',
-      '.dssssssd.',
-      '..ssssss..',
-      step ? '..ll....rr' : '.ll......r',
-      '.ll....rr.',
-      'bb......bb'
+      '..hhhhhhhh..',
+      '.hhoooooohh.',
+      '.hhhoeeohhh.',
+      '..oooooooo..',
+      '.ssssssssss.',
+      'ssssssssssss',
+      'sssswwwsssss',
+      '.ssssssssss.',
+      '..ss....ss..',
+      step ? 'll........ll' : '.ll......ll.',
+      '..bb....bb..'
     ];
     var team = ent.team || '';
     var shirt = team === 't' ? '#c2410c' : team === 'ct' ? '#2563eb' : team === 'red' ? '#dc2626' : team === 'blue' ? '#1d4ed8' : (teamColor || '#166534');
     var shade = team === 't' ? '#7c2d12' : team === 'ct' ? '#1e3a8a' : team === 'red' ? '#7f1d1d' : team === 'blue' ? '#1e3a8a' : '#14532d';
     var pal = flashing
-      ? { h: '#fff', e: '#fff', s: '#fff', d: '#fff', w: '#fff', l: '#fff', r: '#fff', b: '#fff', y: '#fff', m: '#fff' }
-      : { h: '#3f2a1c', e: '#0f172a', s: shirt, d: shade, w: '#1c1917', l: '#44403c', r: '#57534e', b: '#292524', y: '#eab308', m: '#94a3b8' };
+      ? { h: '#fff', o: '#fff', e: '#fff', s: '#fff', d: '#fff', v: '#fff', w: '#fff', l: '#fff', r: '#fff', b: '#fff', y: '#fff', m: '#fff' }
+      : { h: '#1c1917', o: '#e7c2a0', e: '#0f172a', s: shirt, d: shade, v: shade, w: '#0f172a', l: '#44403c', r: '#57534e', b: '#1c1917', y: '#eab308', m: '#94a3b8' };
     var cols = rows[0].length;
     var pxH = spriteH / rows.length;
     var stripe;
@@ -1906,89 +1936,100 @@
 
   function drawGun(ctx, w, h) {
     var id = gunId();
-    var bob = reduceMotion ? 0 : Math.sin(walkPhase) * 3;
-    var kick = recoil * (reduceMotion ? 4 : 22);
+    var bob = reduceMotion ? 0 : Math.sin(walkPhase) * 4;
+    var kick = recoil * (reduceMotion ? 3 : 16);
     var dip = 0;
     var tilt = 0;
     if (player && player.reloading > 0) {
       var spec = GUNS[player.reloadId];
       var u = spec && spec.reload ? 1 - player.reloading / spec.reload : 0.5;
-      dip = Math.sin(Math.max(0, Math.min(1, u)) * Math.PI) * (reduceMotion ? 8 : 42);
-      tilt = Math.sin(Math.max(0, Math.min(1, u)) * Math.PI) * (reduceMotion ? 0.06 : 0.42);
+      dip = Math.sin(Math.max(0, Math.min(1, u)) * Math.PI) * (reduceMotion ? 6 : 28);
+      tilt = Math.sin(Math.max(0, Math.min(1, u)) * Math.PI) * (reduceMotion ? 0.04 : 0.28);
+    }
+    var knife = id === 'knife' || id === 'crowbar' || id === 'wrench';
+    var pistol = id === 'pistol' || id === 'deagle';
+    var rows;
+    var pal;
+    var scale = Math.max(4, Math.round(h / 22));
+    var muzzleRow = 1;
+    if (knife) {
+      rows = [
+        '..........eeee',
+        '.........eehee',
+        '........eehee.',
+        '.......eehee..',
+        '......eg......',
+        '.....eg.......',
+        '....hhh.......',
+        '...hhhh.......',
+        '..hhhh........',
+        '.hh...........'
+      ];
+      pal = { e: '#e7e5e4', h: '#78716c', g: '#fbbf24', '.': '' };
+      if (id === 'crowbar') pal = { e: '#b91c1c', h: '#7f1d1d', g: '#44403c', '.': '' };
+      if (id === 'wrench') pal = { e: '#e2e8f0', h: '#64748b', g: '#0f172a', '.': '' };
+    } else if (pistol) {
+      rows = [
+        '......SSSSSS..',
+        '......SHHHHS..',
+        '......SSBSS...',
+        '........TT....',
+        '......GGGG....',
+        '.....G....G...',
+        '.....GMMMMG...',
+        '......MMMM....',
+        '......MMMM....',
+        '......M..M....'
+      ];
+      pal = { S: '#e2e8f0', H: '#94a3b8', B: '#0f172a', T: '#334155', G: '#1c1917', M: '#44403c', '.': '' };
+      if (id === 'deagle') pal.S = '#f8fafc';
+      muzzleRow = 0;
+    } else {
+      rows = [
+        'BBBBBBBBBBBBSS',
+        'BHHHHHHHHHHHS.',
+        'BBBBBBBBBBBB..',
+        '........MM....',
+        '.......MMMM...',
+        '......GGGGG...',
+        '.....G.....G..',
+        '.....GMMMMMG..',
+        '......MMMM....',
+        '......M..M....'
+      ];
+      pal = { B: '#3f6212', H: '#d9f99d', S: '#e2e8f0', M: '#1c1917', G: '#292524', '.': '' };
+      if (id === 'ak') { pal.B = '#9a3412'; pal.H = '#fdba74'; }
+      if (id === 'shot' || id === 'rocket') { pal.B = '#78350f'; pal.H = '#d6d3d1'; }
+      if (id === 'tau') { pal.B = '#c2410c'; pal.H = '#fed7aa'; }
+      if (id === 'mp5' || id === 'mp5n' || id === 'mini') { pal.B = '#334155'; pal.H = '#cbd5e1'; }
+      muzzleRow = 0;
     }
     ctx.save();
     ctx.imageSmoothingEnabled = false;
-    ctx.translate(w * 0.62, h - 2 + bob - kick + dip);
-    ctx.rotate(tilt);
-    function metal(x, y, bw, bh, hi, mid, lo) {
-      ctx.fillStyle = lo;
-      ctx.fillRect(x, y, bw, bh);
-      ctx.fillStyle = mid;
-      ctx.fillRect(x + 1, y, Math.max(1, bw - 2), bh);
-      ctx.fillStyle = hi;
-      ctx.fillRect(x + 1, y, Math.max(1, Math.floor(bw * 0.3)), Math.max(1, Math.floor(bh * 0.45)));
-    }
-    function hand(x, y) {
-      ctx.fillStyle = '#e7c2a0';
-      ctx.fillRect(x, y, 16, 11);
-      ctx.fillStyle = '#c4a484';
-      ctx.fillRect(x, y + 8, 16, 4);
-      ctx.fillStyle = '#3f2a1c';
-      ctx.fillRect(x + 3, y + 2, 2, 2);
-    }
-    var muzzle = { x: -6, y: -64 };
-    var smg = id === 'mp5' || id === 'mp5n' || id === 'mini';
-    var pistol = id === 'pistol' || id === 'deagle';
-    if (id === 'crowbar' || id === 'knife' || id === 'wrench') {
-      ctx.rotate(-0.65 - (reduceMotion ? 0 : swing * 0.9));
-      ctx.fillStyle = id === 'wrench' ? '#cbd5e1' : '#b91c1c';
-      ctx.fillRect(-4, -82, 8, 74);
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(-9, -14, 18, 18);
-      hand(-12, -6);
-    } else if (id === 'rocket') {
-      metal(-20, -64, 34, 16, '#86efac', '#166534', '#052e16');
-      metal(-12, -48, 16, 30, '#4ade80', '#14532d', '#052e16');
-      hand(-18, -24);
-      muzzle = { x: 10, y: -62 };
-    } else if (smg) {
-      metal(-40, -50, 52, 12, '#f8fafc', '#64748b', '#0f172a');
-      metal(-10, -38, 12, 20, '#e2e8f0', '#334155', '#020617');
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(-24, -38, 8, 16);
-      hand(-8, -30);
-      muzzle = { x: -42, y: -48 };
-    } else if (pistol) {
-      metal(-4, -62, 12, 30, '#f8fafc', id === 'deagle' ? '#e2e8f0' : '#94a3b8', '#0f172a');
-      ctx.fillStyle = '#1c1917';
-      ctx.fillRect(-2, -36, 14, 24);
-      ctx.fillStyle = '#57534e';
-      ctx.fillRect(0, -32, 4, 14);
-      hand(-10, -32);
-      muzzle = { x: 4, y: -64 };
-    } else {
-      var body = id === 'ak' ? '#9a3412' : id === 'shot' ? '#92400e' : id === 'tau' ? '#c2410c' : '#3f6212';
-      var hi = id === 'ak' ? '#fdba74' : id === 'tau' ? '#fdba74' : '#d9f99d';
-      metal(-6, -102, 9, 84, hi, body, '#0f172a');
-      ctx.fillStyle = '#1c1917';
-      ctx.fillRect(-18, -40, 26, 12);
-      ctx.fillStyle = '#292524';
-      ctx.fillRect(-12, -28, 8, 18);
-      if (id === 'awp') {
-        ctx.fillStyle = '#e7e5e4';
-        ctx.fillRect(-2, -78, 5, 12);
+    ctx.translate(w * 0.58, h - 4 + bob - kick + dip);
+    ctx.rotate(tilt + (knife && !reduceMotion ? -swing * 0.7 : 0));
+    var s = scale;
+    var gw = rows[0].length * s;
+    var gh = rows.length * s;
+    ctx.translate(-gw * 0.35, -gh);
+    var r, c, ch;
+    for (r = 0; r < rows.length; r++) {
+      for (c = 0; c < rows[r].length; c++) {
+        ch = rows[r].charAt(c);
+        if (!pal[ch]) continue;
+        ctx.fillStyle = pal[ch];
+        ctx.fillRect(c * s, r * s, s, s);
       }
-      hand(-16, -26);
-      hand(4, -34);
-      muzzle = { x: -4, y: -104 };
     }
-    if (flash > 0 && id !== 'crowbar' && id !== 'knife' && id !== 'wrench') {
-      var rad = reduceMotion ? 8 : 26;
+    if (flash > 0 && !knife) {
+      var mx = rows[0].length * s - s;
+      var my = muzzleRow * s;
+      var rad = reduceMotion ? s * 2 : s * 5;
       ctx.fillStyle = '#fff7d6';
-      ctx.fillRect(muzzle.x - 1, muzzle.y - rad, 3, rad);
-      ctx.fillRect(muzzle.x - rad, muzzle.y - 1, rad, 3);
+      ctx.fillRect(mx, my - rad, s, rad);
+      ctx.fillRect(mx, my, rad, s);
       ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(muzzle.x - 3, muzzle.y - 3, 7, 7);
+      ctx.fillRect(mx - s, my - s, s * 3, s * 3);
     }
     ctx.restore();
   }

@@ -288,7 +288,7 @@
   }
   function seedStatic() {
     [
-      ['Home', '/', 'landing welcome mondosupreme', 'Mondosupreme — recipes, a daily YouTube recipe show, cruise ship positions, weather, puzzles, search, stocks, a wiki, and the games.', ['What is on the home page?']],
+['Home', '/', 'landing welcome mondosupreme', 'Mondosupreme — recipes, a daily YouTube recipe show, cruise ship positions, weather, puzzles, search, stocks, a wiki, and the games.', ['What is on the home page?']],
       ['Recipes', '/recipes/', 'kitchen cookbook mastercook food dinner backyard chef', 'Mondosupreme Recipes — your personal recipe collection at Mondosupreme.com', ['How do I make fluffy buttermilk pancakes?', 'Where are the Backyard Chef recipes?']],
       ['Recipe TV', '/daily-recipe/', 'daily youtube recipe show chef', 'Recipe TV plays a different YouTube recipe every day.', ['What is playing on Recipe TV?']],
       ['Cruises', '/cruises/', 'royal caribbean ships harbor port canaveral', 'Last-known position of every Royal Caribbean International ship, plus Port Canaveral cruise deals.', ['Where are the Royal Caribbean ships?']],
@@ -301,7 +301,9 @@
       ['Wiki', '/wiki/', 'notes articles launches tides arcade recipes', 'Short articles about Space Coast launches, Port Canaveral tides, the arcade, and Backyard Chef.', ['What articles are in the wiki?']],
       ['Paint', '/board/', 'paint shared drawing board whiteboard', 'Paint style shared drawing board on Mondosupreme.', ['How do I open the drawing board?']],
       ['Chat', '/chat/', 'chat room talk public', 'Chat style public chat on Mondosupreme.', ['How do I join the public chat?']],
-      ['Arcade', '/arcade/', 'arcade games high seas cruiser kitchen rush brick breaker', 'Arcade — High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker.', ['What games are in the arcade?']],
+      ['Arcade', '/arcade/', 'arcade games high seas cruiser kitchen rush brick breaker saltflare needlewake', 'Arcade — High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker, plus Saltflare and Needlewake.', ['What games are in the arcade?']],
+      ['Saltflare', '/saltflare/', 'formation shooter moths flare skiff', 'Saltflare — a formation shooter. Slide a flare skiff along the night marsh and clear the moth line.', ['How do you play Saltflare?']],
+      ['Needlewake', '/needlewake/', 'vector shards glass needle field', 'Needlewake — a vector shard shooter. Pilot a glass needle through a field of spinning shards.', ['How do you play Needlewake?']],
       ['Virtual Pet', '/pet/', 'virtual pet egg tamagotchi', 'Virtual Pet — a live virtual pet. Feed it, dress it, and wave at friends in the Pet Park.', ['How does the virtual pet work?']],
       ['Forum', '/forum/', 'bulletin board posts blog', 'Mondosupreme Bulletin Board for recipes, cruises, games, and site news.', ['What is the bulletin board for?']],
       ['Marketplace', '/market/', 'classifieds for sale listings', 'Marketplace — post things for sale, add photos from your phone, and message the seller on the listing.', ['How do Marketplace listings work?']],
