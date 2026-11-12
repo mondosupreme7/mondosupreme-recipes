@@ -41,6 +41,11 @@ body.latch-page .studio-dock,
 body.latch-page .sync-banner{
   display:none !important;
 }
+/* Same play-state class Cinderwell sets. Hides the page-size bar while a shared rule is on its way. */
+body.latch-page.cinder-live .page-scale.page-scale--nav,
+body.latch-page.cinder-live .site-footer{
+  display:none !important;
+}
 body.latch-page main,
 body.latch-page main *,
 body.latch-page .sheet,
@@ -153,6 +158,7 @@ body.studio-game .crt canvas,
   background:#070605;
   border-radius:0 !important;
 }
+#roomArt{cursor:pointer}
 .latch-vig,.latch-scan,.latch-flicker,.latch-glitch{
   position:absolute;
   inset:0;
@@ -227,6 +233,25 @@ html[data-theme] body.latch-page #status{
   line-height:1.35;
 }
 .hint-out:empty{display:none}
+.pocket-tip{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex:0 0 auto;
+  margin:0;
+  padding:4px 6px;
+  background:#241810;
+  border:1px solid #e0b060;
+}
+.pocket-tip p{
+  margin:0;
+  flex:1 1 auto;
+  min-width:0;
+  color:#f6e6d0;
+  font-size:16px;
+  line-height:1.25;
+}
+.pocket-tip .night-btn{flex:0 0 auto}
 .inv-bar{
   display:flex;
   align-items:center;
