@@ -1,5 +1,6 @@
 /* Ask Mondo. Hollis is the butler. Compact enough that the Ask control stays on a short phone. */
 body.search-page{
+  overflow-x:clip;
   --ask-sky:#e7f2fb;
   --ask-paper:#ffffff;
   --ask-ink:#102a43;
@@ -27,8 +28,8 @@ body.search-page ::selection{background:#0b3d91;color:#fff}
 body.search-page main.ask-main{padding:8px 12px 16px;min-width:0}
 .ask-stage{min-width:0}
 .ask-hero{display:flex;flex-direction:row;align-items:center;gap:10px;margin:0 0 8px;min-width:0}
-.butler-card{margin:0;flex:0 0 auto;text-align:center}
-.hollis{display:block;width:72px;height:88px}
+.butler-card{margin:0;flex:0 0 auto;text-align:center;background:transparent}
+.hollis{display:block;width:72px;height:88px;background:transparent}
 .butler-card figcaption{
   margin:2px 0 0;
   font:700 .8rem/1.2 Georgia, "Palatino Linotype", Palatino, serif;
@@ -52,12 +53,43 @@ body.search-page main.ask-main{padding:8px 12px 16px;min-width:0}
   text-wrap:balance
 }
 .ask-lead{margin:4px 0 0;max-width:62ch;color:var(--ask-ink);font-size:1rem;line-height:1.35;text-wrap:pretty}
+.hollis-say{
+  position:relative;
+  margin:10px 0 8px;
+  max-width:100%;
+  padding:8px 12px;
+  border:2px solid var(--ask-navy);
+  border-radius:16px;
+  background:var(--ask-paper);
+  color:var(--ask-ink);
+  font:600 1rem/1.35 Georgia, "Palatino Linotype", Palatino, serif;
+  text-wrap:pretty;
+  overflow-wrap:anywhere
+}
+.hollis-say::before{
+  content:"";
+  position:absolute;
+  left:28px;
+  top:-8px;
+  width:12px;
+  height:12px;
+  background:var(--ask-paper);
+  border-left:2px solid var(--ask-navy);
+  border-top:2px solid var(--ask-navy);
+  transform:rotate(45deg)
+}
 .ask-search{display:block}
 body.search-page .ask-form{margin:0;padding:0;border:0;background:transparent}
 .ask-label{
-  display:block;margin:0 0 4px;
-  font:700 1rem/1.3 Verdana, "Trebuchet MS", "Segoe UI", sans-serif;
-  color:var(--ask-ink)
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+  border:0
 }
 .ask-bar{
   display:flex;flex-wrap:nowrap;align-items:center;gap:6px;min-width:0;
@@ -152,7 +184,14 @@ body.search-page.has-results .ask-examples{display:none}
   margin:0 0 8px;padding:0;background:transparent;color:var(--ask-navy);
   font:700 1.25rem/1.25 Georgia, "Palatino Linotype", Palatino, serif
 }
-.answer-lead{margin:0 0 8px;font:700 1.15rem/1.35 Georgia, "Palatino Linotype", Palatino, serif}
+.answer-fact{
+  margin:0 0 8px;
+  font:700 1.35rem/1.3 Georgia, "Palatino Linotype", Palatino, serif;
+  color:var(--ask-navy);
+  text-wrap:pretty;
+  overflow-wrap:anywhere
+}
+.answer-lead{margin:0 0 8px;font:700 1.05rem/1.35 Georgia, "Palatino Linotype", Palatino, serif}
 .answer-lead a{color:var(--ask-navy)}
 .did-you{margin:0 0 8px;color:var(--ask-ink);font-size:1rem}
 .did-you-q{
@@ -183,7 +222,7 @@ body.search-page.has-results .ask-examples{display:none}
 .hit img{width:48px;height:48px;object-fit:cover;border-radius:8px;background:var(--ask-soft)}
 .hit:has(img){grid-template-columns:48px 1fr;gap:10px}
 .hit-title{margin:0;font:700 1rem/1.3 Georgia, "Palatino Linotype", Palatino, serif;color:var(--ask-ink)}
-.hit p{margin:2px 0 0;color:var(--ask-ink)}
+.hit p{margin:2px 0 0;color:var(--ask-ink);overflow-wrap:anywhere}
 .hit-meta{color:var(--ask-muted);font-size:.875rem}
 .ask-chips{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 body.search-page .chip{
@@ -258,15 +297,22 @@ html[data-theme="harbor"] body.search-page{
   background:var(--ask-sky) !important;background-image:none !important;color:var(--ask-ink) !important
 }
 html[data-theme="harbor"] body.search-page ::selection{background:#5eead4;color:#042f2e}
-html[data-theme] body.search-page :is(h1,h2,h3,.hit-title,.tool-card strong,.butler-card figcaption,.answer-lead,.answer-lead a,.ask-example,.chip,.wire-q,.deep-row a,.cite-list a,.hit-title a){
+html[data-theme] body.search-page :is(h1,h2,h3,.hit-title,.tool-card strong,.butler-card figcaption,.answer-fact,.answer-lead,.answer-lead a,.ask-example,.chip,.wire-q,.deep-row a,.cite-list a,.hit-title a){
   color:var(--ask-navy) !important
 }
-html[data-theme] body.search-page :is(.ask-lead,.ask-status,.ask-empty,#privNote,.hit p,.ask-label,.ask-tools summary){
+html[data-theme] body.search-page :is(.ask-lead,.ask-status,.ask-empty,#privNote,.hit p,.hollis-say,.ask-tools summary){
   color:var(--ask-ink) !important
 }
 html[data-theme] body.search-page :is(.hit-kind,.hit-meta,.ask-tools-state){color:var(--ask-muted) !important}
-html[data-theme] body.search-page :is(.ask-win,.ask-tools,.ask-bar){
+html[data-theme] body.search-page :is(.ask-win,.ask-tools,.ask-bar,.hollis-say){
   background:var(--ask-paper) !important;color:var(--ask-ink) !important;border-color:var(--ask-line) !important
+}
+html[data-theme] body.search-page .hollis-say{border-color:var(--ask-navy) !important}
+html[data-theme] body.search-page .hollis-say::before{
+  background:var(--ask-paper) !important;border-color:var(--ask-navy) !important
+}
+html[data-theme] body.search-page :is(.butler-card,.butler-card figcaption,.hollis){
+  background:transparent !important;background-image:none !important;box-shadow:none !important;border-color:transparent !important
 }
 html[data-theme] body.search-page .ask-bar{border-color:var(--ask-navy) !important}
 html[data-theme] body.search-page .ask-bar input{
@@ -323,10 +369,13 @@ html[data-theme="retro"] body.search-page .wire-q{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, sans-serif !important;
   color:#000080 !important
 }
-html[data-theme="retro"] body.search-page :is(.ask-win,.ask-tools,.butler-card){
+html[data-theme="retro"] body.search-page :is(.ask-win,.ask-tools,.hollis-say){
   background:#c0c0c0 !important;color:#111827 !important;
   border:2px solid #fff !important;border-right-color:#404040 !important;border-bottom-color:#404040 !important;
   border-radius:0 !important;box-shadow:none !important
+}
+html[data-theme="retro"] body.search-page .hollis-say::before{
+  background:#c0c0c0 !important;border-color:#fff !important
 }
 html[data-theme="retro"] body.search-page .ask-bar{
   background:#c0c0c0 !important;border:2px solid #fff !important;border-right-color:#404040 !important;border-bottom-color:#404040 !important;

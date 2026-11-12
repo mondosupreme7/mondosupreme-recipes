@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Wiki — Mondosupreme Wiki</title>
-<meta name="description" content="Mondosupreme Wiki — shared notes and how-tos. Anyone can add a page. The owner can edit or delete.">
+<meta name="description" content="Short articles about Space Coast launches, Port Canaveral tides, the arcade, and Backyard Chef.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
@@ -27,12 +27,12 @@
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=11">
 <link rel="stylesheet" href="/readable.css?v=15">
-<link rel="stylesheet" href="wiki.css?v=5">
+<link rel="stylesheet" href="wiki.css?v=7">
 </head>
 <body class="wiki-page">
 <div class="ticker"><div class="ticker-track">
- <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Wiki ~*~ ★ Shared notes and how-tos ★</p>
- <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Wiki ~*~ ★ Shared notes and how-tos ★</p>
+ <p><svg class="globe" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Wiki ~*~ ★ Launches, tides, arcade, and the kitchen ★</p>
+ <p aria-hidden="true"><svg class="globe" viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="#003399" stroke="#00ffff" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="#7fdfff"/><path d="M5 16h22M7 11h18M7 21h18" fill="none" stroke="#7fdfff"/></svg> <span class="flame" aria-hidden="true"></span> ~*~ Mondosupreme Wiki ~*~ ★ Launches, tides, arcade, and the kitchen ★</p>
 </div></div>
 <header class="site-header"><div class="wrap hdr">
  <a href="#/" class="brand"><span class="logo">📝</span><span>Mondosupreme <em>Wiki</em></span></a>
@@ -86,13 +86,18 @@
  </div>
  <section id="homeView">
   <div class="hero">
-   <h1>Notes and how-tos.</h1>
-   <p>A shared notebook. Pages are read-only unless you are an admin.</p>
+   <h1>Articles</h1>
+   <p>Launches, tides, the arcade, and the kitchen.</p>
   </div>
+  <h2 class="wiki-h is-clipped" id="articlesHead">Articles</h2>
+  <div id="articles" class="wiki-list"></div>
+  <h2 class="wiki-h" id="helpHead">Help</h2>
+  <div id="helpPages" class="wiki-list"></div>
   <p id="readNote" class="lock-note">These pages are read-only. Only an admin can add, edit, delete, or import.</p>
   <div id="adminTools" class="admin-tools" hidden>
    <button id="btnNew" class="btn primary" type="button">+ New page</button>
    <label class="btn ghost file-btn">Import<input type="file" id="importFile" accept="application/json,.json" aria-label="Import wiki backup"></label>
+   <p class="admin-backup">Export still makes a backup.</p>
   </div>
   <p class="admin-tools"><button id="btnExport" class="btn ghost" type="button">Export</button></p>
   <div id="tagBar" class="tags" hidden></div>
@@ -149,7 +154,7 @@
   </form>
  </section>
 </main>
-<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Pages are shared. Export still makes a backup.</div></footer>
+<footer class="site-footer"><div class="wrap">© <span id="yr"></span> Mondosupreme.com · Short articles about this site.</div></footer>
 <div id="toast" role="status"></div>
 <dialog id="ownerDialog">
  <form id="ownerForm">
@@ -185,7 +190,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="wiki.js?v=5"></script>
+<script src="wiki.js?v=6"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
