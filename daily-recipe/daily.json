@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-11-12T13:22:47Z",
+ "fetchedAt": "2026-11-13T13:17:06Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -29,6 +29,20 @@
    "blurb": "Download the Cooking app for daily dinner picks, helpful tools, and even more videos:  VISIT NYT COOKING:  SUBSCRIBE to NYT COOKING:  A paid subscription gets you full access to our recipes, daily inspiration and a digital Recipe Box. YOUTUBE:  INSTAGRAM:  FACEBOOK:  PINTEREST:  About NYT Cooking: All the food that’s fit to eat (yes, it’s an official New York Times production)."
   },
   {
+   "videoId": "hS275H0wUSQ",
+   "title": "Cooking on the River: Episode 3",
+   "channel": "J. Kenji López-Alt",
+   "handle": "JKenjiLopezAlt",
+   "published": "2026-11-12",
+   "thumbnail": "https://i.ytimg.com/vi/hS275H0wUSQ/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=hS275H0wUSQ",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "It's the final episode of Cooking on the River, a three-part series documenting our trip down the Colorado River where we cooked for 25 guests over 4 days—with no refrigeration. It was the challenge of a lifetime, and we're bringing you along for the ride! All the recipes from the event are available over on my free Patreon. Check out the dishes—along with these episodes ad-free—here:  As we wrap up the series, I want to thank the people that made this possible! Thank you to Lena, my head of operations and chef extraordinaire, for joining me and making the chaos of running mobile, campsite kit"
+  },
+  {
    "videoId": "SR48GKcOuYE",
    "title": "Three words: Buttered. Corn. Flan. Get Nicola Lamb’s recipe on NYT Cooking! #thanksgiving #dessert",
    "channel": "NYT Cooking",
@@ -41,6 +55,45 @@
     "Watch the full method in the video."
    ],
    "blurb": "Download the Cooking app for daily dinner picks, helpful tools, and even more videos:  VISIT NYT COOKING:  SUBSCRIBE to NYT COOKING:  A paid subscription gets you full access to our recipes, daily inspiration and a digital Recipe Box. YOUTUBE:  INSTAGRAM:  FACEBOOK:  PINTEREST:  About NYT Cooking: All the food that’s fit to eat (yes, it’s an official New York Times production)."
+  },
+  {
+   "videoId": "5vt-X3lbBgc",
+   "title": "1 Can of Pumpkin Makes My Cheapest and Best Pasta",
+   "channel": "Sip and Feast",
+   "handle": "sipandfeast",
+   "published": "2026-11-12",
+   "thumbnail": "https://i.ytimg.com/vi/5vt-X3lbBgc/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=5vt-X3lbBgc",
+   "ingredients": [
+    "1 pound (454g) tortiglioni - can sub ziti, penne, or rigatoni",
+    "4 tablespoons (56g) unsalted butter",
+    "1 medium onion - finely diced",
+    "1 15-ounce can pumpkin puree",
+    "1 cup (240ml) heavy cream",
+    "1 tablespoon minced fresh sage - plus whole leaves for garnish",
+    "1/2 teaspoon ground nutmeg",
+    "3/4 cup (75g) grated Parmigiano Reggiano - plus more for serving",
+    "2 cups (480ml) reserved pasta water - for thinning, will most likely not need all of it",
+    "1 cup (100g) chopped pecans"
+   ],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "SIP AND FEAST COOKBOOK:  Today, we're making Creamy Pumpkin Pasta. I hope you enjoy it! PRODUCTS USED (affiliate links) Hedley & Bennet Apron:  Unicorn Magnum Pepper Grinder:  T-fal Jumbo Cooker 5 Quart:  Faay Flat Edge Wooden Spoon:  Olive-Wood Handcrafted Salt Box:  Mac Chef's Knife:  Workhorse Cutting Board:  SUPPORT ON PATREON (FULL MEAL VIDEOS!):  SUBSCRIBE FOR WEEKLY RECIPES:  FOLLOW US ON INSTAGRAM:  MY AMAZON STORE (This is an affiliate link)  ****PRINT RECIPE WITH INSTRUCTIONS AND PROCESS SHOTS****  INGREDIENTS 1 pound (454g) tortiglioni - can sub ziti, penne, or rigatoni 4 tablespoon"
+  },
+  {
+   "videoId": "02JykyxH0Cg",
+   "title": "The BEST Cornbread Recipe",
+   "channel": "Preppy Kitchen",
+   "handle": "preppykitchen",
+   "published": "2026-11-12",
+   "thumbnail": "https://i.ytimg.com/vi/02JykyxH0Cg/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=02JykyxH0Cg",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "My delicious Cornbread recipe is light and fluffy with a marvelously moist crumb and a lacy, crispy crust. Despite being nearly as easy to make as a boxed mix, it tastes so much better! It takes just 10 minutes of prep and a handful of ingredients to stir together. RECIPE:  ORDER MY NEW BOOK! Amazon:  Amazon CA:  Barnes & Noble:  BAM:  Bookshop:  Hudson Booksellers:  Target:  Walmart:"
   },
   {
    "videoId": "sWRSL_BfvnI",
@@ -86,7 +139,7 @@
   },
   {
    "videoId": "Ex9k8L3lH3w",
-   "title": "The Secret To Impossibly Juicy Turkey Is From Texas",
+   "title": "This Is The Most Delicious Turkey I’ve Ever Made",
    "channel": "NOT ANOTHER COOKING SHOW",
    "handle": "notanothercookingshow",
    "published": "2026-11-11",
@@ -364,7 +417,7 @@
   },
   {
    "videoId": "uUgHubtjaNo",
-   "title": "My Family Loves This As Much As My Lasagna",
+   "title": "Pastitsio - If You Love Lasagna, You Need to Try This Greek Version",
    "channel": "Sip and Feast",
    "handle": "sipandfeast",
    "published": "2026-11-05",
@@ -1872,48 +1925,6 @@
     "Watch the full method in the video."
    ],
    "blurb": "These are 10 cheap tools I used every day in professional kitchens that will make your home cooking easier, better, or more fun. Visit  and use code BRIAN at checkout for $30 off your first box PLUS free Croissants for life! ▶️WATCH NEXT: POTATO PUREE:  PRO LEVEL CREAMY SOUPS:  CHOCOLATE CHIP COOKIES (3 WAYS):  🔪FEATURED TOOLS: SQUEEZE BOTTLE:  2OZ SCOOP:  4OZ SCOOP:  PLASTIC BOWL SCRAPER:  METAL BENCH SCRAPER:  PRECUT PARCHMENT SHEETS:  BIG SPIDER STRAINER:  SMALLER SPIDER:  FINE MESH STRAINER:  COTTON SIDE TOWELS:  TWEEZER TONGS:  QUARTER SHEET PAN:  FISH SPATULA:  AMAZON STORE:  **As an Ama"
-  },
-  {
-   "videoId": "qcX-uGi7v7w",
-   "title": "The One Rice Rule You Should Never Break | Techniquely with Lan Lam",
-   "channel": "America's Test Kitchen",
-   "handle": "AmericasTestKitchen",
-   "published": "2026-10-10",
-   "thumbnail": "https://i.ytimg.com/vi/qcX-uGi7v7w/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=qcX-uGi7v7w",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Want to learn how to make perfectly fluffy white rice? Lan Lam explains the three important parts of cooking steamed rice: rinsing, ratios, and resting. She also explains the value of a great rice cooker, and shares which step in the rice-cooking process is the most crucial for light and fluffy results. Japanese-Style Steamed Rice Recipe:  Everyday White Rice Recipe:  Best Rice Cookers:  Discover more techniques and rigorously tested recipes on the America's Test Kitchen App:  Get exclusive access to every recipe, review, and more via our homepage:  Buy our cookbook 100 Techniques: Master a Li"
-  },
-  {
-   "videoId": "XzSrZKXUDwE",
-   "title": "I Coated Chicken Cutlets With Frozen Hash Browns | Carolina Gelen | NYT Cooking",
-   "channel": "NYT Cooking",
-   "handle": "nytcooking",
-   "published": "2026-10-10",
-   "thumbnail": "https://i.ytimg.com/vi/XzSrZKXUDwE/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=XzSrZKXUDwE",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Get the FREE recipe:  What started as a Hanukkah tradition for Carolina Gelen turned into a perennial comfort recipe, perfect for a weeknight meal. While a schnitzel is typically encrusted in a breadcrumb exterior, this recipe opens the door to a world of dredging possibilities, starting with store-bought hash browns. The result is a juicy chicken cutlet with a crispy potato exterior that’ll make you want to go in for another bite. ------------------------------------------ Download the Cooking app for daily dinner picks, helpful tools, and even more videos:  VISIT NYT COOKING:  SUBSCRIBE to N"
-  },
-  {
-   "videoId": "jkBUY0ixn64",
-   "title": "How to Make Chef John’s No Water Chicken Soup",
-   "channel": "Food Wishes",
-   "handle": "foodwishes",
-   "published": "2026-10-09",
-   "thumbnail": "https://i.ytimg.com/vi/jkBUY0ixn64/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=jkBUY0ixn64",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "You heard it here first: chicken soup can be made waterless and still have a cozy boost of flavor! Chef John teaches you a simple but incredible culinary magic trick to make no water chicken soup. A deep, flavorful broth is created purely by cooking down a whole chicken and vegetables with, as you might’ve guessed, no water needed! Plus, this trick results in an incredibly tender chicken."
   }
  ]
 }
