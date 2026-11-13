@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 import tempfile
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -42,6 +44,44 @@ def load_book():
 
 def types(book):
     return [event["type"] for event in book["events"]]
+
+
+# Settlement writes one mark event per session. Dollar amounts inside the
+# detail are the equity and cash figures; the event itself has no separate
+# numeric equity or cash fields.
+DAY = r"\d{4}-\d{2}-\d{2}"
+MONEY = r"-?\$[0-9]{1,3}(?:,[0-9]{3})*\.[0-9]{2}"
+MARK_DETAIL = re.compile(
+    r"Marked (?P<day>" + DAY + r")\. "
+    r"Equity (?P<equity>" + MONEY + r"), "
+    r"cash (?P<cash>" + MONEY + r"), "
+    r"reserved (?P<reserved>" + MONEY + r"), "
+    r"available (?P<available>" + MONEY + r"), "
+    r"market value (?P<market>" + MONEY + r"), "
+    r"open risk (?P<risk>" + MONEY + r")\. "
+    r"Versus start (?P<versus>" + MONEY + r")\. "
+    r"Goal progress (?P<progress>-?[0-9]+\.[0-9]{2})%"
+    r"(?:\. Marks .+)?\."
+)
+NON_NEGATIVE = ("equity", "cash", "reserved", "available", "market", "risk")
+
+
+def as_money(value):
+    return Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
+def dollars(token):
+    return Decimal(token.replace("$", "").replace(",", ""))
+
+
+def book_start_text(book):
+    account = book.get("account")
+    if not isinstance(account, dict):
+        return None
+    raw = account.get("openedOn")
+    if raw is None or raw == "":
+        return None
+    return raw
 
 
 class PaperSettlementTest(unittest.TestCase):
@@ -647,6 +687,135 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertEqual(updated["rules"]["minRiskPerTradePct"], 25)
         self.assertEqual(updated["rules"]["maxRiskPerTradePct"], 50)
 
+    def iso_day(self, value, label):
+        self.assertIsInstance(value, str, label + " must be a YYYY-MM-DD string")
+        self.assertRegex(value, r"\A" + DAY + r"\Z", label + " must be YYYY-MM-DD")
+        try:
+            return date.fromisoformat(value)
+        except ValueError:
+            self.fail(label + " must be a real calendar date")
+
+    def assert_daily_marks(self, book):
+        events = book.get("events") or []
+        marks = [event for event in events if isinstance(event, dict) and event.get("type") == "mark"]
+        self.assertGreaterEqual(len(marks), 1, "marks exist")
+        today = datetime.now(EASTERN).date()
+        dates = []
+        last = None
+        for event in marks:
+            day = self.iso_day(event.get("session"), "mark session")
+            self.assertLess(day.weekday(), 5, "mark date is not a weekday")
+            self.assertLessEqual(day, today, "mark date is after today")
+            if dates:
+                self.assertGreater(day, dates[-1], "mark dates must be strictly ascending and unique")
+            dates.append(day)
+            self.assertIsInstance(event.get("at"), str, "mark at must be a timestamp")
+            self.assertEqual(event["at"], settle.session_stamp(day), "mark at must be the session stamp")
+            self.assertEqual(event.get("type"), "mark")
+            self.assertIsInstance(event.get("detail"), str, "mark detail must be a string")
+            parsed = MARK_DETAIL.fullmatch(event["detail"])
+            self.assertIsNotNone(
+                parsed,
+                "mark detail is missing equity, cash, or the other mark fields: " + event["detail"],
+            )
+            self.assertEqual(parsed.group("day"), day.isoformat(), "mark detail date")
+            amounts = {name: dollars(parsed.group(name)) for name in (
+                "equity", "cash", "reserved", "available", "market", "risk", "versus",
+            )}
+            amounts["progress"] = Decimal(parsed.group("progress"))
+            for name in NON_NEGATIVE:
+                self.assertGreaterEqual(amounts[name], 0, name + " must be numeric and non-negative")
+            self.assertEqual(amounts["equity"], amounts["cash"] + amounts["market"], "equity")
+            self.assertEqual(amounts["cash"], amounts["reserved"] + amounts["available"], "cash")
+            account = book.get("account") if isinstance(book.get("account"), dict) else {}
+            starting = account.get("startingCash")
+            if isinstance(starting, (int, float)) and not isinstance(starting, bool):
+                self.assertEqual(
+                    amounts["versus"],
+                    amounts["equity"] - Decimal(str(starting)),
+                    "versus start",
+                )
+            last = amounts
+        raw_start = book_start_text(book)
+        if raw_start is not None:
+            start = self.iso_day(raw_start, "book start")
+            self.assertGreaterEqual(dates[0], start, "first mark is before the book start")
+        balances = book.get("balances")
+        self.assertIsInstance(balances, dict)
+        snapshot = {
+            "equity": "equity",
+            "cash": "cash",
+            "cashReserved": "reserved",
+            "cashAvailable": "available",
+            "marketValue": "market",
+            "openRiskUsd": "risk",
+            "versusStartUsd": "versus",
+            "goalProgressPct": "progress",
+        }
+        for key, name in snapshot.items():
+            value = balances.get(key)
+            self.assertIsInstance(value, (int, float), key)
+            self.assertNotIsInstance(value, bool, key)
+            if name in NON_NEGATIVE:
+                self.assertGreaterEqual(value, 0, key)
+            self.assertEqual(as_money(value), as_money(last[name]), key)
+        self.assertEqual(balances.get("asOf"), marks[-1]["at"])
+        self.assertIsInstance(balances.get("markSource"), str)
+        self.assertTrue(balances["markSource"].strip())
+
+    def book_marked(self, days, detail_edit=None):
+        book = json.loads(PRODUCTION_TEXT)
+        source = next(event for event in book["events"] if event.get("type") == "mark")
+        marks = []
+        for day in days:
+            copy = json.loads(json.dumps(source))
+            text = day if isinstance(day, str) else day.isoformat()
+            copy["detail"] = copy["detail"].replace(copy["session"], text, 1)
+            if detail_edit is not None:
+                copy["detail"] = detail_edit(copy["detail"])
+            copy["session"] = text
+            if re.fullmatch(DAY, text):
+                try:
+                    copy["at"] = settle.session_stamp(date.fromisoformat(text))
+                except ValueError:
+                    pass
+            marks.append(copy)
+        book["events"] = [event for event in book["events"] if event.get("type") != "mark"] + marks
+        return book
+
+    def assert_marks_fail(self, days, message, detail_edit=None):
+        with self.assertRaisesRegex(AssertionError, message):
+            self.assert_daily_marks(self.book_marked(days, detail_edit))
+
+    def test_daily_mark_rules_reject_a_bad_session(self):
+        saturday = date(2026, 11, 7)
+        self.assertEqual(saturday.weekday(), 5)
+        self.assert_marks_fail([saturday], "weekday")
+        future = datetime.now(EASTERN).date() + timedelta(days=1)
+        while future.weekday() >= 5:
+            future += timedelta(days=1)
+        self.assert_marks_fail([future], "after today")
+        opened = date.fromisoformat(json.loads(PRODUCTION_TEXT)["account"]["openedOn"])
+        early = opened - timedelta(days=1)
+        while early.weekday() >= 5:
+            early -= timedelta(days=1)
+        self.assertLess(early, opened)
+        self.assertLessEqual(early, datetime.now(EASTERN).date())
+        self.assert_marks_fail([early], "book start")
+        self.assert_marks_fail([date(2026, 11, 11), date(2026, 11, 11)], "strictly ascending and unique")
+        self.assert_marks_fail([date(2026, 11, 12), date(2026, 11, 11)], "strictly ascending and unique")
+        self.assert_marks_fail(["2026-02-31"], "real calendar date")
+        self.assert_marks_fail(["2026/11/11"], "YYYY-MM-DD")
+        self.assert_marks_fail(
+            [date(2026, 11, 11)],
+            "non-negative",
+            lambda detail: detail.replace("Equity $1,000.00", "Equity -$1.00", 1),
+        )
+        book = json.loads(PRODUCTION_TEXT)
+        book["events"] = [event for event in book["events"] if event.get("type") != "mark"]
+        with self.assertRaisesRegex(AssertionError, "marks exist"):
+            self.assert_daily_marks(book)
+
     def test_production_ledger_is_still_the_unfilled_zd_order(self):
         self.assertEqual(LEDGER.read_text(encoding="utf-8"), PRODUCTION_TEXT)
         book = json.loads(PRODUCTION_TEXT)
@@ -657,10 +826,13 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertEqual(book["workingOrders"][0]["firstEligibleSession"], "2026-11-11")
         self.assertEqual(book["openPositions"], [])
         self.assertEqual(book["closedTrades"], [])
-        self.assertEqual(types(book), ["account_opened", "order_placed", "mark", "mark"])
-        self.assertEqual(book["events"][2]["session"], "2026-11-11")
-        self.assertEqual(book["events"][3]["session"], "2026-11-12")
-        self.assertNotIn("fill", types(book))
+        # A weekday close appends another mark. Check the shape, not a fixed date list.
+        event_types = types(book)
+        self.assertEqual(event_types[:2], ["account_opened", "order_placed"])
+        self.assertGreaterEqual(len(event_types), 3)
+        self.assertEqual(set(event_types[2:]), {"mark"})
+        self.assert_daily_marks(book)
+        self.assertNotIn("fill", event_types)
         self.assertEqual(settle.dumps(book), PRODUCTION_TEXT)
 
     def filled(self):
