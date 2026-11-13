@@ -124,7 +124,18 @@
     }
   }
   function blank() {
-    return MAZE.map(function (row) { return row.split(''); });
+    var g = MAZE.map(function (row) { return row.split(''); });
+    if (level === 1) {
+      var n = 0;
+      g.forEach(function (row) {
+        row.forEach(function (ch, c) {
+          if (ch !== '.') return;
+          n += 1;
+          if (n % 5 === 0) row[c] = ' ';
+        });
+      });
+    }
+    return g;
   }
   function countDots(g) {
     var n = 0;
@@ -564,8 +575,8 @@
         ctx.fillRect(cx - 6 - p, cy - 2 - p, 8 + p, 4 + p * 2);
       }
     }
-    mark('#1a1400', 1);
-    mark('#ffe14a', 0);
+    mark('#172554', 1);
+    mark('#93c5fd', 0);
   }
   function placeSharp(canvas, logicalW, logicalH, host) {
     var availW = Math.max(1, host.clientWidth);
@@ -594,16 +605,21 @@
     return ctx;
   }
   function drawMoth(ctx, x, y, bob) {
-    ctx.fillStyle = 'rgba(244,211,94,0.35)';
-    ctx.fillRect(x - 2, y - 1, 4, 4);
-    ctx.fillStyle = '#c084fc';
-    ctx.fillRect(x - 4, y - 2 - bob, 2, 3);
-    ctx.fillRect(x + 2, y - 2 - bob, 2, 3);
-    ctx.fillStyle = '#f4d35e';
-    ctx.fillRect(x - 1, y - 2, 3, 4);
-    ctx.fillStyle = '#1a1020';
-    ctx.fillRect(x - 1, y - 1, 1, 1);
-    ctx.fillRect(x + 1, y - 1, 1, 1);
+    ctx.fillStyle = 'rgba(147, 197, 253, 0.7)';
+    ctx.fillRect(x - 6, y - 6 - bob, 12, 12);
+    ctx.fillStyle = '#1d4ed8';
+    ctx.fillRect(x - 4, y - 4 - bob, 8, 8);
+    ctx.fillStyle = '#60a5fa';
+    ctx.fillRect(x - 6, y - 2 - bob, 3, 4);
+    ctx.fillRect(x + 3, y - 2 - bob, 3, 4);
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(x - 6, y - 3 - bob, 3, 1);
+    ctx.fillRect(x + 3, y - 3 - bob, 3, 1);
+    ctx.fillStyle = '#f8fbff';
+    ctx.fillRect(x - 2, y - 3 - bob, 4, 6);
+    ctx.fillStyle = '#1d4ed8';
+    ctx.fillRect(x - 1, y - 2 - bob, 1, 1);
+    ctx.fillRect(x + 1, y - 2 - bob, 1, 1);
   }
   function drawWarden(ctx, g, frame) {
     var x = g.x;
