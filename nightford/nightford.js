@@ -46,6 +46,7 @@
   var deadT = 0;
   var readyT = 0;
   var safe = 0;
+  var liveCue = 0;
   var winT = 0;
   var snare = 0;
   var snareOn = false;
@@ -185,6 +186,7 @@
     snareOn = false;
     snare = 0;
     popups = [];
+    liveCue = 0;
     safe = level < 2 ? 12 : 2.2;
   }
   function popup(text, x, y) {
@@ -367,7 +369,10 @@
   }
   function updatePlay(dt) {
     clock += dt;
+    var wasClear = level < 2 && safe > 0;
     if (safe > 0) safe -= dt;
+    if (wasClear && safe <= 0) liveCue = reduce ? 0.6 : 1.6;
+    if (liveCue > 0) liveCue -= dt;
     if (flash > 0) flash -= dt;
     timer -= dt;
     if (timer <= 0) { die('dusk'); return; }
@@ -554,6 +559,8 @@
       var y0 = lane.row * TILE_H;
       lane.items.forEach(function (it) {
         if (lane.kind === 'car') {
+          var ghostCar = level < 2 && safe > 0;
+          if (ghostCar) ctx.globalAlpha = 0.28;
           ctx.fillStyle = '#05060a';
           ctx.fillRect(it.x - 1, y0 + 4, it.w + 2, 14);
           ctx.fillStyle = lane.color;
@@ -567,6 +574,7 @@
           ctx.fillStyle = '#111';
           ctx.fillRect(it.x + 2, y0 + 15, 4, 3);
           ctx.fillRect(it.x + it.w - 6, y0 + 15, 4, 3);
+          if (ghostCar) ctx.globalAlpha = 1;
         } else {
           var down = it.kind === 'pad' && it.phase > 0.62;
           if (it.kind === 'pad') {
@@ -611,6 +619,25 @@
     if (flash > 0) {
       ctx.fillStyle = 'rgba(255,255,255,' + Math.min(0.5, flash) + ')';
       ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+    }
+    if (level < 2 && safe > 0 && (phase === 'play' || phase === 'ready' || phase === 'dead')) {
+      var barW = WORLD_W - 12;
+      ctx.fillStyle = 'rgba(6, 24, 16, 0.92)';
+      ctx.fillRect(4, 22, WORLD_W - 8, 22);
+      ctx.fillStyle = '#86efac';
+      ctx.fillRect(6, 38, Math.max(0, barW * Math.max(0, safe) / 12), 4);
+      ctx.fillStyle = '#ecfdf5';
+      ctx.font = '700 10px JetBrains Mono, ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('ROAD CLEAR ' + Math.ceil(Math.max(0, safe)), WORLD_W / 2, 34);
+    }
+    if (liveCue > 0 && (phase === 'play' || phase === 'ready')) {
+      ctx.fillStyle = 'rgba(69, 10, 10, 0.94)';
+      ctx.fillRect(4, 22, WORLD_W - 8, 18);
+      ctx.fillStyle = '#fecaca';
+      ctx.font = '700 11px JetBrains Mono, ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('CARS LIVE', WORLD_W / 2, 35);
     }
     if (phase === 'ready') {
       ctx.fillStyle = 'rgba(7,11,20,0.82)';
