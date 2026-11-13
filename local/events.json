@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13T04:08:38Z",
+ "updated": "2026-11-13T05:13:35Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -11,7 +11,7 @@
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=15&feed=calendar",
    "ok": true,
-   "count": 1
+   "count": 2
   },
   {
    "name": "City of Cocoa Beach",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 8
+   "count": 6
   },
   {
    "name": "City of Titusville",
@@ -59,7 +59,7 @@
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 35
+   "count": 36
   },
   {
    "name": "Launch Library 2",
@@ -95,76 +95,6 @@
    "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "1bd0297cb3fa1ed4",
-   "title": "Norwegian Getaway in port",
-   "start": "2026-11-11T22:00:00Z",
-   "end": "2026-11-12T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "7d51ef361801754b",
-   "title": "Carnival Freedom in port",
-   "start": "2026-11-12T12:00:00Z",
-   "end": "2026-11-12T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT6",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "ae2bbd03790deda5",
-   "title": "Norwegian Prima in port",
-   "start": "2026-11-12T12:00:00Z",
-   "end": "2026-11-12T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "2bebd526b2fbf85b",
-   "title": "Other Post Employee Board of Trustees",
-   "start": "2026-11-12T16:00:00Z",
-   "end": "2026-11-13T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Round Room at City Hall</p><p>555 South Washington Avenue</p> - Round Room at City Hall 555 South Washington Avenue T",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2839",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2839",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "c5ec53227921ff4d",
-   "title": "North Brevard Commission on Parks and Recreation",
-   "start": "2026-11-12T21:00:00Z",
-   "end": "2026-11-13T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>North Brevard Senior Center</p> - 909 Lane Avenue Titusville FL 32780",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2559",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2559",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -1006,6 +936,76 @@
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
+  },
+  {
+   "id": "a1f9f390048f7b77",
+   "title": "Running Zone Foundation and Space Coast Runners Annual Space Coast Marathon and Half Marathon",
+   "start": "2026-11-22T11:00:00Z",
+   "end": "2026-11-22T18:00:00Z",
+   "town": "Cocoa",
+   "venue": "Cocoa Riverfront Park - 401 Riveredge Blvd. Cocoa FL 32922",
+   "category": "Sports",
+   "url": "https://www.cocoafl.gov/calendar.aspx?EID=6362",
+   "description": "https://www.cocoafl.gov/calendar.aspx?EID=6362",
+   "source": "City of Cocoa",
+   "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "121e0026013d7900",
+   "title": "Star of the Seas in port",
+   "start": "2026-11-22T11:00:00Z",
+   "end": "2026-11-22T21:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "d9cffeac30d74f56",
+   "title": "Carnival Venezia in port",
+   "start": "2026-11-22T11:00:00Z",
+   "end": "2026-11-22T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "bdea8413a5de09f2",
+   "title": "Carnival Vista in port",
+   "start": "2026-11-22T12:00:00Z",
+   "end": "2026-11-22T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "6a3bb61f5e199284",
+   "title": "Norwegian Epic in port",
+   "start": "2026-11-22T12:00:00Z",
+   "end": "2026-11-22T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
   },
   {
    "id": "d19b86d56b8cfdda",
