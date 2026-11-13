@@ -29,20 +29,14 @@
     return appsReady();
   }
 
-  /* Find reads the same program list as All Apps. Keywords live on each program. */
-  var games = [
+  /* Find-only aliases. These are modes inside an app, not extra nav rows. */
+  var findAliases = [
     { kind: 'Game', title: 'High Seas Cruiser', href: '/arcade/', text: 'arcade seas cruise cart' },
     { kind: 'Game', title: 'Supreme Kitchen Rush', href: '/arcade/', text: 'arcade kitchen cart' },
     { kind: 'Game', title: 'Cyber Brick Breaker', href: '/arcade/', text: 'arcade breaker cart' },
-    { kind: 'Game', title: 'Virtual Pet', href: '/pet/', text: 'pet egg tamagotchi' },
-    { kind: 'Game', title: 'Craft', href: '/mmo/', text: 'mmo mondocraft goldhaven' },
     { kind: 'Game', title: 'Half Strike Fortress — Sector C Labs', href: '/fps/', text: 'fps half strike fortress labs crowbar' },
     { kind: 'Game', title: 'Half Strike Fortress — de_sandstorm', href: '/fps/', text: 'fps half strike fortress bomb sandstorm' },
-    { kind: 'Game', title: 'Half Strike Fortress — 2Fort', href: '/fps/', text: 'fps half strike fortress sentry 2fort' },
-{ kind: 'Game', title: 'Cinderlatch', href: '/escape/', text: 'cinderlatch escape room door' },
-    { kind: 'Game', title: 'Cinderwell', href: '/cinderwell/', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch hearth' },
-    { kind: 'Game', title: 'Saltflare', href: '/saltflare/', text: 'saltflare formation shooter moths flare skiff marsh' },
-    { kind: 'Game', title: 'Needlewake', href: '/needlewake/', text: 'needlewake vector shards glass needle field' }
+    { kind: 'Game', title: 'Half Strike Fortress — 2Fort', href: '/fps/', text: 'fps half strike fortress sentry 2fort' }
   ];
 
   function addItem(list, item) {
@@ -123,17 +117,19 @@
   }
   function catalog() {
     var list = [];
-    addItem(list, { kind: 'Section', title: 'Home', href: '/', text: 'home landing mondosupreme portal dashboard launcher' });
-    programs.forEach(function (item) {
+    var seen = {};
+    NAV.forEach(function (item) {
+      var key = item.title + '\n' + item.href;
+      if (seen[key]) return;
+      seen[key] = 1;
       addItem(list, {
-        kind: 'Section',
+        kind: item.group === 'Games' ? 'Game' : 'Section',
         title: item.title,
         href: item.href,
         text: [item.group, item.title, item.text].join(' ')
       });
     });
-    addItem(list, { kind: 'Section', title: 'Privacy', href: '/privacy/', text: 'privacy delete my data account policy' });
-    games.forEach(function (item) { addItem(list, item); });
+    findAliases.forEach(function (item) { addItem(list, item); });
     return list.concat(localItems(), remote);
   }
   function matches(item, query) {
@@ -427,38 +423,44 @@
 
   var AUDIO_KEY = 'mondosupreme.audio.v1';
   var FX_KEY = 'mondosupreme.fx.v1';
-  var programs = [
-    { title: 'Search', href: '/search/', icon: 'search', group: 'Finance & Search', text: 'ask mondo search engine cyber butler find' },
-    { title: 'Recipes', href: '/recipes/', icon: 'pot', group: 'Kitchen & Food', text: 'kitchen cookbook food cooking pasta dinner' },
-    { title: 'Grocery List', href: '/grocery/', icon: 'meal', group: 'Kitchen & Food', text: 'grocery list shopping aisle servings cart' },
-    { title: 'Recipe TV', href: '/daily-recipe/', icon: 'tv', group: 'Kitchen & Food', text: 'daily recipe youtube show realplayer chef television' },
-    { title: 'Cruises', href: '/cruises/', icon: 'ship', group: 'Space Coast & Travel', text: 'ships harbor cruise royal caribbean port canaveral sailing' },
-    { title: 'Weather', href: '/weather/', icon: 'radar', group: 'Space Coast & Travel', text: 'weather radar doppler forecast cocoa port canaveral temperature rain' },
-    { title: 'Launch Control', href: '/launches/', icon: 'rocket', group: 'Space Coast & Travel', text: 'launch launches cape canaveral kennedy rocket falcon artemis starship countdown' },
-    { title: 'Tide & Surf', href: '/tides/', icon: 'tide', group: 'Space Coast & Travel', text: 'tide tides surf wave waves swell beach ocean port canaveral trident pier marine' },
-    { title: 'Local Guide', href: '/local/', icon: 'pin', group: 'Space Coast & Travel', text: 'local guide events calendar cocoa merritt island cocoa beach brevard town happening' },
-    { title: 'Planting', href: '/planting/', icon: 'sprout', group: 'Space Coast & Travel', text: 'planting garden zone 10a 32927 cocoa port st john vegetables herbs flowers fruit calendar' },
-    { title: 'Tropics', href: '/tropics/', icon: 'storm', group: 'Space Coast & Travel', text: 'tropics tropical hurricane hurricanes storm storms atlantic basin cyclone nhc' },
-    { title: 'Connections', href: '/connections/', icon: 'puzzle', group: 'Game Studio', text: 'connections sudoku puzzle groups four daily mini' },
-    { title: 'Stocks', href: '/stocks/', icon: 'chart', group: 'Finance & Search', text: 'stocks market quote oversold rsi swing screen ticker' },
-    { title: 'Word Game', href: '/wordle/', icon: 'word', group: 'Game Studio', text: 'wordle word game daily five letter puzzle' },
-    { title: 'Mini Crossword', href: '/crossword/', icon: 'cross', group: 'Game Studio', text: 'mini crossword trivia daily clues' },
-    { title: 'Wiki', href: '/wiki/', icon: 'book', group: 'Finance & Search', text: 'wiki notes notebook pages' },
-    { title: 'Paint', href: '/board/', icon: 'paint', group: 'Community', text: 'paint drawing whiteboard board canvas' },
-    { title: 'Chat', href: '/chat/', icon: 'aim', group: 'Community', text: 'chat room talk messages public' },
-    { title: 'Arcade', href: '/arcade/', icon: 'joy', group: 'Game Studio', text: 'arcade games cruiser brick breaker cabinet' },
-    { title: 'Virtual Pet', href: '/pet/', icon: 'egg', group: 'Game Studio', text: 'virtual pet egg tamagotchi habitat park' },
-    { title: 'Radio', href: '/radio/', icon: 'radio', group: 'Community', text: 'radio soundboard stream stations synth' },
-    { title: 'Bulletin Forum', href: '/forum/', icon: 'forum', group: 'Community', text: 'forum bulletin board posts topics' },
-    { title: 'Marketplace', href: '/market/', icon: 'gavel', group: 'Community', text: 'marketplace market classifieds for sale listing shop ebay' },
-    { title: 'Mystic 8-Ball', href: '/8ball/', icon: 'ball', group: 'Game Studio', text: 'magic 8-ball mystic oracle fortune eight ball' },
-    { title: 'Craft', href: '/mmo/', icon: 'sword', group: 'Game Studio', text: 'craft mmo mondocraft faction class goldhaven realm' },
-    { title: 'Half Strike Fortress', href: '/fps/', icon: 'gun', group: 'Game Studio', text: 'half strike fortress fps shooter labs' },
-{ title: 'Cinderlatch', href: '/escape/', icon: 'door', group: 'Game Studio', text: 'cinderlatch escape door locked room begin' },
-    { title: 'Cinderwell', href: '/cinderwell/', icon: 'banner', group: 'Game Studio', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch' },
-    { title: 'Saltflare', href: '/saltflare/', icon: 'flare', group: 'Game Studio', text: 'saltflare formation shooter moths flare skiff' },
-    { title: 'Needlewake', href: '/needlewake/', icon: 'needle', group: 'Game Studio', text: 'needlewake vector shards glass needle' }
+  /* One nav for every page: the top bar, the All Apps drawer, and Find. */
+  var NAV = [
+    { group: 'Games', title: 'Arcade', href: '/arcade/', icon: 'joy', text: 'arcade games cruiser brick breaker cabinet saltflare needlewake phosphor night ford' },
+    { group: 'Games', title: 'Cinderwell', href: '/cinderwell/', icon: 'banner', text: 'cinderwell strategy skirmish kilnward reedhost ore thatch hearth' },
+    { group: 'Games', title: 'Cinderlatch', href: '/escape/', icon: 'door', text: 'cinderlatch escape door locked room begin' },
+    { group: 'Games', title: 'Saltflare', href: '/saltflare/', icon: 'flare', text: 'saltflare formation shooter moths flare skiff marsh' },
+    { group: 'Games', title: 'Needlewake', href: '/needlewake/', icon: 'needle', text: 'needlewake vector shards glass needle field' },
+    { group: 'Games', title: 'Half Strike Fortress', href: '/fps/', icon: 'gun', text: 'half strike fortress fps shooter labs sandstorm 2fort crowbar' },
+    { group: 'Games', title: 'Phosphor Halls', href: '/phosphor/', icon: 'lamp', text: 'phosphor halls maze lamp moth crumbs wardens cold lamp' },
+    { group: 'Games', title: 'Night Ford', href: '/nightford/', icon: 'ford', text: 'night ford hopper cricket barges porch lights carts river' },
+    { group: 'Games', title: 'Craft', href: '/mmo/', icon: 'sword', text: 'craft mmo mondocraft faction class goldhaven realm' },
+    { group: 'Games', title: 'Virtual Pet', href: '/pet/', icon: 'egg', text: 'virtual pet egg tamagotchi habitat park' },
+    { group: 'Games', title: 'Word Game', href: '/wordle/', icon: 'word', text: 'wordle word game daily five letter puzzle' },
+    { group: 'Games', title: 'Connections', href: '/connections/', icon: 'puzzle', text: 'connections sudoku puzzle groups four daily mini' },
+    { group: 'Games', title: 'Mini Crossword', href: '/crossword/', icon: 'cross', text: 'mini crossword trivia daily clues' },
+    { group: 'Games', title: 'Mystic 8-Ball', href: '/8ball/', icon: 'ball', text: 'magic 8-ball mystic oracle fortune eight ball' },
+    { group: 'Tools', title: 'Recipes', href: '/recipes/', icon: 'pot', text: 'kitchen cookbook food cooking pasta dinner' },
+    { group: 'Tools', title: 'Grocery List', href: '/grocery/', icon: 'meal', text: 'grocery list shopping aisle servings cart' },
+    { group: 'Tools', title: 'Recipe TV', href: '/daily-recipe/', icon: 'tv', text: 'daily recipe youtube show realplayer chef television' },
+    { group: 'Tools', title: 'Search', href: '/search/', icon: 'search', text: 'ask mondo search engine cyber butler find hollis' },
+    { group: 'Tools', title: 'Stocks', href: '/stocks/', icon: 'chart', text: 'stocks market quote oversold rsi swing screen ticker informational' },
+    { group: 'Tools', title: 'Weather', href: '/weather/', icon: 'radar', text: 'weather radar doppler forecast cocoa port canaveral temperature rain' },
+    { group: 'Tools', title: 'Cruises', href: '/cruises/', icon: 'ship', text: 'ships harbor cruise royal caribbean port canaveral sailing' },
+    { group: 'Tools', title: 'Launches', href: '/launches/', icon: 'rocket', text: 'launch launches launch control cape canaveral kennedy rocket falcon artemis starship countdown' },
+    { group: 'Tools', title: 'Tide & Surf', href: '/tides/', icon: 'tide', text: 'tide tides surf wave waves swell beach ocean port canaveral trident pier marine' },
+    { group: 'Tools', title: 'Local Guide', href: '/local/', icon: 'pin', text: 'local guide events calendar cocoa merritt island cocoa beach brevard town happening' },
+    { group: 'Tools', title: 'Planting', href: '/planting/', icon: 'sprout', text: 'planting garden zone 10a 32927 cocoa port st john vegetables herbs flowers fruit calendar' },
+    { group: 'Tools', title: 'Tropics', href: '/tropics/', icon: 'storm', text: 'tropics tropical hurricane hurricanes storm storms atlantic basin cyclone nhc' },
+    { group: 'Info', title: 'Home', href: '/', icon: 'home', text: 'home landing mondosupreme portal dashboard launcher' },
+    { group: 'Info', title: 'Wiki', href: '/wiki/', icon: 'book', text: 'wiki notes notebook pages' },
+    { group: 'Info', title: 'Chat', href: '/chat/', icon: 'aim', text: 'chat room talk messages public' },
+    { group: 'Info', title: 'Paint', href: '/board/', icon: 'paint', text: 'paint drawing whiteboard board canvas' },
+    { group: 'Info', title: 'Radio', href: '/radio/', icon: 'radio', text: 'radio soundboard stream stations synth' },
+    { group: 'Info', title: 'Bulletin Forum', href: '/forum/', icon: 'forum', text: 'forum bulletin board posts topics' },
+    { group: 'Info', title: 'Marketplace', href: '/market/', icon: 'gavel', text: 'marketplace market classifieds for sale listing shop ebay' },
+    { group: 'Info', title: 'Privacy', href: '/privacy/', icon: 'shield', text: 'privacy delete my data account policy' }
   ];
+  window.MONDO_NAV = NAV;
   var toyLinks = [
     { title: '56k Dial-Up', href: '/#dialup', icon: 'modem' },
     { title: 'Magic 8-Ball', href: '/8ball/', icon: 'ball' },
@@ -504,7 +506,9 @@
     chart: [[2,12,3,2,'#00aa00'],[6,8,3,6,'#00aa00'],[10,5,3,9,'#00aa00'],[2,14,12,1,'#000']],
     forum: [[1,2,10,7,'#fff'],[3,4,6,1,'#000080'],[3,6,5,1,'#000080'],[1,9,6,4,'#c0c0c0'],[8,6,7,6,'#ffffcc']],
     flare: [[6,1,4,2,'#ffb703'],[7,3,2,2,'#fff3c4'],[4,6,8,3,'#146e72'],[3,9,10,3,'#e6c27a'],[2,12,3,2,'#8d6840'],[11,12,3,2,'#8d6840']],
-    needle: [[7,1,2,7,'#d7fff6'],[5,8,6,2,'#7ee0ff'],[3,11,3,3,'#9db4ff'],[10,12,3,2,'#ffd59a']]
+    needle: [[7,1,2,7,'#d7fff6'],[5,8,6,2,'#7ee0ff'],[3,11,3,3,'#9db4ff'],[10,12,3,2,'#ffd59a']],
+    lamp: [[6,3,4,2,'#fff3c4'],[5,5,6,5,'#ffe14a'],[6,10,4,2,'#c0c0c0'],[4,13,8,1,'#808080']],
+    ford: [[3,8,10,2,'#c0c0c0'],[4,5,8,3,'#000080'],[6,3,4,2,'#ffcc00'],[5,10,2,3,'#804000'],[9,10,2,3,'#804000']]
   };
   /* Self-hosted line icons. 24px grid, uniform 2px stroke, Lucide/Phosphor style. Original drawings, no CDN. */
   var LINE = {
@@ -546,7 +550,9 @@
     chart: '<path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/>',
     forum: '<path d="M6 16.5 3.5 19V6.5A2.5 2.5 0 0 1 6 4h8a2.5 2.5 0 0 1 2.5 2.5V14a2.5 2.5 0 0 1-2.5 2.5z"/><path d="M10 16.5V18a2 2 0 0 0 2 2h5.2L20.5 22v-8A2 2 0 0 0 18.5 12H16"/>',
     flare: '<path d="M12 3c1.2 2 2 3.2 2 4.5a2 2 0 0 1-4 0C10 6.2 10.8 5 12 3z"/><path d="M8 11h8v3H8z"/><path d="M5 14h14l-2 4H7z"/>',
-    needle: '<path d="M12 3 16 14 12 12 8 14z"/><path d="M4 18h4M16 18h4M6 21h3M15 21h3"/>'
+    needle: '<path d="M12 3 16 14 12 12 8 14z"/><path d="M4 18h4M16 18h4M6 21h3M15 21h3"/>',
+    lamp: '<path d="M9 18h6"/><path d="M10 21h4"/><path d="M8 14.5A4 4 0 1 1 16 14.5c0 1.6-1 2.4-2 3.2V18h-4v-.3c-1-.8-2-1.6-2-3.2z"/>',
+    ford: '<path d="M4 17h16"/><path d="M7 17V10l5-4 5 4v7"/><path d="M11 17v-4h2v4"/>'
   };
   /* Tile fill plus a dark stroke. Same pair in light and dark so the icon never sits white-on-navy. */
   var ACCENT = {
@@ -588,7 +594,9 @@
     chart: ['#ecfccb', '#3f6212'],
     forum: ['#e2e8f0', '#1e293b'],
     flare: ['#ffedd5', '#9a3412'],
-    needle: ['#cffafe', '#155e75']
+    needle: ['#cffafe', '#155e75'],
+    lamp: ['#fef9c3', '#854d0e'],
+    ford: ['#dbeafe', '#1e3a8a']
   };
   function lineSvg(name, className) {
     var cls = className ? ' class="' + className + '"' : '';
@@ -666,6 +674,14 @@
       writeFx(fx);
     }
   };
+  function isCurrent(href) {
+    var path = location.pathname || '/';
+    if (path.length > 1 && path.slice(-11) === '/index.html') path = path.slice(0, -10);
+    if (href === '/') return path === '/';
+    var base = String(href || '/').split('#')[0];
+    if (base.charAt(base.length - 1) !== '/') base += '/';
+    return path === base || path.indexOf(base) === 0;
+  }
   function menuLink(item) {
     var link = document.createElement('a');
     link.className = 'studio-app';
@@ -681,17 +697,22 @@
     link.appendChild(classic);
     var label = document.createElement('span');
     label.className = 'app-label';
-    var dot = item.title.lastIndexOf('.');
-    if (dot > 4 && item.title.length > 12) {
-      label.appendChild(document.createTextNode(item.title.slice(0, dot)));
-      label.appendChild(document.createElement('wbr'));
-      label.appendChild(document.createTextNode(item.title.slice(dot)));
-    } else label.textContent = item.title;
+    label.textContent = item.title;
     link.appendChild(label);
-    var path = location.pathname;
-    var here = item.href === '/' ? path === '/' : path.indexOf(item.href) === 0;
-    if (here) link.setAttribute('aria-current', 'page');
+    if (isCurrent(item.href)) link.setAttribute('aria-current', 'page');
     return link;
+  }
+  function navGroups() {
+    var order = [];
+    var map = {};
+    NAV.forEach(function (item) {
+      if (!map[item.group]) {
+        map[item.group] = [];
+        order.push(item.group);
+      }
+      map[item.group].push(item);
+    });
+    return order.map(function (name) { return [name, map[name]]; });
   }
   function armStars() {
     if (document.getElementById('starTrail')) return;
@@ -744,7 +765,7 @@
     else if (path.indexOf('/stocks') === 0) section = 'studio-finance';
     else if (path.indexOf('/search') === 0 || path.indexOf('/wiki') === 0) section = 'studio-editorial';
     else if (path.indexOf('/forum') === 0 || path.indexOf('/chat') === 0 || path.indexOf('/market') === 0 || path.indexOf('/board') === 0) section = 'studio-community';
-    else if (path.indexOf('/arcade') === 0 || path.indexOf('/pet') === 0 || path.indexOf('/mmo') === 0 || path.indexOf('/fps') === 0 || path.indexOf('/wordle') === 0 || path.indexOf('/crossword') === 0 || path.indexOf('/8ball') === 0 || path.indexOf('/escape') === 0 || path.indexOf('/cinderwell') === 0 || path.indexOf('/saltflare') === 0 || path.indexOf('/needlewake') === 0) section = 'studio-game';
+    else if (path.indexOf('/arcade') === 0 || path.indexOf('/pet') === 0 || path.indexOf('/mmo') === 0 || path.indexOf('/fps') === 0 || path.indexOf('/wordle') === 0 || path.indexOf('/crossword') === 0 || path.indexOf('/connections') === 0 || path.indexOf('/8ball') === 0 || path.indexOf('/escape') === 0 || path.indexOf('/cinderwell') === 0 || path.indexOf('/saltflare') === 0 || path.indexOf('/needlewake') === 0 || path.indexOf('/phosphor') === 0 || path.indexOf('/nightford') === 0) section = 'studio-game';
     document.body.classList.add(section);
   }
   function linkPrivacy() {
@@ -908,8 +929,7 @@
     writeFx({ scan: 0, stars: 0 });
     document.documentElement.setAttribute('data-muted', audioMuted() ? '1' : '0');
     tagSection();
-    var nav = document.querySelector('.site-header .site-nav');
-    if (!nav || document.querySelector('.studio-nav')) return;
+    if (document.querySelector('.studio-nav')) return;
     window.__mondoPageAuth = appsReady();
     loadRemoteCache();
 
@@ -924,29 +944,12 @@
     var links = document.createElement('nav');
     links.className = 'studio-links';
     links.setAttribute('aria-label', 'Primary');
-    [
-      ['Recipes', '/recipes/'],
-      ['Cruises', '/cruises/'],
-      ['Weather', '/weather/'],
-      ['Tides', '/tides/'],
-      ['Launches', '/launches/'],
-      ['Grocery List', '/grocery/'],
-      ['Puzzles', '/connections/'],
-      ['Local', '/local/'],
-      ['Planting', '/planting/'],
-      ['Tropics', '/tropics/'],
-      ['Markets', '/stocks/'],
-      ['Search', '/search/'],
-      ['Community', '/forum/'],
-      ['Games', '/arcade/'],
-      ['Saltflare', '/saltflare/'],
-      ['Needlewake', '/needlewake/'],
-      ['Cinderwell', '/cinderwell/']
-    ].forEach(function (pair) {
+    links.setAttribute('data-shared-nav', 'links');
+    NAV.forEach(function (item) {
       var a = document.createElement('a');
-      a.href = pair[1];
-      a.textContent = pair[0];
-      if (location.pathname.indexOf(pair[1]) === 0) a.setAttribute('aria-current', 'page');
+      a.href = item.href;
+      a.textContent = item.title;
+      if (isCurrent(item.href)) a.setAttribute('aria-current', 'page');
       links.appendChild(a);
     });
     var start = document.createElement('button');
@@ -962,39 +965,30 @@
     menu.className = 'studio-drawer';
     menu.id = 'shellMenu';
     menu.setAttribute('aria-label', 'All apps');
+    menu.setAttribute('data-shared-nav', 'menu');
     var popoverOk = typeof menu.showPopover === 'function';
     if (popoverOk) {
       menu.setAttribute('popover', 'auto');
       start.setAttribute('popovertarget', 'shellMenu');
     } else menu.hidden = true;
-    var groups = [
-      ['Kitchen & Food', ['Recipes', 'Grocery List', 'Recipe TV']],
-      ['Space Coast & Travel', ['Cruises', 'Weather', 'Launch Control', 'Tide & Surf', 'Local Guide', 'Planting', 'Tropics']],
-      ['Finance & Search', ['Stocks', 'Search', 'Wiki']],
-      ['Community', ['Bulletin Forum', 'Chat', 'Paint', 'Marketplace', 'Radio']],
-['Game Studio', ['Arcade', 'Saltflare', 'Needlewake', 'Virtual Pet', 'Word Game', 'Connections', 'Mini Crossword', 'Mystic 8-Ball', 'Craft', 'Half Strike Fortress', 'Cinderlatch', 'Cinderwell']]
-    ];
-    groups.forEach(function (group) {
+    navGroups().forEach(function (group) {
       var block = document.createElement('section');
       block.className = 'studio-group';
       var heading = document.createElement('h2');
+      heading.id = 'nav-group-' + group[0].toLowerCase();
       heading.textContent = group[0];
       block.appendChild(heading);
-      var list = document.createElement('div');
-      list.className = 'studio-apps-grid';
-      group[1].forEach(function (title) {
-        var item = null;
-        for (var i = 0; i < programs.length; i++) if (programs[i].title === title) item = programs[i];
-        if (item) list.appendChild(menuLink(item));
+      var list = document.createElement('ul');
+      list.className = 'studio-navlist';
+      list.setAttribute('aria-labelledby', heading.id);
+      group[1].forEach(function (item) {
+        var li = document.createElement('li');
+        li.appendChild(menuLink(item));
+        list.appendChild(li);
       });
       block.appendChild(list);
       menu.appendChild(block);
     });
-    var studio = document.createElement('div');
-    studio.className = 'studio-apps-grid';
-    studio.appendChild(menuLink({ title: 'Home', href: '/', icon: 'home' }));
-    studio.appendChild(menuLink({ title: 'Privacy', href: '/privacy/', icon: 'shield' }));
-    menu.insertBefore(studio, menu.firstChild);
     var actions = document.createElement('div');
     actions.className = 'studio-actions shell-bar';
     var findBtn = document.createElement('button');
@@ -1226,7 +1220,7 @@
 
     armDialogs(document);
     trackKeyboard();
-    var current = nav.querySelector('[aria-current="page"]');
+    var current = links.querySelector('[aria-current="page"]');
     if (current && current.scrollIntoView) current.scrollIntoView({ inline: 'center', block: 'nearest' });
 
     document.addEventListener('visibilitychange', function () {
