@@ -3,9 +3,10 @@
   "attribution": {
     "aishub": "Open Waters AIS (https://openwaters.io/ais/). AISHub (https://www.aishub.net)",
     "aisstream": "Open Waters AIS (https://openwaters.io/ais/). aisstream.io",
+    "aisstream.io": "Live AIS sampled from aisstream.io (https://aisstream.io/).",
     "openwaters.io": "Open Waters AIS (https://openwaters.io/ais/)."
   },
-  "heard": 0,
+  "heard": 1,
   "ships": {
     "210563000": {
       "aisName": "SPECTRUM OF THE SEAS",
@@ -184,14 +185,14 @@
     },
     "311000267": {
       "aisName": "QUANTUM OF THE SEAS",
-      "cog": 148.3,
+      "cog": 205.1,
       "destination": "AUBNE",
       "eta": "11-12 15:30",
       "heading": 238,
       "lat": -27.38163,
       "lon": 153.15634,
       "navStatus": 5,
-      "seen": "2026-11-13T01:44:30Z",
+      "seen": "2026-11-13T02:29:29Z",
       "sog": 0.0,
       "source": "openwaters.io",
       "trail": [
@@ -271,11 +272,6 @@
       "source": "aishub",
       "trail": [
         {
-          "lat": 26.22167,
-          "lon": -79.6161,
-          "seen": "2026-11-12T01:54:38Z"
-        },
-        {
           "lat": 26.23258,
           "lon": -79.48184,
           "seen": "2026-11-12T02:37:48Z"
@@ -315,11 +311,6 @@
       "sog": 9.5,
       "source": "aishub",
       "trail": [
-        {
-          "lat": 33.30083,
-          "lon": -118.23038,
-          "seen": "2026-11-12T01:54:07Z"
-        },
         {
           "lat": 33.21849,
           "lon": -118.11646,
@@ -454,16 +445,16 @@
     },
     "311001259": {
       "aisName": "UTOPIA OF THE SEAS",
-      "cog": 356.2,
+      "cog": 353.9,
       "destination": "USPCV",
       "eta": "11-13 10:00",
       "heading": 352,
-      "lat": 26.95737,
-      "lon": -79.72414,
+      "lat": 27.09323,
+      "lon": -79.74061,
       "navStatus": 0,
-      "seen": "2026-11-13T01:43:43Z",
+      "seen": "2026-11-13T02:29:44Z",
       "sog": 10.7,
-      "source": "openwaters.io",
+      "source": "aisstream.io",
       "trail": [
         {
           "lat": 26.3294,
@@ -564,6 +555,11 @@
           "lat": 26.95737,
           "lon": -79.72414,
           "seen": "2026-11-13T01:43:43Z"
+        },
+        {
+          "lat": 27.09323,
+          "lon": -79.74061,
+          "seen": "2026-11-13T02:29:44Z"
         }
       ]
     },
@@ -644,15 +640,15 @@
     },
     "311020600": {
       "aisName": "OASIS OF THE SEAS",
-      "cog": 181.3,
+      "cog": 196.8,
       "destination": "US PEF",
       "eta": "11-13 10:00",
-      "heading": 183,
-      "lat": 25.70457,
-      "lon": -79.58509,
+      "heading": 200,
+      "lat": 25.6535,
+      "lon": -79.586,
       "navStatus": 0,
-      "seen": "2026-11-13T01:43:30Z",
-      "sog": 4.7,
+      "seen": "2026-11-13T02:24:00Z",
+      "sog": 5.3,
       "source": "aishub",
       "trail": [
         {
@@ -754,6 +750,11 @@
           "lat": 25.70457,
           "lon": -79.58509,
           "seen": "2026-11-13T01:43:30Z"
+        },
+        {
+          "lat": 25.6535,
+          "lon": -79.586,
+          "seen": "2026-11-13T02:24:00Z"
         }
       ]
     },
@@ -834,15 +835,15 @@
     },
     "311315000": {
       "aisName": "GRANDEUR OF THE SEAS",
-      "cog": 247.3,
+      "cog": 246.2,
       "destination": "CWWIL>PAONX",
       "eta": "11-14 11:00",
-      "heading": 246,
-      "lat": 11.9542,
-      "lon": -74.08609,
+      "heading": 244,
+      "lat": 11.86582,
+      "lon": -74.29416,
       "navStatus": 0,
-      "seen": "2026-11-13T01:14:24Z",
-      "sog": 12.5,
+      "seen": "2026-11-13T02:18:54Z",
+      "sog": 12.3,
       "source": "aishub",
       "trail": [
         {
@@ -859,6 +860,11 @@
           "lat": 11.9542,
           "lon": -74.08609,
           "seen": "2026-11-13T01:14:24Z"
+        },
+        {
+          "lat": 11.86582,
+          "lon": -74.29416,
+          "seen": "2026-11-13T02:18:54Z"
         }
       ]
     },
@@ -1138,12 +1144,12 @@
         {
           "lat": 17.78209,
           "lon": -62.93147,
-          "seen": "2026-11-12T01:57:05Z"
+          "seen": "2026-11-13T02:30:08Z"
         }
       ]
     }
   },
   "source": "aisstream.io",
   "sourceUrl": "https://aisstream.io/",
-  "updated": "2026-11-13T01:44:45Z"
+  "updated": "2026-11-13T02:30:08Z"
 }
