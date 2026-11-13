@@ -5,9 +5,10 @@ const W = 360, H = 520;
 const HOW = {
   seas: 'Dodge islands, rogue waves, and whirlpools. Collect stars, passengers, and port bonuses. Speed climbs every level.',
   kitchen: 'Catch the ingredients for the dish on the order. Dodge burnt toast and bombs. Combos multiply the score.',
-  breaker: 'Move the paddle. Space or Enter launches the ball and fires lasers. A and D move left and right. Grab multi-ball, wide paddle, and laser drops.'
+  breaker: 'Move the paddle. Space or Enter launches the ball and fires lasers. A and D move left and right. Grab multi-ball, wide paddle, and laser drops.',
+  coil: 'Slide the spark wand along the hedge. It fires by itself. Pop the lantern chain before it reaches you. Later waves move faster and split.'
 };
-const NAMES = { seas: 'High Seas Cruiser', kitchen: 'Supreme Kitchen Rush', breaker: 'Cyber Brick Breaker' };
+const NAMES = { seas: 'High Seas Cruiser', kitchen: 'Supreme Kitchen Rush', breaker: 'Cyber Brick Breaker', coil: 'Lantern Coil' };
 const DISHES = [
   { name: 'Pasta', need: { tomato: 2, noodle: 1 } },
   { name: 'Omelette', need: { egg: 2, herb: 1 } },
@@ -20,11 +21,13 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 let canvas, ctx, current = 'seas', phase = 'attract', run = null, finalScore = 0;
 let raf = 0, last = 0;
-const input = { left: false, right: false, up: false, down: false, fire: false, px: null, touch: false };
+const input = { left: false, right: false, up: false, down: false, fire: false, px: null, py: null, touch: false };
 let audioCtx = null, soundOn = false;
 let serverLive = false, rulesBlocked = false, isOwner = false, myUid = '';
 let quota = { n: 0, day: 0 }, quotaLoaded = false, lastPost = 0, listening = false;
-const remote = { seas: {}, kitchen: {}, breaker: {} };
+const remote = { seas: {}, kitchen: {}, breaker: {}, coil: {} };
+let coilHold = false;
+let coilHarness = false;
 
 function loadStore() {
   let s = {};
@@ -452,11 +455,789 @@ function stepBreaker(dt) {
   setHud('Score ' + run.score + ' · Lives ' + run.lives + ' · Level ' + run.level + mode);
 }
 
+const COIL_CELL = 18;
+const COIL_COLS = 20;
+const coilStars = [];
+for (let starI = 0; starI < 26; starI++) {
+  coilStars.push({
+    x: Math.random() * W,
+    y: Math.random() * H * 0.7,
+    a: 0.25 + Math.random() * 0.6,
+    s: Math.random() < 0.18 ? 2 : 1,
+    v: 4 + Math.random() * 10
+  });
+}
+function coilMotion() {
+  const kit = juice();
+  if (kit && kit.reduced) return !kit.reduced();
+  return !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+function mushKey(x, y) {
+  const c = Math.floor(x / COIL_CELL);
+  const r = Math.floor(y / COIL_CELL);
+  if (c < 0 || c >= COIL_COLS || r < 0 || r > 28) return '';
+  return c + ',' + r;
+}
+function mushAt(x, y) {
+  const key = mushKey(x, y);
+  return key && run.mush[key] ? key : '';
+}
+function makeCoil(parts, dir, speed, dropSign) {
+  return {
+    x: parts[0].x,
+    y: parts[0].y,
+    dir: dir,
+    speed: speed,
+    dropLeft: 0,
+    dropSign: dropSign || 1,
+    nextDir: dir,
+    parts: parts
+  };
+}
+function chainParts(n, headX, y, dir, hp) {
+  const parts = [];
+  const life = hp || 1;
+  for (let i = 0; i < n; i++) parts.push({ x: headX - dir * i * 16, y: y, hp: life, max: life });
+  return parts;
+}
+function coilSpec(level) {
+  if (level <= 1) return { speed: 26, chains: [10], hp: 2, mush: 0, deep: 0, r0: 3, r1: 8, split: false, leave: 0, diver: false, reach: 18, cool: 0.22 };
+  if (level === 2) return { speed: 44, chains: [10], hp: 2, mush: 14, deep: 2, r0: 2, r1: 18, split: true, leave: 0.2, diver: false, reach: 14, cool: 0.3 };
+  if (level === 3) return { speed: 58, chains: [11, 6], hp: 2, mush: 10, deep: 3, r0: 2, r1: 19, split: true, leave: 0.35, diver: false, reach: 13, cool: 0.24 };
+  const extra = level - 3;
+  return {
+    speed: Math.min(108, 72 + extra * 8),
+    chains: extra >= 2 ? [12, 8] : [11, 7],
+    hp: extra >= 2 ? 2 : 1,
+    mush: Math.min(10, 5 + extra),
+    deep: Math.min(5, 3 + extra),
+    r0: 2,
+    r1: 20,
+    split: true,
+    leave: 0.4,
+    diver: true,
+    reach: 13,
+    cool: 0.2
+  };
+}
+function placeOpeningLamps() {
+  [[2, 4], [3, 6], [16, 5], [17, 7], [15, 4]].forEach(spot => {
+    run.mush[spot[0] + ',' + spot[1]] = 4;
+  });
+}
+function placeRandomLamps(n, r0, r1, deepN) {
+  let placed = 0;
+  let guard = 0;
+  while (placed < n && guard < 90) {
+    guard += 1;
+    const c = 1 + Math.floor(Math.random() * (COIL_COLS - 2));
+    const span = Math.max(1, r1 - r0);
+    const r = r0 + Math.floor(Math.random() * span);
+    if (r * COIL_CELL > H - 156) continue;
+    const key = c + ',' + r;
+    if (run.mush[key]) continue;
+    run.mush[key] = 4;
+    if (placed < (deepN || 0)) run.deep[key] = 1;
+    placed += 1;
+  }
+}
+function spawnWave(level) {
+  const spec = coilSpec(level);
+  run.spec = spec;
+  run.coils = [];
+  spec.chains.forEach((n, i) => {
+    const dir = i % 2 === 0 ? 1 : -1;
+    const y = 42 + i * 56;
+    const span = 16 * Math.min(n, 16);
+    const headX = dir > 0 ? Math.min(W - 48, Math.max(72, span)) : Math.max(48, W - span);
+    run.coils.push(makeCoil(chainParts(n, headX, y, dir, spec.hp), dir, spec.speed, 1));
+  });
+  if (level === 1) placeOpeningLamps();
+  else placeRandomLamps(spec.mush, spec.r0, spec.r1, spec.deep);
+  run.nextDiver = spec.diver ? run.t + 3.2 : 1e9;
+}
+function startCoilRun() {
+  run = {
+    player: { x: W / 2, y: H - 50, lives: 3, inv: 1.15 },
+    cool: 0.45,
+    coils: [],
+    shots: [],
+    divers: [],
+    mush: {},
+    deep: {},
+    pops: [],
+    score: 0,
+    level: 1,
+    flash: 0,
+    t: 0,
+    spec: null,
+    over: false,
+    cause: '',
+    born: [],
+    nextDiver: 1e9
+  };
+  spawnWave(1);
+  pop('WAVE 1', W / 2, 150);
+  return run;
+}
+function stepHead(coil, dt) {
+  const speed = coil.speed;
+  if (coil.diveLeft > 0) {
+    const step = Math.min(coil.diveLeft, 168 * dt);
+    coil.y += step;
+    coil.diveLeft -= step;
+    if (coil.y >= H - 100) {
+      coil.y = H - 100;
+      coil.diveLeft = 0;
+      coil.dropSign = -1;
+    }
+    if (coil.diveLeft <= 0) {
+      coil.dir = coil.nextDir;
+      coil.y = Math.round(coil.y);
+    }
+    return;
+  }
+  if (coil.dropLeft > 0) {
+    const step = Math.min(coil.dropLeft, speed * dt);
+    coil.y += coil.dropSign * step;
+    coil.dropLeft -= step;
+    if (coil.dropLeft <= 0) {
+      coil.dir = coil.nextDir;
+      coil.y = Math.round(coil.y);
+    }
+    coil.y = clamp(coil.y, 26, H - 36);
+    return;
+  }
+  coil.x += coil.dir * speed * dt;
+  const probe = coil.x + coil.dir * 11;
+  const wall = probe < 14 || probe > W - 14;
+  const lamp = mushAt(probe, coil.y);
+  if (lamp && run.deep[lamp]) {
+    coil.x = clamp(coil.x, 16, W - 16);
+    coil.diveLeft = 168;
+    coil.nextDir = -coil.dir;
+    return;
+  }
+  if (!wall && !lamp) {
+    coil.x = clamp(coil.x, 14, W - 14);
+    return;
+  }
+  coil.x = clamp(coil.x, 16, W - 16);
+  if (coil.y >= H - 86) coil.dropSign = -1;
+  else if (coil.y <= 34) coil.dropSign = 1;
+  let dest = coil.y + coil.dropSign * COIL_CELL;
+  if (dest < 26 || dest > H - 36) coil.dropSign *= -1;
+  dest = coil.y + coil.dropSign * COIL_CELL;
+  if (mushAt(coil.x, dest) && !wall) {
+    coil.dir *= -1;
+    coil.nextDir = coil.dir;
+    return;
+  }
+  coil.dropLeft = COIL_CELL;
+  coil.nextDir = -coil.dir;
+}
+function stepBody(coil, dt) {
+  if (!coil.parts.length) return;
+  coil.parts[0].x = coil.x;
+  coil.parts[0].y = coil.y;
+  const speed = coil.speed;
+  for (let i = 1; i < coil.parts.length; i++) {
+    const prev = coil.parts[i - 1];
+    const cur = coil.parts[i];
+    const dx = prev.x - cur.x;
+    const dy = prev.y - cur.y;
+    const dist = Math.hypot(dx, dy) || 0.0001;
+    if (dist > 16) {
+      const move = Math.min(dist - 16, speed * dt * 2.2);
+      cur.x += (dx / dist) * move;
+      cur.y += (dy / dist) * move;
+    }
+  }
+}
+function stepGardener(dt) {
+  const p = run.player;
+  p.inv = Math.max(0, p.inv - dt);
+  if (input.px != null) {
+    p.x = input.px * W;
+    if (input.py != null && input.py > 0.62) p.y = input.py * H;
+  } else {
+    const v = 240;
+    if (input.left) p.x -= v * dt;
+    if (input.right) p.x += v * dt;
+    if (input.up) p.y -= v * dt;
+    if (input.down) p.y += v * dt;
+  }
+  p.x = clamp(p.x, 18, W - 18);
+  p.y = clamp(p.y, H - 112, H - 34);
+}
+function coilHurt(cause) {
+  const p = run.player;
+  if (p.inv > 0 || run.over) return;
+  p.lives -= 1;
+  p.inv = 1.45;
+  run.flash = 0.18;
+  run.cause = cause || 'lantern';
+  beep(90, 0.18, 'sawtooth');
+  feel('hurt');
+  if (p.lives <= 0) {
+    run.over = true;
+    if (!coilHarness) finish();
+  }
+}
+function killLantern(coil, index) {
+  const part = coil.parts[index];
+  if (!part) return;
+  part.hp = (part.hp || 1) - 1;
+  if (part.hp > 0) {
+    run.score += 5;
+    pop('CRACK', part.x, part.y - 8);
+    beep(390, 0.04);
+    burstAt(part.x, part.y, '#fed7aa', 5);
+    return;
+  }
+  const head = index === 0;
+  run.score += head ? 100 : 10;
+  pop(head ? '+100' : '+10', part.x, part.y - 8);
+  const kit = juice();
+  if (kit) {
+    kit.burst(part.x, part.y, {
+      n: head ? 12 : 7,
+      color: head ? '#fde68a' : '#fb7185',
+      speed: head ? 130 : 90,
+      life: 0.4,
+      gravity: 60,
+      size: 3
+    });
+    if (head) kit.shake(2.4, 90);
+  }
+  beep(head ? 680 : 520, head ? 0.08 : 0.045);
+  if (head) beep(920, 0.06);
+  if (run.spec && run.spec.leave > 0 && Math.random() < run.spec.leave && part.y < H - 156) {
+    const key = mushKey(part.x, part.y);
+    if (key && !run.mush[key]) run.mush[key] = 4;
+  }
+  if (run.spec && run.spec.split && index > 0 && index < coil.parts.length - 1) {
+    const tail = coil.parts.slice(index + 1);
+    coil.parts.length = index;
+    if (tail.length) run.born.push(makeCoil(tail, -coil.dir, coil.speed, coil.dropSign));
+  } else coil.parts.splice(index, 1);
+  if (coil.parts.length) {
+    coil.x = coil.parts[0].x;
+    coil.y = coil.parts[0].y;
+  }
+}
+function burstAt(x, y, color, n) {
+  const kit = juice();
+  if (!kit) return;
+  kit.burst(x, y, { n: n || 6, color: color, speed: 80, life: 0.3, gravity: 40, size: 2 });
+}
+function stepShots(dt) {
+  const reach = (run.spec && run.spec.reach) || 16;
+  const next = [];
+  run.shots.forEach(shot => {
+    const yBot = shot.y;
+    shot.y -= 1100 * dt;
+    const yTop = shot.y;
+    let mush = '';
+    let mushY = -1;
+    for (let s = 1; s <= 6; s++) {
+      const y = yBot + (yTop - yBot) * (s / 6);
+      const key = mushAt(shot.x, y);
+      if (key) { mush = key; mushY = y; break; }
+    }
+    let best = null;
+    let bestY = -1;
+    run.coils.forEach(coil => {
+      coil.parts.forEach((part, index) => {
+        if (Math.abs(part.x - shot.x) > reach) return;
+        if (part.y > yBot + 6 || part.y < yTop - reach) return;
+        if (part.y > bestY) { bestY = part.y; best = { coil: coil, index: index }; }
+      });
+    });
+    let diver = null;
+    let diverY = -1;
+    run.divers.forEach(d => {
+      if (!d.alive) return;
+      if (Math.abs(d.x - shot.x) > 14) return;
+      if (d.y > yBot + 6 || d.y < yTop - 14) return;
+      if (d.y > diverY) { diverY = d.y; diver = d; }
+    });
+    const mushWins = mush && mushY >= bestY && mushY >= diverY;
+    const lanternWins = best && bestY >= diverY && !mushWins;
+    if (mushWins) {
+      run.mush[mush] -= 1;
+      run.score += 5;
+      pop('+5', shot.x, mushY);
+      beep(300, 0.03);
+      burstAt(shot.x, mushY, '#fbbf24', 5);
+      if (run.mush[mush] <= 0) {
+        delete run.mush[mush];
+        if (run.deep) delete run.deep[mush];
+        run.score += 15;
+      }
+      return;
+    }
+    if (lanternWins) {
+      killLantern(best.coil, best.index);
+      return;
+    }
+    if (diver) {
+      diver.alive = false;
+      run.score += 50;
+      pop('+50', diver.x, diver.y);
+      beep(740, 0.06);
+      burstAt(diver.x, diver.y, '#67e8f9', 8);
+      return;
+    }
+    if (shot.y > 10) next.push(shot);
+  });
+  run.shots = next;
+  if (run.born.length) {
+    run.coils = run.coils.concat(run.born);
+    run.born = [];
+  }
+}
+function stepDivers(dt) {
+  if (run.spec && run.spec.diver && run.t >= run.nextDiver) {
+    const gap = Math.max(4.6, 8.2 - run.level * 0.3);
+    run.nextDiver = run.t + gap;
+    const c = 2 + Math.floor(Math.random() * (COIL_COLS - 4));
+    run.divers.push({ x: c * COIL_CELL + COIL_CELL / 2, y: 28, warn: 0.9, vy: 0, alive: true });
+  }
+  run.divers.forEach(diver => {
+    if (!diver.alive) return;
+    if (diver.warn > 0) {
+      diver.warn -= dt;
+      if (diver.warn <= 0) diver.vy = 100 + Math.min(48, run.level * 6);
+      return;
+    }
+    diver.y += diver.vy * dt;
+    if (diver.y > H + 12) {
+      diver.alive = false;
+      const key = mushKey(diver.x, H - 168);
+      if (key && !run.mush[key]) run.mush[key] = 4;
+    }
+  });
+  run.divers = run.divers.filter(d => d.alive);
+}
+function stepThreats() {
+  const p = run.player;
+  run.coils.forEach(coil => {
+    coil.parts.forEach(part => {
+      if (run.over) return;
+      if (Math.hypot(part.x - p.x, part.y - p.y) < 15) coilHurt('lantern');
+    });
+  });
+  run.divers.forEach(diver => {
+    if (run.over || !diver.alive || diver.warn > 0) return;
+    if (Math.hypot(diver.x - p.x, diver.y - p.y) < 14) {
+      diver.alive = false;
+      coilHurt('diver');
+    }
+  });
+}
+function stepClear() {
+  run.coils = run.coils.filter(coil => coil.parts.length > 0);
+  if (run.coils.length) return;
+  if (run.divers.some(d => d.alive)) return;
+  const bonus = 200 * run.level;
+  run.score += bonus;
+  pop('WAVE +' + bonus, W / 2, 160);
+  beep(523, 0.08);
+  beep(659, 0.09);
+  beep(784, 0.12);
+  if (!coilHarness) feel('win', W / 2, 140);
+  run.level += 1;
+  spawnWave(run.level);
+  run.player.inv = Math.max(run.player.inv, 0.75);
+}
+function stepCoil(dt) {
+  if ((coilHold && !coilHarness) || run.over) return;
+  run.born = [];
+  run.t += dt;
+  run.flash = Math.max(0, run.flash - dt);
+  run.cool = Math.max(0, (run.cool || 0) - dt);
+  stepGardener(dt);
+  if (!run.shots.length && run.cool <= 0 && run.t > 0.35) {
+    run.shots.push({ x: run.player.x, y: run.player.y - 22 });
+    run.cool = (run.spec && run.spec.cool) || 0.18;
+  }
+  run.coils = run.coils.filter(coil => coil.parts.length > 0);
+  run.coils.forEach(coil => {
+    stepHead(coil, dt);
+    stepBody(coil, dt);
+  });
+  stepDivers(dt);
+  stepShots(dt);
+  if (run.over) return;
+  stepThreats();
+  if (run.over) return;
+  stepClear();
+  stepPops(dt);
+  if (!coilHarness) setHud('Score ' + run.score + ' · Lives ' + run.player.lives + ' · Wave ' + run.level);
+}
+function coilAimX() {
+  const p = run.player;
+  let threat = null;
+  let threatRank = -1e9;
+  run.coils.forEach(coil => {
+    const horizon = coil.diveLeft > 0 ? 140 : 72;
+    coil.parts.forEach(part => {
+      const dy = p.y - part.y;
+      const dx = Math.abs(part.x - p.x);
+      if (dy < horizon && dy > -16 && dx < (coil.diveLeft > 0 ? 36 : 32)) {
+        const rank = 220 - dy;
+        if (rank > threatRank) { threatRank = rank; threat = part; }
+      }
+    });
+  });
+  if (threat) return clamp(threat.x >= p.x ? p.x - 84 : p.x + 84, 22, W - 22);
+  let best = null;
+  let bestScore = -1e9;
+  run.coils.forEach(coil => {
+    coil.parts.forEach((part, index) => {
+      if (part.y > p.y - 8) return;
+      const score = part.y + (index === 0 ? 22 : 0);
+      if (score > bestScore) { bestScore = score; best = part; }
+    });
+  });
+  if (!best) return p.x;
+  return clamp(best.x, 22, W - 22);
+}
+function beginnerRuns(runs, delayMs) {
+  const n = runs || 10;
+  const delay = typeof delayMs === 'number' ? delayMs : 350;
+  const gap = delay / 1000;
+  const saved = { phase: phase, current: current, run: run, soundOn: soundOn };
+  const details = [];
+  let clears = 0;
+  coilHarness = true;
+  coilHold = false;
+  soundOn = false;
+  current = 'coil';
+  try {
+    for (let i = 0; i < n; i++) {
+      startCoilRun();
+      phase = 'play';
+      let lockX = run.player.x;
+      let wait = gap;
+      let t = 0;
+      while (t < 80 && run.level === 1 && !run.over && phase === 'play') {
+        if (wait <= 0) {
+          lockX = coilAimX();
+          wait = gap + (Math.random() - 0.5) * Math.min(0.12, gap * 0.15);
+        }
+        input.px = null;
+        input.py = null;
+        input.up = false;
+        input.down = false;
+        input.fire = false;
+        const dx = lockX - run.player.x;
+        input.left = dx < -5;
+        input.right = dx > 5;
+        stepCoil(1 / 60);
+        t += 1 / 60;
+        wait -= 1 / 60;
+      }
+      const clear = run.level > 1;
+      if (clear) clears += 1;
+      details.push({
+        clear: clear,
+        seconds: Math.round(t * 10) / 10,
+        lives: run.player.lives,
+        score: run.score,
+        level: run.level,
+        cause: run.cause || '',
+        over: !!run.over
+      });
+    }
+  } finally {
+    coilHarness = false;
+    coilHold = false;
+    soundOn = saved.soundOn;
+    current = saved.current;
+    phase = saved.phase;
+    run = saved.run;
+    input.left = input.right = input.up = input.down = input.fire = false;
+    input.px = input.py = null;
+    const paused = $('#paused');
+    if (paused) paused.hidden = true;
+  }
+  return { clears: clears, runs: n, delayMs: delay, details: details };
+}
+function coilSnap() {
+  if (!run || current !== 'coil') return { phase: phase, current: current };
+  return {
+    phase: phase,
+    level: run.level,
+    score: run.score,
+    lives: run.player.lives,
+    over: !!run.over,
+    hold: coilHold,
+    t: Math.round(run.t * 10) / 10,
+    player: { x: Math.round(run.player.x), y: Math.round(run.player.y) },
+    parts: run.coils.reduce((list, coil) => list.concat(coil.parts.map((part, index) => ({
+      x: Math.round(part.x), y: Math.round(part.y), head: index === 0, hp: part.hp
+    }))), [])
+  };
+}
+function sampleRun(delayMs, limit) {
+  const gap = (typeof delayMs === 'number' ? delayMs : 350) / 1000;
+  const saved = { phase: phase, current: current, run: run, soundOn: soundOn };
+  coilHarness = true;
+  coilHold = false;
+  soundOn = false;
+  current = 'coil';
+  let summary = null;
+  try {
+    startCoilRun();
+    phase = 'play';
+    let lockX = run.player.x;
+    let wait = gap;
+    let t = 0;
+    const cap = limit || 90;
+    while (t < cap && !run.over && phase === 'play') {
+      if (wait <= 0) {
+        lockX = coilAimX();
+        wait = gap + (Math.random() - 0.5) * Math.min(0.08, gap * 0.1);
+      }
+      input.px = null;
+      input.py = null;
+      input.up = input.down = input.fire = false;
+      const dx = lockX - run.player.x;
+      input.left = dx < -5;
+      input.right = dx > 5;
+      stepCoil(1 / 60);
+      t += 1 / 60;
+      wait -= 1 / 60;
+    }
+    summary = {
+      seconds: Math.round(t * 10) / 10,
+      level: run.level,
+      lives: run.player.lives,
+      score: run.score,
+      cause: run.cause || '',
+      over: !!run.over,
+      coils: run.coils.map(c => c.parts.length)
+    };
+  } finally {
+    coilHarness = false;
+    coilHold = false;
+    soundOn = saved.soundOn;
+    current = saved.current;
+    phase = saved.phase;
+    run = saved.run;
+    input.left = input.right = input.up = input.down = input.fire = false;
+    input.px = input.py = null;
+  }
+  return summary;
+}
+function drawGarden() {
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#070814');
+  sky.addColorStop(0.62, '#16122e');
+  sky.addColorStop(1, '#07140c');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+  const drift = coilMotion() ? (last / 48) : 0;
+  coilStars.forEach(star => {
+    const y = (star.y + drift * star.v) % (H * 0.78);
+    ctx.globalAlpha = star.a;
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(star.x, y, star.s, star.s);
+  });
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#e7e5e4';
+  ctx.beginPath();
+  ctx.arc(W - 58, 46, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#121028';
+  ctx.beginPath();
+  ctx.arc(W - 52, 42, 12, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#0c1f12';
+  ctx.fillRect(0, H - 92, W, 92);
+  ctx.fillStyle = '#18401c';
+  ctx.beginPath();
+  ctx.moveTo(0, H - 74);
+  for (let x = 0; x <= W; x += 18) ctx.lineTo(x, H - 86 - (x % 36 === 0 ? 12 : 0));
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.fill();
+}
+function drawLamp(x, y, hp, deep) {
+  ctx.fillStyle = deep ? '#2e1065' : '#3f3f46';
+  ctx.fillRect(x - 2, y, 4, 10);
+  const dome = ctx.createLinearGradient(x, y - 12, x, y + 2);
+  dome.addColorStop(0, deep ? '#e9d5ff' : (hp > 2 ? '#fde68a' : '#a8a29e'));
+  dome.addColorStop(1, deep ? '#7c3aed' : (hp > 1 ? '#d97706' : '#57534e'));
+  ctx.fillStyle = dome;
+  ctx.beginPath();
+  ctx.ellipse(x, y - 2, 8, 7, 0, Math.PI, 0);
+  ctx.fill();
+  ctx.fillStyle = deep ? '#ddd6fe' : (hp > 2 ? '#fef3c7' : '#78716c');
+  ctx.fillRect(x - 3, y - 4, 6, 4);
+}
+function drawLantern(x, y, head, phase, cracked) {
+  const wobble = coilMotion() ? Math.sin(phase) * 1.2 : 0;
+  const r = (head ? 11 : 8.5) + wobble * 0.15;
+  ctx.fillStyle = head ? '#fb7185' : '#9a3412';
+  ctx.beginPath();
+  ctx.arc(x, y, r + 2, 0, Math.PI * 2);
+  ctx.fill();
+  const glow = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, r);
+  glow.addColorStop(0, '#fff7ed');
+  glow.addColorStop(0.45, head ? '#fde68a' : '#fb923c');
+  glow.addColorStop(1, head ? '#e11d48' : '#c2410c');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.8)';
+  ctx.fillRect(x - 1, y - r - 3, 2, 4);
+  if (head) {
+    ctx.strokeStyle = '#fef9c3';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r + 4, phase, phase + 1.4);
+    ctx.stroke();
+  }
+  if (cracked) {
+    ctx.strokeStyle = '#7c2d12';
+    ctx.lineWidth = 1.25;
+    ctx.beginPath();
+    ctx.moveTo(x - 3, y - 3);
+    ctx.lineTo(x + 1, y + 1);
+    ctx.lineTo(x + 4, y + 2);
+    ctx.stroke();
+  }
+}
+function drawWand(x, y, inv) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(1.28, 1.28);
+  const flicker = inv > 0 && Math.sin(inv * 30) > 0;
+  ctx.globalAlpha = flicker ? 0.35 : 1;
+  ctx.fillStyle = '#14532d';
+  ctx.fillRect(-8, -4, 16, 14);
+  ctx.fillStyle = '#166534';
+  ctx.fillRect(-9, -7, 18, 5);
+  ctx.fillStyle = '#fde68a';
+  ctx.beginPath();
+  ctx.arc(0, -12, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#e7e5e4';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, -8);
+  ctx.lineTo(0, -24);
+  ctx.stroke();
+  ctx.fillStyle = '#fef08a';
+  ctx.beginPath();
+  ctx.moveTo(0, -30);
+  ctx.lineTo(5, -22);
+  ctx.lineTo(0, -16);
+  ctx.lineTo(-5, -22);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+function drawCoil() {
+  drawGarden();
+  if (!run) {
+    const bob = coilMotion() ? Math.sin(last / 480) * 10 : 0;
+    for (let i = 0; i < 8; i++) {
+      const x = 48 + i * 34;
+      const y = 86 + (coilMotion() ? Math.sin(last / 380 + i) * 7 : 0);
+      if (i > 0) {
+        ctx.strokeStyle = '#3f6212';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x - 34, 86 + (coilMotion() ? Math.sin(last / 380 + (i - 1)) * 7 : 0));
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+      drawLantern(x, y, i === 4, last / 300 + i);
+    }
+    drawLamp(70, 150, 4);
+    drawLamp(280, 176, 3);
+    drawWand(W / 2 + bob, H - 50, 0);
+    return;
+  }
+  Object.keys(run.mush).forEach(key => {
+    const bits = key.split(',');
+    const x = Number(bits[0]) * COIL_CELL + COIL_CELL / 2;
+    const y = Number(bits[1]) * COIL_CELL + COIL_CELL / 2;
+    drawLamp(x, y, run.mush[key], !!run.deep[key]);
+  });
+  run.divers.forEach(diver => {
+    if (diver.warn > 0) {
+      ctx.fillStyle = 'rgba(103,232,249,.16)';
+      ctx.fillRect(diver.x - 10, 16, 20, H - 110);
+    }
+    drawLantern(diver.x, diver.warn > 0 ? 28 : diver.y, true, run.t * 6);
+  });
+  run.coils.forEach(coil => {
+    ctx.strokeStyle = '#3f6212';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    coil.parts.forEach((part, i) => {
+      if (i === 0) ctx.moveTo(part.x, part.y);
+      else ctx.lineTo(part.x, part.y);
+    });
+    ctx.stroke();
+    coil.parts.forEach((part, i) => drawLantern(part.x, part.y, i === 0, run.t * 5 + i, part.max > 1 && part.hp < part.max));
+  });
+  run.shots.forEach(shot => {
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.moveTo(shot.x, shot.y - 7);
+    ctx.lineTo(shot.x + 3, shot.y);
+    ctx.lineTo(shot.x, shot.y + 5);
+    ctx.lineTo(shot.x - 3, shot.y);
+    ctx.closePath();
+    ctx.fill();
+  });
+  drawWand(run.player.x, run.player.y, run.player.inv);
+  drawPops();
+  if (run.flash > 0) {
+    ctx.fillStyle = 'rgba(255,40,60,.3)';
+    ctx.fillRect(0, 0, W, H);
+  }
+}
+function setCoilPause(on) {
+  coilHold = !!on;
+  const el = $('#paused');
+  if (el) el.hidden = !coilHold;
+}
+function resumeCoil() {
+  if (!coilHold) return;
+  setCoilPause(false);
+  input.left = input.right = input.up = input.down = input.fire = false;
+  input.px = input.py = null;
+}
+function syncPlayViewport() {
+  const root = document.documentElement;
+  if (!document.body.classList.contains('is-playing')) {
+    root.style.removeProperty('--vv-top');
+    root.style.removeProperty('--vv-h');
+    return;
+  }
+  const vv = window.visualViewport;
+  const top = vv ? vv.offsetTop : 0;
+  const h = vv ? vv.height : window.innerHeight;
+  const cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : (n => Math.round(n));
+  root.style.setProperty('--vv-top', cssPx(top) + 'px');
+  root.style.setProperty('--vv-h', cssPx(Math.max(1, h)) + 'px');
+}
+
 function finish() {
   if (phase !== 'play' || !run) return;
   phase = 'over';
+  setCoilPause(false);
   finalScore = run.score || 0;
   document.body.classList.remove('is-playing');
+  syncPlayViewport();
   document.querySelectorAll('[data-cart]').forEach(b => { b.disabled = false; });
   const saved = loadStore();
   if (finalScore > (saved.best[current] || 0)) saved.best[current] = finalScore;
@@ -677,7 +1458,8 @@ function draw() {
   ctx.translate(off.x, off.y);
   if (current === 'seas') drawSeas();
   else if (current === 'kitchen') drawKitchen();
-  else drawBreaker();
+  else if (current === 'breaker') drawBreaker();
+  else drawCoil();
   if (kit) kit.drawParticles(ctx);
   if (phase === 'attract') {
     ctx.fillStyle = 'rgba(0,0,0,.25)';
@@ -694,7 +1476,8 @@ function frame(ts) {
   if (phase === 'play' && run) {
     if (current === 'seas') stepSeas(dt);
     else if (current === 'kitchen') stepKitchen(dt);
-    else stepBreaker(dt);
+    else if (current === 'breaker') stepBreaker(dt);
+    else stepCoil(dt);
   }
   if (kit) kit.stepParticles(raw);
   draw();
@@ -715,10 +1498,13 @@ function startGame() {
   if (!loadStore().muted) soundOn = true;
   syncSoundButton();
   if (juice()) juice().unlock();
+  setCoilPause(false);
   if (current === 'seas') run = newSeas();
   else if (current === 'kitchen') run = newKitchen();
-  else run = newBreaker();
+  else if (current === 'breaker') run = newBreaker();
+  else run = startCoilRun();
   document.body.classList.add('is-playing');
+  syncPlayViewport();
   document.querySelectorAll('[data-cart]').forEach(b => { b.disabled = true; });
   $('#attract').hidden = true;
   $('#over').hidden = true;
@@ -854,7 +1640,7 @@ async function submitScore(name) {
 function listenScores() {
   if (listening || typeof firebase === 'undefined') return;
   listening = true;
-  ['seas', 'kitchen', 'breaker'].forEach(cart => {
+  ['seas', 'kitchen', 'breaker', 'coil'].forEach(cart => {
     firebase.database().ref('arcade/scores/' + cart).on('value', snap => {
       serverLive = true;
       hideBanner();
@@ -918,6 +1704,7 @@ function bindHold(btn) {
 function aimFrom(e) {
   const r = canvas.getBoundingClientRect();
   input.px = clamp((e.clientX - r.left) / Math.max(1, r.width), 0, 1);
+  input.py = clamp((e.clientY - r.top) / Math.max(1, r.height), 0, 1);
 }
 function init() {
   canvas = $('#screen');
@@ -944,16 +1731,23 @@ function init() {
   fire.addEventListener('pointerdown', e => { e.preventDefault(); try { fire.setPointerCapture(e.pointerId); } catch { /* ignore */ } input.fire = true; });
   fire.addEventListener('pointerup', () => { input.fire = false; });
   fire.addEventListener('pointercancel', () => { input.fire = false; });
-  canvas.addEventListener('pointerdown', e => { if (phase !== 'play') return; e.preventDefault(); input.touch = e.pointerType !== 'mouse'; aimFrom(e); });
-  canvas.addEventListener('pointermove', e => {
+  canvas.addEventListener('pointerdown', e => {
+    if (coilHold) { resumeCoil(); e.preventDefault(); return; }
     if (phase !== 'play') return;
+    e.preventDefault();
+    input.touch = e.pointerType !== 'mouse';
+    aimFrom(e);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (coilHold || phase !== 'play') return;
     if (e.pointerType === 'mouse' || input.touch) aimFrom(e);
   });
-  canvas.addEventListener('pointerup', () => { if (input.touch) { input.px = null; input.touch = false; } });
-  canvas.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') input.px = null; });
-  canvas.addEventListener('pointercancel', () => { input.px = null; input.touch = false; });
+  canvas.addEventListener('pointerup', () => { if (input.touch) { input.px = null; input.py = null; input.touch = false; } });
+  canvas.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { input.px = null; input.py = null; } });
+  canvas.addEventListener('pointercancel', () => { input.px = null; input.py = null; input.touch = false; });
   window.addEventListener('keydown', e => {
     if (e.target && e.target.closest && e.target.closest('input, textarea')) return;
+    if (coilHold && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); resumeCoil(); return; }
     if (phase === 'play' && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) e.preventDefault();
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = true;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = true;
@@ -1014,9 +1808,15 @@ function init() {
     }
   });
   $('#btnClear').onclick = clearScores;
+  const resumeBtn = $('#btnResume');
+  if (resumeBtn) resumeBtn.onclick = e => { e.preventDefault(); e.stopPropagation(); resumeCoil(); };
+  const paused = $('#paused');
+  if (paused) paused.addEventListener('click', e => { if (e.target === paused) resumeCoil(); });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       input.left = input.right = input.up = input.down = input.fire = false;
+      input.px = input.py = null;
+      if (phase === 'play' && current === 'coil') setCoilPause(true);
       startArcade();
       return;
     }
@@ -1024,6 +1824,16 @@ function init() {
     else if (soundOn && audioCtx && audioCtx.resume) audioCtx.resume();
     startArcade();
   });
+  window.addEventListener('resize', syncPlayViewport);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncPlayViewport);
+    window.visualViewport.addEventListener('scroll', syncPlayViewport);
+  }
+  try {
+    const requested = new URLSearchParams(location.search).get('cart');
+    if (requested && NAMES[requested]) selectCart(requested);
+  } catch { /* keep the opening cartridge */ }
+  if (/[?&]dev=1(?:&|$)/.test(location.search)) window.LANTERN = { beginner: beginnerRuns, sample: sampleRun, snap: coilSnap };
   connectArcade();
   raf = 0;
   startArcade();
