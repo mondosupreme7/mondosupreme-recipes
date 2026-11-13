@@ -288,7 +288,7 @@
   }
   function seedStatic() {
     [
-      ['Home', '/', 'landing welcome mondosupreme', 'Mondosupreme — recipes, a daily YouTube recipe show, cruise ship positions, weather, puzzles, search, stocks, a wiki, and the games.', ['What is on the home page?']],
+      ['Home', '/', 'landing welcome home portal', 'Mondosupreme — recipes, a daily YouTube recipe show, cruise ship positions, weather, puzzles, search, stocks, a wiki, and the games.', ['What is on the home page?']],
       ['Recipes', '/recipes/', 'kitchen cookbook mastercook food dinner backyard chef', 'Mondosupreme Recipes — your personal recipe collection at Mondosupreme.com', ['How do I make fluffy buttermilk pancakes?', 'Where are the Backyard Chef recipes?']],
       ['Recipe TV', '/daily-recipe/', 'daily youtube recipe show chef', 'Recipe TV plays a different YouTube recipe every day.', ['What is playing on Recipe TV?']],
       ['Cruises', '/cruises/', 'royal caribbean ships harbor port canaveral', 'Last-known position of every Royal Caribbean International ship, plus Port Canaveral cruise deals.', ['Where are the Royal Caribbean ships?']],
@@ -296,7 +296,7 @@
       ['Tides', '/tides/', 'port canaveral tide high low surf', 'Port Canaveral tide predictions, a 48-hour curve, and Cocoa Beach swell, wind, and sunrise.', ["What's tonight's Port Canaveral tide?", 'When is the next high tide at Port Canaveral?']],
       ['Launches', '/launches/', 'cape canaveral launch rocket liftoff', 'Cape Canaveral Launch Control. Upcoming KSC and CCSFS launches, a T-minus clock, and a Cocoa 32927 viewing guide.', ["What's the next Cape launch?", 'When is the next liftoff from Cape Canaveral?']],
       ['Word Game', '/wordle/', 'daily wordle five letter puzzle', 'Word Game, a daily 5-letter word puzzle in a game-show grid, plus free play and a 90s, cruise, and kitchen bonus word.', ["What's today's five-letter puzzle?"]],
-      ['Ask Mondo', '/search/', 'ask mondo hollis butler search questions', 'Ask Mondo a plain-English question. Hollis looks through recipes, the weather, tides, stocks, and the rest of this site.', ['What can Hollis answer?']],
+      ['Ask Mondo', '/search/', 'ask search hollis butler questions', 'Ask Mondo a plain-English question. Hollis looks through recipes, the weather, tides, stocks, and the rest of this site.', ['What can Hollis answer?']],
       ['Stocks', '/stocks/', 'oversold rsi swing screen finance buy zone', 'Stocks, a swing screen of US common stocks on Nasdaq, the NYSE, and NYSE American. Informational only, not financial advice.', ['Why is the top stock on the list?', "What is the top pick's buy zone?"]],
       ['Wiki', '/wiki/', 'notes articles launches tides arcade recipes', 'Short articles about Space Coast launches, Port Canaveral tides, the arcade, and Backyard Chef.', ['What articles are in the wiki?']],
       ['Paint', '/board/', 'paint shared drawing board whiteboard', 'Paint style shared drawing board on Mondosupreme.', ['How do I open the drawing board?']],
