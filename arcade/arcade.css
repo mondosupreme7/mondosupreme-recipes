@@ -1,10 +1,10 @@
 .cabinet{max-width:520px;margin:12px auto 18px;padding:10px;background:#c0c0c0;color:#111827;border:3px ridge #dfdfdf;box-shadow:none}
 .marquee{text-align:center;background:#000080;color:#fff;border:3px ridge #1084d0;margin-bottom:8px;padding:6px;font:700 1.05rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;letter-spacing:.08em;text-shadow:none}
 .carts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-.cart{flex:1 1 30%;min-height:44px;padding:8px;font:700 .72rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;background:#d4d0c8;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
+.cart{flex:1 1 calc(50% - 6px);min-height:44px;padding:8px;font:700 .72rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;color:#111827;background:#d4d0c8;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040;text-wrap:balance}
 .cart[aria-pressed=true]{background:#d4d0c8;color:#111827;border-top:2px solid #404040;border-left:2px solid #404040;border-right:2px solid #fff;border-bottom:2px solid #fff}
 .hud{margin:0 0 6px;font:700 .95rem "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;color:#111827;text-shadow:none}
-.crt{position:relative;display:flex;align-items:center;justify-content:center;background:#000;border:8px ridge #808080;box-shadow:none;height:min((52dvh / var(--page-scale, 1)),560px);min-height:240px;overflow:hidden}
+.crt{position:relative;display:flex;align-items:center;justify-content:center;background:#000;border:8px ridge #808080;box-shadow:none;height:min((52dvh / var(--page-scale, 1)),560px);min-height:240px;overflow:hidden;touch-action:none}
 .crt canvas{display:block;max-width:100%;max-height:100%;background:#050010;touch-action:none}
 .scan{pointer-events:none;position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.22) 0 2px,transparent 2px 4px)}
 .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;text-align:center;background:#000080;z-index:2}
@@ -45,3 +45,72 @@ body.is-playing .crt{height:calc((100dvh / var(--page-scale, 1)) - var(--task-h)
 .controls{padding-bottom:calc(env(safe-area-inset-bottom) / var(--page-scale, 1))}
 @keyframes blink{50%{opacity:.85}}
 @media (prefers-reduced-motion: reduce){.blink{animation:none}}
+@media (max-width:380px){
+  .cabinet{padding:8px}
+  .controls{gap:6px}
+  .dpad{grid-template-columns:46px 46px 46px;gap:2px}
+  .fire{width:64px;height:64px}
+}
+.dpad,.fire,.quit{flex:none}
+html[data-theme="dark"] .hud,
+html[data-theme="harbor"] .hud{color:#f8fafc}
+html[data-theme="dark"] body.is-playing,
+html[data-theme="harbor"] body.is-playing{background:#0b1220}
+html[data-theme] body.is-playing{
+  position:fixed;
+  top:var(--vv-top, 0px);
+  left:0;
+  right:0;
+  width:100%;
+  height:var(--vv-h, calc(100svh / var(--page-scale, 1)));
+  max-height:var(--vv-h, calc(100svh / var(--page-scale, 1)));
+  margin:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+  touch-action:none;
+  padding-top:0 !important;
+  padding-bottom:0 !important
+}
+html[data-theme] body.is-playing main.wrap{
+  height:100%;
+  min-height:0;
+  max-width:none;
+  padding:0;
+  display:flex;
+  flex-direction:column
+}
+html[data-theme] body.is-playing .cabinet{
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  min-height:0 !important;
+  height:100%;
+  max-width:none;
+  margin:0;
+  box-sizing:border-box
+}
+html[data-theme] body.is-playing .cabinet .crt{
+  flex:1 1 auto;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none
+}
+html[data-theme] body.is-playing .marquee,
+html[data-theme] body.is-playing .hud,
+html[data-theme] body.is-playing .controls{flex:none}
+body.is-playing .studio-nav,
+body.is-playing .studio-dock,
+body.is-playing #win98Taskbar,
+body.is-playing #themeSprites,
+body.is-playing #starTrail,
+body.is-playing .era-top,
+body.is-playing .era-foot,
+body.is-playing .cab-more{display:none !important}
+html[data-theme="dark"] .scoreboard .best-line,
+html[data-theme="harbor"] .scoreboard .best-line{
+  background:transparent !important;
+  color:#fde68a !important
+}
+@media (max-height:700px){
+  html[data-theme] body.is-playing .marquee{display:none}
+}

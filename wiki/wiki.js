@@ -180,10 +180,10 @@ const TIDES_PAGE = [
   '- [Weather](/weather/)'
 ].join('\n');
 const ARCADE_PAGE = [
-  '**Arcade games** is a three-cartridge cabinet: High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker.',
+  '**Arcade games** is a four-cartridge cabinet: High Seas Cruiser, Supreme Kitchen Rush, Cyber Brick Breaker, and Lantern Coil.',
   '',
   '```infobox',
-  'Cartridges: High Seas Cruiser; Supreme Kitchen Rush; Cyber Brick Breaker',
+  'Cartridges: High Seas Cruiser; Supreme Kitchen Rush; Cyber Brick Breaker; Lantern Coil',
   'Stand-alone: Saltflare; Needlewake',
   'Scores: Personal bests on this device',
   'Shared board: Top 10, once the rules are published',
@@ -201,6 +201,10 @@ const ARCADE_PAGE = [
   '## Cyber Brick Breaker',
   '',
   'Move the paddle. Space or Enter launches the ball and fires lasers. A and D move left and right. Grab multi-ball, wide paddle, and laser drops.',
+  '',
+  '## Lantern Coil',
+  '',
+  'Slide a spark wand along the hedge. It fires by itself. Pop the lantern chain before it reaches you. Later waves move faster, split, and dive.',
   '',
   '## Stand-alone games',
   '',
@@ -300,7 +304,7 @@ const SEEDS = [
   { id: 'welcome', title: 'Welcome', tags: ['start'], body: WELCOME, blurb: 'Short articles about pages on this site.', previous: [PREVIOUS_WELCOME, PREVIOUS_WELCOME_ARTICLE] },
   { id: 'space-coast-launches', title: 'Space Coast launches', tags: ['launches'], body: LAUNCHES_PAGE, blurb: 'Cape Canaveral Launch Control, a T-minus clock, and a Cocoa 32927 viewing guide.' },
   { id: 'port-canaveral-tides', title: 'Port Canaveral tides', tags: ['tides'], body: TIDES_PAGE, blurb: 'NOAA station 8721604 at Trident Pier, plus Cocoa Beach swell and the sun.' },
-  { id: 'arcade-games', title: 'Arcade games', tags: ['games'], body: ARCADE_PAGE, blurb: 'High Seas Cruiser, Supreme Kitchen Rush, and Cyber Brick Breaker.' },
+  { id: 'arcade-games', title: 'Arcade games', tags: ['games'], body: ARCADE_PAGE, blurb: 'High Seas Cruiser, Supreme Kitchen Rush, Cyber Brick Breaker, and Lantern Coil.' },
   { id: 'backyard-chef', title: 'Backyard Chef', tags: ['recipes'], body: CHEF_PAGE, blurb: 'The recipe notebook and the Backyard Chef cards.' },
   { id: 'editing-pages', title: 'Editing pages', tags: ['how-to'], body: EDITING_PAGE, blurb: 'How an admin adds, links, and exports a page.' }
 ];
