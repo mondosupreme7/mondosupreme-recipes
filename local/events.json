@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13T17:08:23Z",
+ "updated": "2026-11-13T18:00:43Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -64,8 +64,9 @@
   {
    "name": "Launch Library 2",
    "url": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=20",
-   "ok": true,
-   "count": 2
+   "ok": false,
+   "count": 0,
+   "error": "TimeoutError"
   }
  ],
  "events": [
@@ -376,20 +377,6 @@
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
-  },
-  {
-   "id": "89122358d6c8d4f3",
-   "title": "Vulcan VC6L | Amazon Leo (LV-01)",
-   "start": "2026-11-14T17:32:30Z",
-   "end": "2026-11-14T18:01:00Z",
-   "town": "Port Canaveral",
-   "venue": "Space Launch Complex 41",
-   "category": "Launches",
-   "url": "https://ll.thespacedevs.com/2.2.0/launch/ef9850ad-1096-425b-9d27-f7bbd186e61a/",
-   "description": "Go for Launch \u00b7 United Launch Alliance \u00b7 Vulcan VC6L \u00b7 Space Launch Complex 41",
-   "source": "Launch Library 2",
-   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
-   "kind": "launch"
   },
   {
    "id": "431088b4bfa72d03",
@@ -1006,20 +993,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "9c3b1d7e666260b6",
-   "title": "Falcon 9 Block 5 | Cygnus CRS-2 NG-25",
-   "start": "2026-11-29T15:47:00Z",
-   "end": "2026-11-29T16:47:00Z",
-   "town": "Port Canaveral",
-   "venue": "Space Launch Complex 40",
-   "category": "Launches",
-   "url": "https://ll.thespacedevs.com/2.2.0/launch/d74afbc7-0de5-491c-be05-4e9c31f736ac/",
-   "description": "Go for Launch \u00b7 SpaceX \u00b7 Falcon 9 \u00b7 Space Launch Complex 40",
-   "source": "Launch Library 2",
-   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
-   "kind": "launch"
   }
  ]
 }
