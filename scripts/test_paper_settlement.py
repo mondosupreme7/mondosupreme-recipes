@@ -657,8 +657,9 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertEqual(book["workingOrders"][0]["firstEligibleSession"], "2026-11-11")
         self.assertEqual(book["openPositions"], [])
         self.assertEqual(book["closedTrades"], [])
-        self.assertEqual(types(book), ["account_opened", "order_placed", "mark"])
+        self.assertEqual(types(book), ["account_opened", "order_placed", "mark", "mark"])
         self.assertEqual(book["events"][2]["session"], "2026-11-11")
+        self.assertEqual(book["events"][3]["session"], "2026-11-12")
         self.assertNotIn("fill", types(book))
         self.assertEqual(settle.dumps(book), PRODUCTION_TEXT)
 

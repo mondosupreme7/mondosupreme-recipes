@@ -37,6 +37,7 @@ body{padding-top:calc(var(--nav-h) + var(--safe-top));padding-bottom:28px;scroll
 .studio-links{display:flex;gap:2px;min-width:0;overflow:auto;flex:1 1 auto}
 .studio-links a{color:#334155;text-decoration:none;font-weight:600;font-size:.88rem;padding:6px 8px;border-radius:999px;white-space:nowrap}
 .studio-links a[aria-current="page"],.studio-links a:hover{background:#f1f5f9;color:#0f172a}
+.studio-links a[aria-current="page"]{font-weight:800;text-decoration:underline;text-underline-offset:3px;box-shadow:inset 0 -3px 0 currentColor}
 .studio-actions{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;margin-left:auto;min-width:0}
 .studio-nav .shell-bar{flex-wrap:nowrap;min-width:0}
 .studio-apps,.studio-ghost,.studio-account,.studio-close{
@@ -51,9 +52,10 @@ body{padding-top:calc(var(--nav-h) + var(--safe-top));padding-bottom:28px;scroll
 .studio-account.is-owner{background:#0f766e;border-color:#0f766e}
 .studio-clock{font:600 12px "JetBrains Mono", "SFMono-Regular", Consolas, monospace;color:#64748b}
 .studio-drawer{
-  position:fixed;inset:auto 12px auto auto;top:calc(var(--nav-h) + 8px);z-index:90;margin:0;
+  position:fixed;inset:auto 12px auto auto;top:calc(var(--nav-h) + (env(safe-area-inset-top, 0px) / var(--page-scale, 1)) + 8px);z-index:90;margin:0;
   width:min(720px,calc((100vw / var(--page-scale, 1)) - 24px));
-  max-height:min((85svh / var(--page-scale, 1)), calc((100svh / var(--page-scale, 1)) - var(--nav-h) - 8px));
+  container-type:inline-size;
+  max-height:calc((100dvh / var(--page-scale, 1)) - var(--nav-h, 64px) - (env(safe-area-inset-top, 0px) / var(--page-scale, 1)) - (env(safe-area-inset-bottom, 0px) / var(--page-scale, 1)) - 16px);
   overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
   touch-action:pan-y;
   background:var(--surface, #fff);color:var(--ink, #0f172a);border:1px solid var(--line, #e2e8f0);border-radius:16px;
@@ -63,7 +65,33 @@ body{padding-top:calc(var(--nav-h) + var(--safe-top));padding-bottom:28px;scroll
 .studio-drawer-account{display:none;width:100%;margin-top:12px;min-height:44px;justify-content:center}
 .studio-drawer::backdrop{background:var(--overlay, rgb(15 23 42 / .45))}
 .studio-drawer[hidden]{display:none}
-.studio-group h2{margin:12px 0 8px;font-size:13px;letter-spacing:0;text-transform:none;font-weight:600;color:var(--ink-muted, #475569)}
+.studio-group h2{margin:12px 0 6px;font-size:13px;letter-spacing:0;text-transform:none;font-weight:700;color:var(--ink, #0f172a)}
+.studio-navlist{display:grid;grid-template-columns:1fr;gap:4px;margin:0;padding:0;list-style:none}
+@container (min-width: 340px){
+  .studio-navlist{grid-template-columns:repeat(2, minmax(min-content, 1fr))}
+}
+.studio-drawer .studio-app{
+  flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;
+  min-height:44px;padding:8px 10px;border-radius:12px;text-align:left;
+  background:var(--surface-2, #f1f5f9)
+}
+.studio-drawer .app-tile{width:28px;height:28px;border-radius:8px}
+.studio-drawer .app-tile svg{width:16px;height:16px}
+.studio-drawer .app-modern,.studio-drawer .app-pixel{flex:none}
+.studio-drawer .app-label{
+  display:block;flex:1 1 auto;min-width:min-content;overflow:visible;text-overflow:clip;
+  white-space:normal;overflow-wrap:normal;word-break:normal;text-align:left;
+  font-size:15px;line-height:1.2;font-weight:650
+}
+.studio-drawer .studio-app[aria-current="page"]{
+  font-weight:800;
+  text-decoration:none;
+  box-shadow:inset 4px 0 0 var(--ink, #0f172a);
+}
+.studio-drawer .studio-app[aria-current="page"] .app-label{
+  text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;font-weight:800
+}
+.studio-drawer .studio-app:focus-visible{outline:2px solid var(--focus, #2563eb);outline-offset:-2px}
 .studio-apps-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 6px}
 .studio-app{
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;
@@ -153,6 +181,24 @@ body.is-playing .crt{height:calc((100dvh / var(--page-scale, 1)) - var(--nav-h) 
   :root{--nav-h:48px;--dock-h:calc(56px + (env(safe-area-inset-bottom, 0px) / var(--page-scale, 1)))}
   body{padding-bottom:var(--dock-h)}
   #shellStart,#shellOwner{display:none !important}
+  /* Dock is the phone menu button. Pages that hide the dock keep All Apps in the top bar. */
+  body.latch-page #shellStart,
+  body.cab #shellStart,
+  body.wordle-page #shellStart,
+  body.ford-page #shellStart,
+  body.phosphor-page #shellStart{display:inline-flex !important}
+  #shellStart .nav-label,
+  body.latch-page #shellFindBtn .nav-label,
+  body.wordle-page #shellFindBtn .nav-label{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0
+  }
+  #shellStart,#shellFindBtn{
+    position:relative;
+    min-width:calc(44px / var(--page-scale, 1));
+    min-height:calc(44px / var(--page-scale, 1));
+    padding:0 calc(8px / var(--page-scale, 1))
+  }
+  #shellStart kbd{display:none !important}
   .studio-drawer-account{display:inline-flex}
   .studio-dock{
     display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:85;box-sizing:border-box;
@@ -190,10 +236,10 @@ body.is-playing .crt{height:calc((100dvh / var(--page-scale, 1)) - var(--nav-h) 
   body.is-playing .studio-dock,body.wordle-page .studio-dock{display:none}
   body.is-playing,body.wordle-page{padding-bottom:0 !important;--dock-h:0px}
   .studio-drawer{
-    inset:auto 0 0 0;top:auto;right:0;left:0;width:100%;max-width:none;margin:0;
-    max-height:min((85svh / var(--page-scale, 1)), calc((100svh / var(--page-scale, 1)) - var(--nav-h) - 8px));
+    inset:auto 8px var(--dock-h, 0px) 8px;top:auto;right:8px;left:8px;width:auto;max-width:none;margin:0;
+    max-height:calc((100dvh / var(--page-scale, 1)) - var(--nav-h, 48px) - var(--dock-h, 0px) - (env(safe-area-inset-top, 0px) / var(--page-scale, 1)));
     border-radius:20px 20px 0 0;
-    padding:8px var(--gutter-r, 16px) calc(16px + (env(safe-area-inset-bottom) / var(--page-scale, 1))) var(--gutter-l, 16px);
+    padding:8px max(12px, (env(safe-area-inset-right, 0px) / var(--page-scale, 1))) calc(12px + (env(safe-area-inset-bottom, 0px) / var(--page-scale, 1))) max(12px, (env(safe-area-inset-left, 0px) / var(--page-scale, 1)));
     box-shadow:var(--shadow-3, 0 24px 48px -12px rgb(15 23 42 / .3))
   }
   .studio-drawer::before{content:"";display:block;width:36px;height:5px;border-radius:3px;background:var(--line-strong,#7c8799);margin:4px auto 12px}
@@ -204,7 +250,7 @@ body.is-playing .crt{height:calc((100dvh / var(--page-scale, 1)) - var(--nav-h) 
   .studio-nav{gap:6px;padding-right:max(8px, (env(safe-area-inset-right, 0px) / var(--page-scale, 1)));padding-left:max(8px, (env(safe-area-inset-left, 0px) / var(--page-scale, 1)))}
   .studio-links{display:none}
   .studio-clock,#shellMute{display:none}
-  .studio-drawer{left:8px;right:8px;width:auto}
+  .studio-drawer{left:8px;right:8px;width:auto;bottom:var(--dock-h, 0px)}
   body.board-page,body.fps-live,body.is-playing{padding-top:var(--nav-h)!important;margin-top:0}
   .studio-apps,.studio-ghost,.studio-account{min-height:44px;padding:0 8px;gap:4px}
   .studio-apps kbd{display:none}
