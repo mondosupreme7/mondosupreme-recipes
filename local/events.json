@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T04:34:21Z",
+ "updated": "2026-11-14T05:33:05Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 6
+   "count": 5
   },
   {
    "name": "City of Titusville",
@@ -59,7 +59,7 @@
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 36
+   "count": 35
   },
   {
    "name": "Launch Library 2",
@@ -95,90 +95,6 @@
    "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "94f10ad82167fbb5",
-   "title": "Disney Wish in port",
-   "start": "2026-11-13T11:00:00Z",
-   "end": "2026-11-13T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "e1a9061d58dec2d1",
-   "title": "Utopia of the Seas in port",
-   "start": "2026-11-13T11:30:00Z",
-   "end": "2026-11-13T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "c98c4aaea7723418",
-   "title": "Norwegian Escape in port",
-   "start": "2026-11-13T12:00:00Z",
-   "end": "2026-11-13T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT6",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "8290eec5e0101156",
-   "title": "Explorer of the Seas in port",
-   "start": "2026-11-13T12:00:00Z",
-   "end": "2026-11-13T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "2ab3904e2ef1ad54",
-   "title": "Carnival Glory in port",
-   "start": "2026-11-13T12:00:00Z",
-   "end": "2026-11-13T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT3",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "bf39551c4feaf1d6",
-   "title": "Economic Development Board of Directors Meeting",
-   "start": "2026-11-13T14:00:00Z",
-   "end": "2026-11-14T04:59:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2682",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2682",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -944,6 +860,62 @@
    "end": "2026-11-22T21:00:00Z",
    "town": "Port Canaveral",
    "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "91644d0bb173dd09",
+   "title": "Disney Wish in port",
+   "start": "2026-11-23T11:00:00Z",
+   "end": "2026-11-23T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "8839bdd42de70739",
+   "title": "Utopia of the Seas in port",
+   "start": "2026-11-23T11:30:00Z",
+   "end": "2026-11-23T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "7a6b56ed79071788",
+   "title": "Norwegian Getaway in port",
+   "start": "2026-11-23T12:00:00Z",
+   "end": "2026-11-23T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "5ddb7dec1f81a8e0",
+   "title": "Carnival Glory in port",
+   "start": "2026-11-23T12:00:00Z",
+   "end": "2026-11-23T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
    "category": "Cruise",
    "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
