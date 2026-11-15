@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15T18:22:38Z",
+ "updated": "2026-11-15T19:28:28Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -16,50 +16,44 @@
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 1
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 1
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 10
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=41&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 0
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 2
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=22&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 0
   },
   {
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 11
+   "count": 10
   },
   {
    "name": "Canaveral Port Authority",
@@ -90,6 +84,20 @@
    "kind": "event"
   },
   {
+   "id": "7c300ac7333876d7",
+   "title": "City of Rockledge Holiday Food Drive",
+   "start": "2026-11-02T05:00:00Z",
+   "end": "2026-12-11T05:00:00Z",
+   "town": "Rockledge",
+   "venue": "- Rockledge FL 32955",
+   "category": "Food & Markets",
+   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
+   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
+   "source": "City of Rockledge",
+   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
+   "kind": "event"
+  },
+  {
    "id": "39c594f8e2e8b2d1",
    "title": "Veterans Open House Weekend",
    "start": "2026-11-14T14:00:00Z",
@@ -99,20 +107,6 @@
    "category": "Food & Markets",
    "url": "https://www.visitspacecoast.com/event/veterans-open-house-weekend/",
    "description": "Veterans and Florida residents get free admission. We request a non-perishable food donation. Various veteran related exhibitors, live music, simulators, open cockpits, food. There will be special events on Saturday including breakfast available 8:00-10:00, a fly by at noon and blood mobile on Saturday 10:00-3:00",
-   "source": "Visit Space Coast",
-   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
-  },
-  {
-   "id": "3212bb865f01c788",
-   "title": "North Brevard Art League Holiday Artisan Market",
-   "start": "2026-11-14T15:00:00Z",
-   "end": "2026-11-15T20:00:00Z",
-   "town": "Titusville",
-   "venue": "North Brevard Art League Studio, 1421 Draa Rd, Titusville, FL, 32796, United States",
-   "category": "Food & Markets",
-   "url": "https://www.visitspacecoast.com/event/north-brevard-art-league-holiday-artisan-market/",
-   "description": "Get a head start on holiday shopping while supporting local artists and makers at the North Brevard Holiday Artisan Market, taking place Saturday, November 14, from 10 a.m. to 3 p.m., and Sunday, November 15, from 12 p.m. to 3 p.m. at the North Brevard Art League, 1421 Draa Road in Titusville. Admission and parking are free. The Holiday Artisan Market will bring together talented local artists, ar",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
@@ -210,7 +204,7 @@
    "venue": "Space Launch Complex 41",
    "category": "Launches",
    "url": "https://ll.thespacedevs.com/2.2.0/launch/ef9850ad-1096-425b-9d27-f7bbd186e61a/",
-   "description": "Launch in Flight \u00b7 United Launch Alliance \u00b7 Vulcan VC6L \u00b7 Space Launch Complex 41",
+   "description": "Launch Failure \u00b7 United Launch Alliance \u00b7 Vulcan VC6L \u00b7 Space Launch Complex 41",
    "source": "Launch Library 2",
    "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
    "kind": "launch"
@@ -286,6 +280,48 @@
    "kind": "cruise"
   },
   {
+   "id": "6b1cc4de930ec268",
+   "title": "Police and Fire Board of Trustees",
+   "start": "2026-11-17T14:30:00Z",
+   "end": "2026-11-17T15:30:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2420",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2420",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "e477d836d183e447",
+   "title": "Flag and Memorial Committee",
+   "start": "2026-11-17T16:00:00Z",
+   "end": "2026-11-17T17:00:00Z",
+   "town": "Titusville",
+   "venue": "<p>American Space Museum, 308 Pine Street, Titusville, FL. 32796</p> -",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2116",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2116",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "13dbe9532bf65447",
+   "title": "General Employees Board of Trustees",
+   "start": "2026-11-17T18:00:00Z",
+   "end": "2026-11-17T19:00:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2424",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2424",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
    "id": "7e10adc3931988cc",
    "title": "Odyssey of the Seas in port",
    "start": "2026-11-17T18:00:00Z",
@@ -300,6 +336,20 @@
    "kind": "cruise"
   },
   {
+   "id": "31f2813b02e9d0b7",
+   "title": "Student Advisory Council",
+   "start": "2026-11-17T21:00:00Z",
+   "end": "2026-11-17T22:00:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2240",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2240",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
    "id": "2d2cda8858f1e7e7",
    "title": "Explorer of the Seas in port",
    "start": "2026-11-18T12:00:00Z",
@@ -312,6 +362,20 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "a6069695ca2c38ca",
+   "title": "Development Review Committee",
+   "start": "2026-11-18T20:00:00Z",
+   "end": "2026-11-19T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2844",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2844",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
   },
   {
    "id": "fc1762fc61ce8ca4",
@@ -454,6 +518,20 @@
    "kind": "cruise"
   },
   {
+   "id": "ff3e5e34a15712a1",
+   "title": "Cocoa Beach Main Street Friday Fest",
+   "start": "2026-11-20T23:00:00Z",
+   "end": "2026-11-21T03:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "- Cocoa Beach FL 32932",
+   "category": "Outdoors",
+   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9793",
+   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9793",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
    "id": "aae38a6bd9d0e001",
    "title": "15th Annual Bicycle Bar Tour for Homeless Veterans 2026",
    "start": "2026-11-21T11:00:00Z",
@@ -536,6 +614,20 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "4feb216dba3ce457",
+   "title": "Stuff A Cruiser",
+   "start": "2026-11-21T14:00:00Z",
+   "end": "2026-11-21T19:00:00Z",
+   "town": "Rockledge",
+   "venue": "- Rockledge FL 32955",
+   "category": "Family",
+   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2986",
+   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2986",
+   "source": "City of Rockledge",
+   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
+   "kind": "event"
   },
   {
    "id": "d46234a10bf82dc1",
@@ -720,6 +812,20 @@
    "kind": "event"
   },
   {
+   "id": "54a225e08feb524c",
+   "title": "City Council Special Meeting",
+   "start": "2026-11-24T15:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2641",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2641",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
    "id": "c27b76992e3d7da2",
    "title": "Odyssey of the Seas in port",
    "start": "2026-11-24T18:00:00Z",
@@ -732,6 +838,34 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "27b0a336d32e7ac2",
+   "title": "Canceled - City Council Presentation Meeting",
+   "start": "2026-11-24T22:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2402",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2402",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "ae082a70ed46ee99",
+   "title": "Board of Commissioners of the Housing Authority of the City of Titusville",
+   "start": "2026-11-24T23:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "<p>Titusville Housing Authority - 524 South Hopkins Ave., Titusville, FL 32796</p> - Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2545",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2545",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
   },
   {
    "id": "b08d3deb9df03c47",
