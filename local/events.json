@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15T04:06:22Z",
+ "updated": "2026-11-15T05:07:41Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 5
+   "count": 10
   },
   {
    "name": "City of Titusville",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 9
+   "count": 11
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 35
+   "count": 32
   },
   {
    "name": "Launch Library 2",
@@ -96,76 +96,6 @@
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
    "kind": "event"
-  },
-  {
-   "id": "9169f2d7f2de6d43",
-   "title": "Disney Treasure in port",
-   "start": "2026-11-14T11:00:00Z",
-   "end": "2026-11-14T22:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "c48b94b71386ae1c",
-   "title": "Harmony of the Seas in port",
-   "start": "2026-11-14T11:00:00Z",
-   "end": "2026-11-14T21:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "9237dac45c174c37",
-   "title": "Carnival Mardi Gras in port",
-   "start": "2026-11-14T11:00:00Z",
-   "end": "2026-11-14T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT3",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "b24a0f72d4c62dc8",
-   "title": "Carnival Vista in port",
-   "start": "2026-11-14T12:00:00Z",
-   "end": "2026-11-14T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT6",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "201b83271aa44435",
-   "title": "Celebrity Apex in port",
-   "start": "2026-11-14T12:00:00Z",
-   "end": "2026-11-14T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "39c594f8e2e8b2d1",
@@ -866,6 +796,104 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "f43018d7e12039e0",
+   "title": "Norwegian Bliss in port",
+   "start": "2026-11-24T11:00:00Z",
+   "end": "2026-11-25T02:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "ec8b950a6ec529ea",
+   "title": "Thanksgiving at Brevard Zoo",
+   "start": "2026-11-24T15:00:00Z",
+   "end": "2026-11-24T17:00:00Z",
+   "town": "Melbourne",
+   "venue": "BREVARD ZOO, 8225 N. Wickham Rd, Melbourne, FL, 32935, United States",
+   "category": "Family",
+   "url": "https://www.visitspacecoast.com/event/thanksgiving-at-brevard-zoo/",
+   "description": "Have you ever wondered what Brevard Zoo\u2019s animal residents might eat for Thanksgiving? Our Zookeepers work hard to keep all our residents happy, healthy, and fed, but you won\u2019t find any mashed potatoes or stuffing here! Come get a behind-the-scenes look at what goes on in our Commissary and test your own culinary skills to create an original meal to serve our animals during Thanksgiving at the Zoo",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "54a225e08feb524c",
+   "title": "City Council Special Meeting",
+   "start": "2026-11-24T15:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2641",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2641",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "c27b76992e3d7da2",
+   "title": "Odyssey of the Seas in port",
+   "start": "2026-11-24T18:00:00Z",
+   "end": "2026-11-25T01:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "27b0a336d32e7ac2",
+   "title": "Canceled - City Council Presentation Meeting",
+   "start": "2026-11-24T22:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2402",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2402",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "ae082a70ed46ee99",
+   "title": "Board of Commissioners of the Housing Authority of the City of Titusville",
+   "start": "2026-11-24T23:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "<p>Titusville Housing Authority - 524 South Hopkins Ave., Titusville, FL 32796</p> - Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2545",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2545",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "b08d3deb9df03c47",
+   "title": "Cirque Dreams Holidaze",
+   "start": "2026-11-25T00:00:00Z",
+   "end": "2026-11-25T01:30:00Z",
+   "town": "Melbourne",
+   "venue": "MAXWELL C. KING CENTER FOR THE PERFORMING ARTS, 3865 N Wickham Rd, Melbourne, FL, 32935",
+   "category": "Arts",
+   "url": "https://www.visitspacecoast.com/event/cirque-dreams-holidaze/",
+   "description": "CIRQUE DREAMS HOLIDAZE dazzles with a brilliantly breathtaking holiday spectacular for the entire family. As the original cirque holiday theatrical event, this annual tradition wraps a Broadway-style production around awe-inspiring contemporary circus arts. Guests of all ages will be on the edge of their seats as a cast of holiday characters come to life, captivating audiences while defying gravit",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
   },
   {
    "id": "9c3b1d7e666260b6",
