@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17T04:12:16Z",
+ "updated": "2026-11-17T13:34:01Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -23,13 +23,13 @@
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 2
+   "count": 3
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 10
+   "count": 11
   },
   {
    "name": "City of Titusville",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 8
+   "count": 9
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 29
+   "count": 26
   },
   {
    "name": "Launch Library 2",
@@ -82,62 +82,6 @@
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
    "kind": "event"
-  },
-  {
-   "id": "4f117aff221e2b91",
-   "title": "Disney Wish in port",
-   "start": "2026-11-16T11:00:00Z",
-   "end": "2026-11-16T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "6d5cf69f10bbd24b",
-   "title": "Utopia of the Seas in port",
-   "start": "2026-11-16T11:30:00Z",
-   "end": "2026-11-16T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "77fe84bb6673101d",
-   "title": "Carnival Freedom in port",
-   "start": "2026-11-16T12:00:00Z",
-   "end": "2026-11-16T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT6",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "6e175702f67f3f40",
-   "title": "Carnival Glory in port",
-   "start": "2026-11-16T12:00:00Z",
-   "end": "2026-11-16T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT3",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "5d6498b399a43662",
@@ -795,6 +739,62 @@
    "description": "Start your \u201cCookie Crawl\u201d at Juice-n-Java Cafe you will receive a bag and passport for participating businesses. Then gather around the Christmas tree at Coconuts on the Beach by &;15pm for Christmas carols and the lighting of our Christmas tree.",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "df2a3c7eff82651c",
+   "title": "Carnival Freedom in port",
+   "start": "2026-11-26T12:00:00Z",
+   "end": "2026-11-26T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "b37f3bcba826f345",
+   "title": "Wild Turkey Trot 3k",
+   "start": "2026-11-26T12:30:00Z",
+   "end": "2026-11-26T14:30:00Z",
+   "town": "Melbourne",
+   "venue": "BREVARD ZOO, 8225 N. Wickham Rd, Melbourne, FL, 32935, United States",
+   "category": "Family",
+   "url": "https://www.visitspacecoast.com/event/wild-turkey-trot-3k/",
+   "description": "Brevard Zoo\u2019s 2nd Annual Wild Turkey Trot 3k is a family-friendly event and great way to kick off your Thanksgiving day! Runners and walkers of all ages will traverse a course through the Zoo passing animals, their habitats, and native plants along the way.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "db24d7c263a1cc73",
+   "title": "Cocoa Beach Turkey Trot 5k",
+   "start": "2026-11-26T13:00:00Z",
+   "end": "2026-11-26T16:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "Bailiwick Plaza parking lot - 20 N. Brevard Avenue Cocoa Beach FL 32931",
+   "category": "Sports",
+   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9782",
+   "description": "A Cocoa Beach road race for runners and walkers through residential Cocoa Isles. Get your Thanksgiving off to a healthy start and create a great holiday tradition with family and friends! https://www.cityofcocoabeach.com/calendar.aspx?EID=9782",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "6430f659a7ba0f8f",
+   "title": "City Hall Closed - Thanksgiving Holiday",
+   "start": "2026-11-26T13:00:00Z",
+   "end": "2026-11-27T22:00:00Z",
+   "town": "Titusville",
+   "venue": "City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2487",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2487",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
