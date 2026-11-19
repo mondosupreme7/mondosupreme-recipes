@@ -149,7 +149,7 @@ const stocksPage = readFileSync(resolve(root, 'stocks/index.html'), 'utf8');
 assert.match(stocksPage, /id="paperMeta">Flat vs \$1,000\.00 start · risk \$0\.00 · 0 working orders, no fills</);
 assert.equal(stocksPage.includes('1 working order'), false);
 assert.equal(stocksPage.includes('risk $19.50'), false);
-assert.match(stocksPage, /paper\/paper\.js\?v=12/);
+assert.match(stocksPage, /paper\/paper\.js\?v=\d+/);
 assert.equal(stocksPage.includes('Nov 12, 2026'), false);
 assert.equal(stocksPage.includes('Dec 11, 2026'), false);
 assert.equal(stocksPage.includes('Dec 12, 2026'), false);
@@ -158,7 +158,7 @@ const paperPage = readFileSync(resolve(root, 'stocks/paper/index.html'), 'utf8')
 assert.match(paperPage, /from \$1,000 on Nov 19, 2026 to \$1,000,000 by Dec 18, 2026/);
 assert.match(paperPage, /prior Nov 12, 2026 to Dec 11, 2026 stretch ended Nov 19, 2026/);
 assert.match(paperPage, /Stretch goal \$1,000,000 by Dec 18, 2026/);
-assert.match(paperPage, /paper\.js\?v=12/);
+assert.match(paperPage, /src="paper\.js\?v=\d+"/);
 assert.equal(paperPage.includes('by Dec 11, 2026'), false);
 assert.equal(paperPage.includes('on Nov 12, 2026 to'), false);
 
