@@ -153,17 +153,25 @@ def _sample():
 
 class SwotSchemaTest(unittest.TestCase):
     def test_published_files_match_the_schema(self):
-        files = sorted(SWOT_DIR.glob("*.json"))
+        files = sorted(path for path in SWOT_DIR.glob("*.json") if TICKER.fullmatch(path.stem))
         self.assertTrue(files, "stocks/swot has no company files")
         for path in files:
             data = json.loads(path.read_text(encoding="utf-8"))
             self.assertEqual(problems(data, path.name), [], path.name)
 
+    def test_manifest_lists_only_company_files(self):
+        manifest = json.loads((SWOT_DIR / "manifest.json").read_text(encoding="utf-8"))
+        listed = manifest.get("tickers")
+        self.assertIsInstance(listed, list)
+        on_disk = sorted(path.stem for path in SWOT_DIR.glob("*.json") if TICKER.fullmatch(path.stem))
+        self.assertEqual(listed, on_disk)
+        self.assertEqual(listed, ["ZD"])
+
     def test_zd_file_keeps_the_sourced_wording(self):
         data = json.loads((SWOT_DIR / "ZD.json").read_text(encoding="utf-8"))
         self.assertEqual(data["ticker"], "ZD")
         self.assertEqual(data["name"], "Ziff Davis, Inc.")
-        self.assertEqual(data["asOf"], "2026-11-12")
+        self.assertEqual(data["asOf"], "2026-11-17")
         self.assertFalse(data["seriousThreat"])
         self.assertEqual(len(data["strengths"]), 3)
         self.assertEqual(len(data["weaknesses"]), 3)
@@ -171,7 +179,9 @@ class SwotSchemaTest(unittest.TestCase):
         self.assertEqual(len(data["threats"]), 3)
         self.assertIn("Accenture for $1.2B", data["strengths"][0])
         self.assertIn("Nov 5\u20136, 2026", data["threatNote"])
-        self.assertIn("$46.65 paper buy order", data["decisionNote"])
+        self.assertIn("expired unfilled", data["decisionNote"])
+        self.assertIn("$46.65", data["decisionNote"])
+        self.assertNotIn("keeping", data["decisionNote"].lower())
         self.assertEqual(len(data["sources"]), 6)
         self.assertTrue(data["sources"][0]["url"].startswith("https://www.sec.gov/"))
 

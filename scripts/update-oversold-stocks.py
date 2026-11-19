@@ -1889,6 +1889,42 @@ def fresh_enough(previous):
     return (now_utc() - moment).total_seconds() < MAX_AGE_HOURS * 3600
 
 
+def _plain_number(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def regime_note(vs_sma200):
+    """One sentence. The percent is the absolute distance, shown to one decimal."""
+    if vs_sma200 < 0:
+        return "No new trades: SPY is " + format(abs(vs_sma200), ".1f") + "% under its 200-day."
+    if vs_sma200 > 0:
+        return (
+            "SPY is " + format(vs_sma200, ".1f")
+            + "% above its 200-day, so new official entries are allowed under the regime rule."
+        )
+    return "SPY is at its 200-day, so new official entries are allowed under the regime rule."
+
+
+def regime_block(market):
+    """Published regime object. newEntriesBlocked is the official-entry rule.
+
+    SPY under its 200-day blocks new official entries. The distance is copied
+    from the snapshot's market block. This does not invent a price.
+    """
+    if not isinstance(market, dict) or not _plain_number(market.get("vsSma200")):
+        return None
+    vs = market["vsSma200"]
+    symbol = market.get("symbol")
+    if not isinstance(symbol, str) or not symbol.strip():
+        symbol = "SPY"
+    return {
+        "symbol": symbol,
+        "vsSma200": vs,
+        "newEntriesBlocked": vs < 0,
+        "note": regime_note(vs),
+    }
+
+
 def write_doc(rows, fetched_at, universe_count, priced, candidates, market=None):
     rows = sorted(
         rows,
@@ -1900,29 +1936,33 @@ def write_doc(rows, fetched_at, universe_count, priced, candidates, market=None)
         ),
     )
     swing_count = sum(1 for row in rows if row.get("swingEligible"))
+    market = market or {}
     document = {
         "about": ABOUT,
         "disclaimer": DISCLAIMER,
         "paramVersion": PARAMS.get("version") or "",
-        "market": market or {},
-        "source": (
-            "Yahoo Finance public daily chart API (https://query1.finance.yahoo.com/v8/finance/chart). "
-            "Fundamentals come from Yahoo quoteSummary (summaryProfile, summaryDetail, financialData, "
-            "defaultKeyStatistics, calendarEvents) when the public crumb is available, otherwise from "
-            "Nasdaq's public quote, financials, analyst target, ratings, and earnings calendar "
-            "(https://api.nasdaq.com/)."
-        ),
-        "universeSource": "Nasdaq Trader symbol directories: " + NASDAQ_LISTED_URL + " ; " + OTHER_LISTED_URL + ".",
-        "universe": "US common stocks on Nasdaq, NYSE, and NYSE American",
-        "universeCount": universe_count,
-        "priced": priced,
-        "candidates": candidates,
-        "researchCount": len(rows),
-        "swingCandidates": swing_count,
-        "fetchedAt": fetched_at,
-        "count": len(rows),
-        "stocks": rows,
+        "market": market,
     }
+    regime = regime_block(market)
+    if regime is not None:
+        document["regime"] = regime
+    document["source"] = (
+        "Yahoo Finance public daily chart API (https://query1.finance.yahoo.com/v8/finance/chart). "
+        "Fundamentals come from Yahoo quoteSummary (summaryProfile, summaryDetail, financialData, "
+        "defaultKeyStatistics, calendarEvents) when the public crumb is available, otherwise from "
+        "Nasdaq's public quote, financials, analyst target, ratings, and earnings calendar "
+        "(https://api.nasdaq.com/)."
+    )
+    document["universeSource"] = "Nasdaq Trader symbol directories: " + NASDAQ_LISTED_URL + " ; " + OTHER_LISTED_URL + "."
+    document["universe"] = "US common stocks on Nasdaq, NYSE, and NYSE American"
+    document["universeCount"] = universe_count
+    document["priced"] = priced
+    document["candidates"] = candidates
+    document["researchCount"] = len(rows)
+    document["swingCandidates"] = swing_count
+    document["fetchedAt"] = fetched_at
+    document["count"] = len(rows)
+    document["stocks"] = rows
     text = json.dumps(document, indent=2) + "\n"
     if '"symbol": "RCL"' in text or "E*TRADE" in text or "Royal Caribbean" in text:
         raise RuntimeError("snapshot still mentions a removed name")
@@ -2189,6 +2229,23 @@ def self_test():
     assert picked == ["SU", "AAA"]
     assert official_picks(book, bear) == []
     assert regime_slots(bear) == 0
+    blocked_regime = regime_block({"symbol": "SPY", "price": 730.2, "vsSma50": -4.24, "vsSma200": -0.32})
+    assert blocked_regime == {
+        "symbol": "SPY",
+        "vsSma200": -0.32,
+        "newEntriesBlocked": True,
+        "note": "No new trades: SPY is 0.3% under its 200-day.",
+    }
+    assert blocked_regime["vsSma200"] == -0.32
+    allowed_regime = regime_block({"symbol": "SPY", "vsSma200": 3.01})
+    assert allowed_regime["newEntriesBlocked"] is False
+    assert allowed_regime["note"] == (
+        "SPY is 3.0% above its 200-day, so new official entries are allowed under the regime rule."
+    )
+    assert regime_block({"symbol": "SPY", "vsSma200": 0.0})["newEntriesBlocked"] is False
+    assert "at its 200-day" in regime_block({"vsSma200": 0.0})["note"]
+    assert regime_block({}) is None
+    assert regime_block({"vsSma200": True}) is None
     signal = int(datetime(2026, 11, 10, 16, 0, tzinfo=EASTERN).timestamp())
     sessions = [
         datetime(2026, 11, 11, 16, 0, tzinfo=EASTERN),
@@ -2274,6 +2331,26 @@ def self_test():
     assert closed["status"] == "closed"
     assert closed["filledOn"] == "2026-11-11"
     assert closed["returnPct"] is not None
+    skipped_pick = {
+        "status": "skipped",
+        "outcome": "skipped",
+        "symbol": "KRT",
+        "pickedOn": "2026-11-10",
+        "priceAtPick": 10.0,
+        "entryLow": 9.5,
+        "entryHigh": 10.0,
+        "stop": 8.0,
+        "target": 14.0,
+        "entryStyle": "limit",
+        "skipReason": "Fails current gates.",
+    }
+    left = evaluate_picks({"KRT": pays_bars}, {"picks": [dict(skipped_pick)]}, save=False)
+    assert left["picks"][0] == skipped_pick
+    labeled = dict(skipped_pick)
+    labeled["status"] = "open"
+    still = evaluate_picks({"KRT": pays_bars}, {"picks": [labeled]}, save=False)
+    assert still["picks"][0]["status"] == "open"
+    assert still["picks"][0]["outcome"] == "skipped"
 
 
 def patch_swing_scores():
@@ -2560,11 +2637,36 @@ def clear_same_bar_fill(pick):
     return True
 
 
+TERMINAL_PICK_STATUSES = {"closed", "expired", "skipped"}
+TERMINAL_PICK_OUTCOMES = {
+    "target hit",
+    "stopped out",
+    "never filled",
+    "time stop",
+    "expired",
+    "skipped",
+}
+
+
+def pick_is_terminal(pick):
+    """Journal names already given an outcome stay put.
+
+    Skipped and expired names are not live paper positions. A later quote
+    refresh must not turn them back into open fills.
+    """
+    if not isinstance(pick, dict):
+        return False
+    if pick.get("status") in TERMINAL_PICK_STATUSES:
+        return True
+    return pick.get("outcome") in TERMINAL_PICK_OUTCOMES
+
+
 def evaluate_picks(bars_by_symbol, document=None, save=True):
     """Mark next-session fills. Excursions start at the fill, not the signal bar.
 
     Rule 9 closes a trade that is still open after 8 trading days (inside the
-    published 5–10 day window). Closed history is left untouched.
+    published 5–10 day window). Closed, expired, and skipped history is left
+    untouched. This does not loosen the swing gates.
     """
     if document is None:
         document = load_picks()
@@ -2572,7 +2674,7 @@ def evaluate_picks(bars_by_symbol, document=None, save=True):
     time_stop = int(swing_param("picks.timeStopTradingDays", 8))
     changed = 0
     for pick in document["picks"]:
-        if pick.get("status") != "open":
+        if pick_is_terminal(pick) or pick.get("status") != "open":
             continue
         cleared = clear_same_bar_fill(pick)
         bars = bars_by_symbol.get(pick.get("symbol")) or []

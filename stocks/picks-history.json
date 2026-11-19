@@ -36,8 +36,8 @@
       },
       "sector": "Industrials",
       "market": {},
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": "2026-11-10",
       "closedOn": null,
       "daysHeld": 5,
@@ -46,7 +46,8 @@
       "maePct": -13.39,
       "lastPrice": 33.16,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": 36.51
+      "fillPrice": 36.51,
+      "skipReason": "Fails current gates: shock bar, average dollar volume about $7.4M, only 3.6% above the 200-day, 21-session drop -30.65%."
     },
     {
       "id": "2026-11-09-PBYI",
@@ -84,8 +85,8 @@
       },
       "sector": "Health Care",
       "market": {},
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": "2026-11-10",
       "closedOn": null,
       "daysHeld": 5,
@@ -94,7 +95,8 @@
       "maePct": -9.58,
       "lastPrice": 7.62,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": 8.35
+      "fillPrice": 8.35,
+      "skipReason": "Fails current gates: shock, thin dollar volume, 21-session drop -18.37%."
     },
     {
       "id": "2026-11-09-CVI",
@@ -134,8 +136,8 @@
       },
       "sector": "Energy",
       "market": {},
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": "2026-11-10",
       "closedOn": null,
       "daysHeld": 5,
@@ -144,7 +146,8 @@
       "maePct": -2.92,
       "lastPrice": 38.69,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": 38.7
+      "fillPrice": 38.7,
+      "skipReason": "Fails current gates: shock bar, 21-session drop -34.29%."
     },
     {
       "id": "2026-11-09-UFCS",
@@ -182,17 +185,18 @@
       },
       "sector": "",
       "market": {},
-      "status": "closed",
-      "outcome": "never filled",
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": null,
-      "closedOn": "2026-11-16",
+      "closedOn": null,
       "daysHeld": 0,
       "returnPct": null,
       "mfePct": null,
       "maePct": null,
       "lastPrice": 51.06,
       "evaluatedAt": "2026-11-16T15:58:52Z",
-      "fillPrice": null
+      "fillPrice": null,
+      "skipReason": "Fails current gates: shock bar, dollar volume under $20M, only 3.79% above the 200-day."
     },
     {
       "id": "2026-11-09-NTNX",
@@ -232,8 +236,8 @@
       },
       "sector": "",
       "market": {},
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": "2026-11-10",
       "closedOn": null,
       "daysHeld": 5,
@@ -242,7 +246,8 @@
       "maePct": -1.33,
       "lastPrice": 59.2,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": 58.78
+      "fillPrice": 58.78,
+      "skipReason": "Fails current gates: 21-session drop -20.29% (limit is -15%)."
     },
     {
       "id": "2026-11-10-HALO",
@@ -283,8 +288,8 @@
         "vsSma50": -2.34,
         "vsSma200": 2.2
       },
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": "2026-11-11",
       "closedOn": null,
       "daysHeld": 4,
@@ -293,7 +298,8 @@
       "maePct": -1.98,
       "lastPrice": 100.16,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": 101.26
+      "fillPrice": 101.26,
+      "skipReason": "Fails current gates: shock bar. Journal had a same-day fill under an older parameter version."
     },
     {
       "id": "2026-11-10-PAGP",
@@ -335,8 +341,8 @@
         "vsSma50": -2.34,
         "vsSma200": 2.2
       },
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": "2026-11-11",
       "closedOn": null,
       "daysHeld": 4,
@@ -345,7 +351,8 @@
       "maePct": -0.39,
       "lastPrice": 26.36,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": 25.57
+      "fillPrice": 25.57,
+      "skipReason": "Fails current gates: only 2.23% above the 200-day."
     },
     {
       "id": "2026-11-10-SU",
@@ -386,8 +393,8 @@
         "vsSma50": -2.34,
         "vsSma200": 2.2
       },
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": null,
       "closedOn": null,
       "daysHeld": null,
@@ -396,7 +403,8 @@
       "maePct": null,
       "lastPrice": 68.21,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": null
+      "fillPrice": null,
+      "skipReason": "Fails current gates: swing score 4."
     },
     {
       "id": "2026-11-10-CNQ",
@@ -437,8 +445,8 @@
         "vsSma50": -2.34,
         "vsSma200": 2.2
       },
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": null,
       "closedOn": null,
       "daysHeld": null,
@@ -447,7 +455,8 @@
       "maePct": null,
       "lastPrice": 48.36,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": null
+      "fillPrice": null,
+      "skipReason": "Fails current gates: only 3.74% above the 200-day, reward-to-risk 1.9."
     },
     {
       "id": "2026-11-10-PAYS",
@@ -482,8 +491,8 @@
         "vsSma50": -2.34,
         "vsSma200": 2.2
       },
-      "status": "open",
-      "outcome": null,
+      "status": "skipped",
+      "outcome": "skipped",
       "filledOn": "2026-11-11",
       "closedOn": null,
       "daysHeld": 4,
@@ -492,7 +501,8 @@
       "maePct": -9.58,
       "lastPrice": 9.4,
       "evaluatedAt": "2026-11-16T16:09:27Z",
-      "fillPrice": 10.12
+      "fillPrice": 10.12,
+      "skipReason": "Not swing eligible (score 4 / 0); shock bar; same-day journal fill under an older parameter version."
     },
     {
       "id": "2026-11-10-ZD",
@@ -544,8 +554,8 @@
         "regime": "below 50-day",
         "officialSlots": 2
       },
-      "status": "open",
-      "outcome": null,
+      "status": "expired",
+      "outcome": "expired",
       "filledOn": null,
       "fillPrice": null,
       "closedOn": null,
@@ -554,7 +564,8 @@
       "mfePct": null,
       "maePct": null,
       "lastPrice": 50.76,
-      "evaluatedAt": "2026-11-16T16:09:27Z"
+      "evaluatedAt": "2026-11-16T16:09:27Z",
+      "note": "Paper limit at 46.65 expired unfilled on 2026-11-17. Not a fill."
     }
   ]
 }

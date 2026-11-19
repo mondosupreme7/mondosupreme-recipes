@@ -8,6 +8,12 @@
     "vsSma50": -4.24,
     "vsSma200": -0.32
   },
+  "regime": {
+    "symbol": "SPY",
+    "vsSma200": -0.32,
+    "newEntriesBlocked": true,
+    "note": "No new trades: SPY is 0.3% under its 200-day."
+  },
   "source": "Yahoo Finance public daily chart API (https://query1.finance.yahoo.com/v8/finance/chart). Fundamentals come from Yahoo quoteSummary (summaryProfile, summaryDetail, financialData, defaultKeyStatistics, calendarEvents) when the public crumb is available, otherwise from Nasdaq's public quote, financials, analyst target, ratings, and earnings calendar (https://api.nasdaq.com/).",
   "universeSource": "Nasdaq Trader symbol directories: https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt ; https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt.",
   "universe": "US common stocks on Nasdaq, NYSE, and NYSE American",

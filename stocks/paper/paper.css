@@ -29,7 +29,13 @@ html[data-theme] main a.paper-strip *{
 html[data-theme] main a.paper-strip{border:1px solid var(--line-strong) !important}
 html[data-theme] main a.paper-strip .paper-kicker{color:var(--ink-muted) !important}
 html[data-theme] main a.paper-strip .paper-eq,
-html[data-theme] main a.paper-strip .paper-meta{color:var(--ink) !important}
+html[data-theme] main a.paper-strip .paper-meta,
+html[data-theme] main a.paper-strip .paper-regime{color:var(--ink) !important}
+.paper-regime{
+  margin:0 0 8px;font:600 .9rem/1.35 var(--font-ui,Inter,sans-serif);color:var(--ink,#0f172a)
+}
+a.paper-strip .paper-regime{margin:0;font-size:.85rem;line-height:1.3}
+html[data-theme] .paper-book .paper-regime{color:var(--ink) !important;background:transparent !important}
 html[data-theme] main a.paper-strip .paper-go{color:var(--link) !important;background:transparent !important}
 
 .paper-book{container:paper / inline-size;max-width:100%}

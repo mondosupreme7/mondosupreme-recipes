@@ -21,6 +21,7 @@
   var trackShown = PAGE;
   var trackHistory = { picks: [] };
   var market = null;
+  var regime = null;
   var PROMOTED_DOLLAR = 20000000;
   var MIN_CUSHION = 5;
   var MAX_PULLBACK = -15;
@@ -973,15 +974,37 @@
     }
     box.textContent = 'Prices as of ' + pricesAsOf(fetchedAt) + '. ' + scope + ' Daily bars, not a live quote. Informational only, not financial advice.';
   }
+  function paintRegime(next) {
+    regime = next && typeof next === 'object' ? next : null;
+    var line = document.getElementById('paperRegime');
+    if (!line) return;
+    var note = regime && typeof regime.note === 'string' ? regime.note.trim() : '';
+    if (!note) {
+      line.hidden = true;
+      return;
+    }
+    line.hidden = false;
+    line.textContent = note;
+  }
   function pricesAsOf(iso) {
     var time = Date.parse(iso);
     if (!Number.isFinite(time)) return 'an unknown time';
-    var clock = new Intl.DateTimeFormat('en-US', {
+    var parts = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
       hour: 'numeric',
-      minute: '2-digit'
-    }).format(new Date(time));
-    return clock + ' ET';
+      minute: '2-digit',
+      hourCycle: 'h12'
+    }).formatToParts(new Date(time));
+    var bit = {};
+    parts.forEach(function (part) {
+      if (part.type !== 'literal') bit[part.type] = part.value;
+    });
+    if (!bit.weekday || !bit.month || !bit.day || !bit.hour || !bit.minute) return 'an unknown time';
+    var period = bit.dayPeriod ? bit.dayPeriod.toUpperCase() : '';
+    return bit.weekday + ' ' + bit.month + ' ' + bit.day + ', ' + bit.hour + ':' + bit.minute + (period ? ' ' + period : '') + ' ET';
   }
   function outcomeLabel(pick) {
     if (pick.outcome === 'target hit') return 'Target';
@@ -989,13 +1012,16 @@
     if (pick.outcome === 'never filled') return 'No fill';
     if (pick.outcome === 'time stop') return 'Time stop';
     if (pick.outcome === 'expired') return 'Expired';
+    if (pick.outcome === 'skipped' || pick.status === 'skipped') return 'Skipped';
     return 'Open';
   }
   function resultedPick(pick) {
-    return pick.outcome === 'target hit' || pick.outcome === 'stopped out' || pick.outcome === 'expired' || pick.outcome === 'time stop';
+    return pick.outcome === 'target hit' || pick.outcome === 'stopped out' || pick.outcome === 'time stop';
   }
   function stillOpenPick(pick) {
-    return !resultedPick(pick) && pick.outcome !== 'never filled';
+    if (pick.status && pick.status !== 'open') return false;
+    if (pick.outcome === 'skipped' || pick.outcome === 'never filled' || pick.outcome === 'expired') return false;
+    return !resultedPick(pick);
   }
   function trackKind(label) {
     if (label === 'Fill' || label === 'Filled' || label === 'Entry') return 'entry';
@@ -1026,7 +1052,9 @@
   function outcomeClass(pick) {
     if (pick.outcome === 'target hit') return 'is-win';
     if (pick.outcome === 'stopped out') return 'is-stop';
-    return 'is-open';
+    if (pick.outcome === 'skipped' || pick.status === 'skipped') return 'is-skip';
+    if (stillOpenPick(pick)) return 'is-open';
+    return 'is-flat';
   }
   function renderTrack(history) {
     if (history) trackHistory = history;
@@ -1049,9 +1077,9 @@
       versions[version].push(pick);
     });
     var ids = Object.keys(versions).sort();
-    var openCount = picks.filter(function (pick) { return pick.status === 'open'; }).length;
+    var openCount = picks.filter(stillOpenPick).length;
     summary.replaceChildren();
-    summary.appendChild(el('p', openCount + ' still open. A win rate stays hidden until ' + MIN_CLOSED + ' closed trades in that version.', 'track-lead'));
+    summary.appendChild(el('p', openCount + ' still open. A win rate stays hidden until ' + MIN_CLOSED + ' closed paper trades in a version.', 'track-lead'));
     ids.forEach(function (version) {
       var group = versions[version];
       var closed = group.filter(resultedPick);
@@ -1068,6 +1096,10 @@
       );
       var noFill = group.filter(function (pick) { return pick.outcome === 'never filled'; }).length;
       if (noFill) counts.appendChild(trackCount('no fill', noFill));
+      var skipped = group.filter(function (pick) {
+        return pick.outcome === 'skipped' || pick.status === 'skipped';
+      }).length;
+      if (skipped) counts.appendChild(trackCount('skipped', skipped));
       block.appendChild(counts);
       if (closed.length >= MIN_CLOSED) {
         var wins = closed.filter(function (pick) { return pick.outcome === 'target hit'; });
@@ -1094,17 +1126,18 @@
       head.appendChild(el('span', pick.symbol || '', 'track-name'));
       if (pick.pickedOn) head.appendChild(el('span', pick.pickedOn, 'track-when'));
       head.appendChild(el('span', typeof pick.returnPct === 'number' ? signed(pick.returnPct) : '—', 'track-return' + (typeof pick.returnPct === 'number' && pick.returnPct ? (pick.returnPct > 0 ? ' is-up' : ' is-down') : '')));
+      var paperTrade = stillOpenPick(pick) || resultedPick(pick);
       var facts = el('dl', null, 'track-facts');
-      if (typeof pick.fillPrice === 'number') facts.appendChild(trackFact('Fill', money(pick.fillPrice) + (pick.filledOn ? ' · ' + pick.filledOn : ''), true));
+      if (paperTrade && typeof pick.fillPrice === 'number') facts.appendChild(trackFact('Fill', money(pick.fillPrice) + (pick.filledOn ? ' · ' + pick.filledOn : ''), true));
       else if (typeof pick.priceAtPick === 'number') facts.appendChild(trackFact('Signal', money(pick.priceAtPick)));
-      else if (pick.filledOn) facts.appendChild(trackFact('Filled', pick.filledOn));
+      else if (paperTrade && pick.filledOn) facts.appendChild(trackFact('Filled', pick.filledOn));
       if (typeof pick.entryLow === 'number' && typeof pick.entryHigh === 'number') facts.appendChild(trackFact('Entry', money(pick.entryLow) + '–' + money(pick.entryHigh), true));
       if (typeof pick.stop === 'number') facts.appendChild(trackFact('Stop', money(pick.stop)));
       if (typeof pick.target === 'number') facts.appendChild(trackFact('Target', money(pick.target)));
       if (typeof pick.rewardRisk === 'number') facts.appendChild(trackFact('R:R', pick.rewardRisk.toFixed(1) + ':1'));
-      if (typeof pick.daysHeld === 'number') facts.appendChild(trackFact('Days', String(pick.daysHeld)));
-      if (typeof pick.mfePct === 'number') facts.appendChild(trackFact('MFE', signed(pick.mfePct), false, pctTone(pick.mfePct)));
-      if (typeof pick.maePct === 'number') facts.appendChild(trackFact('MAE', signed(pick.maePct), false, pctTone(pick.maePct)));
+      if (paperTrade && typeof pick.daysHeld === 'number') facts.appendChild(trackFact('Days', String(pick.daysHeld)));
+      if (paperTrade && typeof pick.mfePct === 'number') facts.appendChild(trackFact('MFE', signed(pick.mfePct), false, pctTone(pick.mfePct)));
+      if (paperTrade && typeof pick.maePct === 'number') facts.appendChild(trackFact('MAE', signed(pick.maePct), false, pctTone(pick.maePct)));
       if (pick.paramVersion) facts.appendChild(trackFact('Version', pick.paramVersion, true));
       item.append(head, facts);
       var extra = [];
@@ -1122,6 +1155,11 @@
         var moreBody = el('p', extra.join(' · '), 'track-detail');
         moreDetail.append(moreSummary, moreBody);
         item.appendChild(moreDetail);
+      }
+      if (pick.outcome === 'skipped' && pick.skipReason) {
+        item.appendChild(el('p', pick.skipReason + ' Not a paper-book trade.', 'track-note'));
+      } else if ((pick.outcome === 'expired' || pick.outcome === 'never filled') && pick.note) {
+        item.appendChild(el('p', pick.note, 'track-note'));
       }
       if (pick.symbol && window.MONDO_SWOT) {
         var swotSlot = document.createElement('div');
@@ -1451,6 +1489,7 @@
       universeCount = data && data.universeCount || 0;
       pricedCount = data && data.priced || 0;
       market = data && data.market && typeof data.market === 'object' ? data.market : null;
+      paintRegime(data && data.regime);
       paintFresh();
       loadPicks();
       paintTape();
