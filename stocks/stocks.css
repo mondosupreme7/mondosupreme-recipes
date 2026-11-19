@@ -41,7 +41,7 @@ html[data-theme="retro"]{
   --stk-metric-ink:#111827;--stk-metric-line:#000;--stk-metric-tint:#ffffcc;
   --stk-gain:var(--stk-target-ink);--stk-loss:var(--stk-stop-ink);--stk-track:#d4d0c8
 }
-.quote-tape{background:#001400;color:#86efac;border-bottom:3px solid #39ff14}
+.quote-tape{background:#001400;color:#86efac;border-bottom:3px solid #39ff14;padding-top:0}
 .quote-tape .ticker-track{animation-duration:48s}
 .quote-tape p{color:#86efac;font:700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;text-shadow:0 0 6px #39ff14}
 .quote-hero{background:#F1F5F9;color:#0F172A;border-left:3px solid #2563EB;padding:12px 14px}
@@ -519,13 +519,11 @@ html[data-theme="retro"] .track-count{background:#fff!important;color:#111827!im
 html[data-theme] .setup-title,html[data-theme] .swing-empty,html[data-theme] .research-card,html[data-theme] .research-card summary,html[data-theme] .research-note,html[data-theme] .research-row,html[data-theme] .size-helper,html[data-theme] .size-helper label,html[data-theme] .size-help,html[data-theme] .size-out{background:transparent!important;color:var(--ink)!important}
 html[data-theme] .research-card{background:var(--surface)!important;border-color:var(--line)!important}
 html[data-theme] .size-helper input{background:var(--surface)!important;color:var(--ink)!important;font-size:max(1rem,1em)}
-/* Phone clearance is fixed. iOS toolbar motion must not change body padding. The shell pins the nav and dock, and --kb is the software keyboard. */
+/* Phone clearance is a fixed nav and dock. Viewport units and the keyboard inset are not part of it. */
 @media (max-width:900px){
   html:not(.cinder-live),
   body:not(.cinder-live){
-    min-height:100vh;
-    min-height:100dvh;
-    scroll-padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + 16px);
+    scroll-padding-top:calc(var(--nav-h, 48px) + 16px);
     scroll-padding-bottom:calc(var(--dock-h, 56px) + 32px)
   }
   html:not(.cinder-live) body:not(.cinder-live){
@@ -534,16 +532,16 @@ html[data-theme] .size-helper input{background:var(--surface)!important;color:va
   }
   input,textarea,select,button,.btn{
     scroll-margin-top:12px;
-    scroll-margin-bottom:calc(var(--kb, 0px) + 12px)
+    scroll-margin-bottom:12px
   }
   #detail,.rules-list li{scroll-margin-top:8px}
   /* The watchlist heading sits just after the card. Leave room for it when the card or its actions scroll into view. */
   #detail,#pinForm,#pinSave,#pinRemove{
-    scroll-margin-bottom:calc(var(--kb, 0px) + 8rem)
+    scroll-margin-bottom:8rem
   }
   #watchTitle,.quote-watch{
     scroll-margin-top:12px;
-    scroll-margin-bottom:calc(var(--kb, 0px) + 16px)
+    scroll-margin-bottom:16px
   }
 }
 @supports selector(.detail-more::details-content){

@@ -20,7 +20,7 @@ body{zoom:var(--page-scale,1)}
   html{font-size:calc(100% * var(--page-scale,1))}
 }
 :root{--nav-h:64px;--task-h:0px;--safe-top:calc(env(safe-area-inset-top, 0px) / var(--page-scale, 1));--safe-bot:calc(env(safe-area-inset-bottom, 0px) / var(--page-scale, 1))}
-body{padding-top:calc(var(--nav-h) + var(--safe-top));padding-bottom:28px;scroll-padding-top:calc(var(--nav-h) + var(--safe-top) + 8px);scroll-padding-bottom:calc(var(--dock-h, 0px) + var(--kb, 0px) + 16px)}
+body{padding-top:calc(var(--nav-h) + var(--safe-top));padding-bottom:28px;scroll-padding-top:calc(var(--nav-h) + var(--safe-top) + 8px);scroll-padding-bottom:calc(var(--dock-h, 0px) + 16px)}
 .studio-nav{
   position:fixed;top:0;left:0;right:0;z-index:1200;box-sizing:border-box;
   display:flex;flex-wrap:nowrap;align-items:center;gap:6px;
@@ -377,10 +377,7 @@ body.chat-page .site-footer{display:none!important}
 @media (max-width:900px){
   body.chat-page{padding-bottom:var(--dock-h)!important}
 }
-html.kb-open{--dock-h:0px}
-html.kb-open .studio-dock{transform:translateY(110%);pointer-events:none}
-html.kb-open body{padding-bottom:var(--kb, 0px)}
-input,textarea,select,button,.btn{scroll-margin-bottom:calc(var(--kb, 0px) + 12px);scroll-margin-top:calc(var(--nav-h) + var(--safe-top, 0px) + 8px)}
+input,textarea,select,button,.btn{scroll-margin-bottom:12px;scroll-margin-top:calc(var(--nav-h) + var(--safe-top, 0px) + 8px)}
 .studio-apps:active,.studio-ghost:active,.studio-account:active,.studio-dock a:active,.studio-dock button:active,.home-app:active,.home-chip:active,.home-row:active{
   background:var(--surface-2, #e2e8f0)
 }
