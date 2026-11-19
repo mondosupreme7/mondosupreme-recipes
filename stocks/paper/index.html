@@ -38,27 +38,27 @@
 <main class="wrap paper-book">
  <p class="paper-back"><a href="/stocks/">Stocks</a></p>
  <h1>Paper trade log</h1>
- <p class="paper-banner">Paper / simulated trading. Not a live brokerage account, and not real money. The stretch goal, from $1,000 on Nov 12, 2026 to $1,000,000 by Dec 11, 2026, is extreme and very unlikely. Each new trade risks 25% or more of the paper book, sized by the stop distance and capped by cash. This is a very aggressive, high-variance setting. A few losses in a row can cut the book sharply. Not financial advice, and not a performance claim. Swing rules are not loosened to chase it.</p>
+ <p class="paper-banner">Paper / simulated trading. Not a live brokerage account, and not real money. The stretch goal, from $1,000 on Nov 19, 2026 to $1,000,000 by Dec 18, 2026, is extreme and very unlikely. The prior Nov 12, 2026 to Dec 11, 2026 stretch ended Nov 19, 2026 at $1,000 and stays in the ledger. Each new trade risks 25% or more of the paper book, sized by the stop distance and capped by cash. This is a very aggressive, high-variance setting. A few losses in a row can cut the book sharply. Not financial advice, and not a performance claim. Swing rules are not loosened to chase it.</p>
  <div id="paperApp" class="paper-seed" aria-live="polite">
   <section class="paper-summary" aria-labelledby="paperPnlTitle">
    <h2 id="paperPnlTitle">P&amp;L summary</h2>
-   <p class="paper-lead">Opened Nov 10, 2026, 9:35 PM EST. Stretch goal $1,000,000 by Dec 11, 2026. Very unlikely, and not a forecast.</p>
+   <p class="paper-lead">Opened Nov 10, 2026, 9:35 PM EST. Stretch goal $1,000,000 by Dec 18, 2026. Very unlikely, and not a forecast.</p>
    <div class="paper-stats">
     <p class="paper-stat"><span>Running equity</span><b>$1,000.00</b></p>
     <p class="paper-stat"><span>Versus $1,000.00 start</span><b>$0.00 · 0.00%</b></p>
-    <p class="paper-stat"><span>Open risk</span><b>$19.50</b></p>
+    <p class="paper-stat"><span>Open risk</span><b>$0.00</b></p>
     <p class="paper-stat"><span>Closed-trade results</span><b>$0.00 · none yet</b></p>
     <p class="paper-stat"><span>Unrealized P&amp;L</span><b>$0.00</b></p>
     <p class="paper-stat"><span>Goal progress</span><b>0.10%</b></p>
    </div>
-   <p class="paper-line">Running cash $1,000.00 · reserved $233.25 · available $766.75</p>
+   <p class="paper-line">Running cash $1,000.00 · reserved $0.00 · available $1,000.00</p>
    <p class="paper-fine">Market value $0.00 · $999,000.00 still to go</p>
   </section>
   <section class="paper-section">
-   <h2>Working orders</h2>
-   <p class="paper-lead">These orders are working and unfilled. They are not positions and they are not fills.</p>
+   <h2>Orders</h2>
+   <p class="paper-lead">The latest status of each order is what counts. An expired, canceled, or filled order is not working.</p>
    <article class="paper-card">
-    <h3>ZD <span class="paper-badge is-working">Working · unfilled</span></h3>
+    <h3>ZD <span class="paper-badge is-scratch">Expired · not a fill</span></h3>
     <p class="paper-sub">Ziff Davis, Inc.</p>
     <dl class="paper-dl">
      <div><dt>Side</dt><dd>Buy</dd></div>
@@ -71,7 +71,7 @@
      <div><dt>Placed</dt><dd><time datetime="2026-11-10T21:35:01-05:00">Nov 10, 2026, 9:35 PM EST</time></dd></div>
      <div><dt>First eligible session</dt><dd>Nov 11, 2026</dd></div>
     </dl>
-    <p class="paper-callout">Working order. Not a fill. No shares are held. Last close was $50.56, so this limit is still working.</p>
+    <p class="paper-callout">Expired unfilled on Nov 17, 2026. Not a fill. No shares are held.</p>
    </article>
   </section>
   <section class="paper-section">
@@ -103,6 +103,6 @@
 <script src="/shell.js?v=20"></script>
 <script src="/backup.js"></script>
 <script src="../swot.js?v=1"></script>
-<script src="paper.js?v=6"></script>
+<script src="paper.js?v=8"></script>
 </body>
 </html>

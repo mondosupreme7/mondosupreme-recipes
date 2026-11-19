@@ -66,6 +66,10 @@ Marks and accounting
     Append one mark for each settled session, after that session's fills,
     exits, and expiries. Timestamps are 16:05 America/New_York on the session
     date, with that date's EST or EDT offset.
+    A flat book is still marked. When no order is working and no position is
+    open, each later completed session gets a cash mark. Nothing is in play,
+    so no quote is fetched. The run starts at the session after the last
+    mark, so it does not rewrite an earlier session and does not open an order.
     An open long is marked at the session close. Unrealized P&L is
     (mark - entry) * shares. Cash falls by shares * fill price on a fill and
     rises by shares * exit price on an exit. Reserved cash is the recorded
@@ -76,8 +80,9 @@ Marks and accounting
     open longs. Versus start is equity minus starting cash. Goal progress is
     equity / goalEquity.
     An optional top-level goal object (stretch dates, baseline, and target) is
-    kept as stored. Settlement does not rewrite it, and it does not use it to
-    size an order or to relax a gate.
+    kept as stored. A goalHistory array, when present, is kept as stored too.
+    Settlement does not rewrite either, and it does not use them to size an
+    order or to relax a gate.
     On a fill, the position records bookPctAtEntry: the fill notional divided
     by equity just before that fill. On a close, the closed trade keeps that
     percent when it was recorded, and always records exitAt, realized P&L,
@@ -356,8 +361,8 @@ def stretch_sessions(goal):
     """NYSE sessions after the baseline date through the target date.
 
     The baseline close is the starting mark, not a compounding step. The
-    target date counts when it is itself a session. Dec 11, 2026 is that
-    session for a target of Dec 11; Dec 12 is a Saturday and is not a step.
+    target date counts when it is itself a session. Dec 18, 2026 is that
+    session for a target of Dec 18; Dec 19 is a Saturday and is not a step.
     """
     if not isinstance(goal, dict):
         raise SettlementError("stretch goal is missing")
@@ -457,23 +462,32 @@ def last_marked(book):
 
 
 def sessions_due(book, now):
+    """Completed sessions that still need a mark.
+
+    A working order or an open position starts the clock at its first
+    eligible session or its fill session. After that order is no longer
+    working and the position is gone, the flat book still gets a mark for
+    each later completed session. A session that already has a mark is not
+    due again, so a catch-up does not double a mark or reopen an order.
+    """
     through = last_closed_session(now)
     if through is None:
         return []
+    marked = last_marked(book)
     start = earliest_activity(book)
     if start is None:
-        return []
-    start = on_or_after_session(start)
-    if start is None:
-        return []
-    marked = last_marked(book)
-    if marked is not None:
-        nxt = next_nyse_session(marked)
-        if nxt is None:
+        if marked is None:
             return []
-        if nxt > start:
-            start = nxt
-    if start > through:
+        start = next_nyse_session(marked)
+    else:
+        start = on_or_after_session(start)
+        if start is not None and marked is not None:
+            nxt = next_nyse_session(marked)
+            if nxt is None:
+                return []
+            if nxt > start:
+                start = nxt
+    if start is None or start > through:
         return []
     return session_dates(start, through)
 
@@ -1163,10 +1177,8 @@ def settle_path(path, now, fetch=None):
         print("No completed NYSE session to settle.")
         return 0
     symbols = symbols_in_play(book)
-    if not symbols:
-        print("No working orders or open positions to settle.")
-        return 0
-    bars = fetch(symbols)
+    # A flat book has nothing to quote. The mark is the cash snapshot.
+    bars = fetch(symbols) if symbols else {}
     updated, applied = settle_book(book, bars, now)
     if not applied:
         print("Sessions already settled.")

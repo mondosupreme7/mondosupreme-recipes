@@ -11,12 +11,29 @@
   },
   "goal": {
     "name": "stretch",
-    "startDate": "2026-11-12",
+    "startDate": "2026-11-19",
     "baselineEquity": 1000,
     "target": 1000000,
-    "targetDate": "2026-12-11",
-    "note": "Paper only. Baseline is the Nov 12, 2026 close. Target date is Dec 11, 2026, the last NYSE session before Dec 12. Do not loosen swing gates to chase this."
+    "targetDate": "2026-12-18",
+    "note": "Paper only. Baseline is the Nov 19, 2026 close ($1,000). Target date is Fri Dec 18, 2026, the last NYSE session on or before Dec 19. Twenty NYSE sessions after the baseline through the target (Thanksgiving 2026-11-26 is closed; the Nov 27 early close still counts). Required compound pace is 1000^(1/20), about 1.4125× per session (about +41% per session; the page rounds that multiple to 1.413×). Do not loosen swing gates to chase this."
   },
+  "goalHistory": [
+    {
+      "name": "stretch",
+      "startDate": "2026-11-12",
+      "baselineEquity": 1000,
+      "target": 1000000,
+      "targetDate": "2026-12-11",
+      "note": "Paper only. Baseline is the Nov 12, 2026 close. Target date is Dec 11, 2026, the last NYSE session before Dec 12. Do not loosen swing gates to chase this.",
+      "status": "ended",
+      "endedOn": "2026-11-19",
+      "restartedOn": "2026-11-19",
+      "endingEquity": 1000,
+      "outcome": "flat",
+      "closedTrades": 0,
+      "detail": "Ended and restarted on 2026-11-19. Ending equity $1,000, flat. ZD expired unfilled. No closed trades."
+    }
+  ],
   "rules": {
     "method": "mondosupreme.com Stocks swing gates",
     "paramVersionAtOpen": "2026-11-11.1",
@@ -35,12 +52,12 @@
   },
   "balances": {
     "cash": 1000,
-    "cashReserved": 233.25,
-    "cashAvailable": 766.75,
+    "cashReserved": 0,
+    "cashAvailable": 1000,
     "marketValue": 0,
     "equity": 1000,
-    "openRiskUsd": 19.5,
-    "asOf": "2026-11-12T16:05:00-05:00",
+    "openRiskUsd": 0,
+    "asOf": "2026-11-18T16:05:00-05:00",
     "markSource": "Yahoo Finance public daily chart, regular session",
     "versusStartUsd": 0,
     "goalProgressPct": 0.1
@@ -93,6 +110,46 @@
       "avgDollarVolume": 24196247,
       "placedAt": "2026-11-10T21:35:01-05:00",
       "note": "Only swing-eligible official name in the 2026-11-11.1 snapshot. Price is still above the buy zone, so this is a working order, not a fill. Fill only if a later session actually trades the zone."
+    },
+    {
+      "id": "paper-2026-11-10-ZD",
+      "status": "expired",
+      "side": "buy",
+      "symbol": "ZD",
+      "name": "Ziff Davis, Inc.",
+      "sector": "Telecommunications",
+      "officialPickId": "2026-11-10-ZD",
+      "paramVersion": "2026-11-11.1",
+      "signalDate": "2026-11-10",
+      "signalClose": 50.56,
+      "orderType": "limit",
+      "planStyle": "limit",
+      "planNote": "Limit under the close, at the nearest structure.",
+      "buyZoneLow": 46.09,
+      "buyZoneHigh": 46.65,
+      "limitPrice": 46.65,
+      "stop": 42.75,
+      "target": 55.81,
+      "targetLabel": "the 20-day average",
+      "rewardRisk": 2.35,
+      "shares": 5,
+      "riskPerShareAtLimit": 3.9,
+      "riskUsdAtLimit": 19.5,
+      "riskPctAtLimit": 1.95,
+      "reservedCash": 233.25,
+      "firstEligibleSession": "2026-11-11",
+      "fillWindowTradingDays": 5,
+      "timeStopTradingDaysAfterFill": 8,
+      "swingScore": 36,
+      "vsSma200": 5.72,
+      "sma200": 47.83,
+      "sma200Rising": true,
+      "avgDollarVolume": 24196247,
+      "placedAt": "2026-11-10T21:35:01-05:00",
+      "note": "Expired unfilled on 2026-11-17. Not a fill.",
+      "at": "2026-11-17T16:05:00-05:00",
+      "expiredOn": "2026-11-17",
+      "reason": "Expired unfilled. Not a fill."
     }
   ],
   "openPositions": [],
@@ -120,6 +177,54 @@
       "session": "2026-11-12",
       "type": "mark",
       "detail": "Marked 2026-11-12. Equity $1,000.00, cash $1,000.00, reserved $233.25, available $766.75, market value $0.00, open risk $19.50. Versus start $0.00. Goal progress 0.10%."
+    },
+    {
+      "at": "2026-11-13T16:05:00-05:00",
+      "session": "2026-11-13",
+      "type": "mark",
+      "detail": "Marked 2026-11-13. Equity $1,000.00, cash $1,000.00, reserved $233.25, available $766.75, market value $0.00, open risk $19.50. Versus start $0.00. Goal progress 0.10%."
+    },
+    {
+      "at": "2026-11-16T16:05:00-05:00",
+      "session": "2026-11-16",
+      "type": "mark",
+      "detail": "Marked 2026-11-16. Equity $1,000.00, cash $1,000.00, reserved $233.25, available $766.75, market value $0.00, open risk $19.50. Versus start $0.00. Goal progress 0.10%."
+    },
+    {
+      "at": "2026-11-17T16:05:00-05:00",
+      "session": "2026-11-17",
+      "type": "expiry",
+      "symbol": "ZD",
+      "orderId": "paper-2026-11-10-ZD",
+      "shares": 5,
+      "detail": "Expired unfilled buy limit 5 shares of ZD at 46.65. The 5-session fill window ended 2026-11-17. Not a fill."
+    },
+    {
+      "at": "2026-11-17T16:05:00-05:00",
+      "session": "2026-11-17",
+      "type": "mark",
+      "detail": "Marked 2026-11-17. Equity $1,000.00, cash $1,000.00, reserved $0.00, available $1,000.00, market value $0.00, open risk $0.00. Versus start $0.00. Goal progress 0.10%."
+    },
+    {
+      "at": "2026-11-18T16:05:00-05:00",
+      "session": "2026-11-18",
+      "type": "mark",
+      "detail": "Marked 2026-11-18. Equity $1,000.00, cash $1,000.00, reserved $0.00, available $1,000.00, market value $0.00, open risk $0.00. Versus start $0.00. Goal progress 0.10%."
+    },
+    {
+      "at": "2026-11-19T13:46:00-05:00",
+      "session": "2026-11-19",
+      "type": "stretch_goal_restarted",
+      "priorStartDate": "2026-11-12",
+      "priorBaselineEquity": 1000,
+      "priorTarget": 1000000,
+      "priorTargetDate": "2026-12-11",
+      "startDate": "2026-11-19",
+      "baselineEquity": 1000,
+      "target": 1000000,
+      "targetDate": "2026-12-18",
+      "endingEquity": 1000,
+      "detail": "Ended the Nov 12 to Dec 11 stretch and restarted it on 2026-11-19. Ending equity $1,000, flat. ZD expired unfilled. No closed trades. The new stretch baseline is the Nov 19, 2026 close ($1,000), targeting $1,000,000 by Dec 18, 2026. This is not a daily mark."
     }
   ],
   "skippedFromJournal": [
@@ -172,9 +277,10 @@
       "workingOrders",
       "openPositions",
       "closedTrades",
-      "events"
+      "events",
+      "goalHistory"
     ],
-    "rule": "Append trades, orders, and events. Do not delete or rewrite an earlier record. Record a fill, scratch, stop, or target by appending an event and an open position or a closed trade. To change an order, append a later record with the same id and keep the earlier record. A status of working is not a fill.",
+    "rule": "Append trades, orders, events, and finished stretch goals. Do not delete or rewrite an earlier record. Record a fill, scratch, stop, or target by appending an event and an open position or a closed trade. To change an order, append a later record with the same id and keep the earlier record. To restart the stretch goal, append the previous goal to goalHistory, append a stretch_goal_restarted event, and set goal to the new run. A status of working is not a fill.",
     "closedTradeFields": [
       "id",
       "symbol",

@@ -35,10 +35,33 @@ def quiet(day):
 
 
 def load_book():
+    """Opening book for a scenario.
+
+    The production ledger is append-only. Settlement adds marks and a later
+    record with the same order id. A later stretch restart is a manual event,
+    not part of the opening book. Scenarios replay the original working
+    order, before those marks, that later status, and that restart. This does
+    not rewrite the production file.
+    """
     book = json.loads(PRODUCTION_TEXT)
-    # The live ledger is marked through the last settled session. Scenarios
-    # replay that session, so they start from the book before those marks.
-    book["events"] = [event for event in book["events"] if event.get("type") != "mark"]
+    book["events"] = [
+        event for event in book["events"]
+        if event.get("type") not in {"mark", "fill", "exit", "expiry", "stretch_goal_restarted"}
+    ]
+    seen = set()
+    original = []
+    for order in book.get("workingOrders") or []:
+        if not isinstance(order, dict):
+            continue
+        order_id = order.get("id")
+        if order_id:
+            if order_id in seen:
+                continue
+            seen.add(order_id)
+        original.append(order)
+    book["workingOrders"] = original
+    book["openPositions"] = []
+    book["closedTrades"] = []
     return book
 
 
@@ -414,6 +437,61 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertNotIn("expiry", types(filled))
         self.assertEqual(filled["openPositions"][0]["filledOn"], "2026-11-17")
 
+    def test_flat_book_catches_up_the_next_closed_session_once(self):
+        dates = ["2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17"]
+        quiet_bars = {"ZD": {day: quiet(day) for day in dates}}
+        done, applied = settle.settle_book(self.book(), quiet_bars, at("2026-11-17T16:30:00-05:00"))
+        self.assertEqual(applied, dates)
+        self.assertEqual(done["workingOrders"][-1]["status"], "expired")
+        self.assertEqual(settle.sessions_due(done, at("2026-11-18T16:29:00-05:00")), [])
+        self.assertEqual(
+            settle.sessions_due(done, at("2026-11-18T16:30:00-05:00")),
+            [date(2026, 11, 18)],
+        )
+        # Midday on the 19th the 18th has closed and the 19th has not.
+        caught, applied = settle.settle_book(done, {}, at("2026-11-19T12:02:00-05:00"))
+        self.assertEqual(applied, ["2026-11-18"])
+        self.assertEqual(caught["workingOrders"], done["workingOrders"])
+        self.assertEqual(caught["openPositions"], [])
+        self.assertEqual(caught["closedTrades"], [])
+        self.assertEqual(caught["balances"]["cash"], 1000)
+        self.assertEqual(caught["balances"]["cashReserved"], 0)
+        self.assertEqual(caught["balances"]["cashAvailable"], 1000)
+        self.assertEqual(caught["balances"]["equity"], 1000)
+        self.assertEqual(caught["balances"]["marketValue"], 0)
+        self.assertEqual(caught["balances"]["openRiskUsd"], 0)
+        self.assertEqual(caught["balances"]["versusStartUsd"], 0)
+        self.assertEqual(caught["balances"]["asOf"], "2026-11-18T16:05:00-05:00")
+        self.assertEqual(caught["events"][-1]["type"], "mark")
+        self.assertEqual(caught["events"][-1]["session"], "2026-11-18")
+        self.assertIn("Equity $1,000.00", caught["events"][-1]["detail"])
+        self.assertIn("open risk $0.00", caught["events"][-1]["detail"])
+        self.assertNotIn("fill", types(caught))
+        again, applied = settle.settle_book(caught, {}, at("2026-11-19T16:29:00-05:00"))
+        self.assertEqual(applied, [])
+        self.assertEqual(again["events"], caught["events"])
+        self.assertEqual(settle.sessions_due(caught, at("2026-11-19T16:29:00-05:00")), [])
+        self.assertEqual(
+            settle.sessions_due(caught, at("2026-11-19T16:30:00-05:00")),
+            [date(2026, 11, 19)],
+        )
+
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "ledger.json"
+            path.write_text(settle.dumps(done), encoding="utf-8")
+
+            def boom(_symbols):
+                raise AssertionError("a flat book must not request quotes")
+
+            self.assertEqual(settle.settle_path(path, at("2026-11-19T12:02:00-05:00"), fetch=boom), 0)
+            written = json.loads(path.read_text(encoding="utf-8"))
+            marks = [event["session"] for event in written["events"] if event.get("type") == "mark"]
+            self.assertEqual(marks[-1], "2026-11-18")
+            self.assertEqual(marks.count("2026-11-18"), 1)
+            before = path.read_bytes()
+            self.assertEqual(settle.settle_path(path, at("2026-11-19T12:02:00-05:00"), fetch=boom), 0)
+            self.assertEqual(path.read_bytes(), before)
+
     def test_fill_window_and_time_stop_come_from_the_order(self):
         book = self.book()
         book["workingOrders"][0]["fillWindowTradingDays"] = 1
@@ -534,35 +612,58 @@ class PaperSettlementTest(unittest.TestCase):
             self.assertEqual(code, 0)
             self.assertEqual(path.read_bytes(), before)
 
-    def test_stretch_goal_ends_on_dec_11_and_survives_settlement(self):
+    def test_stretch_goal_runs_through_dec_18_and_keeps_the_prior_run(self):
         book = json.loads(PRODUCTION_TEXT)
         goal = book["goal"]
-        self.assertEqual(goal["startDate"], "2026-11-12")
+        self.assertEqual(goal["startDate"], "2026-11-19")
         self.assertEqual(goal["baselineEquity"], 1000)
         self.assertEqual(goal["target"], 1000000)
-        self.assertEqual(goal["targetDate"], "2026-12-11")
+        self.assertEqual(goal["targetDate"], "2026-12-18")
         sessions = settle.stretch_sessions(goal)
         self.assertEqual(
             [day.isoformat() for day in sessions],
             [
-                "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20",
-                "2026-11-23", "2026-11-24", "2026-11-25", "2026-11-27", "2026-11-30",
+                "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25", "2026-11-27", "2026-11-30",
                 "2026-12-01", "2026-12-02", "2026-12-03", "2026-12-04",
                 "2026-12-07", "2026-12-08", "2026-12-09", "2026-12-10", "2026-12-11",
+                "2026-12-14", "2026-12-15", "2026-12-16", "2026-12-17", "2026-12-18",
             ],
         )
-        self.assertNotIn(date(2026, 11, 12), sessions)
+        self.assertNotIn(date(2026, 11, 19), sessions)
         self.assertNotIn(date(2026, 11, 26), sessions)
         self.assertIn(date(2026, 11, 27), sessions)
-        self.assertNotIn(date(2026, 12, 12), sessions)
-        self.assertEqual(sessions[-1], date(2026, 12, 11))
+        self.assertNotIn(date(2026, 12, 19), sessions)
+        self.assertEqual(sessions[0], date(2026, 11, 20))
+        self.assertEqual(sessions[-1], date(2026, 12, 18))
+        self.assertEqual(len(sessions), 20)
         ratio = (goal["target"] / goal["baselineEquity"]) ** (1 / len(sessions))
         self.assertAlmostEqual(ratio, 1000 ** (1 / 20), places=10)
         self.assertGreater(ratio, 1.40)
         self.assertLess(ratio, 1.43)
-        # A calendar-day compounding through Dec 12 is the 1.26 figure this book does not use.
+        # A calendar-day compounding through Dec 19 is the 1.26 figure this book does not use.
         self.assertLess(1000 ** (1 / 30), 1.27)
         self.assertGreater(ratio - (1000 ** (1 / 30)), 0.14)
+        history = book["goalHistory"]
+        self.assertEqual(len(history), 1)
+        prior = history[0]
+        self.assertEqual(prior["startDate"], "2026-11-12")
+        self.assertEqual(prior["baselineEquity"], 1000)
+        self.assertEqual(prior["target"], 1000000)
+        self.assertEqual(prior["targetDate"], "2026-12-11")
+        self.assertEqual(prior["status"], "ended")
+        self.assertEqual(prior["endedOn"], "2026-11-19")
+        self.assertEqual(prior["restartedOn"], "2026-11-19")
+        self.assertEqual(prior["endingEquity"], 1000)
+        self.assertEqual(prior["outcome"], "flat")
+        self.assertEqual(prior["closedTrades"], 0)
+        marks = [event.get("session") for event in book["events"] if event.get("type") == "mark"]
+        self.assertNotIn("2026-11-19", marks)
+        restarts = [event for event in book["events"] if event.get("type") == "stretch_goal_restarted"]
+        self.assertEqual(len(restarts), 1)
+        self.assertEqual(restarts[0]["session"], "2026-11-19")
+        self.assertEqual(restarts[0]["endingEquity"], 1000)
+        self.assertIn("$1,000", restarts[0]["detail"])
+        self.assertIn("not a daily mark", restarts[0]["detail"])
         original = self.book()
         updated, applied = settle.settle_book(
             original,
@@ -571,10 +672,12 @@ class PaperSettlementTest(unittest.TestCase):
         )
         self.assertEqual(applied, ["2026-11-11"])
         self.assertEqual(updated["goal"], original["goal"])
+        self.assertEqual(updated["goalHistory"], original["goalHistory"])
         self.assertEqual(updated["rules"], original["rules"])
         self.assertEqual(updated["workingOrders"][0]["shares"], original["workingOrders"][0]["shares"])
         self.assertEqual(updated["workingOrders"][0]["limitPrice"], original["workingOrders"][0]["limitPrice"])
         self.assertNotIn("bookPctAtEntry", updated["workingOrders"][0])
+        self.assertNotIn("stretch_goal_restarted", types(updated))
 
     def test_close_writes_exit_time_result_balance_reason_and_book_percent(self):
         opened = self.filled()
@@ -816,23 +919,43 @@ class PaperSettlementTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "marks exist"):
             self.assert_daily_marks(book)
 
-    def test_production_ledger_is_still_the_unfilled_zd_order(self):
+    def test_production_ledger_keeps_the_original_zd_order(self):
         self.assertEqual(LEDGER.read_text(encoding="utf-8"), PRODUCTION_TEXT)
         book = json.loads(PRODUCTION_TEXT)
-        self.assertEqual(book["workingOrders"][0]["id"], "paper-2026-11-10-ZD")
-        self.assertEqual(book["workingOrders"][0]["status"], "working")
-        self.assertEqual(book["workingOrders"][0]["symbol"], "ZD")
-        self.assertEqual(book["workingOrders"][0]["limitPrice"], 46.65)
-        self.assertEqual(book["workingOrders"][0]["firstEligibleSession"], "2026-11-11")
+        original = book["workingOrders"][0]
+        self.assertEqual(original["id"], "paper-2026-11-10-ZD")
+        self.assertEqual(original["status"], "working")
+        self.assertEqual(original["symbol"], "ZD")
+        self.assertEqual(original["limitPrice"], 46.65)
+        self.assertEqual(original["shares"], 5)
+        self.assertEqual(original["firstEligibleSession"], "2026-11-11")
+        latest = {}
+        for order in book["workingOrders"]:
+            if isinstance(order, dict) and order.get("id"):
+                latest[order["id"]] = order
+        self.assertEqual(latest["paper-2026-11-10-ZD"]["status"], "expired")
+        self.assertEqual(latest["paper-2026-11-10-ZD"]["expiredOn"], "2026-11-17")
+        self.assertNotIn("fillPrice", latest["paper-2026-11-10-ZD"])
         self.assertEqual(book["openPositions"], [])
         self.assertEqual(book["closedTrades"], [])
-        # A weekday close appends another mark. Check the shape, not a fixed date list.
+        self.assertEqual(book["balances"]["cash"], 1000)
+        self.assertEqual(book["balances"]["cashReserved"], 0)
+        self.assertEqual(book["balances"]["openRiskUsd"], 0)
+        # Later sessions append marks. Check the shape, not a fixed date list.
         event_types = types(book)
         self.assertEqual(event_types[:2], ["account_opened", "order_placed"])
         self.assertGreaterEqual(len(event_types), 3)
-        self.assertEqual(set(event_types[2:]), {"mark"})
-        self.assert_daily_marks(book)
+        self.assertEqual(event_types[-1], "stretch_goal_restarted")
+        self.assertEqual(set(event_types[2:-1]), {"mark", "expiry"})
         self.assertNotIn("fill", event_types)
+        marks = [event["session"] for event in book["events"] if event.get("type") == "mark"]
+        self.assertIn("2026-11-17", marks)
+        self.assertIn("2026-11-18", marks)
+        nov18 = next(event for event in book["events"] if event.get("session") == "2026-11-18")
+        self.assertEqual(nov18["type"], "mark")
+        self.assertIn("Equity $1,000.00", nov18["detail"])
+        self.assertIn("open risk $0.00", nov18["detail"])
+        self.assert_daily_marks(book)
         self.assertEqual(settle.dumps(book), PRODUCTION_TEXT)
 
     def filled(self):

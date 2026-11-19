@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-11T00:45:53Z",
+  "updated": "2026-11-15T12:59:22Z",
   "sources": [
     "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
     "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt"
@@ -8,10 +8,10 @@
     "RCL"
   ],
   "counts": {
-    "nasdaq": 3051,
+    "nasdaq": 3050,
     "nyse": 1823,
-    "amex": 238,
-    "union": 5112
+    "amex": 236,
+    "union": 5109
   },
   "symbols": [
     "A",
@@ -422,7 +422,6 @@
     "ASTS",
     "ASUR",
     "ASYS",
-    "ATCH",
     "ATCX",
     "ATEC",
     "ATEN",
@@ -969,7 +968,6 @@
     "CFFI",
     "CFFN",
     "CFG",
-    "CFR",
     "CG",
     "CGAU",
     "CGC",
@@ -1040,7 +1038,6 @@
     "CLDX",
     "CLF",
     "CLFD",
-    "CLGN",
     "CLH",
     "CLIK",
     "CLIR",
@@ -1193,6 +1190,7 @@
     "CRM",
     "CRMD",
     "CRML",
+    "CRMN",
     "CRMT",
     "CRNC",
     "CRNT",
@@ -2195,7 +2193,6 @@
     "HLMN",
     "HLNE",
     "HLP",
-    "HLSQ",
     "HLT",
     "HMC",
     "HMH",
@@ -2548,7 +2545,6 @@
     "KAPA",
     "KARD",
     "KARO",
-    "KAZR",
     "KB",
     "KBDC",
     "KBH",
@@ -2601,7 +2597,6 @@
     "KN",
     "KNDI",
     "KNF",
-    "KNRX",
     "KNSA",
     "KNSL",
     "KNTK",
@@ -2616,7 +2611,6 @@
     "KPET",
     "KPLT",
     "KPRX",
-    "KPTI",
     "KR",
     "KRC",
     "KREF",
@@ -2911,6 +2905,7 @@
     "MDIA",
     "MDLN",
     "MDLZ",
+    "MDRN",
     "MDRR",
     "MDT",
     "MDU",
@@ -3343,7 +3338,6 @@
     "NXTC",
     "NXTS",
     "NXTT",
-    "NXXT",
     "NYAX",
     "NYC",
     "NYT",
@@ -3435,6 +3429,7 @@
     "OPEN",
     "OPFI",
     "OPHC",
+    "OPHI",
     "OPI",
     "OPK",
     "OPLN",
@@ -3753,7 +3748,6 @@
     "PTGX",
     "PTHS",
     "PTIV",
-    "PTLE",
     "PTLO",
     "PTN",
     "PTON",
@@ -4884,6 +4878,7 @@
     "VVOS",
     "VVR",
     "VVV",
+    "VVVV",
     "VVX",
     "VWAV",
     "VYGR",
@@ -5004,6 +4999,7 @@
     "WVE",
     "WVVI",
     "WW",
+    "WWB",
     "WWD",
     "WWR",
     "WWW",
@@ -5125,6 +5121,7 @@
     "ZVRA",
     "ZWS",
     "ZYBT",
-    "ZYME"
+    "ZYME",
+    "ZYN"
   ]
 }

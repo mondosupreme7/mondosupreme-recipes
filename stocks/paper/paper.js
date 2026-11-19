@@ -147,6 +147,50 @@
     return groups;
   }
 
+  /* The ledger is append-only. The last record for an id is the latest status. */
+  function latestOrder(group) {
+    return group.records[group.records.length - 1];
+  }
+
+  function latestOrders(book) {
+    return groupOrders(orderLog(book || {})).map(latestOrder);
+  }
+
+  function orderOpenRisk(order) {
+    if (!isWorking(order)) return 0;
+    var recorded = num(order.riskUsdAtLimit);
+    if (recorded != null) return recorded;
+    var limit = num(order.limitPrice);
+    var stop = num(order.stop);
+    var shares = num(order.shares);
+    if (limit == null || stop == null || shares == null) return 0;
+    var distance = limit - stop;
+    if (distance < 0) distance = 0;
+    return distance * shares;
+  }
+
+  function positionOpenRisk(position) {
+    var entry = num(position && position.entryPrice);
+    var stop = num(position && position.stop);
+    var shares = num(position && position.shares);
+    if (entry == null || stop == null || shares == null) return 0;
+    var distance = entry - stop;
+    if (distance < 0) distance = 0;
+    return distance * shares;
+  }
+
+  function openRiskOf(book) {
+    var total = 0;
+    latestOrders(book).forEach(function (order) {
+      total += orderOpenRisk(order);
+    });
+    var positions = book && Array.isArray(book.openPositions) ? book.openPositions : [];
+    positions.forEach(function (position) {
+      total += positionOpenRisk(position);
+    });
+    return total;
+  }
+
   function tradePnl(trade) {
     var direct = num(trade.realizedPnlUsd);
     if (direct == null) direct = num(trade.pnlUsd);
@@ -254,24 +298,14 @@
     });
     var equity = num(balances.equity);
     if (equity == null) equity = (cash == null ? start : cash) + marketValue;
-    var groups = groupOrders(orderLog(book || {}));
+    var ordersNow = latestOrders(book || {});
     var workingCount = 0;
-    groups.forEach(function (group) {
-      if (isWorking(group.records[group.records.length - 1])) workingCount += 1;
+    ordersNow.forEach(function (order) {
+      if (isWorking(order)) workingCount += 1;
     });
-    var openRisk = num(balances.openRiskUsd);
-    if (openRisk == null) {
-      openRisk = 0;
-      groups.forEach(function (group) {
-        var order = group.records[group.records.length - 1];
-        if (!isWorking(order)) return;
-        var risk = num(order.riskUsdAtLimit);
-        if (risk == null && num(order.limitPrice) != null && num(order.stop) != null && num(order.shares) != null) {
-          risk = Math.abs(order.limitPrice - order.stop) * order.shares;
-        }
-        if (risk != null) openRisk += risk;
-      });
-    }
+    /* Latest status, not balances.openRiskUsd. A stale snapshot still says
+       $19.50 after the order has expired. */
+    var openRisk = openRiskOf(book || {});
     return {
       start: start,
       goal: goal,
@@ -720,7 +754,7 @@
   function orderById(book, id) {
     var found = null;
     groupOrders(orderLog(book || {})).forEach(function (group) {
-      if (group.id === String(id || '')) found = group.records[group.records.length - 1];
+      if (group.id === String(id || '')) found = latestOrder(group);
     });
     return found;
   }
@@ -783,7 +817,7 @@
     });
     groupOrders(orderLog(book || {})).forEach(function (group) {
       if (seen[group.id]) return;
-      var order = group.records[group.records.length - 1];
+      var order = latestOrder(group);
       var status = String(order.status || 'working').toLowerCase();
       var working = isWorking(order);
       var label = working ? 'Working \u00b7 unfilled' : recordLabel(order);
@@ -990,7 +1024,7 @@
   }
 
   function renderOrder(group) {
-    var current = group.records[group.records.length - 1];
+    var current = latestOrder(group);
     var working = isWorking(current);
     var card = el('article', 'paper-card');
     var title = el('h3');
@@ -1136,7 +1170,11 @@
     mount.appendChild(el('p', 'stretch-warn', pace
       ? stretchWarning(pace)
       : 'This book has no stretch goal on the ledger. Paper trading only. Informational, not financial advice. Swing rules are not loosened to chase a target.'));
-    if (!pace) return pace;
+    var prior = priorStretchLine(book);
+    if (!pace) {
+      if (prior) mount.appendChild(el('p', 'stretch-fine', prior));
+      return pace;
+    }
 
     var gapClass = '';
     var gapText = '\u2014';
@@ -1205,7 +1243,29 @@
       + '. The mark on the bar is the pace line. '
       + pace.sessionCount + ' sessions, about ' + formatGainPct(pace.multiple)
       + ' each (' + formatMultiple(pace.multiple) + ').'));
+    if (prior) mount.appendChild(el('p', 'stretch-fine', prior));
     return pace;
+  }
+
+  function priorStretchLine(book) {
+    var history = book && Array.isArray(book.goalHistory) ? book.goalHistory : [];
+    var lines = [];
+    history.forEach(function (run) {
+      if (!run || typeof run !== 'object') return;
+      var start = formatDay(run.startDate);
+      var target = formatDay(run.targetDate);
+      if (!start || !target) return;
+      var ended = formatDay(run.endedOn || run.restartedOn);
+      var equity = num(run.endingEquity);
+      var text = 'Prior stretch ' + start + ' through ' + target + ' ended and was restarted';
+      if (ended) text += ' on ' + ended;
+      if (equity != null) text += ' at ' + money(equity);
+      text += '.';
+      if (run.outcome === 'flat') text += ' Flat.';
+      if (run.closedTrades === 0) text += ' No closed trades.';
+      lines.push(text);
+    });
+    return lines.join(' ');
   }
 
   function logFact(label, value, wide, valueClass) {
@@ -1243,7 +1303,7 @@
   function orderForRow(book, id) {
     var found = null;
     groupOrders(orderLog(book || {})).forEach(function (group) {
-      if (group.id === String(id)) found = group.records[group.records.length - 1];
+      if (group.id === String(id)) found = latestOrder(group);
     });
     return found;
   }
@@ -1313,9 +1373,17 @@
     mount.appendChild(title);
     mount.appendChild(el('p', 'paper-banner', 'Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.'));
     mount.appendChild(el('p', 'stretch-warn', sizingWarning(root.PAPER_LEDGER && root.PAPER_LEDGER.riskBand)));
-    var from = spec ? formatDay(spec.startDate) : 'Nov 12, 2026';
+    var from = spec ? formatDay(spec.startDate) : '';
+    var through = spec ? formatDay(spec.targetDate) : '';
+    var windowCopy = from && through
+      ? 'This stretch runs from ' + from + ' through ' + through + '. '
+      : '';
+    var prior = priorStretchLine(book);
     mount.appendChild(el('p', 'paper-fine',
-      'Every paper trade from ' + from + ' on is listed here, along with any order that is still working. Entry and exit times are America/New_York. A fill or exit from the daily bar is recorded at 4:05 p.m. Eastern on that session.'));
+      windowCopy
+      + 'Every paper order and trade on this book is listed here, along with any order that is still working. '
+      + (prior ? prior + ' ' : '')
+      + 'Entry and exit times are America/New_York. A fill or exit from the daily bar is recorded at 4:05 p.m. Eastern on that session.'));
     if (!rows.length) {
       mount.appendChild(el('p', 'paper-log-empty', 'No paper trades yet. This book has no orders, open positions, or closed trades. Nothing here is a live brokerage order.'));
     } else {
