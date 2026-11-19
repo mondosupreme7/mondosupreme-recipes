@@ -40,7 +40,7 @@
     "marketValue": 0,
     "equity": 1000,
     "openRiskUsd": 0,
-    "asOf": "2026-11-17T16:05:00-05:00",
+    "asOf": "2026-11-18T16:05:00-05:00",
     "markSource": "Yahoo Finance public daily chart, regular session",
     "versusStartUsd": 0,
     "goalProgressPct": 0.1
@@ -187,6 +187,12 @@
       "session": "2026-11-17",
       "type": "mark",
       "detail": "Marked 2026-11-17. Equity $1,000.00, cash $1,000.00, reserved $0.00, available $1,000.00, market value $0.00, open risk $0.00. Versus start $0.00. Goal progress 0.10%."
+    },
+    {
+      "at": "2026-11-18T16:05:00-05:00",
+      "session": "2026-11-18",
+      "type": "mark",
+      "detail": "Marked 2026-11-18. Equity $1,000.00, cash $1,000.00, reserved $0.00, available $1,000.00, market value $0.00, open risk $0.00. Versus start $0.00. Goal progress 0.10%."
     }
   ],
   "skippedFromJournal": [
