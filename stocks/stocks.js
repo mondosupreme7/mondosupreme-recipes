@@ -1630,7 +1630,7 @@
       if (row) drawChart(row);
     });
   }
-  window.addEventListener('resize', redrawOpenChart);
+  window.addEventListener('orientationchange', redrawOpenChart);
   var detailMore = document.getElementById('detailMore');
   if (detailMore) {
     detailMore.addEventListener('toggle', function () {

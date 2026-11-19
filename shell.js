@@ -1219,7 +1219,6 @@
     });
 
     armDialogs(document);
-    trackKeyboard();
     var current = links.querySelector('[aria-current="page"]');
     if (current && current.scrollIntoView) current.scrollIntoView({ inline: 'center', block: 'nearest' });
 
@@ -1230,19 +1229,6 @@
     logVisit();
   }
 
-  function trackKeyboard() {
-    var vv = window.visualViewport;
-    if (!vv) return;
-    function sync() {
-      var overlap = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
-      var cssOverlap = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx(overlap) : overlap;
-      document.documentElement.style.setProperty('--kb', cssOverlap + 'px');
-      document.documentElement.classList.toggle('kb-open', overlap > 80);
-    }
-    vv.addEventListener('resize', sync);
-    vv.addEventListener('scroll', sync);
-    sync();
-  }
   function isBot() {
     var ua = navigator.userAgent || '';
     if (!ua || ua.length < 20) return true;
