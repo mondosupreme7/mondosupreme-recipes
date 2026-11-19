@@ -8,6 +8,8 @@ name: Settle paper book
 # New York, so the early winter run does not use a still-open bar, and the
 # second same-day run finds the mark already posted and does not add another.
 # A quote failure or a missing bar exits non-zero and does not write the ledger.
+# A flat book (no working order and no open position) still gets a cash mark
+# for each completed session after the last mark. No quote is fetched then.
 # Push does not settle. The first live session is the scheduled run, or a
 # workflow_dispatch, after this workflow is on the default branch and the
 # cash session has closed.
