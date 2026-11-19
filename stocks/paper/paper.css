@@ -134,23 +134,19 @@ html[data-theme] .paper-banner,html[data-theme] .paper-callout,html[data-theme] 
   .paper-dl dt{margin-top:4px}
 }
 
-/* Phone: clear the fixed header, the tab bar, and Firefox for iOS toolbars.
-   Safe-area insets stay 0 in that browser, so --vv-top/--vv-bottom cover the toolbars.
-   Scoped to this page so the stocks clearance rules stay as they are. */
+/* Phone clearance is fixed for this page. Toolbar motion must not change body padding. */
 @media (max-width:900px){
   html.paper-page,
   html.paper-page body{
     min-height:100vh;
     min-height:100dvh;
-    scroll-padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px) + 16px);
-    scroll-padding-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 32px)
+    scroll-padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + 16px);
+    scroll-padding-bottom:calc(var(--dock-h, 56px) + 32px)
   }
   html.paper-page body{
-    padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px));
-    padding-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 32px)
+    padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px));
+    padding-bottom:calc(var(--dock-h, 56px) + 32px)
   }
-  html.paper-page .studio-nav{top:var(--vv-top, 0px)}
-  html.paper-page .studio-dock{bottom:var(--vv-bottom, 0px)}
 }
 
 /* Stretch goal and the public trade log. Same blocks on /stocks/ and /stocks/paper/. */
@@ -319,11 +315,6 @@ html[data-theme] .paper-dl .is-down{
   .stretch-stats{gap:4px 8px;margin:4px 0}
   .stretch-stats small{line-height:1.2}
   .paper-book h1{font-size:1.35rem;margin:0}
-  /* /stocks/ at a short phone only. /stocks/paper/ and 844px-tall phones already
-     clear the dock, and cinder-live play pages do not use this sheet. */
-  html:not(.paper-page):not(.cinder-live) body{
-    padding-bottom:calc(var(--dock-h, 52px) + env(safe-area-inset-bottom, 0px) + var(--vv-bottom, 0px) + 32px)
-  }
   html:not(.paper-page) .stretch-goal{
     margin-bottom:0;padding-bottom:calc(4px + env(safe-area-inset-bottom, 0px))
   }
@@ -333,8 +324,8 @@ html[data-theme] .paper-dl .is-down{
 }
 @media (max-width:900px){
   .stretch-goal,.paper-log,#paperRiskWarn{
-    scroll-margin-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px) + 12px);
-    scroll-margin-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + env(safe-area-inset-bottom, 0px) + 16px)
+    scroll-margin-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + 12px);
+    scroll-margin-bottom:calc(var(--dock-h, 56px) + env(safe-area-inset-bottom, 0px) + 16px)
   }
 }
 @media (forced-colors: active){

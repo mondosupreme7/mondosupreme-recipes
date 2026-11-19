@@ -947,29 +947,6 @@
 
   if (typeof document === 'undefined') return;
 
-  function syncVisibleChrome() {
-    var vv = window.visualViewport;
-    var top = 0;
-    var bottom = 0;
-    if (vv) {
-      top = Math.max(0, Math.round(vv.offsetTop));
-      bottom = Math.max(0, Math.round(window.innerHeight - vv.offsetTop - vv.height));
-    }
-    /* A large overlap is the software keyboard. The shell hides the tab bar for that.
-       Keep it out of --vv-bottom so the toolbar inset is not applied twice. */
-    var keyboard = 0;
-    if (bottom > 80) {
-      keyboard = bottom;
-      top = 0;
-      bottom = 0;
-    }
-    var html = document.documentElement;
-    var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : function (n) { return n; };
-    html.style.setProperty('--vv-top', cssPx(top) + 'px');
-    html.style.setProperty('--vv-bottom', cssPx(bottom) + 'px');
-    html.style.setProperty('--vv-keyboard', cssPx(keyboard) + 'px');
-  }
-
   function el(tag, className, text) {
     var node = document.createElement(tag);
     if (className) node.className = className;
@@ -1684,16 +1661,6 @@
     var strip = document.getElementById('paperStrip');
     var stretch = document.getElementById('stretchGoal');
     var log = document.getElementById('paperTradeLog');
-    if (app) {
-      syncVisibleChrome();
-      window.addEventListener('resize', syncVisibleChrome);
-      window.addEventListener('orientationchange', syncVisibleChrome);
-      window.addEventListener('pageshow', syncVisibleChrome);
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', syncVisibleChrome);
-        window.visualViewport.addEventListener('scroll', syncVisibleChrome);
-      }
-    }
     if (!app && !strip && !stretch && !log) return;
     loadRegime();
     var url = (app ? 'ledger.json' : 'paper/ledger.json') + '?t=' + Date.now();

@@ -33,37 +33,6 @@
 
   document.getElementById('yr').textContent = String(new Date().getFullYear());
 
-  function syncVisibleChrome() {
-    var vv = window.visualViewport;
-    var top = 0;
-    var bottom = 0;
-    if (vv) {
-      top = Math.max(0, Math.round(vv.offsetTop));
-      bottom = Math.max(0, Math.round(window.innerHeight - vv.offsetTop - vv.height));
-    }
-    /* A large overlap is the software keyboard. The shell hides the tab bar for that.
-       Keep it out of --vv-bottom so the toolbar inset is not applied twice. */
-    var keyboard = 0;
-    if (bottom > 80) {
-      keyboard = bottom;
-      top = 0;
-      bottom = 0;
-    }
-    var root = document.documentElement;
-    var cssPx = window.MONDO_PAGE && window.MONDO_PAGE.cssPx ? window.MONDO_PAGE.cssPx : function (n) { return n; };
-    root.style.setProperty('--vv-top', cssPx(top) + 'px');
-    root.style.setProperty('--vv-bottom', cssPx(bottom) + 'px');
-    root.style.setProperty('--vv-keyboard', cssPx(keyboard) + 'px');
-  }
-  syncVisibleChrome();
-  window.addEventListener('resize', syncVisibleChrome);
-  window.addEventListener('orientationchange', syncVisibleChrome);
-  window.addEventListener('pageshow', syncVisibleChrome);
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', syncVisibleChrome);
-    window.visualViewport.addEventListener('scroll', syncVisibleChrome);
-  }
-
   function el(tag, text, className) {
     var node = document.createElement(tag);
     if (className) node.className = className;
@@ -235,7 +204,7 @@
     var body = document.getElementById('rows');
     var list = visibleRows();
     var shown = list;
-    body.replaceChildren();
+    var frag = document.createDocumentFragment();
     shown.forEach(function (row) {
       var tr = document.createElement('tr');
       tr.className = 'is-compact' + (row.symbol === selected ? ' is-open' : '');
@@ -290,8 +259,9 @@
           openDetail(row.symbol);
         }
       });
-      body.appendChild(tr);
+      frag.appendChild(tr);
     });
+    body.replaceChildren(frag);
     var empty = document.getElementById('empty');
     if (!rows.length) {
       empty.hidden = false;
@@ -706,11 +676,13 @@
     if (!series || !series.c || !series.c.length) {
       canvas.hidden = true;
       canvas.style.height = '';
+      chartWidth = 0;
       return;
     }
     canvas.hidden = false;
     var box = chartBox(canvas);
     var width = box.width;
+    chartWidth = width;
     var height = chartCssHeight();
     var cssHeight = box.borderBox ? height + box.borderY : height;
     canvas.style.height = cssHeight + 'px';
@@ -877,7 +849,7 @@
     var symbols = Object.keys(watch).sort();
     var page = symbols.length > PAGE ? symbols.slice(0, watchShown) : symbols;
     var more = document.getElementById('watchMore');
-    list.replaceChildren();
+    var frag = document.createDocumentFragment();
     page.forEach(function (symbol) {
       var pin = watch[symbol];
       var item = document.createElement('li');
@@ -933,9 +905,10 @@
           if (status) status.textContent = 'Removed from the watchlist.';
         }
       });
-      list.appendChild(item);
+      frag.appendChild(item);
     });
-    if (!symbols.length) list.appendChild(el('li', 'No pins yet.', 'watch-empty'));
+    if (!symbols.length) frag.appendChild(el('li', 'No pins yet.', 'watch-empty'));
+    list.replaceChildren(frag);
     var count = document.getElementById('watchCount');
     if (count) {
       count.hidden = symbols.length === 0 || page.length >= symbols.length;
@@ -1124,7 +1097,7 @@
       return String(b.pickedOn || '').localeCompare(String(a.pickedOn || '')) || (a.rank || 0) - (b.rank || 0);
     });
     var page = picks.slice(0, trackShown);
-    list.replaceChildren();
+    var frag = document.createDocumentFragment();
     page.forEach(function (pick) {
       var item = document.createElement('li');
       item.className = 'track-pick';
@@ -1176,8 +1149,9 @@
           stateKey: 'track:' + (pick.id || pick.symbol)
         });
       }
-      list.appendChild(item);
+      frag.appendChild(item);
     });
+    list.replaceChildren(frag);
     if (more) {
       more.hidden = page.length >= picks.length;
       more.textContent = 'Show ' + PAGE + ' more';
@@ -1187,7 +1161,15 @@
     return fetch('picks-history.json?t=' + Date.now(), { cache: 'no-store' }).then(function (response) {
       if (!response.ok) throw new Error('picks');
       return response.json();
-    }).then(renderTrack, function () { renderTrack({ picks: [] }); });
+    }).then(function (history) {
+      var y = window.scrollY;
+      renderTrack(history);
+      if (window.scrollY !== y) window.scrollTo(window.scrollX, y);
+    }, function () {
+      var y = window.scrollY;
+      renderTrack({ picks: [] });
+      if (window.scrollY !== y) window.scrollTo(window.scrollX, y);
+    });
   }
 
   function savePin(symbol, note, target) {
@@ -1397,7 +1379,7 @@
         ? pool.length + ' names on the oversold research list. These are not swing candidates.'
         : 'No extra research names in this snapshot.';
     }
-    list.replaceChildren();
+    var frag = document.createDocumentFragment();
     page.forEach(function (row) {
       var item = document.createElement('li');
       var button = document.createElement('button');
@@ -1412,8 +1394,9 @@
       button.appendChild(meta);
       button.addEventListener('click', function () { openDetail(row.symbol); });
       item.appendChild(button);
-      list.appendChild(item);
+      frag.appendChild(item);
     });
+    list.replaceChildren(frag);
     if (more) {
       more.hidden = page.length >= pool.length;
       more.textContent = 'Show ' + PAGE + ' more';
@@ -1489,6 +1472,7 @@
       if (!response.ok) throw new Error('snapshot');
       return response.json();
     }).then(function (data) {
+      var y = window.scrollY;
       rows = data && Array.isArray(data.stocks) ? data.stocks.filter(function (row) {
         return row && TICKER.test(row.symbol || '') && typeof row.rsi === 'number';
       }) : [];
@@ -1511,6 +1495,7 @@
         if (first) openDetail(first.symbol, false);
         else document.getElementById('detail').hidden = true;
       }
+      if (window.scrollY !== y) window.scrollTo(window.scrollX, y);
     }).catch(function () {
       var fresh = document.getElementById('fresh');
       fresh.removeAttribute('aria-busy');
@@ -1631,13 +1616,21 @@
       openDetail(symbol);
     }
   });
+  var chartFrame = 0;
+  var chartWidth = 0;
   function redrawOpenChart() {
-    if (!selected) return;
-    var row = bySymbol(selected);
-    if (row) drawChart(row);
+    if (chartFrame) return;
+    chartFrame = window.requestAnimationFrame(function () {
+      chartFrame = 0;
+      var canvas = document.getElementById('chart');
+      if (!canvas || !selected) return;
+      var width = chartBox(canvas).width;
+      if (width === chartWidth) return;
+      var row = bySymbol(selected);
+      if (row) drawChart(row);
+    });
   }
   window.addEventListener('resize', redrawOpenChart);
-  if (window.visualViewport) window.visualViewport.addEventListener('resize', redrawOpenChart);
   var detailMore = document.getElementById('detailMore');
   if (detailMore) {
     detailMore.addEventListener('toggle', function () {
