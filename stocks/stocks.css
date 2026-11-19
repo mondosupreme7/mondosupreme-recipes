@@ -132,6 +132,12 @@ html[data-theme]:not([data-theme="retro"]) .quote-card canvas{border:1px solid v
 .watch-meta{display:flex;align-items:baseline;gap:4px;min-width:0;font:600 13px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#1C1917)}
 .watch-when{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .watch-at,.watch-now{flex:0 0 auto;white-space:nowrap;font-variant-numeric:tabular-nums}
+.watch-scan{
+  flex:0 0 auto;display:inline-flex;align-items:center;min-height:24px;padding:2px 8px;border-radius:999px;
+  background:var(--surface-2,#f1f5f9);color:var(--ink-muted,#334155);
+  box-shadow:inset 0 0 0 1px var(--line-strong,#64748b);
+  font:600 12px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
 .watch-now{margin-left:auto}
 .watch-up{color:var(--stk-gain,#166534)}
 .watch-down{color:var(--stk-loss,#991b1b)}
@@ -515,13 +521,14 @@ html[data-theme] .research-card{background:var(--surface)!important;border-color
 html[data-theme] .size-helper input{background:var(--surface)!important;color:var(--ink)!important;font-size:max(1rem,1em)}
 /* Phone: the fixed header and tab bar cover the viewport edges. Scroll-padding has to live on the scroll container. Safe-area insets stay 0 in Firefox for iOS, so --vv-top/--vv-bottom (measured from the visual viewport in stocks.js) cover that browser's toolbars. */
 @media (max-width:900px){
-  html,body{
+  html:not(.cinder-live),
+  body:not(.cinder-live){
     min-height:100vh;
     min-height:100dvh;
     scroll-padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px) + 16px);
     scroll-padding-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 32px)
   }
-  body{
+  body:not(.cinder-live){
     padding-top:calc(var(--nav-h, 48px) + var(--safe-top, 0px) + var(--vv-top, 0px));
     padding-bottom:calc(var(--dock-h, 56px) + var(--vv-bottom, 0px) + 32px)
   }
@@ -641,9 +648,13 @@ html[data-theme] .track-return.is-up,
 html[data-theme] .track-fact dd.is-up{color:var(--stk-gain)!important}
 html[data-theme] .quote-line .num-down,
 html[data-theme] .swing-change.num-down,
+html[data-theme] .quote-card .quote-day.num-down,
+html[data-theme] .quote-head-px .num-down,
 html[data-theme] .watch-list .watch-down,
 html[data-theme] .track-return.is-down,
 html[data-theme] .track-fact dd.is-down{color:var(--stk-loss)!important}
+html[data-theme] .quote-card .quote-day.num-up,
+html[data-theme] .quote-head-px .num-up{color:var(--stk-gain)!important}
 html[data-theme] .track-fact.is-entry dt{color:var(--stk-entry-ink)!important}
 html[data-theme] .track-fact.is-stop dt{color:var(--stk-stop-ink)!important}
 html[data-theme] .track-fact.is-target dt,
