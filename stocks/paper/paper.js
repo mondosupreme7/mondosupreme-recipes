@@ -1170,7 +1170,11 @@
     mount.appendChild(el('p', 'stretch-warn', pace
       ? stretchWarning(pace)
       : 'This book has no stretch goal on the ledger. Paper trading only. Informational, not financial advice. Swing rules are not loosened to chase a target.'));
-    if (!pace) return pace;
+    var prior = priorStretchLine(book);
+    if (!pace) {
+      if (prior) mount.appendChild(el('p', 'stretch-fine', prior));
+      return pace;
+    }
 
     var gapClass = '';
     var gapText = '\u2014';
@@ -1239,7 +1243,29 @@
       + '. The mark on the bar is the pace line. '
       + pace.sessionCount + ' sessions, about ' + formatGainPct(pace.multiple)
       + ' each (' + formatMultiple(pace.multiple) + ').'));
+    if (prior) mount.appendChild(el('p', 'stretch-fine', prior));
     return pace;
+  }
+
+  function priorStretchLine(book) {
+    var history = book && Array.isArray(book.goalHistory) ? book.goalHistory : [];
+    var lines = [];
+    history.forEach(function (run) {
+      if (!run || typeof run !== 'object') return;
+      var start = formatDay(run.startDate);
+      var target = formatDay(run.targetDate);
+      if (!start || !target) return;
+      var ended = formatDay(run.endedOn || run.restartedOn);
+      var equity = num(run.endingEquity);
+      var text = 'Prior stretch ' + start + ' through ' + target + ' ended and was restarted';
+      if (ended) text += ' on ' + ended;
+      if (equity != null) text += ' at ' + money(equity);
+      text += '.';
+      if (run.outcome === 'flat') text += ' Flat.';
+      if (run.closedTrades === 0) text += ' No closed trades.';
+      lines.push(text);
+    });
+    return lines.join(' ');
   }
 
   function logFact(label, value, wide, valueClass) {
@@ -1347,9 +1373,17 @@
     mount.appendChild(title);
     mount.appendChild(el('p', 'paper-banner', 'Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.'));
     mount.appendChild(el('p', 'stretch-warn', sizingWarning(root.PAPER_LEDGER && root.PAPER_LEDGER.riskBand)));
-    var from = spec ? formatDay(spec.startDate) : 'Nov 12, 2026';
+    var from = spec ? formatDay(spec.startDate) : '';
+    var through = spec ? formatDay(spec.targetDate) : '';
+    var windowCopy = from && through
+      ? 'This stretch runs from ' + from + ' through ' + through + '. '
+      : '';
+    var prior = priorStretchLine(book);
     mount.appendChild(el('p', 'paper-fine',
-      'Every paper trade from ' + from + ' on is listed here, along with any order that is still working. Entry and exit times are America/New_York. A fill or exit from the daily bar is recorded at 4:05 p.m. Eastern on that session.'));
+      windowCopy
+      + 'Every paper order and trade on this book is listed here, along with any order that is still working. '
+      + (prior ? prior + ' ' : '')
+      + 'Entry and exit times are America/New_York. A fill or exit from the daily bar is recorded at 4:05 p.m. Eastern on that session.'));
     if (!rows.length) {
       mount.appendChild(el('p', 'paper-log-empty', 'No paper trades yet. This book has no orders, open positions, or closed trades. Nothing here is a live brokerage order.'));
     } else {

@@ -38,14 +38,15 @@ def load_book():
     """Opening book for a scenario.
 
     The production ledger is append-only. Settlement adds marks and a later
-    record with the same order id. Scenarios replay the original working
-    order, before those marks and before that later status. This does not
-    rewrite the production file.
+    record with the same order id. A later stretch restart is a manual event,
+    not part of the opening book. Scenarios replay the original working
+    order, before those marks, that later status, and that restart. This does
+    not rewrite the production file.
     """
     book = json.loads(PRODUCTION_TEXT)
     book["events"] = [
         event for event in book["events"]
-        if event.get("type") not in {"mark", "fill", "exit", "expiry"}
+        if event.get("type") not in {"mark", "fill", "exit", "expiry", "stretch_goal_restarted"}
     ]
     seen = set()
     original = []
@@ -611,35 +612,58 @@ class PaperSettlementTest(unittest.TestCase):
             self.assertEqual(code, 0)
             self.assertEqual(path.read_bytes(), before)
 
-    def test_stretch_goal_ends_on_dec_11_and_survives_settlement(self):
+    def test_stretch_goal_runs_through_dec_18_and_keeps_the_prior_run(self):
         book = json.loads(PRODUCTION_TEXT)
         goal = book["goal"]
-        self.assertEqual(goal["startDate"], "2026-11-12")
+        self.assertEqual(goal["startDate"], "2026-11-19")
         self.assertEqual(goal["baselineEquity"], 1000)
         self.assertEqual(goal["target"], 1000000)
-        self.assertEqual(goal["targetDate"], "2026-12-11")
+        self.assertEqual(goal["targetDate"], "2026-12-18")
         sessions = settle.stretch_sessions(goal)
         self.assertEqual(
             [day.isoformat() for day in sessions],
             [
-                "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20",
-                "2026-11-23", "2026-11-24", "2026-11-25", "2026-11-27", "2026-11-30",
+                "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25", "2026-11-27", "2026-11-30",
                 "2026-12-01", "2026-12-02", "2026-12-03", "2026-12-04",
                 "2026-12-07", "2026-12-08", "2026-12-09", "2026-12-10", "2026-12-11",
+                "2026-12-14", "2026-12-15", "2026-12-16", "2026-12-17", "2026-12-18",
             ],
         )
-        self.assertNotIn(date(2026, 11, 12), sessions)
+        self.assertNotIn(date(2026, 11, 19), sessions)
         self.assertNotIn(date(2026, 11, 26), sessions)
         self.assertIn(date(2026, 11, 27), sessions)
-        self.assertNotIn(date(2026, 12, 12), sessions)
-        self.assertEqual(sessions[-1], date(2026, 12, 11))
+        self.assertNotIn(date(2026, 12, 19), sessions)
+        self.assertEqual(sessions[0], date(2026, 11, 20))
+        self.assertEqual(sessions[-1], date(2026, 12, 18))
+        self.assertEqual(len(sessions), 20)
         ratio = (goal["target"] / goal["baselineEquity"]) ** (1 / len(sessions))
         self.assertAlmostEqual(ratio, 1000 ** (1 / 20), places=10)
         self.assertGreater(ratio, 1.40)
         self.assertLess(ratio, 1.43)
-        # A calendar-day compounding through Dec 12 is the 1.26 figure this book does not use.
+        # A calendar-day compounding through Dec 19 is the 1.26 figure this book does not use.
         self.assertLess(1000 ** (1 / 30), 1.27)
         self.assertGreater(ratio - (1000 ** (1 / 30)), 0.14)
+        history = book["goalHistory"]
+        self.assertEqual(len(history), 1)
+        prior = history[0]
+        self.assertEqual(prior["startDate"], "2026-11-12")
+        self.assertEqual(prior["baselineEquity"], 1000)
+        self.assertEqual(prior["target"], 1000000)
+        self.assertEqual(prior["targetDate"], "2026-12-11")
+        self.assertEqual(prior["status"], "ended")
+        self.assertEqual(prior["endedOn"], "2026-11-19")
+        self.assertEqual(prior["restartedOn"], "2026-11-19")
+        self.assertEqual(prior["endingEquity"], 1000)
+        self.assertEqual(prior["outcome"], "flat")
+        self.assertEqual(prior["closedTrades"], 0)
+        marks = [event.get("session") for event in book["events"] if event.get("type") == "mark"]
+        self.assertNotIn("2026-11-19", marks)
+        restarts = [event for event in book["events"] if event.get("type") == "stretch_goal_restarted"]
+        self.assertEqual(len(restarts), 1)
+        self.assertEqual(restarts[0]["session"], "2026-11-19")
+        self.assertEqual(restarts[0]["endingEquity"], 1000)
+        self.assertIn("$1,000", restarts[0]["detail"])
+        self.assertIn("not a daily mark", restarts[0]["detail"])
         original = self.book()
         updated, applied = settle.settle_book(
             original,
@@ -648,10 +672,12 @@ class PaperSettlementTest(unittest.TestCase):
         )
         self.assertEqual(applied, ["2026-11-11"])
         self.assertEqual(updated["goal"], original["goal"])
+        self.assertEqual(updated["goalHistory"], original["goalHistory"])
         self.assertEqual(updated["rules"], original["rules"])
         self.assertEqual(updated["workingOrders"][0]["shares"], original["workingOrders"][0]["shares"])
         self.assertEqual(updated["workingOrders"][0]["limitPrice"], original["workingOrders"][0]["limitPrice"])
         self.assertNotIn("bookPctAtEntry", updated["workingOrders"][0])
+        self.assertNotIn("stretch_goal_restarted", types(updated))
 
     def test_close_writes_exit_time_result_balance_reason_and_book_percent(self):
         opened = self.filled()
@@ -919,7 +945,8 @@ class PaperSettlementTest(unittest.TestCase):
         event_types = types(book)
         self.assertEqual(event_types[:2], ["account_opened", "order_placed"])
         self.assertGreaterEqual(len(event_types), 3)
-        self.assertEqual(set(event_types[2:]), {"mark", "expiry"})
+        self.assertEqual(event_types[-1], "stretch_goal_restarted")
+        self.assertEqual(set(event_types[2:-1]), {"mark", "expiry"})
         self.assertNotIn("fill", event_types)
         marks = [event["session"] for event in book["events"] if event.get("type") == "mark"]
         self.assertIn("2026-11-17", marks)

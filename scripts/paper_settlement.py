@@ -80,8 +80,9 @@ Marks and accounting
     open longs. Versus start is equity minus starting cash. Goal progress is
     equity / goalEquity.
     An optional top-level goal object (stretch dates, baseline, and target) is
-    kept as stored. Settlement does not rewrite it, and it does not use it to
-    size an order or to relax a gate.
+    kept as stored. A goalHistory array, when present, is kept as stored too.
+    Settlement does not rewrite either, and it does not use them to size an
+    order or to relax a gate.
     On a fill, the position records bookPctAtEntry: the fill notional divided
     by equity just before that fill. On a close, the closed trade keeps that
     percent when it was recorded, and always records exitAt, realized P&L,
@@ -360,8 +361,8 @@ def stretch_sessions(goal):
     """NYSE sessions after the baseline date through the target date.
 
     The baseline close is the starting mark, not a compounding step. The
-    target date counts when it is itself a session. Dec 11, 2026 is that
-    session for a target of Dec 11; Dec 12 is a Saturday and is not a step.
+    target date counts when it is itself a session. Dec 18, 2026 is that
+    session for a target of Dec 18; Dec 19 is a Saturday and is not a step.
     """
     if not isinstance(goal, dict):
         raise SettlementError("stretch goal is missing")

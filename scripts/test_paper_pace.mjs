@@ -12,10 +12,32 @@ const paper = globalThis.PAPER_LEDGER;
 assert.ok(paper && paper.stretchPace, 'paper ledger helpers did not load');
 
 const goal = ledger.goal;
-assert.equal(goal.startDate, '2026-11-12');
+assert.equal(goal.startDate, '2026-11-19');
 assert.equal(goal.baselineEquity, 1000);
 assert.equal(goal.target, 1000000);
-assert.equal(goal.targetDate, '2026-12-11');
+assert.equal(goal.targetDate, '2026-12-18');
+assert.equal(ledger.goalHistory.length, 1);
+const priorGoal = ledger.goalHistory[0];
+assert.equal(priorGoal.name, 'stretch');
+assert.equal(priorGoal.startDate, '2026-11-12');
+assert.equal(priorGoal.baselineEquity, 1000);
+assert.equal(priorGoal.target, 1000000);
+assert.equal(priorGoal.targetDate, '2026-12-11');
+assert.equal(priorGoal.status, 'ended');
+assert.equal(priorGoal.endedOn, '2026-11-19');
+assert.equal(priorGoal.restartedOn, '2026-11-19');
+assert.equal(priorGoal.endingEquity, 1000);
+assert.equal(priorGoal.outcome, 'flat');
+assert.equal(priorGoal.closedTrades, 0);
+const restarts = ledger.events.filter((event) => event.type === 'stretch_goal_restarted');
+assert.equal(restarts.length, 1);
+assert.equal(restarts[0].session, '2026-11-19');
+assert.equal(restarts[0].endingEquity, 1000);
+assert.equal(restarts[0].priorStartDate, '2026-11-12');
+assert.equal(restarts[0].priorTargetDate, '2026-12-11');
+assert.equal(restarts[0].startDate, '2026-11-19');
+assert.equal(restarts[0].targetDate, '2026-12-18');
+assert.equal(ledger.events.some((event) => event.type === 'mark' && event.session === '2026-11-19'), false);
 
 const pythonDays = JSON.parse(execFileSync('python3', ['-c', `
 import json, sys
@@ -34,15 +56,15 @@ for (const year of [2026, 2027, 2028]) {
   assert.deepEqual(paper.nyseClosures(year), pythonDays.closures[String(year)], 'NYSE closures ' + year);
 }
 assert.equal(pythonDays.sessions.length, 20);
-assert.equal(pythonDays.sessions[0], '2026-11-13');
-assert.equal(pythonDays.sessions.at(-1), '2026-12-11');
+assert.equal(pythonDays.sessions[0], '2026-11-20');
+assert.equal(pythonDays.sessions.at(-1), '2026-12-18');
 assert.equal(pythonDays.sessions.includes('2026-11-26'), false);
 assert.equal(pythonDays.sessions.includes('2026-11-27'), true);
-assert.equal(pythonDays.sessions.includes('2026-11-12'), false);
-assert.equal(pythonDays.sessions.includes('2026-12-12'), false);
+assert.equal(pythonDays.sessions.includes('2026-11-19'), false);
+assert.equal(pythonDays.sessions.includes('2026-12-19'), false);
 
-const baseline = paper.stretchPace(goal, 1000, new Date('2026-11-12T15:30:00-05:00'));
-assert.equal(baseline.today, '2026-11-12');
+const baseline = paper.stretchPace(goal, 1000, new Date('2026-11-19T15:30:00-05:00'));
+assert.equal(baseline.today, '2026-11-19');
 assert.equal(baseline.sessionCount, 20);
 assert.equal(baseline.elapsed, 0);
 assert.equal(baseline.left, 20);
@@ -55,6 +77,12 @@ assert.ok(Math.abs(baseline.requiredMultiple - baseline.multiple) < 1e-12);
 
 const shown = paper.formatMultiple(baseline.multiple);
 assert.match(shown, /^1\.41[0-9]×$/);
+assert.equal(shown, '1.413×');
+assert.match(goal.note, /Twenty NYSE sessions/);
+assert.match(goal.note, /1000\^\(1\/20\)/);
+assert.match(goal.note, /1\.4125×/);
+assert.match(goal.note, /1\.413×/);
+assert.match(goal.note, /about \+41%/);
 assert.equal(shown.includes('1.26'), false);
 assert.equal(shown.includes('1.259'), false);
 const calendarDay = paper.formatMultiple(1000 ** (1 / 30));
@@ -68,22 +96,24 @@ assert.match(warning, /Paper trading only/);
 assert.match(warning, /not a performance claim/i);
 assert.match(warning, /Swing rules are not loosened/);
 assert.match(warning, /20 NYSE sessions/);
-assert.match(warning, /Nov 12, 2026/);
-assert.match(warning, /Dec 11, 2026/);
+assert.match(warning, /Nov 19, 2026/);
+assert.match(warning, /Dec 18, 2026/);
+assert.equal(warning.includes('Nov 12'), false);
+assert.equal(warning.includes('Dec 11'), false);
 assert.ok(warning.includes(shown));
 assert.equal(warning.includes('1.26'), false);
 assert.equal(warning.includes(calendarDay), false);
 assert.match(warning, /about 41%/);
 
-const beforeClose = paper.stretchPace(goal, 1000, new Date('2026-11-13T16:29:00-05:00'));
+const beforeClose = paper.stretchPace(goal, 1000, new Date('2026-11-20T16:29:00-05:00'));
 assert.equal(beforeClose.elapsed, 0);
 assert.equal(beforeClose.left, 20);
 assert.equal(beforeClose.due, 1);
 assert.ok(Math.abs(beforeClose.paceEquity - 1000 * (1000 ** (1 / 20))) < 0.001);
 assert.ok(beforeClose.gapUsd < -400);
-assert.match(beforeClose.paceNote, /Due by the Nov 13, 2026 close/);
+assert.match(beforeClose.paceNote, /Due by the Nov 20, 2026 close/);
 
-const afterClose = paper.stretchPace(goal, 1000, new Date('2026-11-13T16:30:00-05:00'));
+const afterClose = paper.stretchPace(goal, 1000, new Date('2026-11-20T16:30:00-05:00'));
 assert.equal(afterClose.elapsed, 1);
 assert.equal(afterClose.left, 19);
 assert.ok(afterClose.requiredMultiple > afterClose.multiple);
@@ -96,16 +126,16 @@ const shortened = paper.stretchPace(goal, 1000, new Date('2026-11-27T16:30:00-05
 assert.equal(shortened.dueSession, '2026-11-27');
 assert.ok(shortened.elapsed > thanksgiving.elapsed);
 
-const finalDay = paper.stretchPace(goal, 1000, new Date('2026-12-11T16:30:00-05:00'));
+const finalDay = paper.stretchPace(goal, 1000, new Date('2026-12-18T16:30:00-05:00'));
 assert.equal(finalDay.elapsed, 20);
 assert.equal(finalDay.left, 0);
 assert.equal(finalDay.paceEquity, 1000000);
 assert.equal(finalDay.requiredMultiple, null);
 
-const saturday = paper.stretchPace(goal, 1000, new Date('2026-12-12T12:00:00-05:00'));
+const saturday = paper.stretchPace(goal, 1000, new Date('2026-12-19T12:00:00-05:00'));
 assert.equal(saturday.elapsed, 20);
 assert.equal(saturday.paceEquity, 1000000);
-assert.equal(saturday.dueSession, '2026-12-11');
+assert.equal(saturday.dueSession, '2026-12-18');
 
 const summary = paper.summarize(ledger);
 assert.equal(summary.workingCount, 0);
@@ -119,6 +149,24 @@ const stocksPage = readFileSync(resolve(root, 'stocks/index.html'), 'utf8');
 assert.match(stocksPage, /id="paperMeta">Flat vs \$1,000\.00 start · risk \$0\.00 · 0 working orders, no fills</);
 assert.equal(stocksPage.includes('1 working order'), false);
 assert.equal(stocksPage.includes('risk $19.50'), false);
+assert.match(stocksPage, /paper\/paper\.js\?v=8/);
+assert.equal(stocksPage.includes('Nov 12, 2026'), false);
+assert.equal(stocksPage.includes('Dec 11, 2026'), false);
+assert.equal(stocksPage.includes('Dec 12, 2026'), false);
+
+const paperPage = readFileSync(resolve(root, 'stocks/paper/index.html'), 'utf8');
+assert.match(paperPage, /from \$1,000 on Nov 19, 2026 to \$1,000,000 by Dec 18, 2026/);
+assert.match(paperPage, /prior Nov 12, 2026 to Dec 11, 2026 stretch ended Nov 19, 2026/);
+assert.match(paperPage, /Stretch goal \$1,000,000 by Dec 18, 2026/);
+assert.match(paperPage, /paper\.js\?v=8/);
+assert.equal(paperPage.includes('by Dec 11, 2026'), false);
+assert.equal(paperPage.includes('on Nov 12, 2026 to'), false);
+
+const paperSource = readFileSync(resolve(root, 'stocks/paper/paper.js'), 'utf8');
+assert.equal(paperSource.includes('Nov 12, 2026'), false);
+assert.equal(paperSource.includes('Dec 11, 2026'), false);
+assert.equal(paperSource.includes('Dec 12, 2026'), false);
+assert.match(paperSource, /formatDay\(spec\.targetDate\)/);
 
 const rows = paper.tradeLogRows(ledger);
 assert.equal(rows.length, 1);
