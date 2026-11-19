@@ -107,21 +107,79 @@ assert.equal(saturday.elapsed, 20);
 assert.equal(saturday.paceEquity, 1000000);
 assert.equal(saturday.dueSession, '2026-12-11');
 
+const summary = paper.summarize(ledger);
+assert.equal(summary.workingCount, 0);
+assert.equal(summary.openRisk, 0);
+assert.equal(summary.positionCount, 0);
+assert.equal(
+  paper.stripMeta(summary),
+  'Flat vs $1,000.00 start · risk $0.00 · 0 working orders, no fills'
+);
+const stocksPage = readFileSync(resolve(root, 'stocks/index.html'), 'utf8');
+assert.match(stocksPage, /id="paperMeta">Flat vs \$1,000\.00 start · risk \$0\.00 · 0 working orders, no fills</);
+assert.equal(stocksPage.includes('1 working order'), false);
+assert.equal(stocksPage.includes('risk $19.50'), false);
+
 const rows = paper.tradeLogRows(ledger);
 assert.equal(rows.length, 1);
 assert.equal(rows[0].symbol, 'ZD');
-assert.equal(rows[0].state, 'working');
+assert.equal(rows[0].state, 'order');
 assert.equal(rows[0].tone, 'neutral');
-assert.equal(rows[0].status, 'Working · unfilled');
+assert.equal(rows[0].status, 'Expired · not a fill');
 assert.equal(rows[0].resultUsd, null);
 assert.equal(rows[0].balanceAfter, null);
 assert.equal(rows[0].fill, null);
 assert.equal(rows[0].bookPct, null);
 assert.match(rows[0].reason, /Not a fill/);
+assert.match(rows[0].reason, /Expired/);
 assert.equal(rows[0].shares, 5);
 assert.equal(rows[0].riskPct, 1.95);
 assert.equal(rows[0].riskUsd, 19.5);
-assert.match(rows[0].reason, /Not a fill/);
+
+const staleRisk = paper.summarize({
+  account: { startingCash: 1000 },
+  balances: { openRiskUsd: 19.5, equity: 1000, cash: 1000, cashReserved: 233.25, marketValue: 0 },
+  workingOrders: [
+    { id: 'paper-2026-11-10-ZD', status: 'working', symbol: 'ZD', shares: 5, limitPrice: 46.65, stop: 42.75, riskUsdAtLimit: 19.5, placedAt: '2026-11-10T21:35:01-05:00' },
+    { id: 'paper-2026-11-10-ZD', status: 'expired', symbol: 'ZD', shares: 5, limitPrice: 46.65, stop: 42.75, riskUsdAtLimit: 19.5, placedAt: '2026-11-10T21:35:01-05:00', at: '2026-11-17T16:05:00-05:00' }
+  ],
+  openPositions: [],
+  closedTrades: []
+});
+assert.equal(staleRisk.workingCount, 0);
+assert.equal(staleRisk.openRisk, 0);
+assert.match(paper.stripMeta(staleRisk), /risk \$0\.00 · 0 working orders/);
+
+const stillWorking = paper.summarize({
+  account: { startingCash: 1000 },
+  balances: { openRiskUsd: 0, equity: 1000, cash: 1000 },
+  workingOrders: [
+    { id: 'z', status: 'working', symbol: 'ZD', shares: 5, limitPrice: 46.65, stop: 42.75, riskUsdAtLimit: 19.5 }
+  ]
+});
+assert.equal(stillWorking.workingCount, 1);
+assert.equal(stillWorking.openRisk, 19.5);
+
+const canceled = paper.summarize({
+  balances: { openRiskUsd: 4 },
+  workingOrders: [
+    { id: 'c', status: 'working', symbol: 'CCC', shares: 1, limitPrice: 10, stop: 6, riskUsdAtLimit: 4 },
+    { id: 'c', status: 'canceled', symbol: 'CCC', shares: 1, limitPrice: 10, stop: 6, riskUsdAtLimit: 4 }
+  ]
+});
+assert.equal(canceled.workingCount, 0);
+assert.equal(canceled.openRisk, 0);
+
+const filled = paper.summarize({
+  balances: { openRiskUsd: 99 },
+  workingOrders: [
+    { id: 'a', status: 'working', symbol: 'AAA', shares: 5, limitPrice: 10, stop: 8, riskUsdAtLimit: 10 },
+    { id: 'a', status: 'filled', symbol: 'AAA', shares: 5, fillPrice: 10, riskUsdAtLimit: 10 }
+  ],
+  openPositions: [{ id: 'a', symbol: 'AAA', entryPrice: 10, stop: 8, shares: 5 }]
+});
+assert.equal(filled.workingCount, 0);
+assert.equal(filled.openRisk, 10);
 
 assert.deepEqual(paper.tradeLogRows({}), []);
 

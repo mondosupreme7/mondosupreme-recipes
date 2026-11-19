@@ -147,6 +147,50 @@
     return groups;
   }
 
+  /* The ledger is append-only. The last record for an id is the latest status. */
+  function latestOrder(group) {
+    return group.records[group.records.length - 1];
+  }
+
+  function latestOrders(book) {
+    return groupOrders(orderLog(book || {})).map(latestOrder);
+  }
+
+  function orderOpenRisk(order) {
+    if (!isWorking(order)) return 0;
+    var recorded = num(order.riskUsdAtLimit);
+    if (recorded != null) return recorded;
+    var limit = num(order.limitPrice);
+    var stop = num(order.stop);
+    var shares = num(order.shares);
+    if (limit == null || stop == null || shares == null) return 0;
+    var distance = limit - stop;
+    if (distance < 0) distance = 0;
+    return distance * shares;
+  }
+
+  function positionOpenRisk(position) {
+    var entry = num(position && position.entryPrice);
+    var stop = num(position && position.stop);
+    var shares = num(position && position.shares);
+    if (entry == null || stop == null || shares == null) return 0;
+    var distance = entry - stop;
+    if (distance < 0) distance = 0;
+    return distance * shares;
+  }
+
+  function openRiskOf(book) {
+    var total = 0;
+    latestOrders(book).forEach(function (order) {
+      total += orderOpenRisk(order);
+    });
+    var positions = book && Array.isArray(book.openPositions) ? book.openPositions : [];
+    positions.forEach(function (position) {
+      total += positionOpenRisk(position);
+    });
+    return total;
+  }
+
   function tradePnl(trade) {
     var direct = num(trade.realizedPnlUsd);
     if (direct == null) direct = num(trade.pnlUsd);
@@ -254,24 +298,14 @@
     });
     var equity = num(balances.equity);
     if (equity == null) equity = (cash == null ? start : cash) + marketValue;
-    var groups = groupOrders(orderLog(book || {}));
+    var ordersNow = latestOrders(book || {});
     var workingCount = 0;
-    groups.forEach(function (group) {
-      if (isWorking(group.records[group.records.length - 1])) workingCount += 1;
+    ordersNow.forEach(function (order) {
+      if (isWorking(order)) workingCount += 1;
     });
-    var openRisk = num(balances.openRiskUsd);
-    if (openRisk == null) {
-      openRisk = 0;
-      groups.forEach(function (group) {
-        var order = group.records[group.records.length - 1];
-        if (!isWorking(order)) return;
-        var risk = num(order.riskUsdAtLimit);
-        if (risk == null && num(order.limitPrice) != null && num(order.stop) != null && num(order.shares) != null) {
-          risk = Math.abs(order.limitPrice - order.stop) * order.shares;
-        }
-        if (risk != null) openRisk += risk;
-      });
-    }
+    /* Latest status, not balances.openRiskUsd. A stale snapshot still says
+       $19.50 after the order has expired. */
+    var openRisk = openRiskOf(book || {});
     return {
       start: start,
       goal: goal,
@@ -720,7 +754,7 @@
   function orderById(book, id) {
     var found = null;
     groupOrders(orderLog(book || {})).forEach(function (group) {
-      if (group.id === String(id || '')) found = group.records[group.records.length - 1];
+      if (group.id === String(id || '')) found = latestOrder(group);
     });
     return found;
   }
@@ -783,7 +817,7 @@
     });
     groupOrders(orderLog(book || {})).forEach(function (group) {
       if (seen[group.id]) return;
-      var order = group.records[group.records.length - 1];
+      var order = latestOrder(group);
       var status = String(order.status || 'working').toLowerCase();
       var working = isWorking(order);
       var label = working ? 'Working \u00b7 unfilled' : recordLabel(order);
@@ -990,7 +1024,7 @@
   }
 
   function renderOrder(group) {
-    var current = group.records[group.records.length - 1];
+    var current = latestOrder(group);
     var working = isWorking(current);
     var card = el('article', 'paper-card');
     var title = el('h3');
@@ -1243,7 +1277,7 @@
   function orderForRow(book, id) {
     var found = null;
     groupOrders(orderLog(book || {})).forEach(function (group) {
-      if (group.id === String(id)) found = group.records[group.records.length - 1];
+      if (group.id === String(id)) found = latestOrder(group);
     });
     return found;
   }
