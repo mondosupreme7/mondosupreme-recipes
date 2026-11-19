@@ -146,13 +146,19 @@ assert.equal(
   'Flat vs $1,000.00 start · risk $0.00 · 0 working orders, no fills'
 );
 const stocksPage = readFileSync(resolve(root, 'stocks/index.html'), 'utf8');
-assert.match(stocksPage, /id="paperMeta">Flat vs \$1,000\.00 start · risk \$0\.00 · 0 working orders, no fills</);
+assert.match(stocksPage, /href="\/stocks\/challenge\/"/);
 assert.equal(stocksPage.includes('1 working order'), false);
 assert.equal(stocksPage.includes('risk $19.50'), false);
 assert.match(stocksPage, /paper\/paper\.js\?v=\d+/);
 assert.equal(stocksPage.includes('Nov 12, 2026'), false);
 assert.equal(stocksPage.includes('Dec 11, 2026'), false);
 assert.equal(stocksPage.includes('Dec 12, 2026'), false);
+
+const challengePage = readFileSync(resolve(root, 'stocks/challenge/index.html'), 'utf8');
+assert.match(challengePage, /id="paperMeta">Flat vs \$1,000\.00 start · risk \$0\.00 · 0 working orders, no fills</);
+assert.match(challengePage, /paper\.js\?v=\d+/);
+assert.equal(challengePage.includes('1 working order'), false);
+assert.equal(challengePage.includes('risk $19.50'), false);
 
 const paperPage = readFileSync(resolve(root, 'stocks/paper/index.html'), 'utf8');
 assert.match(paperPage, /from \$1,000 on Nov 19, 2026 to \$1,000,000 by Dec 18, 2026/);

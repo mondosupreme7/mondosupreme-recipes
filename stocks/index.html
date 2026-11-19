@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="/shell.css?v=15">
 <link rel="stylesheet" href="stocks.css?v=22">
 <link rel="stylesheet" href="/readable.css?v=19">
-<link rel="stylesheet" href="paper/paper.css?v=8">
+<link rel="stylesheet" href="paper/paper.css?v=9">
 <link rel="stylesheet" href="swot.css?v=2">
 </head>
 <body>
@@ -42,36 +42,14 @@
  <div class="hero quote-hero">
   <h1>Stocks</h1>
   <p class="hero-sub">Oversold research and swing setups</p>
-  <a class="paper-strip" id="paperStrip" href="/stocks/paper/">
-   <span class="paper-regime" id="paperRegime">No new trades: SPY is 0.3% under its 200-day.</span>
-   <span class="paper-eq" id="paperEquity">Equity $1,000.00</span>
-   <span class="paper-pace" id="paperPace"></span>
-   <span class="paper-kicker">Paper book · simulated, not a live account</span>
-   <span class="paper-meta" id="paperMeta">Flat vs $1,000.00 start · risk $0.00 · 0 working orders, no fills</span>
-   <span class="paper-go">Open the paper trade log</span>
+  <p class="paper-regime" id="paperRegime">No new trades: SPY is 0.3% under its 200-day.</p>
+  <a class="paper-strip" href="/stocks/challenge/">
+   <span class="paper-kicker">Paper challenge</span>
+   <span class="paper-eq">$1,000 to $1,000,000</span>
+   <span class="paper-go">Open the challenge</span>
   </a>
-  <section class="stretch-goal" id="stretchGoal" aria-labelledby="stretchTitle">
-   <h2 id="stretchTitle">Stretch goal</h2>
-   <details class="legal-note">
-    <summary>Paper only · not advice</summary>
-    <p class="stretch-warn">This is an extreme stretch goal. It is very unlikely to be reached. Paper trading only. Informational, not financial advice, and not a performance claim. Swing rules are not loosened to chase it. The per-session pace is computed from the NYSE calendar when this page loads.</p>
-   </details>
-   <dl class="stretch-stats">
-    <div><dt>Paper equity</dt><dd><strong>$1,000.00</strong></dd></div>
-    <div><dt>Pace line for today</dt><dd><strong>…</strong></dd></div>
-   </dl>
-  </section>
   <p>The wide list is an oversold research screen. Only a name that passes the swing rules is a swing candidate, the top stock to watch, or a journal entry. A card uses the latest daily bars and, when a sheet comes back, fundamentals as notes. Informational only, not financial advice.</p>
  </div>
- <section class="paper-log" id="paperTradeLog" aria-labelledby="paperLogTitle">
-  <h2 id="paperLogTitle">Paper trade log</h2>
-  <details class="legal-note">
-   <summary>Paper only · not advice</summary>
-   <p class="paper-banner">Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.</p>
-  </details>
-  <p class="paper-log-empty">Loading the paper book…</p>
-  <p class="paper-log-more"><a href="/stocks/paper/">Open the full paper trade log</a></p>
- </section>
  <details class="rules-card" id="swingRules">
   <summary>Swing Trading Rules</summary>
   <ol class="rules-list">
@@ -88,7 +66,6 @@
    <li id="rule-11">No emotional, FOMO, or revenge trades.</li>
    <li id="rule-12">Journal and review every trade.</li>
   </ol>
-  <p class="stretch-warn" id="paperRiskWarn">This is a very aggressive, high-variance setting for a stretch goal. A few losses in a row can cut the book sharply. Stronger setups may risk up to 50% of the paper book. There is no margin, so a trade cannot exceed the book. Paper only. Informational, not financial advice.</p>
   <p class="rules-foot">The other swing rules stay as they are. General education, not financial advice.</p>
  </details>
  <div class="quote-main">
@@ -212,7 +189,7 @@
 <script src="/board/config.js"></script>
 <script src="swot.js?v=2"></script>
 <script src="stocks.js?v=25"></script>
-<script src="paper/paper.js?v=14"></script>
+<script src="paper/paper.js?v=15"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>

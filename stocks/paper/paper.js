@@ -1663,7 +1663,8 @@
     var log = document.getElementById('paperTradeLog');
     if (!app && !strip && !stretch && !log) return;
     loadRegime();
-    var url = (app ? 'ledger.json' : 'paper/ledger.json') + '?t=' + Date.now();
+    var onPaper = location.pathname.indexOf('/stocks/paper') !== -1;
+    var url = (onPaper ? 'ledger.json' : '/stocks/paper/ledger.json') + '?t=' + Date.now();
     fetch(url, { cache: 'no-store' }).then(function (response) {
       if (!response.ok) throw new Error('status ' + response.status);
       return response.json();
