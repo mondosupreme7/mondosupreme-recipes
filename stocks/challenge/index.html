@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script src="/theme-boot.js?v=2"></script>
+<script src="/ga.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mondosupreme">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com https://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com https://*.firebasedatabase.app https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://ipapi.co https://mondosupreme-3bf28-default-rtdb.firebaseio.com wss://mondosupreme-3bf28-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://securetoken.google.com https://www.googleapis.com https://*.googleapis.com https://recaptchaenterprise.googleapis.com https://*.firebaseapp.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; frame-src https://*.firebaseapp.com https://*.web.app https://www.google.com https://recaptcha.google.com https://*.firebaseio.com https://*.firebasedatabase.app https://mondosupreme-3bf28-default-rtdb.firebaseio.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Paper challenge — Stocks</title>
+<meta name="description" content="Paper challenge from $1,000 to $1,000,000 for the Mondosupreme stocks book. Simulated only, not a live account, and not financial advice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/recipes/styles.css?v=6">
+<link rel="stylesheet" href="/retro.css?v=3">
+<link rel="stylesheet" href="/retro-theme.css?v=2">
+<link rel="stylesheet" href="/shell.css?v=15">
+<link rel="stylesheet" href="../stocks.css?v=22">
+<link rel="stylesheet" href="/readable.css?v=19">
+<link rel="stylesheet" href="../paper/paper.css?v=9">
+<link rel="stylesheet" href="../swot.css?v=2">
+</head>
+<body>
+<header class="site-header"><div class="wrap hdr">
+ <a href="/stocks/" class="brand"><span class="logo">💹</span><span>Stocks</span></a>
+ <nav class="site-nav" aria-label="Site"></nav>
+</div></header>
+<main class="wrap paper-book">
+ <p class="paper-back"><a href="/stocks/">Stocks</a></p>
+ <h1>Paper challenge</h1>
+ <p>A paper stretch from $1,000 to $1,000,000. Simulated only. Not a live account, and not a forecast.</p>
+ <section class="paper-strip" id="paperStrip" aria-label="Paper challenge">
+  <p class="paper-regime" id="paperRegime">No new trades: SPY is 0.3% under its 200-day.</p>
+  <p class="paper-eq" id="paperEquity">Equity $1,000.00</p>
+  <p class="paper-pace" id="paperPace"></p>
+  <p class="paper-meta" id="paperMeta">Flat vs $1,000.00 start · risk $0.00 · 0 working orders, no fills</p>
+ </section>
+ <details class="legal-note">
+  <summary>Paper only · not advice</summary>
+  <p class="stretch-warn">This is an extreme stretch goal. It is very unlikely to be reached. Paper trading only. Informational, not financial advice, and not a performance claim. Swing rules are not loosened to chase it.</p>
+ </details>
+ <section class="stretch-goal" id="stretchGoal" aria-busy="true" aria-labelledby="stretchTitle">
+  <h2 id="stretchTitle">Stretch goal</h2>
+ </section>
+ <section class="paper-log" id="paperTradeLog" aria-busy="true" aria-labelledby="paperLogTitle">
+  <h2 id="paperLogTitle">Challenge trade log</h2>
+  <p class="paper-log-empty">Loading the paper book…</p>
+ </section>
+</main>
+<footer class="site-footer"><div class="wrap"><p>© <span id="yr"></span> Mondosupreme.com · Paper trading, not financial advice. · <a href="/stocks/">Stocks</a> · <a href="/stocks/paper/">Paper book</a></p></div></footer>
+<script src="/retro-theme.js"></script>
+<script src="/era.js"></script>
+<script src="/board/vendor/firebase/firebase-app-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
+<script src="/board/vendor/firebase/firebase-database-compat.js"></script>
+<script src="/board/config.js"></script>
+<script src="/members.js?v=5"></script>
+<script src="/shell.js?v=22"></script>
+<script src="/backup.js"></script>
+<script src="../swot.js?v=2"></script>
+<script src="../paper/paper.js?v=15"></script>
+</body>
+</html>
