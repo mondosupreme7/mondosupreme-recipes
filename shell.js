@@ -430,10 +430,10 @@
     { group: 'Games', title: 'Cinderlatch', href: '/escape/', icon: 'door', text: 'cinderlatch escape door locked room begin' },
     { group: 'Games', title: 'Saltflare', href: '/saltflare/', icon: 'flare', text: 'saltflare formation shooter moths flare skiff marsh' },
     { group: 'Games', title: 'Needlewake', href: '/needlewake/', icon: 'needle', text: 'needlewake vector shards glass needle field' },
-    { group: 'Games', title: 'Half Strike Fortress', href: '/fps/', icon: 'gun', text: 'half strike fortress fps shooter labs sandstorm 2fort crowbar' },
+    { group: 'Games', title: 'Half Strike Fortress', short: 'Half Strike', href: '/fps/', icon: 'gun', text: 'half strike fortress fps shooter labs sandstorm 2fort crowbar' },
     { group: 'Games', title: 'Phosphor Halls', href: '/phosphor/', icon: 'lamp', text: 'phosphor halls maze lamp moth crumbs wardens cold lamp' },
     { group: 'Games', title: 'Night Ford', href: '/nightford/', icon: 'ford', text: 'night ford hopper cricket barges porch lights carts river' },
-    { group: 'Games', title: 'Craft', href: '/mmo/', icon: 'sword', text: 'craft mmo mondocraft faction class goldhaven realm' },
+    { group: 'Games', title: 'Craft', href: '/mmo/', icon: 'sword', text: 'craft mmo faction class goldhaven realm' },
     { group: 'Games', title: 'Virtual Pet', href: '/pet/', icon: 'egg', text: 'virtual pet egg tamagotchi habitat park' },
     { group: 'Games', title: 'Word Game', href: '/wordle/', icon: 'word', text: 'wordle word game daily five letter puzzle' },
     { group: 'Games', title: 'Connections', href: '/connections/', icon: 'puzzle', text: 'connections sudoku puzzle groups four daily mini' },
@@ -442,7 +442,7 @@
     { group: 'Tools', title: 'Recipes', href: '/recipes/', icon: 'pot', text: 'kitchen cookbook food cooking pasta dinner' },
     { group: 'Tools', title: 'Grocery List', href: '/grocery/', icon: 'meal', text: 'grocery list shopping aisle servings cart' },
     { group: 'Tools', title: 'Recipe TV', href: '/daily-recipe/', icon: 'tv', text: 'daily recipe youtube show realplayer chef television' },
-    { group: 'Tools', title: 'Search', href: '/search/', icon: 'search', text: 'ask mondo search engine cyber butler find hollis' },
+    { group: 'Tools', title: 'Search', href: '/search/', icon: 'search', text: 'ask search engine cyber butler find hollis' },
     { group: 'Tools', title: 'Stocks', href: '/stocks/', icon: 'chart', text: 'stocks market quote oversold rsi swing screen ticker informational' },
     { group: 'Tools', title: 'Weather', href: '/weather/', icon: 'radar', text: 'weather radar doppler forecast cocoa port canaveral temperature rain' },
     { group: 'Tools', title: 'Cruises', href: '/cruises/', icon: 'ship', text: 'ships harbor cruise royal caribbean port canaveral sailing' },
@@ -451,7 +451,7 @@
     { group: 'Tools', title: 'Local Guide', href: '/local/', icon: 'pin', text: 'local guide events calendar cocoa merritt island cocoa beach brevard town happening' },
     { group: 'Tools', title: 'Planting', href: '/planting/', icon: 'sprout', text: 'planting garden zone 10a 32927 cocoa port st john vegetables herbs flowers fruit calendar' },
     { group: 'Tools', title: 'Tropics', href: '/tropics/', icon: 'storm', text: 'tropics tropical hurricane hurricanes storm storms atlantic basin cyclone nhc' },
-    { group: 'Info', title: 'Home', href: '/', icon: 'home', text: 'home landing mondosupreme portal dashboard launcher' },
+    { group: 'Info', title: 'Home', href: '/', icon: 'home', text: 'home landing portal dashboard launcher' },
     { group: 'Info', title: 'Wiki', href: '/wiki/', icon: 'book', text: 'wiki notes notebook pages' },
     { group: 'Info', title: 'Chat', href: '/chat/', icon: 'aim', text: 'chat room talk messages public' },
     { group: 'Info', title: 'Paint', href: '/board/', icon: 'paint', text: 'paint drawing whiteboard board canvas' },
@@ -697,7 +697,8 @@
     link.appendChild(classic);
     var label = document.createElement('span');
     label.className = 'app-label';
-    label.textContent = item.title;
+    label.textContent = item.short || item.title;
+    if (item.short && item.short !== item.title) link.setAttribute('aria-label', item.title);
     link.appendChild(label);
     if (isCurrent(item.href)) link.setAttribute('aria-current', 'page');
     return link;
@@ -789,10 +790,9 @@
     link.href = '/privacy/';
     link.textContent = 'Privacy';
     var copy = foot.querySelector('.studio-footer') || foot.querySelector('p:not(.home-visits):not(.studio-about)');
-    if (copy) {
-      copy.appendChild(document.createTextNode(' · '));
-      copy.appendChild(link);
-    } else foot.appendChild(link);
+    var host = copy || foot;
+    if (host.childNodes.length) host.appendChild(document.createTextNode(' · '));
+    host.appendChild(link);
   }
   var PAGE_STEPS = [80, 90, 100, 110, 125];
   var PAGE_KEY = 'mondosupreme.pageScale.v1';
