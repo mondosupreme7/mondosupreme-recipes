@@ -319,6 +319,17 @@ html[data-theme] .paper-dl .is-down{
   .stretch-stats{gap:4px 8px;margin:4px 0}
   .stretch-stats small{line-height:1.2}
   .paper-book h1{font-size:1.35rem;margin:0}
+  /* /stocks/ at a short phone only. /stocks/paper/ and 844px-tall phones already
+     clear the dock, and cinder-live play pages do not use this sheet. */
+  html:not(.paper-page):not(.cinder-live) body{
+    padding-bottom:calc(var(--dock-h, 52px) + env(safe-area-inset-bottom, 0px) + var(--vv-bottom, 0px) + 32px)
+  }
+  html:not(.paper-page) .stretch-goal{
+    margin-bottom:0;padding-bottom:calc(4px + env(safe-area-inset-bottom, 0px))
+  }
+  html:not(.paper-page) .stretch-stats{margin-bottom:0;gap:2px 8px}
+  html:not(.paper-page) .stretch-stats > div:not(:last-child) small{display:none}
+  html:not(.paper-page) .stretch-stats > div:nth-child(3){grid-column:1 / -1}
 }
 @media (max-width:900px){
   .stretch-goal,.paper-log,#paperRiskWarn{

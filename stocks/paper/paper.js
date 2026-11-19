@@ -893,6 +893,10 @@
         riskPct: recordRiskPct(order),
         riskUsd: recordRiskUsd(order),
         fill: null,
+        limit: num(order.limitPrice),
+        entryLow: num(order.entryLow),
+        entryHigh: num(order.entryHigh),
+        entryPrice: num(order.entryPrice),
         stop: num(order.stop),
         target: num(order.target),
         resultUsd: null,
@@ -1020,7 +1024,7 @@
 
   function levelClass(label) {
     var name = String(label || '').replace(/\s+/g, ' ').trim().toLowerCase();
-    if (name === 'entry' || name === 'buy zone' || name === 'limit') return 'is-entry';
+    if (name === 'entry' || name === 'buy zone' || name === 'limit' || name === 'entry/limit') return 'is-entry';
     if (name === 'stop') return 'is-stop';
     if (name === 'target') return 'is-target';
     return '';
@@ -1343,6 +1347,15 @@
     return lines.join(' ');
   }
 
+  function levelFact(row) {
+    if (!row) return null;
+    if (row.limit != null) return { label: 'Limit', value: money(row.limit) };
+    if (row.entryLow == null && row.entryHigh == null && row.entryPrice == null) return null;
+    var text = rangeText(row.entryLow, row.entryHigh, row.entryPrice);
+    if (!text || text === '\u2014') return null;
+    return { label: 'Entry', value: text };
+  }
+
   function logFact(label, value, wide, valueClass) {
     var wrap = document.createElement('div');
     var kind = levelClass(label);
@@ -1484,6 +1497,8 @@
         facts.appendChild(logFact('Book', row.bookPct == null ? '\u2014' : plainPct(row.bookPct) + ' of the book', false));
         facts.appendChild(logFact('Risk', riskFact(row), false));
         facts.appendChild(logFact('Fill', row.fill == null ? '\u2014' : money(row.fill), false));
+        var level = levelFact(row);
+        if (level) facts.appendChild(logFact(level.label, level.value, false));
         facts.appendChild(logFact('Stop', money(row.stop), false));
         facts.appendChild(logFact('Target', money(row.target), false));
         var resultClass = row.tone === 'up' ? 'num-up' : (row.tone === 'down' ? 'num-down' : '');
