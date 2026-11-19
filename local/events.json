@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19T02:36:32Z",
+ "updated": "2026-11-19T10:47:10Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 7
+   "count": 6
   },
   {
    "name": "City of Titusville",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 8
+   "count": 11
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 30
+   "count": 33
   },
   {
    "name": "Launch Library 2",
@@ -81,48 +81,6 @@
    "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
    "source": "City of Rockledge",
    "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "7e10adc3931988cc",
-   "title": "Odyssey of the Seas in port",
-   "start": "2026-11-17T18:00:00Z",
-   "end": "2026-11-18T01:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "2d2cda8858f1e7e7",
-   "title": "Explorer of the Seas in port",
-   "start": "2026-11-18T12:00:00Z",
-   "end": "2026-11-18T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT5",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "a6069695ca2c38ca",
-   "title": "Development Review Committee",
-   "start": "2026-11-18T20:00:00Z",
-   "end": "2026-11-19T04:59:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2844",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2844",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -795,6 +753,118 @@
    "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9792",
    "source": "City of Cocoa Beach",
    "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "d32660e83ba460d7",
+   "title": "Disney Treasure in port",
+   "start": "2026-11-28T11:00:00Z",
+   "end": "2026-11-28T22:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "e52605ee76901e63",
+   "title": "Harmony of the Seas in port",
+   "start": "2026-11-28T11:00:00Z",
+   "end": "2026-11-28T21:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "3cafafe9a23e55b4",
+   "title": "Carnival Mardi Gras in port",
+   "start": "2026-11-28T11:00:00Z",
+   "end": "2026-11-28T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "835c4912eeee0aa2",
+   "title": "Carnival Vista in port",
+   "start": "2026-11-28T12:00:00Z",
+   "end": "2026-11-28T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "2460ab2141476ac4",
+   "title": "Celebrity Apex in port",
+   "start": "2026-11-28T12:00:00Z",
+   "end": "2026-11-28T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "c9181b30797d40dd",
+   "title": "Adult Winter Camp at the Zoo",
+   "start": "2026-11-28T14:00:00Z",
+   "end": "2026-11-29T20:00:00Z",
+   "town": "Melbourne",
+   "venue": "BREVARD ZOO, 8225 N. Wickham Rd, Melbourne, FL, 32935, United States",
+   "category": "Family",
+   "url": "https://www.visitspacecoast.com/event/adult-winter-camp-at-the-zoo/",
+   "description": "It\u2019s an adult-only day camp with Brevard Zoo! Join us for a two-day nostalgic weekend filled with activities, new friends, animal experiences, and more! Go behind-the-scenes, build crafts, and experience the Zoo through a new lens. Members: $200 Nonmembers: $220",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "78207e0d91727054",
+   "title": "Cocoa Village Saturday Art Market",
+   "start": "2026-11-28T16:00:00Z",
+   "end": "2026-11-28T22:00:00Z",
+   "town": "Cocoa",
+   "venue": "MYRT THARPE SQUARE, 12 Stone St, Cocoa, FL, 32922",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/cocoa-village-saturday-art-market-2/2026-11-28/",
+   "description": "Enjoy this weekly Saturday Cocoa Village Art Market in the heart of Cocoa Village with an array of artisans. Come browse and shop original local artwork by area artists! Spend the day in Cocoa Village also visiting the many shops and eateries.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "e7145aa93c111b38",
+   "title": "11th Annual Holiday Pub Crawl Melbourne with KRAMPUS",
+   "start": "2026-11-28T22:00:00Z",
+   "end": "2026-11-29T03:00:00Z",
+   "town": "Melbourne",
+   "venue": "The Creek Saloon, 829 E New Haven Ave, Melbourne, FL, 32901, United States",
+   "category": "Arts",
+   "url": "https://www.visitspacecoast.com/event/holiday-pub-crawl-downtown-melbourne/",
+   "description": "11th Annual Holiday Pub Crawl Melbourne with KRAMPUS, Sat, Nov. 28, 5 pm. Themes are Santa, Elves, Goblins, Naughty Children, Pirates, Fantasy, Viking, Heroes, Faires, Trolls, Knights, Princes & Princesses, Celtic, Fooles, Heroes, and of course, KRAMPUS! All are welcome! Costume Contests! Starts at The Creek, 829 E. New Haven Avenue, Melbourne, FL 32901.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   },
   {
