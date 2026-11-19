@@ -1560,6 +1560,30 @@
     if (meta) meta.textContent = stripMeta(summary);
   }
 
+  function snapshotUrl() {
+    var path = window.location.pathname || '';
+    var inPaper = path.indexOf('/paper/') !== -1 || /\/paper$/.test(path);
+    return (inPaper ? '../oversold.json' : 'oversold.json') + '?t=' + Date.now();
+  }
+
+  function loadRegime() {
+    var line = document.getElementById('paperRegimeNote');
+    if (!line) return;
+    fetch(snapshotUrl(), { cache: 'no-store' }).then(function (response) {
+      if (!response.ok) throw new Error('snapshot');
+      return response.json();
+    }).then(function (data) {
+      var next = data && data.regime;
+      var note = next && typeof next.note === 'string' ? next.note.trim() : '';
+      if (!note) {
+        line.hidden = true;
+        return;
+      }
+      line.hidden = false;
+      line.textContent = note;
+    }).catch(function () { /* Keep the seeded sentence when the snapshot is unavailable. */ });
+  }
+
   function boot() {
     var year = document.getElementById('yr');
     if (year && !year.textContent) year.textContent = String(new Date().getFullYear());
@@ -1578,6 +1602,7 @@
       }
     }
     if (!app && !strip && !stretch && !log) return;
+    loadRegime();
     var url = (app ? 'ledger.json' : 'paper/ledger.json') + '?t=' + Date.now();
     fetch(url, { cache: 'no-store' }).then(function (response) {
       if (!response.ok) throw new Error('status ' + response.status);

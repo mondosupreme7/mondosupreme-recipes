@@ -1,9 +1,12 @@
-/* Company SWOT cards. Reads stocks/swot/<TICKER>.json. A missing file renders nothing. */
+/* Company SWOT cards. Reads stocks/swot/<TICKER>.json only when
+   stocks/swot/manifest.json lists that ticker. Anything else renders nothing
+   and is not requested. */
 (function () {
   'use strict';
 
   var TICKER = /^[A-Z]{1,5}(?:-[A-Z])?$/;
   var cache = Object.create(null);
+  var manifestPromise = null;
   var openState = Object.create(null);
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var QUADS = [
@@ -59,24 +62,51 @@
     return true;
   }
 
-  function fileUrl(ticker) {
+  function swotDir() {
     var path = window.location.pathname || '';
     var inPaper = path.indexOf('/paper/') !== -1 || /\/paper$/.test(path);
-    return (inPaper ? '../swot/' : 'swot/') + encodeURIComponent(ticker) + '.json';
+    return inPaper ? '../swot/' : 'swot/';
+  }
+
+  function fileUrl(ticker) {
+    return swotDir() + encodeURIComponent(ticker) + '.json';
+  }
+
+  function loadManifest() {
+    if (!manifestPromise) {
+      manifestPromise = fetch(swotDir() + 'manifest.json', { cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('manifest');
+          return response.json();
+        })
+        .then(function (data) {
+          var allow = Object.create(null);
+          var list = data && Array.isArray(data.tickers) ? data.tickers : [];
+          list.forEach(function (ticker) {
+            if (TICKER.test(ticker || '')) allow[ticker] = true;
+          });
+          return allow;
+        })
+        .catch(function () { return Object.create(null); });
+    }
+    return manifestPromise;
   }
 
   function load(ticker) {
     if (!TICKER.test(ticker || '')) return Promise.resolve(null);
     if (!Object.prototype.hasOwnProperty.call(cache, ticker)) {
-      cache[ticker] = fetch(fileUrl(ticker))
-        .then(function (response) {
-          if (!response.ok) throw new Error('missing');
-          return response.json();
-        })
-        .then(function (data) {
-          return usable(data, ticker) ? data : null;
-        })
-        .catch(function () { return null; });
+      cache[ticker] = loadManifest().then(function (allow) {
+        if (!allow[ticker]) return null;
+        return fetch(fileUrl(ticker), { cache: 'no-store' })
+          .then(function (response) {
+            if (!response.ok) throw new Error('missing');
+            return response.json();
+          })
+          .then(function (data) {
+            return usable(data, ticker) ? data : null;
+          })
+          .catch(function () { return null; });
+      });
     }
     return cache[ticker];
   }
