@@ -722,6 +722,49 @@
     return sized;
   }
 
+  function regimePct(value) {
+    var rounded = Math.round(Math.abs(Number(value)) * 10) / 10;
+    var text = rounded.toFixed(1);
+    if (text.slice(-2) === '.0') text = text.slice(0, -2);
+    return text;
+  }
+
+  function regimeBuilt(symbol, vs, blocked) {
+    var name = symbol || 'SPY';
+    var sentence = vs < 0
+      ? name + ' is ' + regimePct(vs) + '% under its 200-day.'
+      : (vs > 0
+        ? name + ' is ' + regimePct(vs) + '% above its 200-day.'
+        : name + ' is even with its 200-day.');
+    return blocked ? 'No new trades: ' + sentence : sentence;
+  }
+
+  /* Prefer the scanner snapshot's regime.note. Build the same sentence from
+     vsSma200 and newEntriesBlocked when the note is missing. Without a regime
+     object, reuse the fresh line and the empty swing-watch sentence. */
+  function regimeNote(snapshot) {
+    var regime = snapshot && snapshot.regime && typeof snapshot.regime === 'object' && !Array.isArray(snapshot.regime)
+      ? snapshot.regime
+      : null;
+    if (regime) {
+      var note = typeof regime.note === 'string' ? regime.note.trim() : '';
+      if (note) return note;
+      if (typeof regime.vsSma200 === 'number' && isFinite(regime.vsSma200)) {
+        var blocked = regime.newEntriesBlocked === true || (regime.newEntriesBlocked == null && regime.vsSma200 < 0);
+        return regimeBuilt(regime.symbol || 'SPY', regime.vsSma200, blocked);
+      }
+      if (regime.newEntriesBlocked === true) return 'No new trades.';
+    }
+    var market = snapshot && snapshot.market && typeof snapshot.market === 'object' ? snapshot.market : null;
+    if (!market || typeof market.vsSma200 !== 'number' || !isFinite(market.vsSma200)) return '';
+    var name = market.symbol || 'SPY';
+    if (market.vsSma200 < 0) {
+      return name + ' is under its 200-day, so this pass does not name a top stock to watch.';
+    }
+    var signed = (market.vsSma200 > 0 ? '+' : '') + market.vsSma200.toFixed(1) + '%';
+    return name + ' is ' + signed + ' versus its 200-day.';
+  }
+
   function sizingWarning(band) {
     band = band || { min: MIN_RISK_PCT, max: MAX_RISK_PCT };
     var minText = Number(band.min).toString();
@@ -888,6 +931,7 @@
     stretchSessionDates: stretchSessionDates,
     stretchPace: stretchPace,
     stretchWarning: stretchWarning,
+    regimeNote: regimeNote,
     formatMultiple: formatMultiple,
     formatGainPct: formatGainPct,
     tradeLogRows: tradeLogRows,
@@ -974,11 +1018,21 @@
     return node;
   }
 
+  function levelClass(label) {
+    var name = String(label || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    if (name === 'entry' || name === 'buy zone' || name === 'limit') return 'is-entry';
+    if (name === 'stop') return 'is-stop';
+    if (name === 'target') return 'is-target';
+    return '';
+  }
+
   function dl(rows) {
     var list = el('dl', 'paper-dl');
     rows.forEach(function (row) {
       if (!row) return;
       var wrap = el('div');
+      var kind = levelClass(row[0]);
+      if (kind) wrap.classList.add(kind);
       wrap.appendChild(el('dt', '', row[0]));
       var dd = el('dd', row[2] || '');
       if (row[1] && row[1].nodeType) dd.appendChild(row[1]);
@@ -1153,6 +1207,27 @@
     return wrap;
   }
 
+  function legalNote(text) {
+    var details = el('details', 'legal-note');
+    details.appendChild(el('summary', '', 'Paper only · not advice'));
+    if (text) details.appendChild(el('p', 'stretch-warn', text));
+    return details;
+  }
+
+  function attachLegal(text, mount) {
+    var pageNote = document.querySelector('.paper-book > .legal-note');
+    if (pageNote && mount && !mount.contains(pageNote)) {
+      var warn = pageNote.querySelector('.stretch-warn');
+      if (!warn) {
+        warn = el('p', 'stretch-warn', '');
+        pageNote.appendChild(warn);
+      }
+      warn.textContent = text;
+      return;
+    }
+    mount.appendChild(legalNote(text));
+  }
+
   function renderStretch(book, mount, now) {
     if (!mount) return null;
     var summary = summarize(book);
@@ -1167,9 +1242,9 @@
     var title = el('h2', '', 'Stretch goal');
     title.id = titleId;
     mount.appendChild(title);
-    mount.appendChild(el('p', 'stretch-warn', pace
+    attachLegal(pace
       ? stretchWarning(pace)
-      : 'This book has no stretch goal on the ledger. Paper trading only. Informational, not financial advice. Swing rules are not loosened to chase a target.'));
+      : 'This book has no stretch goal on the ledger. Paper trading only. Informational, not financial advice. Swing rules are not loosened to chase a target.', mount);
     var prior = priorStretchLine(book);
     if (!pace) {
       if (prior) mount.appendChild(el('p', 'stretch-fine', prior));
@@ -1270,7 +1345,8 @@
 
   function logFact(label, value, wide, valueClass) {
     var wrap = document.createElement('div');
-    if (wide) wrap.className = 'is-wide';
+    var kind = levelClass(label);
+    wrap.className = [wide ? 'is-wide' : '', kind].filter(Boolean).join(' ');
     wrap.appendChild(el('dt', '', label));
     var dd = el('dd', valueClass || '');
     if (value && value.nodeType) dd.appendChild(value);
@@ -1371,8 +1447,10 @@
     var title = el('h2', '', 'Paper trade log');
     title.id = titleId;
     mount.appendChild(title);
-    mount.appendChild(el('p', 'paper-banner', 'Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.'));
-    mount.appendChild(el('p', 'stretch-warn', sizingWarning(root.PAPER_LEDGER && root.PAPER_LEDGER.riskBand)));
+    var legal = legalNote('');
+    legal.appendChild(el('p', 'paper-banner', 'Paper / simulated trading. Not a live brokerage account, and not real money. Informational only, not financial advice, and not a performance claim.'));
+    legal.appendChild(el('p', 'stretch-warn', sizingWarning(root.PAPER_LEDGER && root.PAPER_LEDGER.riskBand)));
+    mount.appendChild(legal);
     var from = spec ? formatDay(spec.startDate) : '';
     var through = spec ? formatDay(spec.targetDate) : '';
     var windowCopy = from && through
@@ -1553,35 +1631,35 @@
     }
   }
 
-  function paintStrip(summary) {
+  function paintStrip(summary, book) {
     var equity = document.getElementById('paperEquity');
     var meta = document.getElementById('paperMeta');
+    var paceNode = document.getElementById('paperPace');
     if (equity) equity.textContent = 'Equity ' + money(summary.equity);
     if (meta) meta.textContent = stripMeta(summary);
+    if (!paceNode) return;
+    var spec = book ? readGoal(book) : null;
+    var pace = spec ? stretchPace(spec, summary.equity, new Date()) : null;
+    if (pace && pace.paceEquity != null) paceNode.textContent = 'Pace ' + money(pace.paceEquity);
+    else if (spec) paceNode.textContent = 'Goal ' + money(spec.target);
+    else if (summary.goal) paceNode.textContent = 'Goal ' + money(summary.goal);
   }
 
-  function snapshotUrl() {
-    var path = window.location.pathname || '';
-    var inPaper = path.indexOf('/paper/') !== -1 || /\/paper$/.test(path);
-    return (inPaper ? '../oversold.json' : 'oversold.json') + '?t=' + Date.now();
+  function paintRegime(snapshot) {
+    var node = document.getElementById('paperRegime');
+    if (!node) return;
+    var text = regimeNote(snapshot);
+    node.textContent = text;
+    if (text) node.removeAttribute('hidden');
+    else node.setAttribute('hidden', '');
   }
 
   function loadRegime() {
-    var line = document.getElementById('paperRegimeNote');
-    if (!line) return;
-    fetch(snapshotUrl(), { cache: 'no-store' }).then(function (response) {
-      if (!response.ok) throw new Error('snapshot');
+    if (!document.getElementById('paperRegime') || document.getElementById('fresh')) return;
+    fetch(new URL('../oversold.json', window.location.href).href + '?t=' + Date.now(), { cache: 'no-store' }).then(function (response) {
+      if (!response.ok) throw new Error('regime');
       return response.json();
-    }).then(function (data) {
-      var next = data && data.regime;
-      var note = next && typeof next.note === 'string' ? next.note.trim() : '';
-      if (!note) {
-        line.hidden = true;
-        return;
-      }
-      line.hidden = false;
-      line.textContent = note;
-    }).catch(function () { /* Keep the seeded sentence when the snapshot is unavailable. */ });
+    }).then(paintRegime, function () { /* Keep the seeded sentence when the snapshot is unavailable. */ });
   }
 
   function boot() {
@@ -1610,20 +1688,23 @@
     }).then(function (book) {
       root.PAPER_LEDGER.riskBand = paperRiskBand(book && book.rules);
       paintRiskCopy(book);
-      if (strip) paintStrip(summarize(book));
+      if (strip) paintStrip(summarize(book), book);
       if (stretch && stretch !== app) renderStretch(book, stretch);
       if (log && (!app || !app.contains(log))) renderTradeLog(book, log);
       if (app) renderBook(book, app);
     }).catch(function () {
       if (stretch) {
         stretch.setAttribute('aria-busy', 'false');
-        var warn = stretch.querySelector('.stretch-warn');
+        var warn = stretch.querySelector('.stretch-warn') || document.querySelector('.paper-book > .legal-note .stretch-warn');
         if (warn) warn.textContent = 'The paper book could not be loaded. The stretch goal is still an extreme, very unlikely paper exercise. Not financial advice, and not a performance claim.';
       }
       if (log && (!app || !app.contains(log))) {
         log.setAttribute('aria-busy', 'false');
         log.textContent = '';
-        log.appendChild(el('p', 'paper-banner', 'Paper / simulated trading. Not a live brokerage account. Informational only, not financial advice.'));
+        var failed = legalNote('Paper / simulated trading. Not a live brokerage account. Informational only, not financial advice.');
+        var failedBanner = failed.querySelector('.stretch-warn');
+        if (failedBanner) failedBanner.className = 'paper-banner';
+        log.appendChild(failed);
         log.appendChild(el('p', 'paper-log-empty', 'The paper book could not be loaded.'));
         var more = el('p', 'paper-log-more');
         var link = el('a', '', 'Open the full paper trade log');
@@ -1643,6 +1724,6 @@
   root.PAPER_LEDGER.renderBook = renderBook;
   root.PAPER_LEDGER.renderStretch = renderStretch;
   root.PAPER_LEDGER.renderTradeLog = renderTradeLog;
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
 })();

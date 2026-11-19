@@ -21,7 +21,6 @@
   var trackShown = PAGE;
   var trackHistory = { picks: [] };
   var market = null;
-  var regime = null;
   var PROMOTED_DOLLAR = 20000000;
   var MIN_CUSHION = 5;
   var MAX_PULLBACK = -15;
@@ -889,12 +888,14 @@
       var meta = el('span', null, 'watch-meta');
       var when = el('span', null, 'watch-when');
       var addedWhen = pin.addedAt ? addedDateLabel(pin.addedAt) : '—';
-      var addedPx = !pin.addedAt ? '—' : (pin.addedPrice == null ? 'price unavailable' : money(pin.addedPrice));
+      var inScan = !!bySymbol(symbol);
+      var addedMissing = !!(pin.addedAt && pin.addedPrice == null);
+      var addedPx = !pin.addedAt ? '—' : (pin.addedPrice == null ? '' : money(pin.addedPrice));
       when.textContent = addedWhen;
       if (pin.note) when.textContent += ' · ' + pin.note;
       if (pin.target) when.textContent += ' · target ' + money(pin.target);
-      if (addedPx === 'price unavailable') when.textContent += ' · price unavailable';
-      var at = addedPx === 'price unavailable' ? null : el('span', addedPx, 'watch-at');
+      if (addedMissing && inScan) when.textContent += ' · price unavailable';
+      var at = addedPx ? el('span', addedPx, 'watch-at') : null;
       var now = el('span', null, 'watch-now');
       var current = priceNow(symbol);
       now.appendChild(document.createTextNode(current == null ? '—' : money(current) + ' '));
@@ -911,6 +912,7 @@
       if (flag) now.appendChild(el('span', flag.label, 'trade-flag watch-flag is-' + flag.kind));
       meta.append(when);
       if (at) meta.append(at);
+      if (!inScan) meta.append(el('span', 'not in today\'s scan', 'watch-scan'));
       meta.append(now);
       item.appendChild(meta);
       var remove = el('button', 'Remove', 'btn ghost watch-remove');
@@ -919,6 +921,13 @@
       item.appendChild(remove);
       remove.addEventListener('click', function () {
         removePin(symbol);
+        var addStatus = document.getElementById('addStatus');
+        if (addStatus) {
+          var text = addStatus.textContent || '';
+          var mentions = text.indexOf(symbol) !== -1;
+          var listed = /on the watchlist/i.test(text);
+          if (mentions || (!Object.keys(watch).length && listed)) addStatus.textContent = 'Removed ' + symbol + '.';
+        }
         if (selected === symbol) {
           var status = document.getElementById('pinStatus');
           if (status) status.textContent = 'Removed from the watchlist.';
@@ -955,6 +964,16 @@
     track.replaceChildren(line(), line());
   }
 
+  function paintRegime(data) {
+    var node = document.getElementById('paperRegime');
+    if (!node) return;
+    var text = window.PAPER_LEDGER && window.PAPER_LEDGER.regimeNote
+      ? window.PAPER_LEDGER.regimeNote(data)
+      : '';
+    node.textContent = text;
+    if (text) node.removeAttribute('hidden');
+    else node.setAttribute('hidden', '');
+  }
   function paintFresh() {
     var box = document.getElementById('fresh');
     box.removeAttribute('aria-busy');
@@ -973,18 +992,6 @@
       scope += '.';
     }
     box.textContent = 'Prices as of ' + pricesAsOf(fetchedAt) + '. ' + scope + ' Daily bars, not a live quote. Informational only, not financial advice.';
-  }
-  function paintRegime(next) {
-    regime = next && typeof next === 'object' ? next : null;
-    var line = document.getElementById('paperRegime');
-    if (!line) return;
-    var note = regime && typeof regime.note === 'string' ? regime.note.trim() : '';
-    if (!note) {
-      line.hidden = true;
-      return;
-    }
-    line.hidden = false;
-    line.textContent = note;
   }
   function pricesAsOf(iso) {
     var time = Date.parse(iso);
@@ -1489,7 +1496,7 @@
       universeCount = data && data.universeCount || 0;
       pricedCount = data && data.priced || 0;
       market = data && data.market && typeof data.market === 'object' ? data.market : null;
-      paintRegime(data && data.regime);
+      paintRegime(data);
       paintFresh();
       loadPicks();
       paintTape();
