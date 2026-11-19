@@ -11,12 +11,29 @@
   },
   "goal": {
     "name": "stretch",
-    "startDate": "2026-11-12",
+    "startDate": "2026-11-19",
     "baselineEquity": 1000,
     "target": 1000000,
-    "targetDate": "2026-12-11",
-    "note": "Paper only. Baseline is the Nov 12, 2026 close. Target date is Dec 11, 2026, the last NYSE session before Dec 12. Do not loosen swing gates to chase this."
+    "targetDate": "2026-12-18",
+    "note": "Paper only. Baseline is the Nov 19, 2026 close ($1,000). Target date is Fri Dec 18, 2026, the last NYSE session on or before Dec 19. Twenty NYSE sessions after the baseline through the target (Thanksgiving 2026-11-26 is closed; the Nov 27 early close still counts). Required compound pace is 1000^(1/20), about 1.4125× per session (about +41% per session; the page rounds that multiple to 1.413×). Do not loosen swing gates to chase this."
   },
+  "goalHistory": [
+    {
+      "name": "stretch",
+      "startDate": "2026-11-12",
+      "baselineEquity": 1000,
+      "target": 1000000,
+      "targetDate": "2026-12-11",
+      "note": "Paper only. Baseline is the Nov 12, 2026 close. Target date is Dec 11, 2026, the last NYSE session before Dec 12. Do not loosen swing gates to chase this.",
+      "status": "ended",
+      "endedOn": "2026-11-19",
+      "restartedOn": "2026-11-19",
+      "endingEquity": 1000,
+      "outcome": "flat",
+      "closedTrades": 0,
+      "detail": "Ended and restarted on 2026-11-19. Ending equity $1,000, flat. ZD expired unfilled. No closed trades."
+    }
+  ],
   "rules": {
     "method": "mondosupreme.com Stocks swing gates",
     "paramVersionAtOpen": "2026-11-11.1",
@@ -193,6 +210,21 @@
       "session": "2026-11-18",
       "type": "mark",
       "detail": "Marked 2026-11-18. Equity $1,000.00, cash $1,000.00, reserved $0.00, available $1,000.00, market value $0.00, open risk $0.00. Versus start $0.00. Goal progress 0.10%."
+    },
+    {
+      "at": "2026-11-19T13:46:00-05:00",
+      "session": "2026-11-19",
+      "type": "stretch_goal_restarted",
+      "priorStartDate": "2026-11-12",
+      "priorBaselineEquity": 1000,
+      "priorTarget": 1000000,
+      "priorTargetDate": "2026-12-11",
+      "startDate": "2026-11-19",
+      "baselineEquity": 1000,
+      "target": 1000000,
+      "targetDate": "2026-12-18",
+      "endingEquity": 1000,
+      "detail": "Ended the Nov 12 to Dec 11 stretch and restarted it on 2026-11-19. Ending equity $1,000, flat. ZD expired unfilled. No closed trades. The new stretch baseline is the Nov 19, 2026 close ($1,000), targeting $1,000,000 by Dec 18, 2026. This is not a daily mark."
     }
   ],
   "skippedFromJournal": [
@@ -245,9 +277,10 @@
       "workingOrders",
       "openPositions",
       "closedTrades",
-      "events"
+      "events",
+      "goalHistory"
     ],
-    "rule": "Append trades, orders, and events. Do not delete or rewrite an earlier record. Record a fill, scratch, stop, or target by appending an event and an open position or a closed trade. To change an order, append a later record with the same id and keep the earlier record. A status of working is not a fill.",
+    "rule": "Append trades, orders, events, and finished stretch goals. Do not delete or rewrite an earlier record. Record a fill, scratch, stop, or target by appending an event and an open position or a closed trade. To change an order, append a later record with the same id and keep the earlier record. To restart the stretch goal, append the previous goal to goalHistory, append a stretch_goal_restarted event, and set goal to the new run. A status of working is not a fill.",
     "closedTradeFields": [
       "id",
       "symbol",
