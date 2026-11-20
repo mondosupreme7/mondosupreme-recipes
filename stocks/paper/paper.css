@@ -323,6 +323,7 @@ html[data-theme] .paper-dl .is-down{
   }
   html:not(.paper-page) .stretch-stats{margin-bottom:0;gap:2px 8px}
   html:not(.paper-page) .stretch-stats > div:not(:last-child) small{display:none}
+  html.challenge-page .stretch-stats small{display:none}
   html:not(.paper-page) .stretch-stats > div:nth-child(3){grid-column:1 / -1}
 }
 @media (max-width:900px){
