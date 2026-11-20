@@ -326,6 +326,9 @@ html[data-theme] .paper-dl .is-down{
   html:not(.paper-page) .stretch-stats > div:nth-child(3){grid-column:1 / -1}
 }
 @media (max-width:900px){
+  html.challenge-page .stretch-stats small,
+  html.challenge-page .stretch-fine,
+  html.challenge-page .stretch-scale{display:none}
   .stretch-goal,.paper-log,#paperRiskWarn{
     scroll-margin-top:calc(var(--nav-h, 48px) + 12px);
     scroll-margin-bottom:calc(var(--dock-h, 56px) + 16px)
