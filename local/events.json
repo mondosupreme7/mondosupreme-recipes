@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-20T01:27:03Z",
+ "updated": "2026-11-20T09:12:28Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 11
+   "count": 13
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 33
+   "count": 38
   },
   {
    "name": "Launch Library 2",
@@ -854,6 +854,90 @@
    "kind": "event"
   },
   {
+   "id": "05192f7742ba19fe",
+   "title": "Disney Fantasy in port",
+   "start": "2026-11-29T11:00:00Z",
+   "end": "2026-11-29T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "be10507798e9ca82",
+   "title": "Star of the Seas in port",
+   "start": "2026-11-29T11:00:00Z",
+   "end": "2026-11-29T21:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "f110aca52a3f604e",
+   "title": "Carnival Venezia in port",
+   "start": "2026-11-29T11:00:00Z",
+   "end": "2026-11-29T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "b36fdd9206d572ba",
+   "title": "Sky Princess in port",
+   "start": "2026-11-29T12:00:00Z",
+   "end": "2026-11-29T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "6829f980b35ce10f",
+   "title": "Norwegian Epic in port",
+   "start": "2026-11-29T12:00:00Z",
+   "end": "2026-11-29T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "e4f3a1cfbc2301f9",
+   "title": "Sip & Shop at Playalinda Brewing Co.",
+   "start": "2026-11-29T15:00:00Z",
+   "end": "2026-11-29T19:00:00Z",
+   "town": "Titusville",
+   "venue": "Playalinda Brewing Company, 5220 S Washington Ave, Titusville, FL, 32780, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/sip-shop-market-at-playalinda-brewing-company/",
+   "description": "Our Sunday Market Sip & Shop at Playalinda Brewing Company is returning with our favorite way to Sunday Funday! We\u2019re bringing in our favorite & new incredible local vendors, live music, and yes\u2026brunch, bottomless mimosas, & more will be on the docket to help you wind down your weekend in the best way. Join us Sunday, November 29th from 10am-2pm to sip & shop your way through over 27+ local vendor",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
    "id": "9c3b1d7e666260b6",
    "title": "Falcon 9 Block 5 | Cygnus CRS-2 NG-25",
    "start": "2026-11-29T15:47:00Z",
@@ -866,6 +950,20 @@
    "source": "Launch Library 2",
    "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
    "kind": "launch"
+  },
+  {
+   "id": "b79b9e46517b56f6",
+   "title": "Melbourne BandWorks presents Holiday Favorites",
+   "start": "2026-11-29T20:00:00Z",
+   "end": "2026-11-29T21:30:00Z",
+   "town": "Melbourne",
+   "venue": "Suntree United Methodist Church, 7400 N Wickham Rd, Melbourne, 32940, United States",
+   "category": "Music",
+   "url": "https://www.visitspacecoast.com/event/melbourne-bandworks-presents-holiday-favorites/",
+   "description": "Start off the Holiday Season with your favorite holiday selections from way back when, such as: The Chipmunk Song, Frosty the Snowman, White Christmas & Sleigh Ride, to name a few. Join us for this free concert!",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
   }
  ]
 }
