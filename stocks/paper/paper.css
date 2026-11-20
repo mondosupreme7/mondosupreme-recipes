@@ -141,11 +141,12 @@ html[data-theme] .paper-banner,html[data-theme] .paper-callout,html[data-theme] 
   html:not(.cinder-live){--nav-h:48px;--dock-h:56px;--safe-top:0px;--safe-bot:0px}
   html:not(.cinder-live) .studio-nav{padding-top:0;padding-right:8px;padding-left:8px}
   html:not(.cinder-live) .studio-dock{height:var(--dock-h);padding:6px 4px 0}
-  html.paper-page,html.paper-page body{
+  html.paper-page,html.paper-page body,
+  html.challenge-page,html.challenge-page body{
     scroll-padding-top:calc(var(--nav-h, 48px) + 16px);
     scroll-padding-bottom:calc(var(--dock-h, 56px) + 32px)
   }
-  html.paper-page body{padding-top:var(--nav-h, 48px);padding-bottom:calc(var(--dock-h, 56px) + 32px)}
+  html.paper-page body,html.challenge-page body{padding-top:var(--nav-h, 48px);padding-bottom:calc(var(--dock-h, 56px) + 32px)}
 }
 @media (max-width:900px) and (max-height:720px){
   html:not(.cinder-live){--nav-h:44px;--dock-h:52px}
