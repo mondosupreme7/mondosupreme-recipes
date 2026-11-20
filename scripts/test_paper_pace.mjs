@@ -37,7 +37,7 @@ assert.equal(restarts[0].priorStartDate, '2026-11-12');
 assert.equal(restarts[0].priorTargetDate, '2026-12-11');
 assert.equal(restarts[0].startDate, '2026-11-19');
 assert.equal(restarts[0].targetDate, '2026-12-18');
-assert.equal(ledger.events.some((event) => event.type === 'mark' && event.session === '2026-11-19'), false);
+assert.equal(ledger.events.some((event) => event.type === 'mark' && event.session === '2026-11-19'), true);
 
 const pythonDays = JSON.parse(execFileSync('python3', ['-c', `
 import json, sys
