@@ -657,7 +657,7 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertEqual(prior["outcome"], "flat")
         self.assertEqual(prior["closedTrades"], 0)
         marks = [event.get("session") for event in book["events"] if event.get("type") == "mark"]
-        self.assertNotIn("2026-11-19", marks)
+        self.assertIn("2026-11-19", marks)
         restarts = [event for event in book["events"] if event.get("type") == "stretch_goal_restarted"]
         self.assertEqual(len(restarts), 1)
         self.assertEqual(restarts[0]["session"], "2026-11-19")
@@ -941,12 +941,13 @@ class PaperSettlementTest(unittest.TestCase):
         self.assertEqual(book["balances"]["cash"], 1000)
         self.assertEqual(book["balances"]["cashReserved"], 0)
         self.assertEqual(book["balances"]["openRiskUsd"], 0)
-        # Later sessions append marks. Check the shape, not a fixed date list.
+        # Later sessions append marks. The restart stays in the book, and it is not the last event once a session mark follows it.
         event_types = types(book)
         self.assertEqual(event_types[:2], ["account_opened", "order_placed"])
         self.assertGreaterEqual(len(event_types), 3)
-        self.assertEqual(event_types[-1], "stretch_goal_restarted")
-        self.assertEqual(set(event_types[2:-1]), {"mark", "expiry"})
+        self.assertEqual(event_types[-1], "mark")
+        self.assertIn("stretch_goal_restarted", event_types)
+        self.assertEqual(set(event_types[2:-1]), {"mark", "expiry", "stretch_goal_restarted"})
         self.assertNotIn("fill", event_types)
         marks = [event["session"] for event in book["events"] if event.get("type") == "mark"]
         self.assertIn("2026-11-17", marks)
