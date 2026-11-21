@@ -1,0 +1,32 @@
+{
+  "updatedAt": "2026-11-21T14:02:00-05:00",
+  "sleeve": {
+    "start": "2026-11-21",
+    "equity": 1000,
+    "cash": 1000,
+    "positions": []
+  },
+  "status": "No coin is eligible. Bitcoin is 17% under a falling 200-day.",
+  "rules": [
+    "Bitcoin must close above its 200-day before any buy.",
+    "Each coin must also be above its own rising 200-day.",
+    "Enter on a pullback or reclaim, with a defined stop.",
+    "At least 2:1 reward-to-risk.",
+    "Risk 1% of the sleeve per trade (max 2%).",
+    "At most 25% of the sleeve per position.",
+    "At least $20M in 24h volume.",
+    "At most 3 positions.",
+    "Long-only spot, no leverage.",
+    "Daily marks at the 00:00 UTC close."
+  ],
+  "watchlist": [
+    {"symbol": "BTC", "name": "Bitcoin", "price": 60032, "chg30d": -26, "vs200d": -17, "ma200": 72532, "note": ""},
+    {"symbol": "ETH", "name": "Ethereum", "price": 1679.79, "chg30d": -30, "vs200d": -21, "ma200": 2128.81, "note": ""},
+    {"symbol": "SOL", "name": "Solana", "price": 70.65, "chg30d": -32, "vs200d": -20, "ma200": 88.5, "note": ""},
+    {"symbol": "XRP", "name": "XRP", "price": 0.9341, "chg30d": -29, "vs200d": -25, "ma200": 1.24, "note": ""},
+    {"symbol": "ADA", "name": "Cardano", "price": 0.1453, "chg30d": -31, "vs200d": -28, "ma200": 0.2016, "note": ""},
+    {"symbol": "DOGE", "name": "Dogecoin", "price": 0.0552, "chg30d": -30, "vs200d": -33, "ma200": 0.083, "note": ""},
+    {"symbol": "SHIB", "name": "Shiba Inu", "price": 0.00000362, "chg30d": -27, "vs200d": -28, "ma200": 0.000005, "note": ""},
+    {"symbol": "CC", "name": "Canton Coin", "price": 0.0763, "chg30d": -26, "vs200d": -38, "ma200": 0.1236, "note": "under the $20M volume minimum."}
+  ]
+}
