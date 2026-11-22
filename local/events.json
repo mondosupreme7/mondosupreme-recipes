@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T21:17:05Z",
+ "updated": "2026-11-22T01:25:14Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -16,50 +16,44 @@
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 0
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 3
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 6
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=41&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 0
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 1
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=22&feed=calendar",
-   "ok": false,
-   "count": 0,
-   "error": "URLError"
+   "ok": true,
+   "count": 0
   },
   {
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 12
+   "count": 10
   },
   {
    "name": "Canaveral Port Authority",
@@ -75,6 +69,20 @@
   }
  ],
  "events": [
+  {
+   "id": "7c300ac7333876d7",
+   "title": "City of Rockledge Holiday Food Drive",
+   "start": "2026-11-02T05:00:00Z",
+   "end": "2026-12-11T05:00:00Z",
+   "town": "Rockledge",
+   "venue": "- Rockledge FL 32955",
+   "category": "Food & Markets",
+   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
+   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
+   "source": "City of Rockledge",
+   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
+   "kind": "event"
+  },
   {
    "id": "3963a8b6d97da9f9",
    "title": "Holiday Lights at Brevard Zoo",
@@ -102,20 +110,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "516d30378a10cf82",
-   "title": "Cancelled: 15th Annual Bicycle Bar Tour for Homeless Veterans 2026",
-   "start": "2026-11-21T11:00:00Z",
-   "end": "2026-11-21T18:30:00Z",
-   "town": "Cocoa Beach",
-   "venue": "FISHLIPS WATERFRONT BAR & GRILL, 610 Glen Cheek Dr, Port Canaveral, FL, 32920",
-   "category": "Food & Markets",
-   "url": "https://www.visitspacecoast.com/event/annual-bicycle-bar-tour-for-homeless-veterans/",
-   "description": "*CANCELLED* For more information on this cancelled event see: https://www.facebook.com/photo/?fbid=10241751671199945&set=a.2046157885000 Leisurely ride from Port Canaveral to Cocoa Beach and back on improved bike paths and lanes. 50/50 Drawing to benefit area Homeless Veterans. Starts at Fishlips Waterfront Bar & Grill, 610 Glen Cheek Drive followed by La Cantina, Tiny Tavern, Sandbar Sports Grill",
-   "source": "Visit Space Coast",
-   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
   },
   {
    "id": "f71b5d3991f72e87",
@@ -186,20 +180,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "cf8e053a051e1fee",
-   "title": "Merry & Bright: A Tree Lighting Celebration at The Avenue Viera",
-   "start": "2026-11-21T22:00:00Z",
-   "end": "2026-11-22T01:00:00Z",
-   "town": "Melbourne",
-   "venue": "THE AVENUE VIERA, 2261 Town Center Ave, Melbourne, FL, 32940",
-   "category": "Food & Markets",
-   "url": "https://www.visitspacecoast.com/event/merry-bright-a-tree-lighting-celebration-at-the-avenue-viera/",
-   "description": "Kick off the holiday season at Merry & Bright, The Avenue Viera\u2019s annual tree lighting celebration sponsored by Health First. Enjoy live entertainment, holiday activities, visits with Santa and Mrs. Claus, and a DJ dance party before gathering for the lighting of our 40-foot tree at 7:55 PM. Please register in advance for this complimentary event so we know to expect you and can prepare the good t",
-   "source": "Visit Space Coast",
-   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
   },
   {
    "id": "a1f9f390048f7b77",
@@ -356,6 +336,20 @@
    "kind": "event"
   },
   {
+   "id": "54a225e08feb524c",
+   "title": "City Council Special Meeting",
+   "start": "2026-11-24T15:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2641",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2641",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
    "id": "c27b76992e3d7da2",
    "title": "Odyssey of the Seas in port",
    "start": "2026-11-24T18:00:00Z",
@@ -368,6 +362,34 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "27b0a336d32e7ac2",
+   "title": "Canceled - City Council Presentation Meeting",
+   "start": "2026-11-24T22:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2402",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2402",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "ae082a70ed46ee99",
+   "title": "Board of Commissioners of the Housing Authority of the City of Titusville",
+   "start": "2026-11-24T23:30:00Z",
+   "end": "2026-11-25T04:59:00Z",
+   "town": "Titusville",
+   "venue": "<p>Titusville Housing Authority - 524 South Hopkins Ave., Titusville, FL 32796</p> - Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2545",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2545",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
   },
   {
    "id": "b08d3deb9df03c47",
@@ -396,6 +418,20 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "53c8d41f7d61f347",
+   "title": "Cookie Crawl & Tree Lighting",
+   "start": "2026-11-25T22:00:00Z",
+   "end": "2026-11-26T00:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "<p>Downtown Cocoa Beach.</p> - Cocoa Beach FL 32932",
+   "category": "Outdoors",
+   "url": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9795",
+   "description": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9795",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
   },
   {
    "id": "af96261bdabe6b8d",
@@ -437,6 +473,34 @@
    "description": "Brevard Zoo\u2019s 2nd Annual Wild Turkey Trot 3k is a family-friendly event and great way to kick off your Thanksgiving day! Runners and walkers of all ages will traverse a course through the Zoo passing animals, their habitats, and native plants along the way.",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "db24d7c263a1cc73",
+   "title": "Cocoa Beach Turkey Trot 5k",
+   "start": "2026-11-26T13:00:00Z",
+   "end": "2026-11-26T16:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "Bailiwick Plaza parking lot - 20 N. Brevard Avenue Cocoa Beach FL 32931",
+   "category": "Sports",
+   "url": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9782",
+   "description": "A Cocoa Beach road race for runners and walkers through residential Cocoa Isles. Get your Thanksgiving off to a healthy start and create a great holiday tradition with family and friends! https://www.cityofcocoabeach.com/m/calendar/event/detail/9782",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "6430f659a7ba0f8f",
+   "title": "City Hall Closed - Thanksgiving Holiday",
+   "start": "2026-11-26T13:00:00Z",
+   "end": "2026-11-27T22:00:00Z",
+   "town": "Titusville",
+   "venue": "City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2487",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2487",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -508,6 +572,20 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "49eed9ba9819193b",
+   "title": "Cocoa Beach Art Show",
+   "start": "2026-11-27T22:00:00Z",
+   "end": "2026-11-29T22:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "- Cocoa Beach FL 32932",
+   "category": "Arts",
+   "url": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9792",
+   "description": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9792",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
   },
   {
    "id": "d32660e83ba460d7",
