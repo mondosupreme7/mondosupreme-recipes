@@ -8,6 +8,11 @@ The list is written to scripts/universe.json.
 RCL is left out on purpose. Daily bars come from Yahoo's public chart endpoint.
 The published file keeps a wide oversold research list. Only names that pass the
 hard swing gates are swing candidates, and only those can be journaled.
+Names under $3 or under $2 million of average daily dollar volume stay off that
+list. The same oversold screen is published separately as lowPriceThin when the
+last price is at least $0.50 and average daily dollar volume is at least
+$250,000. That side list is ranked from the chart pass already in memory. It
+does not add a fundamentals pass, and it cannot enter the paper journal.
 Fundamentals annotate a card. They do not choose the headline or the journal.
 Official fills are recorded on the next session, never on the signal close.
 Fundamentals, for names on the research shortlist and every provisional swing
@@ -79,14 +84,28 @@ UNIVERSE_MAX_AGE_DAYS = 7
 SERIES = 30
 PUBLISH_CAP = 700
 FUND_CAP = 80
+THIN_FLOOR_PRICE = 0.50
+THIN_FLOOR_DOLLAR = 250_000
+THIN_CAP = 150
+THIN_REASONS = ("under $3", "under $2M ADV", "both")
+BANNED_NAME = re.compile(r"e\*trade|royal caribbean", re.I)
 CHART_WORKERS = 5
 CHART_GAP = 0.28
 FUND_GAP = 1.1
 
 ABOUT = (
-    "Two lists of US common stocks on Nasdaq, the NYSE, and NYSE American. "
-    "ETFs, ETNs, warrants, units, rights, preferreds, and test issues are left out, "
-    "as are names under $3 or under $2 million of average daily dollar volume. "
+    "US common stocks on Nasdaq, the NYSE, and NYSE American. "
+    "ETFs, ETNs, warrants, units, rights, preferreds, and test issues are left out. "
+    "universeCount is that common-stock list. priced is how many of those names returned a valid daily history. "
+    "The research list and the swing candidates leave out names under $3 or under $2 million of average daily dollar volume. "
+    "A separate research-only list runs the same oversold screen on the names that missed that cut, "
+    "when the last price is at least $0.50 and average daily dollar volume is at least $250,000. "
+    "Names under that floor are left out. "
+    "lowPriceThinUniverse is how many priced names are inside that floor and outside the $3 and $2 million cut. "
+    "The published rows, lowPriceThin, are capped at 150 and ranked by the research score "
+    "(the same RSI, Bollinger, and volume score the wide list uses before the swing sort). "
+    "Each row is marked under $3, under $2 million of average daily dollar volume, or both, and carries its average dollar volume. "
+    "Those names are never official swing picks and never enter the paper journal. "
     "The research list is the wide oversold screen: a low RSI, a lower Bollinger touch, or a pullback. "
     "A swing candidate is separate and smaller. It has to clear hard gates: no single session down "
     "about 9% or more in the last 8 sessions (still being above the 200-day does not waive that), "
@@ -1162,6 +1181,167 @@ def is_candidate(row, loose=False):
     return False
 
 
+def finite_number(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def above_published_floor(row, min_price, min_dollar):
+    """The existing research-list cut: price and dollar volume both clear the floor."""
+    return (row.get("price") or 0) >= min_price and (row.get("avgDollarVolume") or 0) >= min_dollar
+
+
+def clears_thin_floor(row):
+    """Hard floor under the published cut. Below this is left out of both lists."""
+    price = row.get("price")
+    dollar = row.get("avgDollarVolume")
+    if not finite_number(price) or not finite_number(dollar):
+        return False
+    return price >= THIN_FLOOR_PRICE and dollar >= THIN_FLOOR_DOLLAR
+
+
+def banned_row(row):
+    if not isinstance(row, dict):
+        return True
+    symbol = (row.get("symbol") or "").upper()
+    if not symbol or symbol in EXCLUDE or symbol == "RCL":
+        return True
+    blob = (row.get("name") or "") + " " + symbol
+    return BANNED_NAME.search(blob) is not None
+
+
+def thin_reason(row, min_price, min_dollar):
+    """Public flag. The words match the published $3 and $2M cuts."""
+    price = row.get("price") or 0
+    dollar = row.get("avgDollarVolume") or 0
+    under_price = price < min_price
+    under_dollar = dollar < min_dollar
+    if under_price and under_dollar:
+        return "both"
+    if under_price:
+        return "under $3"
+    if under_dollar:
+        return "under $2M ADV"
+    return ""
+
+
+def rank_research(rows):
+    """Same oversold screen and research-score order the wide list uses."""
+    strict = [row for row in rows if is_candidate(row, loose=False)]
+    chosen = strict if len(strict) >= 24 else [row for row in rows if is_candidate(row, loose=True)]
+    chosen.sort(key=lambda row: (-row["score"], row["rsi"], row["symbol"]))
+    return chosen
+
+
+def slim_thin_row(row, reason):
+    """Chart fields only. No series, no trade plan, and never a swing flag."""
+    return {
+        "symbol": row.get("symbol"),
+        "name": row.get("name") or row.get("symbol"),
+        "price": row.get("price"),
+        "dayChange": row.get("dayChange"),
+        "rsi": row.get("rsi"),
+        "score": row.get("score"),
+        "avgDollarVolume": row.get("avgDollarVolume"),
+        "reason": reason,
+        "swingEligible": False,
+    }
+
+
+def build_low_price_thin(rows, min_price, min_dollar):
+    """Oversold screen for names the $3 / $2M cut removed.
+
+    The pool is priced common stocks already in memory. Nothing here is fetched
+    again, and nothing here is eligible for the paper journal.
+    """
+    pool = []
+    for row in rows:
+        if banned_row(row) or above_published_floor(row, min_price, min_dollar):
+            continue
+        if not clears_thin_floor(row):
+            continue
+        pool.append(row)
+    published = []
+    for row in rank_research(pool)[:THIN_CAP]:
+        reason = thin_reason(row, min_price, min_dollar)
+        if reason not in THIN_REASONS:
+            continue
+        published.append(slim_thin_row(row, reason))
+    return published, len(pool)
+
+
+def blocked_from_swing_book(row):
+    """Keep a low-price or thin name out of official picks.
+
+    Missing price or dollar volume does not block, so older fixtures still
+    resolve. A present value under the published floor does. The swing gates
+    themselves are unchanged.
+    """
+    if not isinstance(row, dict):
+        return False
+    if row.get("reason") in THIN_REASONS or (row.get("symbol") or "") in EXCLUDE:
+        return True
+    price = row.get("price")
+    dollar = row.get("avgDollarVolume")
+    min_price = float(swing_param("universeFilter.minPrice", 3))
+    min_dollar = float(swing_param("universeFilter.minDollarVolume", 2000000))
+    if finite_number(price) and price < min_price:
+        return True
+    if finite_number(dollar) and dollar < min_dollar:
+        return True
+    return False
+
+
+def thin_document_fields(low_price_thin, low_price_thin_universe, previous):
+    """Fields for the side list, or None when this file has never had one.
+
+    A quote refresh must not invent a zero pool before the first full scan.
+    A scan that passes a list, including an empty one, writes the fields.
+    """
+    if not isinstance(previous, dict):
+        previous = {}
+    explicit = low_price_thin is not None or low_price_thin_universe is not None
+    if not explicit and "lowPriceThin" not in previous and "lowPriceThinUniverse" not in previous:
+        return None
+    rows, universe = resolve_thin_payload(low_price_thin, low_price_thin_universe, previous)
+    return {
+        "lowPriceThinUniverse": universe,
+        "lowPriceThinCount": len(rows),
+        "lowPriceThin": rows,
+    }
+
+
+def resolve_thin_payload(low_price_thin, low_price_thin_universe, previous):
+    """Use the new list when a scan produced one. Otherwise keep the saved rows.
+
+    A failed scan never calls this. An explicit empty list is a completed scan
+    that found no names, and it replaces the saved list.
+    """
+    if not isinstance(previous, dict):
+        previous = {}
+    if low_price_thin is None:
+        kept = previous.get("lowPriceThin")
+        low_price_thin = kept if isinstance(kept, list) else []
+    if low_price_thin_universe is None:
+        kept_n = previous.get("lowPriceThinUniverse")
+        if isinstance(kept_n, int) and not isinstance(kept_n, bool):
+            low_price_thin_universe = kept_n
+        else:
+            low_price_thin_universe = 0
+    clean = []
+    for row in low_price_thin:
+        if not isinstance(row, dict) or banned_row(row):
+            continue
+        reason = row.get("reason")
+        if reason not in THIN_REASONS:
+            continue
+        item = slim_thin_row(row, reason)
+        if not item["symbol"]:
+            continue
+        clean.append(item)
+    universe = low_price_thin_universe if finite_number(low_price_thin_universe) else 0
+    return clean, int(universe)
+
+
 def raw_number(block, key):
     if not isinstance(block, dict):
         return None
@@ -1925,7 +2105,7 @@ def regime_block(market):
     }
 
 
-def write_doc(rows, fetched_at, universe_count, priced, candidates, market=None):
+def write_doc(rows, fetched_at, universe_count, priced, candidates, market=None, low_price_thin=None, low_price_thin_universe=None):
     rows = sorted(
         rows,
         key=lambda row: (
@@ -1955,14 +2135,25 @@ def write_doc(rows, fetched_at, universe_count, priced, candidates, market=None)
     )
     document["universeSource"] = "Nasdaq Trader symbol directories: " + NASDAQ_LISTED_URL + " ; " + OTHER_LISTED_URL + "."
     document["universe"] = "US common stocks on Nasdaq, NYSE, and NYSE American"
+    if low_price_thin is None or low_price_thin_universe is None:
+        previous_thin = load_json(OUT_PATH)
+    else:
+        previous_thin = {}
+    thin_fields = thin_document_fields(low_price_thin, low_price_thin_universe, previous_thin)
     document["universeCount"] = universe_count
     document["priced"] = priced
+    if thin_fields is not None:
+        document["lowPriceThinUniverse"] = thin_fields["lowPriceThinUniverse"]
     document["candidates"] = candidates
     document["researchCount"] = len(rows)
     document["swingCandidates"] = swing_count
+    if thin_fields is not None:
+        document["lowPriceThinCount"] = thin_fields["lowPriceThinCount"]
     document["fetchedAt"] = fetched_at
     document["count"] = len(rows)
     document["stocks"] = rows
+    if thin_fields is not None:
+        document["lowPriceThin"] = thin_fields["lowPriceThin"]
     text = json.dumps(document, indent=2) + "\n"
     if '"symbol": "RCL"' in text or "E*TRADE" in text or "Royal Caribbean" in text:
         raise RuntimeError("snapshot still mentions a removed name")
@@ -2351,6 +2542,160 @@ def self_test():
     still = evaluate_picks({"KRT": pays_bars}, {"picks": [labeled]}, save=False)
     assert still["picks"][0]["status"] == "open"
     assert still["picks"][0]["outcome"] == "skipped"
+    assert_low_price_thin_screen()
+
+
+def assert_low_price_thin_screen():
+    """The side list uses the research screen and cannot become a swing pick."""
+    assert float(swing_param("universeFilter.minPrice", 3)) == 3
+    assert float(swing_param("universeFilter.minDollarVolume", 2000000)) == 2_000_000
+    assert THIN_FLOOR_PRICE == 0.50
+    assert THIN_FLOOR_DOLLAR == 250_000
+    assert THIN_CAP == 150
+    assert "$0.50" in ABOUT and "$250,000" in ABOUT and "lowPriceThin" in ABOUT
+    assert "at least $20 million" in ABOUT
+    assert "swing score of at least 36" in ABOUT
+    assert "at least 2:1" in ABOUT
+    assert "one name per sector" in ABOUT
+    assert "SPY is under its 200-day" in ABOUT
+    assert "A failed fetch keeps the previous rows." in ABOUT
+
+    def stub(symbol, score, price, dollar, **extra):
+        row = {
+            "symbol": symbol,
+            "name": symbol + " Co",
+            "price": price,
+            "dayChange": -1.2,
+            "rsi": 28.0,
+            "score": score,
+            "bbDistancePct": 0.4,
+            "drop5": -4.0,
+            "drop21": -6.0,
+            "vsSma20": -2.0,
+            "above200": False,
+            "uptick": False,
+            "hammer": False,
+            "avgDollarVolume": dollar,
+            "swingEligible": True,
+            "swingScore": 90,
+            "series": {"c": [1, 2, 3]},
+            "entryLow": price,
+            "stop": price * 0.9,
+            "target": price * 1.2,
+        }
+        row.update(extra)
+        return row
+
+    mixed = [
+        stub("LIQD", 100, 12, 5_000_000),
+        stub("MAIN", 99, 3, 2_000_000),
+        stub("PENY", 80, 2.99, 2_000_000),
+        stub("THIN", 70, 8, 1_999_999),
+        stub("BOTH", 60, 1.1, 400_000),
+        stub("FLOR", 55, 0.50, 2_500_000),
+        stub("EDGE", 50, 0.50, 250_000),
+        stub("JUNK", 99, 0.49, 2_000_000),
+        stub("DUST", 99, 2, 249_999),
+        stub("QUIET", 40, 1.8, 500_000, rsi=70.0, bbDistancePct=12, drop5=1.0, vsSma20=1.0),
+        stub("RCL", 100, 1.2, 800_000),
+        stub("BOAT", 77, 1.4, 600_000, name="Royal Caribbean Line"),
+        stub("BROK", 77, 6, 700_000, name="E*TRADE leftover"),
+    ]
+    published, universe = build_low_price_thin(mixed, 3, 2_000_000)
+    assert universe == 6
+    assert [row["symbol"] for row in published] == ["PENY", "THIN", "BOTH", "FLOR", "EDGE"]
+    by_symbol = {row["symbol"]: row for row in published}
+    assert by_symbol["PENY"]["reason"] == "under $3"
+    assert by_symbol["THIN"]["reason"] == "under $2M ADV"
+    assert by_symbol["BOTH"]["reason"] == "both"
+    assert by_symbol["FLOR"]["reason"] == "under $3"
+    assert by_symbol["EDGE"]["reason"] == "both"
+    assert by_symbol["EDGE"]["avgDollarVolume"] == 250_000
+    assert all(row["swingEligible"] is False for row in published)
+    assert "series" not in published[0] and "entryLow" not in published[0] and "target" not in published[0]
+    assert "QUIET" not in by_symbol
+    assert is_candidate(mixed[-4], loose=False) is False
+
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    many = [
+        stub(letters[index // 26] + letters[index % 26], 500 - index, 1.5, 400_000)
+        for index in range(160)
+    ]
+    capped, capped_universe = build_low_price_thin(many, 3, 2_000_000)
+    assert capped_universe == 160
+    assert len(capped) == 150
+    assert capped[0]["symbol"] == "AA" and capped[0]["score"] == 500
+    assert capped[-1]["score"] == 500 - 149
+    assert all(row["reason"] == "both" and row["swingEligible"] is False for row in capped)
+
+    loose_only = stub("BB", 10, 1.2, 400_000, rsi=52, bbDistancePct=1.5, drop5=None, vsSma20=None)
+    strict_one = stub("AA", 40, 1.2, 400_000, rsi=30)
+    assert is_candidate(strict_one, loose=False) is True
+    assert is_candidate(loose_only, loose=False) is False
+    assert is_candidate(loose_only, loose=True) is True
+    widened = rank_research([strict_one, loose_only])
+    assert [row["symbol"] for row in widened] == ["AA", "BB"]
+
+    bull = {"symbol": "SPY", "vsSma50": 1.2, "vsSma200": 4.0}
+    keeper = {
+        "symbol": "KEEP",
+        "swingEligible": True,
+        "swingScore": 40,
+        "sector": "Health",
+        "price": 25,
+        "avgDollarVolume": 30_000_000,
+    }
+    penny = {
+        "symbol": "PENY",
+        "swingEligible": True,
+        "swingScore": 99,
+        "sector": "Energy",
+        "price": 2.4,
+        "avgDollarVolume": 25_000_000,
+        "reason": "under $3",
+    }
+    thin_adv = {
+        "symbol": "THIN",
+        "swingEligible": True,
+        "swingScore": 98,
+        "sector": "Tech",
+        "price": 10,
+        "avgDollarVolume": 1_500_000,
+        "reason": "under $2M ADV",
+    }
+    plain = {"symbol": "SU", "swingEligible": True, "swingScore": 52, "sector": "Energy"}
+    assert [row["symbol"] for row in official_picks([penny, thin_adv, keeper], bull)] == ["KEEP"]
+    assert [row["symbol"] for row in official_picks([penny, plain], bull)] == ["SU"]
+    assert official_picks([penny], {"symbol": "SPY", "vsSma200": -1.5}) == []
+
+    saved = {
+        "lowPriceThin": [dict(by_symbol["PENY"], swingEligible=True)],
+        "lowPriceThinUniverse": 9,
+    }
+    kept, kept_count = resolve_thin_payload(None, None, saved)
+    assert kept_count == 9
+    assert kept[0]["symbol"] == "PENY" and kept[0]["swingEligible"] is False
+    replaced, replaced_count = resolve_thin_payload([], 0, saved)
+    assert replaced == [] and replaced_count == 0
+    blocked, blocked_count = resolve_thin_payload(
+        [
+            stub("RCL", 10, 1, 400_000, reason="both"),
+            stub("BOAT", 10, 1, 400_000, name="Royal Caribbean Line", reason="under $3"),
+            stub("OKAY", 12, 1.4, 400_000, reason="both"),
+        ],
+        3,
+        saved,
+    )
+    assert blocked_count == 3
+    assert [row["symbol"] for row in blocked] == ["OKAY"]
+    assert blocked[0]["reason"] == "both" and blocked[0]["swingEligible"] is False
+    assert thin_document_fields(None, None, {}) is None
+    assert thin_document_fields(None, None, {"stocks": []}) is None
+    kept_fields = thin_document_fields(None, None, saved)
+    assert kept_fields["lowPriceThinUniverse"] == 9
+    assert kept_fields["lowPriceThin"][0]["swingEligible"] is False
+    empty_fields = thin_document_fields([], 0, {"lowPriceThin": saved["lowPriceThin"]})
+    assert empty_fields["lowPriceThin"] == [] and empty_fields["lowPriceThinCount"] == 0
 
 
 def patch_swing_scores():
@@ -2460,13 +2805,17 @@ def official_picks(rows, market=None):
     """Actionable names only, ranked by swing score, one name per sector.
 
     Ineligible rows are not used to fill empty slots, even when their
-    fundamental rank is higher.
+    fundamental rank is higher. A low-price or thin-volume name is not used
+    even if a flag says it cleared the swing gates.
     """
     limit = regime_slots(market)
     if limit <= 0:
         return []
     cap = max(1, int(swing_param("picks.sectorCap", 1)))
-    eligible = [row for row in rows if row.get("swingEligible")]
+    eligible = [
+        row for row in rows
+        if row.get("swingEligible") and not blocked_from_swing_book(row)
+    ]
     eligible.sort(key=lambda row: (-(row.get("swingScore") or 0), row.get("symbol") or ""))
     chosen = []
     counts = {}
@@ -2938,22 +3287,20 @@ def main():
     priced_count = len(rows)
     min_price = float(swing_param("universeFilter.minPrice", 3))
     min_dollar = float(swing_param("universeFilter.minDollarVolume", 2000000))
-    liquid = [
-        row for row in rows
-        if (row.get("price") or 0) >= min_price and (row.get("avgDollarVolume") or 0) >= min_dollar
-    ]
+    liquid = [row for row in rows if above_published_floor(row, min_price, min_dollar)]
+    thin_published, thin_universe = build_low_price_thin(rows, min_price, min_dollar)
     print(
         "Priced " + str(len(rows)) + "; " + str(len(liquid)) + " left after the $"
-        + format(min_price, ".0f") + " and $" + format(min_dollar / 1000000, ".0f") + "M dollar-volume filter.",
+        + format(min_price, ".0f") + " and $" + format(min_dollar / 1000000, ".0f")
+        + "M dollar-volume filter. Low-price/thin pool " + str(thin_universe)
+        + " (" + str(len(thin_published)) + " on the research watch).",
         flush=True,
     )
     if len(liquid) < 80:
         print("Too few liquid names. Keeping the previous snapshot.")
         return
     rows = liquid
-    strict = [row for row in rows if is_candidate(row, loose=False)]
-    chosen = strict if len(strict) >= 24 else [row for row in rows if is_candidate(row, loose=True)]
-    chosen.sort(key=lambda row: (-row["score"], row["rsi"], row["symbol"]))
+    chosen = rank_research(rows)
     provisional = [row for row in chosen if row.get("swingEligible")]
     provisional.sort(key=lambda row: (-(row.get("swingScore") or 0), row["symbol"]))
     provisional = provisional[:120]
@@ -2996,7 +3343,16 @@ def main():
         print("Only " + str(len(published)) + " research names. Keeping the previous snapshot.")
         return
     market = spy_context()
-    write_doc(published, stamp(now_utc()), len(symbols), priced_count, len(chosen), market)
+    write_doc(
+        published,
+        stamp(now_utc()),
+        len(symbols),
+        priced_count,
+        len(chosen),
+        market,
+        low_price_thin=thin_published,
+        low_price_thin_universe=thin_universe,
+    )
     record_picks(published, market)
     swing_count = sum(1 for row in published if row.get("swingEligible"))
     print(
@@ -3008,7 +3364,11 @@ def main():
         + str(len(rows))
         + " priced / "
         + str(len(symbols))
-        + " universe."
+        + " universe. Low-price/thin watch "
+        + str(len(thin_published))
+        + " of "
+        + str(thin_universe)
+        + "."
     )
     if failures:
         print("Missed " + str(len(failures)) + ": " + ", ".join(failures[:12]))
