@@ -18,6 +18,10 @@
   var WATCH_CAP = 100;
   var watchShown = PAGE;
   var researchShown = PAGE;
+  var thinShown = PAGE;
+  var thinRows = [];
+  var thinUniverse = 0;
+  var thinTracked = false;
   var trackShown = PAGE;
   var trackHistory = { picks: [] };
   var market = null;
@@ -959,6 +963,9 @@
     if (pricedCount || universeCount) scope += ' from ' + (pricedCount || universeCount) + ' priced names';
     if (universeCount) scope += ' in a universe of ' + universeCount;
     scope += '. ' + setups + (setups === 1 ? ' passes' : ' pass') + ' the swing setup.';
+    if (thinTracked) {
+      scope += ' ' + thinUniverse + ' priced names are in the low-price and thin-volume pool: under $3 or under $2M a day, and still at least $0.50 and $250K a day.';
+    }
     if (market && typeof market.vsSma200 === 'number') {
       scope += ' SPY is ' + signed(market.vsSma200) + ' versus its 200-day';
       if (typeof market.vsSma50 === 'number') scope += ' and ' + signed(market.vsSma50) + ' versus its 50-day';
@@ -1403,6 +1410,85 @@
     }
   }
 
+  function keepThin(row) {
+    if (!row || row.swingEligible === true) return false;
+    if (!TICKER.test(row.symbol || '') || row.symbol === 'RCL') return false;
+    var blob = String(row.name || '') + ' ' + String(row.symbol || '');
+    if (/e\*trade|royal caribbean/i.test(blob)) return false;
+    return row.reason === 'under $3' || row.reason === 'under $2M ADV' || row.reason === 'both';
+  }
+  function thinReasonLabel(reason) {
+    if (reason === 'both') return 'under $3 and under $2M ADV';
+    if (reason === 'under $3' || reason === 'under $2M ADV') return reason;
+    return '';
+  }
+  function dollarVolume(value) {
+    if (typeof value !== 'number' || !isFinite(value)) return '';
+    if (value >= 1e6) {
+      var millions = value / 1e6;
+      var text = millions >= 10 ? String(Math.round(millions)) : millions.toFixed(1).replace(/\.0$/, '');
+      return '$' + text + 'M/day';
+    }
+    if (value >= 1e3) return '$' + Math.round(value / 1e3) + 'K/day';
+    return money(value) + '/day';
+  }
+  function paintThinCount() {
+    var countEl = document.getElementById('thinCount');
+    if (!countEl) return;
+    var countLabel = thinRows.length === 1 ? ' name' : ' names';
+    countEl.textContent = thinRows.length + countLabel;
+  }
+  function renderThin() {
+    var card = document.getElementById('thinCard');
+    var list = document.getElementById('thinRows');
+    var note = document.getElementById('thinNote');
+    var more = document.getElementById('thinMore');
+    if (!card || !list || !card.open) return;
+    var page = thinRows.slice(0, thinShown);
+    if (note) {
+      note.textContent = thinRows.length
+        ? thinRows.length + ' names on the same oversold screen (low RSI, lower Bollinger, or a pullback), ranked by research score. '
+          + (thinTracked ? thinUniverse + ' priced names were under $3 or under $2M a day and still at least $0.50 and $250K a day. ' : '')
+          + 'Not swing candidates.'
+        : 'No names from this screen are in the snapshot yet.';
+    }
+    var frag = document.createDocumentFragment();
+    page.forEach(function (row) {
+      var item = document.createElement('li');
+      item.className = 'thin-row';
+      item.appendChild(el('span', row.symbol, 'research-name'));
+      var bits = [];
+      if (typeof row.price === 'number') bits.push(money(row.price));
+      if (typeof row.dayChange === 'number') bits.push(dayText(row.dayChange));
+      if (typeof row.rsi === 'number') bits.push('RSI ' + row.rsi.toFixed(1));
+      if (typeof row.score === 'number') bits.push('score ' + row.score);
+      var reason = thinReasonLabel(row.reason);
+      if (reason) bits.push(reason);
+      var adv = dollarVolume(row.avgDollarVolume);
+      if (adv) bits.push(adv);
+      item.appendChild(el('span', bits.join(' · '), 'research-meta'));
+      frag.appendChild(item);
+    });
+    list.replaceChildren(frag);
+    if (more) {
+      more.hidden = page.length >= thinRows.length;
+      more.textContent = 'Show ' + PAGE + ' more';
+    }
+  }
+  function onThinToggle() {
+    var card = document.getElementById('thinCard');
+    var list = document.getElementById('thinRows');
+    var more = document.getElementById('thinMore');
+    if (!card) return;
+    if (!card.open) {
+      thinShown = PAGE;
+      if (list) list.replaceChildren();
+      if (more) more.hidden = true;
+      return;
+    }
+    renderThin();
+  }
+
   function shortSwingName(name) {
     return String(name || '').replace(/\s+/g, ' ').trim()
       .replace(/\s+\(The$/i, '')
@@ -1479,6 +1565,12 @@
       fetchedAt = data && data.fetchedAt || '';
       universeCount = data && data.universeCount || 0;
       pricedCount = data && data.priced || 0;
+      thinTracked = !!(data && Object.prototype.hasOwnProperty.call(data, 'lowPriceThinUniverse'));
+      thinUniverse = thinTracked && typeof data.lowPriceThinUniverse === 'number' ? data.lowPriceThinUniverse : 0;
+      thinRows = data && Array.isArray(data.lowPriceThin) ? data.lowPriceThin.filter(keepThin) : [];
+      thinShown = PAGE;
+      paintThinCount();
+      onThinToggle();
       market = data && data.market && typeof data.market === 'object' ? data.market : null;
       paintRegime(data);
       paintFresh();
@@ -1547,6 +1639,14 @@
   document.getElementById('watchMore').addEventListener('click', function () { watchShown += PAGE; renderWatch(); });
   var researchMore = document.getElementById('researchMore');
   if (researchMore) researchMore.addEventListener('click', function () { researchShown += PAGE; renderResearch(); });
+  var thinCard = document.getElementById('thinCard');
+  if (thinCard) {
+    thinCard.addEventListener('toggle', onThinToggle);
+    var thinSummary = thinCard.querySelector('summary');
+    if (thinSummary) thinSummary.addEventListener('click', function () { setTimeout(onThinToggle, 0); });
+  }
+  var thinMore = document.getElementById('thinMore');
+  if (thinMore) thinMore.addEventListener('click', function () { thinShown += PAGE; renderThin(); });
   var trackMore = document.getElementById('trackMore');
   if (trackMore) trackMore.addEventListener('click', function () { trackShown += PAGE; renderTrack(trackHistory); });
   var accountInput = document.getElementById('accountSize');

@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=15">
-<link rel="stylesheet" href="stocks.css?v=22">
+<link rel="stylesheet" href="stocks.css?v=23">
 <link rel="stylesheet" href="/readable.css?v=19">
 <link rel="stylesheet" href="paper/paper.css?v=10">
 <link rel="stylesheet" href="swot.css?v=2">
@@ -53,7 +53,7 @@
    <span class="paper-meta">Simulated $1,000 crypto book. Paper only.</span>
    <span class="paper-go">Open paper crypto</span>
   </a>
-  <p>The wide list is an oversold research screen. Only a name that passes the swing rules is a swing candidate, the top stock to watch, or a journal entry. A card uses the latest daily bars and, when a sheet comes back, fundamentals as notes. Informational only, not financial advice.</p>
+  <p>The wide list is an oversold research screen. Only a name that passes the swing rules is a swing candidate, the top stock to watch, or a journal entry. A card uses the latest daily bars and, when a sheet comes back, fundamentals as notes. A separate collapsed list further down repeats that screen for names under $3 or under $2 million a day, above a $0.50 and $250,000 floor. That list is research only and is not part of the paper swing book. Informational only, not financial advice.</p>
  </div>
  <details class="rules-card" id="swingRules">
   <summary>Swing Trading Rules</summary>
@@ -131,6 +131,16 @@
   <ul id="researchRows" class="research-list"></ul>
   <button type="button" id="researchMore" class="btn stocks-more" hidden>Show 25 more</button>
  </details>
+ <details class="research-card thin-watch" id="thinCard">
+  <summary>
+   <span class="research-title">Low-price &amp; thin-volume watch (research only)</span>
+   <span id="thinCount" class="research-count"></span>
+  </summary>
+  <p id="thinWarn" class="thin-warn">Wide spreads, gaps, and slippage. These names are never eligible for the paper swing book. Informational only, not financial advice.</p>
+  <p id="thinNote" class="research-note"></p>
+  <ul id="thinRows" class="research-list"></ul>
+  <button type="button" id="thinMore" class="btn stocks-more" hidden>Show 25 more</button>
+ </details>
  <section class="track-record" id="trackRecord" aria-labelledby="trackTitle">
   <h2 id="trackTitle">Track record</h2>
   <p class="track-scope">Scanner journal of official setups. Not the paper book.</p>
@@ -183,7 +193,7 @@
   <ul id="watchList" class="watch-list"></ul>
   <button id="watchMore" class="btn stocks-more" type="button" hidden>Show 25 more</button>
  </section>
- <p class="quote-disclaimer">Informational only, not financial advice and not a recommendation to buy or sell. The research list is an oversold screen. A swing candidate is a name that passed the stricter swing rules. Prices are delayed daily closes. Fundamentals come from Yahoo's quote summary when that request succeeds, and otherwise from Nasdaq's public quote, financials, analyst targets, and earnings calendar.</p>
+ <p class="quote-disclaimer">Informational only, not financial advice and not a recommendation to buy or sell. The research list is an oversold screen. A swing candidate is a name that passed the stricter swing rules. The low-price and thin-volume watch is a separate research list. It is not a swing candidate and it is not eligible for the paper swing book. Prices are delayed daily closes. Fundamentals come from Yahoo's quote summary when that request succeeds, and otherwise from Nasdaq's public quote, financials, analyst targets, and earnings calendar.</p>
  </div>
  </div>
 </main>
@@ -193,7 +203,7 @@
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
 <script src="swot.js?v=2"></script>
-<script src="stocks.js?v=25"></script>
+<script src="stocks.js?v=26"></script>
 <script src="paper/paper.js?v=15"></script>
 <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="/retro-theme.js"></script>

@@ -66,6 +66,18 @@ html[data-theme="retro"] .research-count{border-radius:0;background:#fff;color:#
 .research-row{display:flex;align-items:center;gap:8px;width:100%;min-height:48px;padding:6px 0;border:0;background:transparent;color:var(--ink,#0f172a);text-align:left;font:650 15px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .research-name{flex:none}
 .research-meta{flex:1;min-width:0;font-weight:600}
+.thin-warn{
+  margin:0 0 8px;padding:8px 10px;border-left:3px solid var(--stk-stop-line,#b91c1c);border-radius:10px;
+  background:var(--stk-stop-tint,#f7e4e4);color:var(--ink,#0f172a);
+  font:600 14px/1.45 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-wrap:anywhere
+}
+.thin-row{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-height:44px;padding:8px 0;
+  color:var(--ink,#0f172a);font:650 15px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+.thin-row .research-name{font-weight:700}
+.thin-row .research-meta{flex:1 1 12rem;white-space:normal;overflow-wrap:anywhere}
+.thin-watch .research-title{white-space:normal}
 .size-helper{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin:0 0 12px}
 .size-helper[hidden]{display:none !important}
 .size-helper label{font:700 13px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
@@ -518,6 +530,9 @@ html[data-theme="retro"] .track-count,html[data-theme="retro"] .track-badge{bord
 html[data-theme="retro"] .track-count{background:#fff!important;color:#111827!important;border:2px solid #000!important}
 html[data-theme] .setup-title,html[data-theme] .swing-empty,html[data-theme] .research-card,html[data-theme] .research-card summary,html[data-theme] .research-note,html[data-theme] .research-row,html[data-theme] .size-helper,html[data-theme] .size-helper label,html[data-theme] .size-help,html[data-theme] .size-out{background:transparent!important;color:var(--ink)!important}
 html[data-theme] .research-card{background:var(--surface)!important;border-color:var(--line)!important}
+html[data-theme] .thin-warn{background:var(--stk-stop-tint)!important;color:var(--ink)!important}
+html[data-theme] .thin-row,html[data-theme] .thin-row .research-name,html[data-theme] .thin-row .research-meta{color:var(--ink)!important;background:transparent!important}
+html[data-theme="retro"] .thin-warn{border-radius:0;background:#f3d6d6!important;color:#111827!important;border-left-color:#800000}
 html[data-theme] .size-helper input{background:var(--surface)!important;color:var(--ink)!important;font-size:max(1rem,1em)}
 /* Phone clearance is a fixed nav and dock. Viewport units and the keyboard inset are not part of it. */
 @media (max-width:900px){
