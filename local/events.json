@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T00:55:21Z",
+ "updated": "2026-11-24T10:58:31Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -23,13 +23,13 @@
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 3
+   "count": 4
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 6
+   "count": 7
   },
   {
    "name": "City of Titusville",
@@ -59,7 +59,7 @@
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 30
+   "count": 26
   },
   {
    "name": "Launch Library 2",
@@ -96,62 +96,6 @@
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
-  },
-  {
-   "id": "91644d0bb173dd09",
-   "title": "Disney Wish in port",
-   "start": "2026-11-23T11:00:00Z",
-   "end": "2026-11-23T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "8839bdd42de70739",
-   "title": "Utopia of the Seas in port",
-   "start": "2026-11-23T11:30:00Z",
-   "end": "2026-11-23T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "7a6b56ed79071788",
-   "title": "Norwegian Getaway in port",
-   "start": "2026-11-23T12:00:00Z",
-   "end": "2026-11-23T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT6",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "5ddb7dec1f81a8e0",
-   "title": "Carnival Glory in port",
-   "start": "2026-11-23T12:00:00Z",
-   "end": "2026-11-23T20:30:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT3",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
   },
   {
    "id": "f43018d7e12039e0",
@@ -796,6 +740,34 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "e611d1f1c257ca63",
+   "title": "Cocoa Beach Woman's Club Meeting",
+   "start": "2026-12-03T14:30:00Z",
+   "end": "2026-12-03T16:30:00Z",
+   "town": "Cocoa Beach",
+   "venue": "Cocoa Beach Country Club - Open to the Public - 5000 Tom Warriner Blvd Cocoa Beach FL 32931",
+   "category": "Arts",
+   "url": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9725",
+   "description": "The Cocoa Beach Woman's Club welcomes you to visit our monthly meetings! We are a volunteer organization focusing on Arts and Culture, Civic Engagement, Education and Library, Environment and Health and Wellness. We support local schools and other non-profit Organizations. We are a part of the General Federation of Women's Clubs (GFWC). Find us on Facebook and our website listed below. https://www",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "4efde7cc6417d120",
+   "title": "Board of Adjustments and Appeals",
+   "start": "2026-12-03T23:00:00Z",
+   "end": "2026-12-04T00:00:00Z",
+   "town": "Titusville",
+   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
+   "category": "Family",
+   "url": "https://www.titusville.com/calendar.aspx?EID=2361",
+   "description": "https://www.titusville.com/calendar.aspx?EID=2361",
+   "source": "City of Titusville",
+   "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
   }
  ]
 }
