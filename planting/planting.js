@@ -123,8 +123,22 @@
       fine.appendChild(document.createTextNode('.'));
     });
   }
+  var ZONE_FALLBACK = '32927 · Zone 10a · 30 to 35°F';
+  function failZone() {
+    var node = $('plantZone');
+    if (node) node.textContent = ZONE_FALLBACK;
+  }
   document.getElementById('yr').textContent = String(new Date().getFullYear());
-  fetch('plants.json?v=2').then(function (res) { return res.json(); }).then(function (doc) {
+  var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+  var timer = setTimeout(function () {
+    if (ctrl) ctrl.abort();
+    else failZone();
+  }, 4000);
+  fetch('plants.json?v=2', ctrl ? { signal: ctrl.signal } : {}).then(function (res) {
+    if (!res.ok) throw new Error('plants');
+    return res.json();
+  }).then(function (doc) {
+    clearTimeout(timer);
     data = doc;
     month = hashMonth() || nowMonth();
     paintZone();
@@ -132,6 +146,7 @@
     paintLists();
     paintFine();
   }).catch(function () {
-    $('plantZone').textContent = 'The planting notes did not load.';
+    clearTimeout(timer);
+    failZone();
   });
 })();
