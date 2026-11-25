@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=11">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=12">
@@ -74,6 +74,7 @@
   <div class="recipe-actions-row">
    <button id="favFilter" class="btn ghost" aria-pressed="false">♡ Favorites</button>
    <button id="btnGrocery" class="btn ghost" type="button">Grocery List (0)</button>
+   <button id="btnPlan" class="btn ghost" type="button">Plan (0)</button>
   </div>
   <div class="filebox">
    <div id="fileTabs" class="file-tabs" role="tablist" aria-label="Recipe card tabs"></div>
@@ -216,11 +217,23 @@
   <button type="button" id="groceryClose" class="btn ghost">Close</button>
  </div>
 </dialog>
+<dialog id="planDialog" aria-labelledby="planTitle">
+ <h2 id="planTitle">Plan</h2>
+ <p id="planEmpty">Nothing in the plan yet.</p>
+ <ul id="planRecipes"></ul>
+ <h3>Shopping list</h3>
+ <p id="planShopEmpty">No ingredients yet.</p>
+ <ul id="planShop"></ul>
+ <div class="scan-actions">
+  <button type="button" id="planToGrocery" class="btn primary">Add to Grocery List</button>
+  <button type="button" id="planClose" class="btn ghost">Close</button>
+ </div>
+</dialog>
 <script src="/board/vendor/firebase/firebase-app-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="app.js?v=35"></script>
+<script src="app.js?v=36"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
