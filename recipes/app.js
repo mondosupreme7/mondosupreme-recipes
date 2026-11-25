@@ -21,7 +21,7 @@ const SAMPLES=[
 const PUSHED='mondosupreme.recipes.pushed.v1';
 const RULES_BANNER='Server sync waiting on updated Firebase rules — using local storage until published';
 const PHOTO_MAX=200000;
-let recipes, favs, state={q:'',cat:'',tag:'',fav:false,source:'',cuisine:'',protein:'',time:''};
+let recipes, favs, state={q:'',cat:'',tag:'',fav:false,source:'',cuisine:'',protein:'',time:'',cookTime:'',ingredient:''};
 const CUISINE_ORDER=['British & Irish','Fusion & Everyday','American & BBQ','Southeast Asian','Chinese','Italian','Indian & South Asian','French','German, Nordic & Eastern European','Mexican & Tex-Mex','Greek, Turkish & Mediterranean','Spanish & Portuguese','Middle Eastern & African','Japanese & Korean','Caribbean & Latin American'];
 let chef=null, chefPromise=null, chefParts={}, chefPage=0;
 const CHEF_PAGE=24;
@@ -420,8 +420,34 @@ function publicNotes(recipe){
 function chefMatches(){
   if(!chef)return [];
   const q=state.q.toLowerCase();
-  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||cuisineName(r)===state.cuisine) && (!state.protein||proteinName(r)===state.protein) && (!state.time||timeName(r)===state.time) && !state.tag && (!state.fav||favs.has(r.id)) &&
+  return chef.items.filter(r=> (!state.cat||r.category===state.cat) && (!state.cuisine||cuisineName(r)===state.cuisine) && (!state.protein||proteinName(r)===state.protein) && (!state.time||timeName(r)===state.time) && matchesCookTime(r) && matchesIngredient(r) && !state.tag && (!state.fav||favs.has(r.id)) &&
     (!q||[r.title,r.q,r.cuisine,r.cuisineDetail,r.category].join(' ').toLowerCase().includes(q)));
+}
+function cookMinutes(r){
+  const n=Number(r.cook);
+  return Number.isFinite(n)&&n>0?n:0;
+}
+function matchesCookTime(r){
+  if(!state.cookTime)return true;
+  const minutes=cookMinutes(r);
+  if(!minutes)return true;
+  if(state.cookTime==='under30')return minutes<30;
+  if(state.cookTime==='30to60')return minutes>=30&&minutes<=60;
+  if(state.cookTime==='over60')return minutes>60;
+  return true;
+}
+function ingredientName(r){
+  const blob=[r.title,r.category,...(r.ingredients||[]),...(r.tags||[]),r.q||''].join(' ').toLowerCase();
+  if(/\b(chicken|drumsticks?)\b/.test(blob))return 'Chicken';
+  if(/\b(beef|steak|brisket)\b/.test(blob))return 'Beef';
+  if(/\b(pork|bacon|sausage|ham)\b/.test(blob))return 'Pork';
+  if(/\b(fish|shrimp|salmon|prawn|seafood|cod|tuna|crab|lobster|scallop)\b/.test(blob))return 'Seafood';
+  if(/\b(veggie|vegetarian|vegan|tofu|chickpea|lentils?|beans?)\b/.test(blob))return 'Veggie';
+  return '';
+}
+function matchesIngredient(r){
+  if(!state.ingredient)return true;
+  return ingredientName(r)===state.ingredient;
 }
 function proteinName(r){
   const cat=String(r.category||'');
@@ -477,9 +503,17 @@ function fillFilters(){
   const pool=state.source==='backyard'&&chef?chef.items:recipes;
   const cats=[...new Set(pool.map(r=>r.category).filter(Boolean))].sort();
   const tags=state.source==='backyard'?[]:[...new Set(recipes.flatMap(r=>r.tags||[]))].sort();
+  const cuisines=orderedCuisines(new Set(pool.map(r=>r.cuisine).filter(Boolean)));
   const fill=(sel,arr,label,cur)=>{sel.innerHTML=`<option value="">${label}</option>`+arr.map(v=>`<option${v===cur?' selected':''}>${esc(v)}</option>`).join('');};
   if(!cats.includes(state.cat))state.cat=''; if(!tags.includes(state.tag))state.tag='';
+  if(state.cuisine&&!cuisines.includes(state.cuisine))state.cuisine='';
   fill($('#catFilter'),cats,'All categories',state.cat); fill($('#tagFilter'),tags,'All tags',state.tag);
+  const cuisineSel=$('#cuisineFilter');
+  if(cuisineSel)cuisineSel.innerHTML=`<option value="">All cuisines</option>`+cuisines.map(v=>`<option value="${esc(v)}"${v===state.cuisine?' selected':''}>${esc(v)}</option>`).join('');
+  const timeSel=$('#timeFilter');
+  if(timeSel)timeSel.value=state.cookTime||'';
+  const ingredientSel=$('#ingredientFilter');
+  if(ingredientSel)ingredientSel.value=state.ingredient||'';
   $('#catList').innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join('');
 }
 function clipArt(category){
@@ -643,7 +677,7 @@ function renderList(){
       cats.map(c=>'<button type="button" class="file-tab" data-cat="'+esc(c)+'" aria-pressed="'+(state.cat===c)+'">'+esc(c)+'</button>').join('');
   }
   const q=state.q.toLowerCase();
-  const mine=state.source==='backyard'?[]:recipes.filter(r=>(!state.cat||r.category===state.cat)&&(!state.tag||(r.tags||[]).includes(state.tag))&&(!state.fav||favs.has(r.id))&&
+  const mine=state.source==='backyard'?[]:recipes.filter(r=>(!state.cat||r.category===state.cat)&&(!state.tag||(r.tags||[]).includes(state.tag))&&(!state.cuisine||r.cuisine===state.cuisine)&&matchesCookTime(r)&&matchesIngredient(r)&&(!state.fav||favs.has(r.id))&&
     (!q||[r.title,r.category,r.notes,...(r.tags||[]),...(r.ingredients||[])].join(' ').toLowerCase().includes(q)));
   const wantChef=state.source==='backyard'||!!q||state.fav;
   const chefList=wantChef?chefMatches():[];
@@ -661,7 +695,7 @@ function renderList(){
     $('#empty').hidden=true;
     return;
   }
-  const grouped=state.source==='backyard'&&chef&&!q&&!state.cuisine&&!state.fav;
+  const grouped=state.source==='backyard'&&chef&&!q&&!state.cuisine&&!state.fav&&!state.ingredient&&!state.cookTime;
   if(grouped){
     $('#grid').classList.add('is-grouped');
     $('#grid').removeAttribute('data-recipe-layout');
@@ -686,7 +720,7 @@ function renderList(){
       if(q){
         countEl.textContent='Showing '+shownChef.length.toLocaleString('en-US')+' of '+chefList.length.toLocaleString('en-US')+' matches for “'+state.q+'”';
       }else{
-        const shownCount=state.cat||state.cuisine?chefList.length:chef.count;
+        const shownCount=(state.cat||state.cuisine||state.ingredient||state.cookTime||state.protein||state.time)?chefList.length:chef.count;
         countEl.textContent=shownCount.toLocaleString('en-US')+' Backyard Chef recipe'+(shownCount===1?'':'s');
       }
     }else countEl.hidden=true;
@@ -2387,6 +2421,12 @@ function init(){
   };
   $('#catFilter').onchange=e=>{state.cat=e.target.value;chefPage=0;renderList()};
   $('#tagFilter').onchange=e=>{state.tag=e.target.value;renderList()};
+  const cuisineFilter=$('#cuisineFilter');
+  if(cuisineFilter)cuisineFilter.onchange=e=>{state.cuisine=e.target.value;chefPage=0;renderList()};
+  const timeFilter=$('#timeFilter');
+  if(timeFilter)timeFilter.onchange=e=>{state.cookTime=e.target.value;chefPage=0;renderList()};
+  const ingredientFilter=$('#ingredientFilter');
+  if(ingredientFilter)ingredientFilter.onchange=e=>{state.ingredient=e.target.value;chefPage=0;renderList()};
   $('#favFilter').onclick=e=>{
     state.fav=!state.fav;
     e.currentTarget.setAttribute('aria-pressed',state.fav);
@@ -2444,7 +2484,7 @@ function init(){
     const btn=e.target.closest('[data-source]');
     if(!btn)return;
     state.source=btn.dataset.source||'';
-    state.cat=''; state.tag=''; state.cuisine=''; state.protein=''; state.time=''; chefPage=0;
+    state.cat=''; state.tag=''; state.cuisine=''; state.protein=''; state.time=''; state.cookTime=''; state.ingredient=''; chefPage=0;
     if(state.source==='backyard'){
       renderList();
       loadChefIndex().then(()=>renderList()).catch(()=>toast('Backyard Chef recipes did not load'));
