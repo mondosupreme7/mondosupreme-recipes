@@ -2,6 +2,11 @@
 'use strict';
 const KEY = 'mondosupreme.launches.v1';
 const API = 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=12';
+const TIPS = {
+  'SLC-40': 'Jetty Park or Max Brewer Bridge.',
+  'LC-39A': 'Jetty Park, Playalinda, or Max Brewer Bridge.',
+  'SLC-41': 'Jetty Park.'
+};
 const PADS = {
   'LC-39A': { bearing: 48, look: 'northeast', boom: 'about 3 to 5 minutes after liftoff on an eastbound path', x: 250, y: 78 },
   'SLC-41': { bearing: 62, look: 'northeast', boom: 'about 3 to 4 minutes after liftoff', x: 268, y: 118 },
@@ -104,6 +109,51 @@ function paintGuide() {
     node.setAttribute('fill', node.getAttribute('data-pad') === row.pad ? '#ffd100' : '#7fdfff');
   });
 }
+function viewTip(row) {
+  if (/starship/i.test((row.name || '') + ' ' + (row.rocket || ''))) return 'A public spot that faces the pad.';
+  return TIPS[row.pad] || 'A public spot that faces the pad.';
+}
+function icsEscape(value) {
+  return String(value ?? '').replace(/\\/g, '\\\\').replace(/\r\n|\n|\r/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+}
+function icsStamp(date) {
+  const p = n => String(n).padStart(2, '0');
+  return date.getUTCFullYear() + p(date.getUTCMonth() + 1) + p(date.getUTCDate()) + 'T' + p(date.getUTCHours()) + p(date.getUTCMinutes()) + p(date.getUTCSeconds()) + 'Z';
+}
+function launchIcs(row) {
+  const start = new Date(row.net);
+  const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+  const pad = row.padLabel || row.pad || 'Launch pad';
+  const slug = String(row.name || 'launch').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'launch';
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Mondosupreme//Launch Control//EN',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    'UID:' + slug + '-' + icsStamp(start) + '@mondosupreme.com',
+    'DTSTAMP:' + icsStamp(new Date()),
+    'DTSTART:' + icsStamp(start),
+    'DTEND:' + icsStamp(end),
+    'SUMMARY:' + icsEscape(row.name || 'Launch'),
+    'LOCATION:' + icsEscape(pad),
+    'DESCRIPTION:' + icsEscape(pad + '\n' + location.origin + '/launches/'),
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ];
+  return lines.join('\r\n') + '\r\n';
+}
+function saveIcs(row) {
+  const blob = new Blob([launchIcs(row)], { type: 'text/calendar' });
+  const link = document.createElement('a');
+  const slug = String(row.name || 'launch').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'launch';
+  link.href = URL.createObjectURL(blob);
+  link.download = slug + '.ics';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1500);
+}
 function paintList() {
   const box = $('#cards');
   if (!box) return;
@@ -112,14 +162,24 @@ function paintList() {
     const card = document.createElement('article');
     card.className = 'card';
     const when = new Date(row.net);
-    card.innerHTML = '<b>' + esc(row.name) + '</b><span>' + esc(row.provider) + ' · ' + esc(row.rocket) + ' · ' + esc(row.pad) + '</span><br><span>'
-      + esc(isNaN(when.getTime()) ? row.net : when.toLocaleString()) + ' · ' + esc(row.status) + (row.backup ? ' · backup' : '') + '</span>';
+    card.innerHTML = '<b>' + esc(row.name) + '</b><span>' + esc(row.provider) + ' · ' + esc(row.rocket) + ' · ' + esc(row.pad) + '</span><span class="when">'
+      + esc(isNaN(when.getTime()) ? row.net : when.toLocaleString()) + ' · ' + esc(row.status) + (row.backup ? ' · backup' : '') + '</span><span class="view-tip">'
+      + esc(viewTip(row)) + '</span>';
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+    const cal = document.createElement('button');
+    cal.type = 'button';
+    cal.className = 'btn';
+    cal.textContent = 'Add to calendar';
+    cal.setAttribute('aria-label', 'Add ' + (row.name || 'launch') + ' to calendar');
+    cal.addEventListener('click', () => saveIcs(row));
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'btn';
     btn.textContent = i === picked ? 'Tracking this one' : 'Track T-minus';
     btn.addEventListener('click', () => { picked = i; paintList(); paintGuide(); paintClock(); });
-    card.appendChild(btn);
+    actions.append(cal, btn);
+    card.appendChild(actions);
     box.appendChild(card);
   });
 }
@@ -157,7 +217,7 @@ async function loadLaunches() {
   picked = 0;
   const backupNote = $('#launchBackup');
   if (backupNote) backupNote.hidden = !!live.length;
-  if (status) status.textContent = live.length ? ('Live schedule · ' + live.length + ' upcoming Space Coast launches.') : 'Live data unavailable, showing backup schedule';
+  if (status) status.textContent = live.length ? ('Live schedule · ' + live.length + ' upcoming launches.') : 'Live data unavailable, showing backup schedule';
   paintList();
   paintGuide();
   paintClock();
