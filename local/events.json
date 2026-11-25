@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T04:36:56Z",
+ "updated": "2026-11-25T14:59:54Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -11,7 +11,7 @@
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=15&feed=calendar",
    "ok": true,
-   "count": 1
+   "count": 2
   },
   {
    "name": "City of Cocoa Beach",
@@ -29,7 +29,7 @@
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
    "ok": true,
-   "count": 7
+   "count": 2
   },
   {
    "name": "City of Titusville",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 10
+   "count": 11
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 26
+   "count": 32
   },
   {
    "name": "Launch Library 2",
@@ -112,20 +112,6 @@
    "kind": "cruise"
   },
   {
-   "id": "54a225e08feb524c",
-   "title": "City Council Special Meeting",
-   "start": "2026-11-24T15:30:00Z",
-   "end": "2026-11-25T04:59:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2641",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2641",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "c27b76992e3d7da2",
    "title": "Odyssey of the Seas in port",
    "start": "2026-11-24T18:00:00Z",
@@ -138,34 +124,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "27b0a336d32e7ac2",
-   "title": "Canceled - City Council Presentation Meeting",
-   "start": "2026-11-24T22:30:00Z",
-   "end": "2026-11-25T04:59:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2402",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2402",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "ae082a70ed46ee99",
-   "title": "Board of Commissioners of the Housing Authority of the City of Titusville",
-   "start": "2026-11-24T23:30:00Z",
-   "end": "2026-11-25T04:59:00Z",
-   "town": "Titusville",
-   "venue": "<p>Titusville Housing Authority - 524 South Hopkins Ave., Titusville, FL 32796</p> - Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2545",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2545",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "e7488f5b605acaaa",
@@ -739,6 +697,118 @@
    "description": "https://www.titusville.com/calendar.aspx?EID=2361",
    "source": "City of Titusville",
    "sourceUrl": "https://www.titusville.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "92d6696369809a8e",
+   "title": "Disney Wish in port",
+   "start": "2026-12-04T11:00:00Z",
+   "end": "2026-12-04T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT10",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "e818ebdeddb9be53",
+   "title": "Disney Fantasy in port",
+   "start": "2026-12-04T11:00:00Z",
+   "end": "2026-12-04T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "33909b5c0447b1fe",
+   "title": "Utopia of the Seas in port",
+   "start": "2026-12-04T11:30:00Z",
+   "end": "2026-12-04T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "9d940d434a922889",
+   "title": "Norwegian Escape in port",
+   "start": "2026-12-04T12:00:00Z",
+   "end": "2026-12-04T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "649fe3cad99ec1fc",
+   "title": "Carnival Glory in port",
+   "start": "2026-12-04T12:00:00Z",
+   "end": "2026-12-04T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "e70c28e34c97dce2",
+   "title": "Museums of Brevard Holiday Tour of Historic Homes",
+   "start": "2026-12-04T15:00:00Z",
+   "end": "2026-12-20T19:00:00Z",
+   "town": "Merritt Island",
+   "venue": "",
+   "category": "Arts",
+   "url": "https://www.visitspacecoast.com/event/holiday-tour-of-historic-homes/",
+   "description": "See beautiful architecture and gorgeous holiday decorations! This unique event is a wonderful way to celebrate the holiday season and makes a great gift idea for the person who has everything. For the seventh year, the Museums of Brevard(MOB) is offering holiday tours of 8 Brevard County historic homes. Tours are available throughout December. Check with each home to verify their hours during this",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "f1d8008730d0f30d",
+   "title": "Norwegian Getaway in port",
+   "start": "2026-12-04T22:00:00Z",
+   "end": "2026-12-05T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "140d870813efe0ae",
+   "title": "HCVMS Hot Cocoa Holidays Moonlight and Music on the Promonade",
+   "start": "2026-12-04T23:00:00Z",
+   "end": "2026-12-05T02:00:00Z",
+   "town": "Cocoa",
+   "venue": "Cocoa Riverfront Park - 401 Riveredge Blvd. Cocoa FL 32922",
+   "category": "Family",
+   "url": "https://www.cocoafl.gov/calendar.aspx?EID=6299",
+   "description": "Get in the holiday spirit with Hot Cocoa Holidays in Cocoa Village, where the streets are adorned with beautiful icicles and there\u2019s something for everyone to enjoy. From live entertainment to giving back, and unique shopping experiences, the holiday season is truly magical here. https://www.cocoafl.gov/calendar.aspx?EID=6299",
+   "source": "City of Cocoa",
+   "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
    "kind": "event"
   }
  ]
