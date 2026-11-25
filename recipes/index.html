@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="styles.css?v=10">
 <link rel="stylesheet" href="/retro.css?v=3">
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=12">
@@ -60,18 +60,20 @@
    <input id="search" type="search" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Search recipes, ingredients, tags…" aria-label="Search">
    <select id="catFilter" aria-label="Category"><option value="">All categories</option></select>
    <select id="tagFilter" aria-label="Tag"><option value="">All tags</option></select>
-   <button id="favFilter" class="btn ghost" aria-pressed="false">♡ Favorites</button>
-   <button id="btnGrocery" class="btn ghost" type="button">Grocery List (0)</button>
+   <div class="filter-row">
+    <select id="cuisineFilter" aria-label="Cuisine"><option value="">Cuisine</option></select>
+    <select id="timeFilter" aria-label="Cook time"><option value="">Time</option><option value="under30">≤30 min</option><option value="30to60">30–60</option><option value="over60">&gt;60 min</option></select>
+    <select id="ingredientFilter" aria-label="Main ingredient"><option value="">Main</option><option value="Chicken">Chicken</option><option value="Beef">Beef</option><option value="Pork">Pork</option><option value="Seafood">Seafood</option><option value="Veggie">Veggie</option></select>
+   </div>
   </div>
   <div id="layoutSwitch" class="layout-switch" role="radiogroup" aria-label="How to list recipes">
    <button type="button" data-layout-choice="list" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg><span>List</span></button>
    <button type="button" data-layout-choice="grid" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg><span>Grid</span></button>
    <button type="button" data-layout-choice="cards" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v4H3V6a1 1 0 0 1 1-1zm-1 7h18v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5z"/></svg><span>Cards</span></button>
   </div>
-  <div class="recipe-filters" aria-label="Recipe filters">
-   <select id="cuisineFilter" aria-label="Cuisine"><option value="">All cuisines</option></select>
-   <select id="timeFilter" aria-label="Cook time"><option value="">Any time</option><option value="under30">Under 30 min</option><option value="30to60">30–60 min</option><option value="over60">Over 60 min</option></select>
-   <select id="ingredientFilter" aria-label="Main ingredient"><option value="">Any ingredient</option><option value="Chicken">Chicken</option><option value="Beef">Beef</option><option value="Pork">Pork</option><option value="Seafood">Seafood</option><option value="Veggie">Veggie</option></select>
+  <div class="recipe-actions-row">
+   <button id="favFilter" class="btn ghost" aria-pressed="false">♡ Favorites</button>
+   <button id="btnGrocery" class="btn ghost" type="button">Grocery List (0)</button>
   </div>
   <div class="filebox">
    <div id="fileTabs" class="file-tabs" role="tablist" aria-label="Recipe card tabs"></div>
@@ -218,7 +220,7 @@
 <script src="/board/vendor/firebase/firebase-auth-compat.js"></script>
 <script src="/board/vendor/firebase/firebase-database-compat.js"></script>
 <script src="/board/config.js"></script>
-<script src="app.js?v=34"></script>
+<script src="app.js?v=35"></script>
 <script src="/retro-theme.js"></script>
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
