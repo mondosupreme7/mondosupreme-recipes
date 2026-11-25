@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="/retro-theme.css?v=2">
 <link rel="stylesheet" href="/shell.css?v=12">
 <link rel="stylesheet" href="/readable.css?v=19">
-<link rel="stylesheet" href="/home.css?v=10">
+<link rel="stylesheet" href="/home.css?v=11">
 </head>
 <body class="home-page">
 <div class="ticker"><div class="ticker-track">
@@ -45,14 +45,24 @@
  <h1 class="visually-hidden">Mondosupreme</h1>
  <section class="home-brief" aria-label="Today">
   <h2 id="homeGreet">Good afternoon</h2>
-  <a class="home-brief-row" id="homeWeather" href="/weather/">
-   <span class="home-brief-k">Weather</span>
-   <span class="home-brief-v" id="homeLine">Cocoa and Port Canaveral</span>
-  </a>
-  <a class="home-brief-row" id="homeLaunch" href="/launches/">
-   <span class="home-brief-k">Launch</span>
-   <span class="home-brief-v" id="homeLaunchLine">Checking the Cape</span>
-  </a>
+  <div class="today-card">
+   <a class="home-brief-row" id="homeWeather" href="/weather/">
+    <span class="home-brief-k">Weather</span>
+    <span class="home-brief-v" id="homeLine">Cocoa and Port Canaveral</span>
+   </a>
+   <a class="home-brief-row" href="/tides/">
+    <span class="home-brief-k">Tide</span>
+    <span class="home-brief-v" id="homeTide">Port Canaveral tide</span>
+   </a>
+   <a class="home-brief-row" id="homeLaunch" href="/launches/">
+    <span class="home-brief-k">Launch</span>
+    <span class="home-brief-v" id="homeLaunchLine">Checking the Cape</span>
+   </a>
+   <a class="home-brief-row" id="homeRecipe" href="/recipes/">
+    <span class="home-brief-k">Recipe</span>
+    <span class="home-brief-v" id="homeRecipeLine">Today’s recipe</span>
+   </a>
+  </div>
   <a class="home-brief-row" id="homeShips" href="/cruises/">
    <span class="home-brief-k">Sailing</span>
    <span class="home-brief-v" id="homeShipLine">Checking Port Canaveral</span>
@@ -74,7 +84,6 @@
   <a class="home-app" href="/planting/"><span class="home-ico" data-icon="sprout"></span><span class="home-label">Planting</span></a>
  </nav>
  <div class="home-list">
-  <a class="home-row" href="/tides/"><span class="home-ico" data-icon="tide"></span><span class="home-row-copy"><b>Tide &amp; Surf</b><span class="home-row-detail" id="homeTide">Port Canaveral tide</span></span></a>
   <a class="home-row" href="/tropics/"><span class="home-ico" data-icon="storm"></span><span class="home-row-copy"><b>Tropics</b><span class="home-row-detail" id="homeTropics">Atlantic storms</span></span></a>
   <a class="home-row" href="/daily-recipe/"><span class="home-ico" data-icon="tv"></span><span class="home-row-copy"><b>Recipe TV</b><span class="home-row-detail">A new kitchen every day</span></span></a>
   <a class="home-row" href="/cinderwell/"><span class="home-ico" data-icon="banner"></span><span class="home-row-copy"><b>Cinderwell</b><span class="home-row-detail">Two banners over a drowned basin</span></span></a>
@@ -183,7 +192,7 @@
 <script src="/era.js"></script>
 <script src="/members.js?v=5"></script>
 <script src="/shell.js?v=20"></script>
-<script src="/home.js?v=10"></script>
+<script src="/home.js?v=11"></script>
 <script src="/8ball/oracle.js"></script>
 <script src="/toys.js"></script>
 <script src="/quotes.js"></script>
