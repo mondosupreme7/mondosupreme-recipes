@@ -76,6 +76,22 @@ html[data-theme="retro"] .card:hover{outline:2px solid #000080}
 .toolbar .filter-row select{flex:1 1 0;min-width:0;min-height:44px}
 .recipe-actions-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
 .recipe-actions-row .btn{min-height:44px}
+.plan-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 12px;border:1px solid var(--line-strong,#64748b);border-radius:12px;background:var(--surface,#fff);color:var(--ink,#0f172a);font:650 15px/1 var(--font-ui,Inter,sans-serif);cursor:pointer}
+.plan-btn.is-compact{width:44px;padding:0}
+.plan-btn.is-compact .plan-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.plan-btn.is-on{background:var(--ink,#0f172a) !important;color:var(--bg,#fff) !important;border-color:var(--ink,#0f172a) !important}
+.plan-btn .plan-mark{font-size:1.15rem;line-height:1}
+.recipe-tile-wrap .plan-btn,.recipe-card .thumb .plan-btn{position:absolute;top:8px;left:8px;z-index:2;background:var(--surface,#fff)}
+.recipe-tile-wrap .plan-btn.is-on,.recipe-card .thumb .plan-btn.is-on{background:var(--ink,#0f172a) !important;color:var(--bg,#fff) !important}
+#planDialog{width:min(28rem,calc(100% - 24px));max-height:70%;overflow:auto;padding:16px;background:var(--surface,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#334155)}
+#planDialog h2,#planDialog h3{margin:0 0 8px;color:var(--ink,#0f172a)}
+#planRecipes,#planShop{list-style:none;margin:0 0 12px;padding:0}
+#planRecipes li,#planShop li{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line,#334155);color:var(--ink,#0f172a)}
+#planRecipes li span{flex:1 1 auto;min-width:0}
+#planRecipes .btn,#planDialog .scan-actions .btn{min-height:44px}
+.plan-note{flex:1 1 100%;margin:0;font:500 14px/1.3 var(--font-ui,Inter,sans-serif);color:var(--ink,#0f172a)}
+html[data-theme="retro"] #planDialog{border-radius:0;background:#fff;color:#111827;border:2px solid #000}
+html[data-theme="retro"] #planDialog h2,html[data-theme="retro"] #planDialog h3,html[data-theme="retro"] .plan-note{color:#111827}
 .recipe-row{display:flex;align-items:center;gap:12px;min-height:76px;padding:8px 2px;text-decoration:none;color:inherit;border-bottom:1px solid var(--line,#e2e8f0)}
 .recipe-row-thumb{flex:0 0 68px;width:68px;height:68px;border-radius:12px;overflow:hidden;background:var(--surface-2,#f1f5f9)}
 .recipe-row-thumb img,.recipe-row-thumb svg,.recipe-row-thumb .thumb-fallback,.recipe-tile-photo img,.recipe-tile-photo svg{width:100%;height:100%;object-fit:cover;display:block}

@@ -529,6 +529,11 @@ function favButton(id, compact){
   const on=favs.has(id);
   return `<button type="button" class="fav-btn${on?' is-on':''}${compact?' is-compact':''}" data-fav="${esc(id)}" aria-pressed="${on?'true':'false'}" aria-label="${on?'Favorited':'Add to favorites'}"><span class="fav-heart" aria-hidden="true">${on?'♥':'♡'}</span><span class="fav-label">${on?'Favorited':'Favorite'}</span></button>`;
 }
+function planOn(id){return loadPlan().some(row=>row.id===id)}
+function planButton(id, title, compact){
+  const on=planOn(id);
+  return `<button type="button" class="plan-btn${on?' is-on':''}${compact?' is-compact':''}" data-plan="${esc(id)}" data-plan-title="${esc(title||'')}" aria-pressed="${on?'true':'false'}" aria-label="${on?'Remove from plan':'Add to plan'}"><span class="plan-mark" aria-hidden="true">${on?'✓':'＋'}</span><span class="plan-label">${on?'In plan':'Plan'}</span></button>`;
+}
 function recipeActions(r){
   const chef=isChefId(r.id);
   return `<div class="recipe-actions">
@@ -545,17 +550,17 @@ function recipeItem(r){
       <span class="recipe-row-thumb">${recipePhoto(r)}</span>
       <span class="recipe-row-copy"><span class="recipe-row-title">${esc(r.title)}</span>${meta?`<span class="recipe-row-meta">${esc(meta)}</span>`:''}</span>
       <svg class="recipe-chevron" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 6l6 6-6 6"/></svg>
-    </a>${favButton(r.id,true)}</div>`;
+    </a>${planButton(r.id,r.title,true)}${favButton(r.id,true)}</div>`;
   }
   if(recipeLayout==='grid'){
     return `<div class="recipe-tile-wrap"><a class="recipe-tile" href="${href}">
       <span class="recipe-tile-photo">${recipePhoto(r)}</span>
       <span class="recipe-tile-title">${esc(r.title)}</span>
-    </a>${favButton(r.id,true)}</div>`;
+    </a>${planButton(r.id,r.title,true)}${favButton(r.id,true)}</div>`;
   }
   const chef=isChefId(r.id);
   return `<article class="card${chef?' card-chef':''} recipe-card" data-id="${esc(r.id)}" ${chef?'data-chef="1" ':''}tabindex="0">
-    <div class="thumb">${recipePhoto(r)}${favButton(r.id,true)}</div>
+    <div class="thumb">${recipePhoto(r)}${planButton(r.id,r.title,true)}${favButton(r.id,true)}</div>
     <div class="card-body">
       ${r.category?`<p class="cat-pill">${esc(r.category)}</p>`:''}
       <h3>${esc(r.title)}</h3>
@@ -756,24 +761,131 @@ function paintGroceryButton(){
   const btn=$('#btnGrocery');
   if(btn)btn.textContent='Grocery List ('+groceryCount()+')';
 }
+const PLAN_KEY='mondosupreme.plan.v1';
+function loadPlan(){
+  try{
+    const data=JSON.parse(localStorage.getItem(PLAN_KEY));
+    if(Array.isArray(data))return data.filter(row=>row&&typeof row.id==='string').map(row=>({id:row.id,title:String(row.title||'')}));
+  }catch(e){}
+  return [];
+}
+function savePlan(rows){try{localStorage.setItem(PLAN_KEY,JSON.stringify(rows));}catch(e){toast('Could not save the plan')}}
+function paintPlanButton(){
+  const btn=$('#btnPlan');
+  if(btn)btn.textContent='Plan ('+loadPlan().length+')';
+}
+function findPlanRecipe(id){
+  const local=recipes.find(row=>row.id===id);
+  if(local)return local;
+  if(chef&&chef.byId&&chef.byId.get(id))return chef.byId.get(id);
+  return null;
+}
+function planLines(){
+  const items=[];
+  loadPlan().forEach(row=>{
+    const recipe=findPlanRecipe(row.id);
+    if(recipe&&recipe.ingredients&&recipe.ingredients.length)mergeGroceryLines(items, recipe.ingredients, recipe);
+  });
+  return items.map(item=>item.text);
+}
+function togglePlan(id, title){
+  const rows=loadPlan();
+  const index=rows.findIndex(row=>row.id===id);
+  if(index>=0)rows.splice(index,1);
+  else rows.push({id, title:title||id});
+  savePlan(rows);
+  paintPlanButton();
+  paintPlanButtons(id);
+  const dlg=$('#planDialog');
+  if(dlg&&dlg.open)renderPlan();
+}
+function paintPlanButtons(id){
+  document.querySelectorAll('[data-plan]').forEach(btn=>{
+    if(id&&btn.dataset.plan!==id)return;
+    const on=planOn(btn.dataset.plan);
+    btn.classList.toggle('is-on', on);
+    btn.setAttribute('aria-pressed', on?'true':'false');
+    btn.setAttribute('aria-label', on?'Remove from plan':'Add to plan');
+    const mark=btn.querySelector('.plan-mark');
+    const label=btn.querySelector('.plan-label');
+    if(mark)mark.textContent=on?'✓':'＋';
+    if(label)label.textContent=on?'In plan':'Plan';
+  });
+}
+function renderPlan(){
+  const rows=loadPlan();
+  const list=$('#planRecipes');
+  const shop=$('#planShop');
+  const empty=$('#planEmpty');
+  const shopEmpty=$('#planShopEmpty');
+  if(list){
+    list.replaceChildren();
+    rows.forEach(row=>{
+      const li=document.createElement('li');
+      const name=document.createElement('span');
+      name.textContent=row.title||row.id;
+      const recipe=findPlanRecipe(row.id);
+      if(!recipe||!(recipe.ingredients&&recipe.ingredients.length)){
+        const note=document.createElement('p');
+        note.className='plan-note';
+        note.textContent='Open recipe for ingredients';
+        li.append(name, note);
+      }else li.append(name);
+      const remove=document.createElement('button');
+      remove.type='button';
+      remove.className='btn';
+      remove.textContent='Remove';
+      remove.addEventListener('click',()=>togglePlan(row.id));
+      li.append(remove);
+      list.append(li);
+    });
+  }
+  const lines=planLines();
+  if(shop){
+    shop.replaceChildren();
+    lines.forEach(text=>{
+      const li=document.createElement('li');
+      li.textContent=text;
+      shop.append(li);
+    });
+  }
+  if(empty)empty.hidden=rows.length>0;
+  if(shopEmpty)shopEmpty.hidden=lines.length>0;
+}
+function openPlan(){
+  const dlg=$('#planDialog');
+  if(dlg&&typeof dlg.showModal==='function'&&!dlg.open)dlg.showModal();
+  renderPlan();
+}
+function addPlanToGrocery(){
+  const lines=planLines();
+  if(!lines.length){toast('Open a recipe for ingredients');return}
+  addGroceryLines(lines, null);
+  toast('Added to Grocery List');
+  openGrocery();
+}
 function addGroceryLines(lines,recipe){
   const data=loadGrocery();
+  mergeGroceryLines(data.items, lines, recipe);
+  saveGrocery(data);
+  paintGroceryButton();
+}
+function mergeGroceryLines(items, lines, recipe){
   lines.forEach(line=>{
     const text=String(line||'').trim();
     if(!text)return;
     const parts=groceryParts(text);
-    const open=data.items.find(item=>!item.checked&&groceryParts(item.text).key===parts.key);
+    const open=items.find(item=>!item.checked&&groceryParts(item.text).key===parts.key);
     if(open&&parts.qty!=null&&groceryParts(open.text).qty!=null){
       const prior=groceryParts(open.text);
       open.text=groceryText(prior,prior.qty+parts.qty);
     }else if(open&&parts.qty==null){
       open.text=text;
     }else{
-      data.items.push({id:uid(),text,checked:false,recipeId:recipe&&recipe.id||'',recipeTitle:recipe&&recipe.title||'',custom:!recipe});
+      items.push({id:uid(),text,checked:false,recipeId:recipe&&recipe.id||'',recipeTitle:recipe&&recipe.title||'',custom:!recipe});
     }
   });
-  saveGrocery(data);
-  paintGroceryButton();
+  return items;
 }
 function renderGrocery(){
   const data=loadGrocery();
@@ -829,7 +941,7 @@ function paintDetail(r, readonly){
   const partial=!!(r.partial||/INCOMPLETE\s*:/i.test(r.notes||''));
   const factors=[[0.5,'½x'],[1,'1x'],[2,'2x'],[3,'3x']];
   v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
-   <div class="dbar"><a href="#/" class="btn ghost">← Back</a>${favButton(r.id,false)}
+   <div class="dbar"><a href="#/" class="btn ghost">← Back</a>${favButton(r.id,false)}${planButton(r.id,r.title,false)}
    <button class="btn ghost" id="dPrint">🖨 Print</button>${own?'<button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button>':''}</div>
    ${!isOwner&&!readonly?'<p class="lock-note">This recipe is read-only. Only an admin can change the shared notebook. Favorites stay on this device.</p>':''}
    <div class="cat">${esc(r.category||'Uncategorized')}${r.sample?' · Sample recipe':''}${readonly?' · Backyard Chef':''}</div>
@@ -2387,7 +2499,14 @@ function init(){
     else renderList();
   };
   paintGroceryButton();
+  paintPlanButton();
   $('#btnGrocery').onclick=openGrocery;
+  const btnPlan=$('#btnPlan');
+  if(btnPlan)btnPlan.onclick=openPlan;
+  const planClose=$('#planClose');
+  if(planClose)planClose.onclick=()=>$('#planDialog').close();
+  const planToGrocery=$('#planToGrocery');
+  if(planToGrocery)planToGrocery.onclick=addPlanToGrocery;
   $('#groceryClose').onclick=()=>$('#groceryDialog').close();
   $('#groceryAdd').onclick=()=>{
     const input=$('#groceryCustom');
@@ -2546,10 +2665,17 @@ function init(){
   }, true);
   document.addEventListener('click',e=>{
     const fb=e.target.closest&&e.target.closest('[data-fav]');
-    if(!fb)return;
+    if(fb){
+      e.preventDefault();
+      e.stopPropagation();
+      toggleFav(fb.dataset.fav);
+      return;
+    }
+    const plan=e.target.closest&&e.target.closest('[data-plan]');
+    if(!plan)return;
     e.preventDefault();
     e.stopPropagation();
-    toggleFav(fb.dataset.fav);
+    togglePlan(plan.dataset.plan, plan.dataset.planTitle||'');
   });
   $('#grid').addEventListener('click',e=>{
     const groupMore=e.target.closest('.cuisine-more');
@@ -2558,7 +2684,7 @@ function init(){
     if(save){e.preventDefault();e.stopPropagation();saveChefToMine(save.dataset.save);return}
     const groc=e.target.closest('[data-groc]');
     if(groc){e.preventDefault();e.stopPropagation();addChefToGrocery(groc.dataset.groc);return}
-    if(e.target.closest('[data-fav]'))return;
+    if(e.target.closest('[data-fav]')||e.target.closest('[data-plan]'))return;
     if(e.target.closest('a,button'))return;
     const c=e.target.closest('.card'); if(c)location.hash='#/recipe/'+encodeURIComponent(c.dataset.id);
   });
