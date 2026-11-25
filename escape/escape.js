@@ -191,6 +191,11 @@ let raf = 0;
 let shock = 0;
 let combining = false;
 let pulse = null;
+let focusPuzzle = null;
+let idleAt = 0;
+let idleBank = 0;
+let paintedHint = '';
+const HINT_IDLE_MS = 90000;
 const introAt = {};
 const motes = Array.from({ length: 18 }, () => ({
   x: Math.random() * W,
@@ -243,6 +248,8 @@ function take(id) {
 }
 function markSolved(id) {
   if (!has(id)) state.solved.push(id);
+  if (focusPuzzle === id) focusPuzzle = null;
+  wakeIdle();
 }
 
 function save() {
@@ -280,23 +287,150 @@ function apply(raw) {
   state.selected = null;
 }
 
+function roomOrder() {
+  if (state.room === 'foyer') return ['cupboard', 'hearth', 'sconces'];
+  if (state.room === 'study') return ['drawer', 'cipher', 'safe'];
+  if (state.room === 'gallery') return ['lens', 'stair'];
+  if (state.room === 'lantern') return ['final'];
+  return [];
+}
 function currentPuzzle() {
-  const order = {
-    foyer: ['cupboard', 'hearth', 'sconces'],
-    study: ['drawer', 'cipher', 'safe'],
-    gallery: ['lens', 'stair'],
-    lantern: ['final']
-  }[state.room] || [];
+  const order = roomOrder();
+  if (focusPuzzle && order.includes(focusPuzzle) && !has(focusPuzzle)) return focusPuzzle;
   return order.find(id => !has(id)) || null;
 }
-function showHint() {
+function hintCount(id) {
+  const n = state.hints[id];
+  if (typeof n !== 'number' || n < 1) return 0;
+  return Math.min(3, Math.floor(n));
+}
+function puzzleOf(id) {
+  if (id === 'desk') return has('drawer') ? 'cipher' : 'drawer';
+  if (id === 'coat' || id === 'hook' || id === 'mat' || id === 'cupboard') return 'cupboard';
+  if (id === 'book' || id === 'clock') return 'final';
+  if (id === 'hearth') return 'hearth';
+  if (id === 'study-door') return 'sconces';
+  if (id === 'shelf') return 'cipher';
+  if (id === 'portrait' || id === 'plaque' || id === 'safe' || id === 'gallery-door') return 'safe';
+  if (id === 'canvas-1' || id === 'canvas-2' || id === 'canvas-3' || id === 'canvas-4' || id === 'stair') return 'stair';
+  if (id === 'plate' || id === 'lantern') return 'final';
+  return null;
+}
+function puzzleOfItem(item) {
+  if (item === 'matches') return 'hearth';
+  if (item === 'key') return 'drawer';
+  if (item === 'lens' || item === 'ring') return 'lens';
+  if (item === 'glass') return 'stair';
+  return null;
+}
+function padFocus() {
+  if (padPuzzle === 'gallery') return 'stair';
+  return padPuzzle && HINTS[padPuzzle] ? padPuzzle : null;
+}
+function setHintReady(on) {
+  const hint = $('#hint');
+  const menu = $('#menuBtn');
+  if (!hint || !menu) return;
+  if (hint.classList.contains('is-ready') === on) return;
+  hint.classList.toggle('is-ready', on);
+  menu.classList.toggle('is-ready', on);
+  hint.textContent = on ? 'Hint ready' : 'Hint';
+  if (on) menu.setAttribute('aria-label', 'Menu, hint ready');
+  else menu.removeAttribute('aria-label');
+}
+function wakeIdle() {
+  idleBank = 0;
+  idleAt = performance.now();
+  setHintReady(false);
+}
+function parkIdle() {
+  if (!idleAt) return;
+  idleBank += performance.now() - idleAt;
+  idleAt = 0;
+}
+function resumeIdle() {
+  if ($('#play').hidden) return;
+  idleAt = performance.now();
+}
+function idleMs() {
+  if (document.hidden || $('#play').hidden || !idleAt) return idleBank;
+  return idleBank + (performance.now() - idleAt);
+}
+function syncHintCue() {
+  if ($('#play').hidden) {
+    setHintReady(false);
+    return;
+  }
+  setHintReady(!!currentPuzzle() && idleMs() >= HINT_IDLE_MS);
+}
+function replayHintCue() {
+  const hint = $('#hint');
+  if (!hint || !hint.classList.contains('is-ready') || reduced()) return;
+  hint.classList.remove('is-ready');
+  void hint.offsetWidth;
+  hint.classList.add('is-ready');
+}
+function note(puzzle) {
+  let moved = false;
+  if (typeof puzzle === 'string' && HINTS[puzzle] && !has(puzzle) && focusPuzzle !== puzzle) {
+    focusPuzzle = puzzle;
+    moved = true;
+  }
+  wakeIdle();
+  if (moved) paintHints();
+}
+function fillHintNote(text) {
+  const out = $('#hintOut');
+  if (!out) return;
+  const sig = 'note:' + text;
+  if (paintedHint === sig) return;
+  paintedHint = sig;
+  const p = document.createElement('p');
+  p.textContent = text;
+  out.replaceChildren(p);
+}
+function fillHintList(id, count) {
+  const out = $('#hintOut');
+  if (!out) return;
+  const sig = (id || '') + ':' + count;
+  if (paintedHint === sig) return;
+  paintedHint = sig;
+  if (!id || !count) {
+    out.replaceChildren();
+    return;
+  }
+  const list = document.createElement('ol');
+  list.className = 'hint-list';
+  list.setAttribute('aria-label', 'Hints, ' + count + ' of 3');
+  for (let i = 0; i < count; i++) {
+    const li = document.createElement('li');
+    li.textContent = HINTS[id][i];
+    list.appendChild(li);
+  }
+  out.replaceChildren(list);
+}
+function paintHints() {
   const id = currentPuzzle();
-  if (!id) { $('#hintOut').textContent = 'This room has given you what it can.'; return; }
-  const seen = state.hints[id] || 0;
-  const next = Math.min(3, seen + 1);
-  state.hints[id] = next;
-  $('#hintOut').textContent = HINTS[id][next - 1] + ' (' + next + ' of 3)';
-  save();
+  if (!id) {
+    if (paintedHint.indexOf('note:') === 0) return;
+    fillHintList('', 0);
+    return;
+  }
+  fillHintList(id, hintCount(id));
+}
+function showHint() {
+  wakeIdle();
+  const id = currentPuzzle();
+  if (!id) {
+    fillHintNote('This room has given you what it can.');
+    return;
+  }
+  const seen = hintCount(id);
+  if (seen < 3) {
+    state.hints[id] = seen + 1;
+    save();
+  }
+  fillHintList(id, hintCount(id));
 }
 
 function symbol(name) {
@@ -333,6 +467,7 @@ function openMenu() {
   $('#pad').hidden = true;
   $('#menu').hidden = false;
   $('#menuBtn').setAttribute('aria-expanded', 'true');
+  replayHintCue();
   const sound = $('#sound');
   if (sound) sound.focus();
 }
@@ -835,10 +970,7 @@ function paintItem(canvas, id) {
 }
 function render() {
   const changed = renderedRoom && renderedRoom !== state.room;
-  if (changed) {
-    $('#hintOut').textContent = '';
-    glitch();
-  }
+  if (changed) glitch();
   renderedRoom = state.room;
   if (!introAt[state.room]) introAt[state.room] = performance.now();
   const room = ROOMS[state.room];
@@ -899,6 +1031,7 @@ function render() {
     useBtn.textContent = combining && canCombine ? 'Pick the other' : 'Use with…';
   }
   syncTip();
+  paintHints();
   wake();
 }
 function showPlay() {
@@ -906,6 +1039,7 @@ function showPlay() {
   $('#ending').hidden = true;
   $('#play').hidden = false;
   setLive(true);
+  wakeIdle();
   render();
   armTick();
 }
@@ -913,7 +1047,10 @@ function armTick() {
   if (tick) { clearInterval(tick); tick = null; }
   if (document.hidden || $('#play').hidden) return;
   $('#timer').textContent = formatDuration(elapsed());
-  tick = setInterval(() => { $('#timer').textContent = formatDuration(elapsed()); }, 250);
+  tick = setInterval(() => {
+    $('#timer').textContent = formatDuration(elapsed());
+    syncHintCue();
+  }, 250);
 }
 function showEnding() {
   if (tick) { clearInterval(tick); tick = null; }
@@ -948,7 +1085,8 @@ function freshStart() {
   state.selected = null;
   seq = [];
   renderedRoom = '';
-  $('#hintOut').textContent = '';
+  focusPuzzle = null;
+  paintedHint = '';
   clearEndingCopy();
   say('The mat takes your weight.');
   save();
@@ -973,6 +1111,11 @@ function resetAll() {
   state.paintings = {};
   state.selected = null;
   seq = [];
+  focusPuzzle = null;
+  paintedHint = '';
+  idleAt = 0;
+  idleBank = 0;
+  setHintReady(false);
   $('#play').hidden = true;
   $('#ending').hidden = true;
   closeSheets();
@@ -980,7 +1123,8 @@ function resetAll() {
   $('#begin').hidden = false;
   $('#resume').hidden = true;
   $('#wipe').hidden = true;
-  $('#hintOut').textContent = '';
+  const hintOut = $('#hintOut');
+  if (hintOut) hintOut.replaceChildren();
   renderedRoom = '';
   clearEndingCopy();
   setLive(false);
@@ -1004,6 +1148,7 @@ function renderPad() {
   $('#padDigits').textContent = shown;
 }
 async function tryPad() {
+  note(padFocus());
   const width = Number($('#pad').dataset.width || 0);
   if (padValue.length !== width) { say('The lock wants every digit.'); return; }
   const digest = await sha256(padValue);
@@ -1046,6 +1191,7 @@ async function tryPad() {
 }
 
 function examine(id) {
+  note(puzzleOf(id));
   if (id === 'coat' || id === 'hook' || id === 'mat') {
     const text = id === 'coat'
       ? 'Wool, still damp. A collar tag reads Row 2.'
@@ -1149,6 +1295,7 @@ function cipherSheet() {
 }
 async function onCipher(e) {
   e.preventDefault();
+  note('cipher');
   const typed = norm($('#cipherInput').value);
   if (await sha256(typed) !== HASH.cipher) {
     say('The letters will not settle.');
@@ -1182,6 +1329,7 @@ function revealPainting(id) {
 function combine(a, b) {
   combining = false;
   const pair = [a, b].sort().join('|');
+  note(pair === 'lens|ring' ? 'lens' : (puzzleOfItem(a) || puzzleOfItem(b)));
   if (pair === 'lens|ring') {
     take('lens');
     take('ring');
@@ -1196,6 +1344,7 @@ function combine(a, b) {
   say('Those do not fit.');
 }
 function useItem(item, hot) {
+  note(puzzleOf(hot) || puzzleOfItem(item));
   if (item === 'matches' && hot === 'hearth') {
     if (has('hearth')) { openSheet(sootSheet()); return; }
     take('matches');
@@ -1227,6 +1376,7 @@ function useItem(item, hot) {
 }
 async function tapSconce(name) {
   if (state.room !== 'foyer') return;
+  note('sconces');
   if (has('sconces')) { say('The sconces stay lit.'); return; }
   if (!has('hearth')) { say('The sconces stay cold. The hearth has not spoken.'); return; }
   seq.push(name);
@@ -1334,6 +1484,7 @@ function onClick(e) {
       combine(state.selected, id);
       return;
     }
+    note(puzzleOfItem(id));
     if (state.selected === id) {
       combining = false;
       state.selected = null;
@@ -1355,6 +1506,7 @@ function onClick(e) {
 function onPad(e) {
   const key = e.target.closest('[data-key]');
   if (!key) return;
+  note(padFocus());
   const width = Number($('#pad').dataset.width || 0);
   if (key.dataset.key === 'back') padValue = padValue.slice(0, -1);
   else if (padValue.length < width) padValue += key.dataset.key;
@@ -1430,11 +1582,13 @@ function boot() {
   });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
+      parkIdle();
       if (tick) { clearInterval(tick); tick = null; }
       if (raf) { cancelAnimationFrame(raf); raf = 0; }
       if (audio && audio.ctx && audio.ctx.suspend) audio.ctx.suspend();
       return;
     }
+    resumeIdle();
     if (!$('#play').hidden) armTick();
     if (audio && audio.ctx && audio.ctx.resume) audio.ctx.resume();
     wake();

@@ -76,6 +76,13 @@ body.latch-page [hidden]{display:none !important}
   gap:4px;
   overflow:hidden;
 }
+#play{
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-color:#6b5344 #120e0c;
+}
 html[data-theme] body.latch-page h1{
   font-family:"VT323", ui-monospace, monospace !important;
   font-weight:400 !important;
@@ -233,6 +240,47 @@ html[data-theme] body.latch-page #status{
   line-height:1.35;
 }
 .hint-out:empty{display:none}
+html[data-theme] body.latch-page .hint-list{
+  margin:0;
+  padding:0 0 0 1.35em;
+  list-style:decimal;
+  color:#f0c36a;
+}
+html[data-theme] body.latch-page .hint-list li{
+  display:list-item;
+  margin:0 0 2px;
+  padding:0;
+  color:#f0c36a;
+  font-size:16px;
+  line-height:1.3;
+}
+html[data-theme] body.latch-page .hint-list li:last-child{margin-bottom:0}
+html[data-theme] body.latch-page .hint-list li::marker{
+  color:#e0b060;
+}
+html[data-theme] body.latch-page button#hint.is-ready,
+html[data-theme] body.latch-page button#menuBtn.is-ready{
+  color:#f0c36a !important;
+  border-color:#f0c36a !important;
+}
+html[data-theme] body.latch-page button#hint.is-ready{
+  position:relative;
+}
+@media (prefers-reduced-motion: no-preference){
+  html[data-theme] body.latch-page button#hint.is-ready::after{
+    content:"";
+    position:absolute;
+    inset:2px;
+    border:1px solid #f0c36a;
+    opacity:0;
+    pointer-events:none;
+    animation:hint-ready 1.6s ease-in-out 2;
+  }
+}
+@keyframes hint-ready{
+  0%, 100%{opacity:0}
+  50%{opacity:1}
+}
 .pocket-tip{
   display:flex;
   align-items:center;
@@ -488,6 +536,11 @@ body.latch-page :focus-visible{
   outline-offset:2px;
 }
 
+@media (max-width: 360px){
+  #play{gap:2px}
+  .crt{min-height:64px}
+  html[data-theme] body.latch-page .hint-list li{margin-bottom:0}
+}
 @media (prefers-reduced-motion: reduce){
   .latch-flicker,
   .latch-glitch{display:none !important}
