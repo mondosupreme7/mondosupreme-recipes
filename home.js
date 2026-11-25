@@ -410,6 +410,29 @@
     var foot = document.querySelector('footer.site-footer .wrap');
     if (visits && foot && foot.lastElementChild !== visits) foot.appendChild(visits);
   }
+  var RECIPE_FALLBACK = [
+    { id: 'sample-1', title: 'Supreme Tomato Basil Pasta' },
+    { id: 'sample-2', title: 'Fluffy Buttermilk Pancakes' },
+    { id: 'sample-3', title: 'Chickpea Coconut Curry' }
+  ];
+  function loadRecipe() {
+    var list = RECIPE_FALLBACK;
+    try {
+      var saved = JSON.parse(localStorage.getItem('mondosupreme.recipes.v1'));
+      if (Array.isArray(saved)) {
+        var usable = saved.filter(function (row) { return row && row.id && String(row.title || '').trim(); });
+        if (usable.length) list = usable;
+      }
+    } catch (e) {}
+    var index = Math.floor(Date.now() / 86400000) % list.length;
+    var row = list[index < 0 ? index + list.length : index];
+    var title = String(row.title || '').replace(/^Sample:\s*/, '');
+    text('homeRecipeLine', title);
+    var link = $('homeRecipe');
+    if (!link) return;
+    link.href = '/recipes/#/recipe/' + encodeURIComponent(row.id);
+    link.setAttribute('aria-label', 'Recipe of the day. ' + title);
+  }
   document.addEventListener('DOMContentLoaded', parkCounter);
   fillIcons();
   greet();
@@ -419,4 +442,5 @@
   loadStock();
   loadTides();
   loadTropics();
+  loadRecipe();
 })();

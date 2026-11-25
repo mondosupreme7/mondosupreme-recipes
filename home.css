@@ -4,7 +4,17 @@ body.home-page main.wrap{
   padding-top:8px;
   padding-bottom:16px
 }
-.home-brief{margin:0 0 12px}
+.home-brief{margin:0 0 8px}
+.today-card{
+  margin:0 0 4px;
+  border:1px solid var(--line,#334155);
+  border-radius:14px;
+  background:var(--surface,#fff);
+  overflow:hidden
+}
+.today-card .home-brief-row{padding:0 10px;border-top:0}
+.today-card .home-brief-row + .home-brief-row{border-top:1px solid var(--line,#334155)}
+.today-card .home-brief-v{overflow:visible;white-space:normal;text-overflow:clip}
 .home-brief h2{
   margin:0 0 2px;
   font:600 1.05rem/1.2 var(--font-ui);
@@ -228,7 +238,8 @@ html[data-theme="harbor"] .home-row{
 }
 html[data-theme="retro"] .home-chip,
 html[data-theme="retro"] .home-row,
-html[data-theme="retro"] .home-quote{
+html[data-theme="retro"] .home-quote,
+html[data-theme="retro"] .today-card{
   border-radius:0;
   background:#fff;
   color:#111827;
@@ -237,6 +248,9 @@ html[data-theme="retro"] .home-quote{
   border-bottom-color:#404040;
   box-shadow:none
 }
+html[data-theme="retro"] .today-card .home-brief-row,
+html[data-theme="retro"] .today-card .home-brief-k,
+html[data-theme="retro"] .today-card .home-brief-v{color:#111827 !important}
 html[data-theme="retro"] .home-quote{background:#ffffcc}
 html[data-theme="retro"] .home-quote-text{font-family:Tahoma,Verdana,sans-serif;color:#111827}
 html[data-theme="retro"] .home-app .app-pixel svg,
@@ -256,9 +270,11 @@ body.home-page .gb-box{margin-top:4px}
 }
 @media (max-height:720px) and (max-width:900px){
   body.home-page main.wrap{padding-top:4px;padding-bottom:8px}
-  .home-apps{gap:8px 6px;margin-bottom:10px}
-  .home-app .app-tile{width:46px;height:46px}
-  .home-chip,.home-row{min-height:52px}
+  .home-apps{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px 4px;margin-bottom:6px}
+  .home-app{gap:2px}
+  .home-app .app-tile{width:40px;height:40px}
+  .home-label{font-size:11px;letter-spacing:-.02em}
+  .home-chip,.home-row{min-height:44px;padding:4px 8px}
   .home-now,.home-chips,.home-stock{margin-bottom:8px}
   html[data-page-scale="125"] body.home-page main.wrap{padding-top:2px}
   html[data-page-scale="125"] .home-apps{gap:4px 4px;margin-bottom:4px}
