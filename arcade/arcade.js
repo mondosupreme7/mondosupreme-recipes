@@ -129,9 +129,15 @@ function steer(dt, yMin, yMax) {
   s.x = clamp(s.x, 22, W - 22);
   s.y = clamp(s.y, yMin, yMax);
 }
-function pop(text, x, y) { run.pops.push({ text, x, y, life: 0.8 }); }
+function pop(text, x, y, opts) {
+  run.pops.push({ text: text, x: x, y: y, life: 0.8, still: !!(opts && opts.still) });
+}
 function stepPops(dt) {
-  run.pops.forEach(p => { p.life -= dt; p.y -= 18 * dt; });
+  const calm = !coilMotion();
+  run.pops.forEach(p => {
+    p.life -= dt;
+    if (!(p.still && calm)) p.y -= 18 * dt;
+  });
   run.pops = run.pops.filter(p => p.life > 0);
 }
 function hurt() {
@@ -467,6 +473,21 @@ for (let starI = 0; starI < 26; starI++) {
     v: 4 + Math.random() * 10
   });
 }
+/* Distance from the wand divided by playfield height. First row that fits pays. */
+const DIVER_BANDS = [
+  { until: 0.22, score: 400 },
+  { until: 0.50, score: 200 },
+  { until: Infinity, score: 100 }
+];
+function diverScore(diver) {
+  const wand = run.player;
+  const dist = Math.hypot(diver.x - wand.x, diver.y - wand.y) / H;
+  let i;
+  for (i = 0; i < DIVER_BANDS.length; i++) {
+    if (dist <= DIVER_BANDS[i].until) return DIVER_BANDS[i].score;
+  }
+  return DIVER_BANDS[DIVER_BANDS.length - 1].score;
+}
 function coilMotion() {
   const kit = juice();
   if (kit && kit.reduced) return !kit.reduced();
@@ -783,8 +804,9 @@ function stepShots(dt) {
     }
     if (diver) {
       diver.alive = false;
-      run.score += 50;
-      pop('+50', diver.x, diver.y);
+      const award = diverScore(diver);
+      run.score += award;
+      pop('+' + award, diver.x, diver.y, { still: true });
       beep(740, 0.06);
       burstAt(diver.x, diver.y, '#67e8f9', 8);
       return;
@@ -1254,9 +1276,10 @@ function finish() {
 }
 
 function drawPops() {
+  const calm = !coilMotion();
   ctx.textAlign = 'center';
   run.pops.forEach(p => {
-    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.globalAlpha = p.still && calm ? 1 : Math.max(0, p.life);
     ctx.fillStyle = '#ffe14a';
     ctx.font = '700 14px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
     ctx.fillText(p.text, p.x, p.y);
