@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T14:59:54Z",
+ "updated": "2026-11-25T23:39:13Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -53,7 +53,7 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 11
+   "count": 10
   },
   {
    "name": "Canaveral Port Authority",
@@ -65,7 +65,7 @@
    "name": "Launch Library 2",
    "url": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=20",
    "ok": true,
-   "count": 1
+   "count": 2
   }
  ],
  "events": [
@@ -151,20 +151,6 @@
    "description": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9795",
    "source": "City of Cocoa Beach",
    "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "af96261bdabe6b8d",
-   "title": "Cocoa Beach Cookie Crawl & Tree Lighting",
-   "start": "2026-11-25T22:00:00Z",
-   "end": "2026-11-26T00:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "DOWNTOWN COCOA BEACH, 20 N. Brevard Avenue, Cocoa Beach, FL, 32931",
-   "category": "Outdoors",
-   "url": "https://www.visitspacecoast.com/event/cookie-crawl-and-christmas-tree-lighting/",
-   "description": "Start your \u201cCookie Crawl\u201d at Juice-n-Java Cafe you will receive a bag and passport for participating businesses. Then gather around the Christmas tree at Coconuts on the Beach by &;15pm for Christmas carols and the lighting of our Christmas tree.",
-   "source": "Visit Space Coast",
-   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   },
   {
@@ -768,6 +754,20 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
+  },
+  {
+   "id": "c8c7783e162c3ec8",
+   "title": "Falcon 9 Block 5 | CHORUS",
+   "start": "2026-12-04T12:55:00Z",
+   "end": "2026-12-04T13:24:00Z",
+   "town": "Port Canaveral",
+   "venue": "Space Launch Complex 40",
+   "category": "Launches",
+   "url": "https://ll.thespacedevs.com/2.2.0/launch/8bf5f61e-a7e1-41e6-aede-7b87e4beebab/",
+   "description": "Go for Launch \u00b7 SpaceX \u00b7 Falcon 9 \u00b7 Space Launch Complex 40",
+   "source": "Launch Library 2",
+   "sourceUrl": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/",
+   "kind": "launch"
   },
   {
    "id": "e70c28e34c97dce2",
