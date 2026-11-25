@@ -3,9 +3,9 @@
 const KEY = 'mondosupreme.launches.v1';
 const API = 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=12';
 const TIPS = {
-  'SLC-40': 'Jetty Park or Max Brewer Bridge.',
-  'LC-39A': 'Jetty Park, Playalinda, or Max Brewer Bridge.',
-  'SLC-41': 'Jetty Park.'
+  'SLC-40': 'Watch from Jetty Park or Max Brewer Bridge.',
+  'LC-39A': 'Watch from Jetty Park, Playalinda, or Max Brewer Bridge.',
+  'SLC-41': 'Watch from Jetty Park.'
 };
 const PADS = {
   'LC-39A': { bearing: 48, look: 'northeast', boom: 'about 3 to 5 minutes after liftoff on an eastbound path', x: 250, y: 78 },
@@ -110,8 +110,8 @@ function paintGuide() {
   });
 }
 function viewTip(row) {
-  if (/starship/i.test((row.name || '') + ' ' + (row.rocket || ''))) return 'A public spot that faces the pad.';
-  return TIPS[row.pad] || 'A public spot that faces the pad.';
+  if (/starship/i.test((row.name || '') + ' ' + (row.rocket || ''))) return 'Watch from a public spot facing the pad.';
+  return TIPS[row.pad] || 'Watch from a public spot facing the pad.';
 }
 function icsEscape(value) {
   return String(value ?? '').replace(/\\/g, '\\\\').replace(/\r\n|\n|\r/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
