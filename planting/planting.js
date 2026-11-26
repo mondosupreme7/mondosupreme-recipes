@@ -149,7 +149,7 @@
     if (ctrl) ctrl.abort();
     else failZone();
   }, 4000);
-  fetch('plants.json?v=3', ctrl ? { signal: ctrl.signal } : {}).then(function (res) {
+  fetch('plants.json?v=4', ctrl ? { signal: ctrl.signal } : {}).then(function (res) {
     if (!res.ok) throw new Error('plants');
     return res.json();
   }).then(function (doc) {
