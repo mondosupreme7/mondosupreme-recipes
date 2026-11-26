@@ -222,4 +222,17 @@ html[data-theme="light"] #cookMode,html[data-theme="warm"] #cookMode{background:
 .cook-wake{margin:8px 0 0;font-size:13px;color:var(--ink-muted,#94a3b8)}
 #cookMode .btn:disabled{opacity:.45}
 @media(max-width:720px){.cols{grid-template-columns:1fr}.row{flex-direction:column}.detail-inner{padding:20px}.detail-hero{height:220px}}
-@media print{.site-header,.site-footer,.dbar,.no-print,#listView,#toast,.sync-banner{display:none!important}body{background:#fff}.detail{box-shadow:none;margin:0}.detail-hero{height:220px;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cols ol li::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}.cols{grid-template-columns:1fr 1.6fr}input[type=checkbox]{display:none}}
+@media print{
+  .site-header,.site-footer,.dbar,.scale-bar,.no-print,#listView,#toast,.sync-banner,.toolbar,#layoutSwitch,.recipe-actions,.fav-btn{display:none !important}
+  .detail .btn,.detail button,.detail a.btn{display:none !important}
+  input[type=checkbox]{display:none !important}
+  html[data-theme] body .detail,html[data-theme] body .detail :is(h1,h2,h3,p,li,span,label,a,b,small,div){
+    background:#fff !important;color:#111 !important;box-shadow:none !important
+  }
+  .detail{overflow:visible !important;position:static !important;margin:0 !important;border:0 !important}
+  main.wrap{padding:0 !important;overflow:visible !important;position:static !important}
+  .detail-hero{display:none !important}
+  .cols{display:block !important}
+  .cols li{break-inside:avoid;page-break-inside:avoid}
+  .cols ol li::before{background:#111 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
