@@ -50,7 +50,7 @@ function fresh() {
     eggStarted: Date.now(), born: 0, lastSeen: Date.now(), ageMs: 0,
     hunger: 80, happy: 80, clean: 100, weight: 5, care: 0, snacks: 0, meals: 0, games: 0,
     poops: 0, sick: false, sleepy: false, light: true, vacation: false,
-    warned: false, gone: false, speciesLocked: '', room: 'bedroom', hat: ''
+    warned: false, gone: false, speciesLocked: '', room: 'bedroom', hat: '', keepsake: null
   };
 }
 function scaleStat(n) {
@@ -76,10 +76,16 @@ function load() {
   else base.clean = clamp(base.clean | 0, 0, 100);
   base.weight = clamp(base.weight | 0, 1, 99);
   base.poops = clamp(base.poops | 0, 0, 4);
+  base.keepsake = normalizeKeepsake(base.keepsake);
   return base;
 }
 function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(pet)); } catch { /* full */ }
+  const data = {};
+  Object.keys(pet).forEach(k => {
+    if (k === 'keepsake' && !pet.keepsake) return;
+    data[k] = pet[k];
+  });
+  try { localStorage.setItem(KEY, JSON.stringify(data)); } catch { /* full */ }
 }
 function cleanName(v) {
   return String(v || '').replace(/[^A-Za-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 12);
@@ -191,6 +197,13 @@ function catchUp() {
     if (now - pet.eggStarted >= HATCH_MS) hatch();
     return;
   }
+  const before = {
+    hunger: pet.hunger,
+    happy: pet.happy,
+    clean: pet.clean,
+    poops: pet.poops | 0,
+    sick: !!pet.sick
+  };
   pet.ageMs += elapsed;
   const steps = Math.floor(elapsed / (10 * 60 * 1000));
   const wasEmpty = pet.hunger < 8 && pet.happy < 8;
@@ -201,10 +214,138 @@ function catchUp() {
     pet.poops = Math.min(4, pet.poops + Math.min(2, Math.floor(elapsed / (20 * 60 * 1000))));
     if (pet.poops >= 3 || pet.clean < 20) pet.sick = true;
     pet.warned = true;
-    say('MISSED YOU');
   }
   if (wasEmpty && elapsed > 45 * 60 * 1000) pet.gone = true;
   evolve();
+  if (steps > 0 && !pet.gone) openAwayCard(before);
+}
+const GIFT = {
+  pebble: { name: 'Sandy pebble', quality: 'Simple' },
+  shell: { name: 'Beach shell', quality: 'Nice' },
+  scallop: { name: 'Striped scallop', quality: 'Fine' },
+  conch: { name: 'Spiral conch', quality: 'Rare' }
+};
+const AWAY_LABEL = { meal: 'Feed a meal', clean: 'Clean up', meds: 'Give medicine' };
+let awayChoice = 'meal';
+function normalizeKeepsake(v) {
+  if (!v || typeof v !== 'object') return null;
+  if (!GIFT[v.id]) return null;
+  const at = Number(v.at);
+  return { id: v.id, at: isFinite(at) ? at : 0 };
+}
+function giftFor(care) {
+  const score = care | 0;
+  if (score >= 12) return Object.assign({ id: 'conch' }, GIFT.conch);
+  if (score >= 6) return Object.assign({ id: 'scallop' }, GIFT.scallop);
+  if (score >= 2) return Object.assign({ id: 'shell' }, GIFT.shell);
+  return Object.assign({ id: 'pebble' }, GIFT.pebble);
+}
+function awayLines(before) {
+  const lines = [];
+  if (pet.hunger < before.hunger) lines.push('Got hungry');
+  if (pet.happy < before.happy) lines.push('Got lonely');
+  const messes = (pet.poops | 0) - (before.poops | 0);
+  if (messes === 1) lines.push('Made a mess');
+  else if (messes > 1) lines.push('Made ' + messes + ' messes');
+  if (pet.clean < before.clean) lines.push('Got grimy');
+  if (!before.sick && pet.sick) lines.push('Caught a cold');
+  if (!lines.length) lines.push('Held steady');
+  return lines;
+}
+function urgentAct() {
+  let feed = 100 - clamp(pet.hunger | 0, 0, 100);
+  if ((pet.hunger | 0) < 25) feed += 30;
+  const mess = (100 - clamp(pet.clean | 0, 0, 100)) + (pet.poops | 0) * 18;
+  const sick = pet.sick ? 110 : 0;
+  let best = 'meal';
+  let score = feed;
+  if (mess > score) { best = 'clean'; score = mess; }
+  if (sick > score) best = 'meds';
+  return best;
+}
+function svgEl(name, attrs) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', name);
+  Object.keys(attrs).forEach(k => el.setAttribute(k, attrs[k]));
+  return el;
+}
+function drawGift(host, id) {
+  if (!host) return;
+  const svg = svgEl('svg', { viewBox: '0 0 72 72', focusable: 'false' });
+  svg.appendChild(svgEl('circle', { cx: '36', cy: '36', r: '33', fill: '#f6edd8' }));
+  if (id === 'conch') {
+    svg.appendChild(svgEl('path', { d: 'M16 48c0-8 8-18 18-20 12-2 22 4 24 12 1 6-2 10-8 12 6 1 10 6 8 12-4 10-28 12-40 2-4-4-6-10-2-18z', fill: '#fb7185', stroke: '#1c1917', 'stroke-width': '2', 'stroke-linejoin': 'round' }));
+    svg.appendChild(svgEl('path', { d: 'M34 30c8-8 20-6 22 2-6 2-12 2-16 6-2-4-4-6-6-8z', fill: '#ffe4e6', stroke: '#9f1239', 'stroke-width': '1.5', 'stroke-linejoin': 'round' }));
+    svg.appendChild(svgEl('circle', { cx: '50', cy: '24', r: '3.2', fill: '#fff', stroke: '#1c1917', 'stroke-width': '1.5' }));
+  } else if (id === 'scallop') {
+    svg.appendChild(svgEl('path', { d: 'M36 56 L14 42 C10 30 14 16 36 12 C58 16 62 30 58 42 Z', fill: '#fecdd3', stroke: '#1c1917', 'stroke-width': '2', 'stroke-linejoin': 'round' }));
+    ['M36 54 L36 16', 'M36 54 L24 18', 'M36 54 L48 18', 'M36 54 L16 28', 'M36 54 L56 28'].forEach(d => {
+      svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: '#9f1239', 'stroke-width': '1.5', 'stroke-linecap': 'round' }));
+    });
+    svg.appendChild(svgEl('circle', { cx: '36', cy: '54', r: '3', fill: '#1c1917' }));
+  } else if (id === 'shell') {
+    svg.appendChild(svgEl('path', { d: 'M36 56 L18 44 C14 32 18 20 36 16 C54 20 58 32 54 44 Z', fill: '#fdba74', stroke: '#1c1917', 'stroke-width': '2', 'stroke-linejoin': 'round' }));
+    ['M36 54 L36 20', 'M36 54 L26 24', 'M36 54 L46 24'].forEach(d => {
+      svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: '#9a3412', 'stroke-width': '1.6', 'stroke-linecap': 'round' }));
+    });
+    svg.appendChild(svgEl('circle', { cx: '36', cy: '54', r: '3', fill: '#1c1917' }));
+  } else {
+    svg.appendChild(svgEl('ellipse', { cx: '36', cy: '40', rx: '20', ry: '13', fill: '#d6d3d1', stroke: '#1c1917', 'stroke-width': '2' }));
+    svg.appendChild(svgEl('ellipse', { cx: '28', cy: '36', rx: '7', ry: '3.5', fill: '#f5f5f4' }));
+    svg.appendChild(svgEl('ellipse', { cx: '44', cy: '44', rx: '3.5', ry: '2', fill: '#a8a29e' }));
+  }
+  host.replaceChildren(svg);
+}
+function runAwayAct() {
+  if (awayChoice === 'clean') doBath();
+  else if (awayChoice === 'meds') doMeds();
+  else doFeed('meal');
+}
+function openAwayCard(before) {
+  if (!pet || pet.gone || pet.vacation || pet.stage === 'egg') return;
+  const lines = awayLines(before);
+  const gift = giftFor(pet.care);
+  pet.keepsake = { id: gift.id, at: Date.now() };
+  awayChoice = urgentAct();
+  const dialog = $('#awayDialog');
+  const list = $('#awayChanges');
+  if (!dialog || !list) return;
+  list.replaceChildren();
+  lines.forEach(text => {
+    const li = document.createElement('li');
+    li.textContent = text;
+    list.appendChild(li);
+  });
+  const figure = $('#awayGift');
+  if (figure) figure.dataset.gift = gift.id;
+  const name = $('#awayGiftName');
+  const quality = $('#awayGiftQuality');
+  if (name) name.textContent = gift.name;
+  if (quality) quality.textContent = gift.quality;
+  drawGift($('#awayArt'), gift.id);
+  const act = $('#awayAct');
+  if (act) act.textContent = AWAY_LABEL[awayChoice] || AWAY_LABEL.meal;
+  dialog.returnValue = '';
+  save();
+  if (!dialog.open && typeof dialog.showModal === 'function') dialog.showModal();
+}
+function bindAwayDialog() {
+  const dialog = $('#awayDialog');
+  if (!dialog || dialog.dataset.bound) return;
+  dialog.dataset.bound = '1';
+  dialog.addEventListener('close', () => {
+    const choice = dialog.returnValue;
+    dialog.returnValue = '';
+    if (choice === 'act') runAwayAct();
+  });
+  if (!('closedBy' in HTMLDialogElement.prototype)) {
+    let pressedOutside = false;
+    const outside = e => {
+      const r = dialog.getBoundingClientRect();
+      return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+    };
+    dialog.addEventListener('pointerdown', e => { pressedOutside = outside(e); });
+    dialog.addEventListener('pointerup', e => { if (pressedOutside && outside(e)) dialog.close(); });
+  }
 }
 function nightNow() {
   const h = new Date().getHours();
@@ -1420,6 +1561,7 @@ function init() {
   ctx = canvas.getContext('2d', { alpha: false });
   reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   pet = load();
+  bindAwayDialog();
   catchUp();
   save();
   bootWorld();

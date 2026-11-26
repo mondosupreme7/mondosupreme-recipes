@@ -49,6 +49,69 @@
 @keyframes wobble{50%{transform:rotate(-2deg)}}
 @media (min-width:700px){.dock{grid-template-columns:1fr 1fr 1fr}}
 @media (prefers-reduced-motion: reduce){.egg.wobble{animation:none}}
+html:not([data-theme="retro"]) .away-card{
+  width:min(22rem,calc(100vw - 32px));
+  max-width:calc(100vw - 32px);
+  max-height:calc(100vh - 24px);
+  margin:auto;
+}
+.away-card{
+  padding:0;
+  overflow:auto;
+  border:1px solid var(--line-strong,#64748b);
+  border-radius:16px;
+  background:var(--surface,#fff);
+  color:var(--ink,#0f172a);
+}
+.away-card:modal{overscroll-behavior:contain}
+.away-card::backdrop{overflow:hidden;overscroll-behavior:contain;background:var(--overlay,rgb(15 23 42 / .45))}
+.away-card form{display:flex;flex-direction:column;gap:12px;margin:0;padding:16px 16px 18px}
+.away-card h1{margin:0;font:600 1.35rem/1.25 Newsreader,Georgia,"Times New Roman",serif;letter-spacing:-.02em;color:var(--ink,#0f172a)}
+.away-card ul{margin:0;padding:0 0 0 1.2rem}
+.away-card li{margin:0;padding:0;font:500 1rem/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a)}
+.away-card li+li{margin-top:4px}
+.away-gift{display:flex;align-items:center;gap:12px;margin:0;padding:10px;border-radius:12px;background:var(--surface-2,#f1f5f9);border:1px solid var(--line,#e2e8f0)}
+.away-art{width:72px;height:72px;flex:0 0 72px}
+.away-art svg{display:block;width:72px;height:72px}
+.away-gift figcaption{display:flex;flex-direction:column;gap:2px;min-width:0}
+.away-kicker,.away-quality{font:500 .95rem/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink-muted,#334155)}
+.away-gift strong{font:600 1rem/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#0f172a);overflow-wrap:anywhere}
+.away-actions{display:flex;flex-direction:column;gap:8px}
+.away-actions button{min-height:48px;min-width:44px;width:100%;padding:12px 16px;font:600 1rem/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;border-radius:12px;cursor:pointer;touch-action:manipulation}
+.away-card button:focus-visible{outline:3px solid var(--focus,#2563eb);outline-offset:3px}
+html[data-theme="dark"] .away-card{
+  background:#151c2c !important;
+  color:#f8fafc !important;
+  border-color:#64748b !important;
+}
+html[data-theme="dark"] .away-card h1,
+html[data-theme="dark"] .away-card li,
+html[data-theme="dark"] .away-gift strong{color:#f8fafc !important}
+html[data-theme="dark"] .away-kicker,
+html[data-theme="dark"] .away-quality{color:#cbd5e1 !important}
+html[data-theme="dark"] .away-gift{background:#1e293b !important;border-color:#64748b !important}
+html[data-theme="dark"] .away-card .away-actions .btn.primary{
+  background:#e2e8f0 !important;
+  color:#0f172a !important;
+  border-color:#e2e8f0 !important;
+}
+html[data-theme="dark"] .away-card .away-dismiss{
+  background:#1e293b !important;
+  color:#f8fafc !important;
+  border:2px solid #94a3b8 !important;
+}
+@media (max-width:600px){
+  html:not([data-theme="retro"]) .away-card{
+    width:min(22rem,calc(100vw - 24px));
+    max-width:calc(100vw - 24px);
+    max-height:calc(100vh - 16px);
+    margin:auto;
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  .away-card,.away-card::backdrop{animation:none !important;transition:none !important}
+  .away-card button:active{transform:none !important}
+}
 @media (max-width:768px){
   .egg{border-radius:18px}
   .meter{grid-template-columns:54px 1fr 42px}
