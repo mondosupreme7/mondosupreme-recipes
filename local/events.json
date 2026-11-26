@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T23:39:13Z",
+ "updated": "2026-11-26T05:29:23Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -11,19 +11,19 @@
    "name": "City of Cocoa",
    "url": "https://www.cocoafl.gov/common/modules/iCalendar/iCalendar.aspx?catID=15&feed=calendar",
    "ok": true,
-   "count": 2
+   "count": 3
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
    "ok": true,
-   "count": 0
+   "count": 1
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
    "ok": true,
-   "count": 4
+   "count": 5
   },
   {
    "name": "City of Titusville",
@@ -41,7 +41,7 @@
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
    "ok": true,
-   "count": 1
+   "count": 2
   },
   {
    "name": "City of Rockledge",
@@ -53,13 +53,13 @@
    "name": "Visit Space Coast",
    "url": "https://www.visitspacecoast.com/?eventDisplay=list&ical=1",
    "ok": true,
-   "count": 10
+   "count": 13
   },
   {
    "name": "Canaveral Port Authority",
    "url": "https://www.portcanaveral.com/docs/default-source/cruise/2026-master-cruise-schedule.pdf",
    "ok": true,
-   "count": 32
+   "count": 34
   },
   {
    "name": "Launch Library 2",
@@ -95,62 +95,6 @@
    "description": "Select Nights: November 20, 2026 \u2013 January 2, 2027 Event Hours: 6:00 PM \u2013 9:00 PM | Final Admission: 8:00 PM November 20 \u2013 December 12: Friday and Saturday evenings December 18 \u2013 January 2: Nightly, excluding Christmas Eve and Christmas Day Make new family memories under the glow of sparkling lights during this all-new nighttime experience. Immerse yourself in the magic of the holidays as visions ",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
-  },
-  {
-   "id": "f43018d7e12039e0",
-   "title": "Norwegian Bliss in port",
-   "start": "2026-11-24T11:00:00Z",
-   "end": "2026-11-25T02:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT3",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "c27b76992e3d7da2",
-   "title": "Odyssey of the Seas in port",
-   "start": "2026-11-24T18:00:00Z",
-   "end": "2026-11-25T01:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT1",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "e7488f5b605acaaa",
-   "title": "Disney Fantasy in port",
-   "start": "2026-11-25T11:00:00Z",
-   "end": "2026-11-25T21:00:00Z",
-   "town": "Port Canaveral",
-   "venue": "Cruise Terminal CT8",
-   "category": "Cruise",
-   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
-   "source": "Canaveral Port Authority",
-   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
-   "kind": "cruise"
-  },
-  {
-   "id": "53c8d41f7d61f347",
-   "title": "Cookie Crawl & Tree Lighting",
-   "start": "2026-11-25T22:00:00Z",
-   "end": "2026-11-26T00:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "<p>Downtown Cocoa Beach.</p> - Cocoa Beach FL 32932",
-   "category": "Outdoors",
-   "url": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9795",
-   "description": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9795",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -809,6 +753,174 @@
    "description": "Get in the holiday spirit with Hot Cocoa Holidays in Cocoa Village, where the streets are adorned with beautiful icicles and there\u2019s something for everyone to enjoy. From live entertainment to giving back, and unique shopping experiences, the holiday season is truly magical here. https://www.cocoafl.gov/calendar.aspx?EID=6299",
    "source": "City of Cocoa",
    "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "7560699573bfa3fd",
+   "title": "Disney Treasure in port",
+   "start": "2026-12-05T11:00:00Z",
+   "end": "2026-12-05T22:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT8",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "543a50959568be2f",
+   "title": "Harmony of the Seas in port",
+   "start": "2026-12-05T11:00:00Z",
+   "end": "2026-12-05T21:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT1",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "e5d861b5f46930d4",
+   "title": "Carnival Mardi Gras in port",
+   "start": "2026-12-05T11:00:00Z",
+   "end": "2026-12-05T21:00:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT3",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "1f09709bcbe86e34",
+   "title": "Carnival Freedom in port",
+   "start": "2026-12-05T12:00:00Z",
+   "end": "2026-12-05T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT6",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "c2b4e9c784a8143a",
+   "title": "Celebrity Apex in port",
+   "start": "2026-12-05T12:00:00Z",
+   "end": "2026-12-05T20:30:00Z",
+   "town": "Port Canaveral",
+   "venue": "Cruise Terminal CT5",
+   "category": "Cruise",
+   "url": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "description": "Arrival and departure from the Canaveral Port Authority master cruise schedule.",
+   "source": "Canaveral Port Authority",
+   "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
+   "kind": "cruise"
+  },
+  {
+   "id": "0255be42b2f62ad2",
+   "title": "Historic Cocoa Village Mainstreet Holiday Art and Craft Bazaar",
+   "start": "2026-12-05T15:00:00Z",
+   "end": "2026-12-06T21:00:00Z",
+   "town": "Cocoa",
+   "venue": "<p>Cocoa Riverfront Park</p> - Downtown Cocoa Village Cocoa FL 32922",
+   "category": "Food & Markets",
+   "url": "https://www.cocoafl.gov/calendar.aspx?EID=6360",
+   "description": "Art & Craft Fair on the streets of Cocoa Village, Over 200 Exhibitors Two days of fabulous Arts and Crafts in the streets of Historic Cocoa Village! Street Entertainment Kid & Pet Friendly Fantastic Food Free Admission! Free Parking! Fun for the Whole Family! https://www.cocoafl.gov/calendar.aspx?EID=6360",
+   "source": "City of Cocoa",
+   "sourceUrl": "https://www.cocoafl.gov/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "8763f860c6136bad",
+   "title": "WinterFest - Cocoa Beach Main Street",
+   "start": "2026-12-05T15:00:00Z",
+   "end": "2026-12-05T21:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "- Cocoa Beach FL 32932",
+   "category": "Outdoors",
+   "url": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9796",
+   "description": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9796",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "0470925d1a273995",
+   "title": "Cocoa Village Saturday Art Market",
+   "start": "2026-12-05T16:00:00Z",
+   "end": "2026-12-05T22:00:00Z",
+   "town": "Cocoa",
+   "venue": "MYRT THARPE SQUARE, 12 Stone St, Cocoa, FL, 32922",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/cocoa-village-saturday-art-market-2/2026-12-05/",
+   "description": "Enjoy this weekly Saturday Cocoa Village Art Market in the heart of Cocoa Village with an array of artisans. Come browse and shop original local artwork by area artists! Spend the day in Cocoa Village also visiting the many shops and eateries.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "bc42bc4ac83ddc70",
+   "title": "Christmas Parade - by Kiwanis of Cocoa Beach",
+   "start": "2026-12-05T17:00:00Z",
+   "end": "2026-12-05T21:00:00Z",
+   "town": "Cocoa Beach",
+   "venue": "- Cocoa Beach FL 32932",
+   "category": "Family",
+   "url": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9781",
+   "description": "https://www.cityofcocoabeach.com/m/calendar/event/detail/9781",
+   "source": "City of Cocoa Beach",
+   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "be487b7cf1f1db60",
+   "title": "3rd Annual Christmas Market on Magnolia",
+   "start": "2026-12-05T20:00:00Z",
+   "end": "2026-12-06T00:00:00Z",
+   "town": "Merritt Island",
+   "venue": "First Baptist Church Merritt Island, 140 Magnolia Ave, Merritt Island, FL, 32952, United States",
+   "category": "Food & Markets",
+   "url": "https://www.visitspacecoast.com/event/3rd-annual-christmas-market-on-magnolia/",
+   "description": "Kick off the holiday season at our Christmas Market in Merritt Island on December 5! Bring the whole family for a festive evening filled with live music, local vendors, delicious food trucks, visits with Santa and the Grinch, and fun children\u2019s activities including holiday crafts. Shop for unique Christmas gifts, enjoy great food, make memories with the kids, and celebrate the season with your com",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
+   "kind": "event"
+  },
+  {
+   "id": "249e42525792d76a",
+   "title": "Light Up Rockledge",
+   "start": "2026-12-05T21:00:00Z",
+   "end": "2026-12-06T00:00:00Z",
+   "town": "Rockledge",
+   "venue": "Rockledge Civic Hub - 530 Barton Boulevard Rockledge FL 32955",
+   "category": "Family",
+   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2987",
+   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2987",
+   "source": "City of Rockledge",
+   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
+   "kind": "event"
+  },
+  {
+   "id": "b1d5763cdf12dd02",
+   "title": "Downtown Melbourne Tree Lighting Ceremony",
+   "start": "2026-12-05T21:00:00Z",
+   "end": "2026-12-06T01:00:00Z",
+   "town": "Melbourne",
+   "venue": "Campbell Park, 929 E New Haven Ave, Melbourne, FL, 32901, United States",
+   "category": "Outdoors",
+   "url": "https://www.visitspacecoast.com/event/downtown-melbourne-tree-lighting-ceremony/",
+   "description": "Let\u2019s light up downtown! Join us for the lighting of Downtown Melbourne\u2019s holiday tree in Campbell Park, with performances by the Indialantic Chamber Singers and Melbourne BandWorks, the Grinch, and candlelight shopping until 8pm. New Haven Ave will be closed between Municipal Ln and the railroad tracks.",
+   "source": "Visit Space Coast",
+   "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
    "kind": "event"
   }
  ]
