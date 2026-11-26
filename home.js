@@ -55,14 +55,8 @@
       throw err;
     });
   }
-  function hourNow() {
-    var raw = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', hourCycle: 'h23' }).format(new Date());
-    return parseInt(raw, 10) || 0;
-  }
   function greet() {
-    var hour = hourNow();
-    var hello = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : hour < 21 ? 'Good evening' : 'Good night';
-    text('homeGreet', hello);
+    if (typeof homeHello === 'function') text('homeGreet', homeHello());
   }
   function dateLine() {
     return new Intl.DateTimeFormat('en-US', {
