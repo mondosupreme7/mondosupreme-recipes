@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-11-25T03:26:07-05:00",
+  "updatedAt": "2026-11-26T03:10:49-05:00",
   "sleeve": {
     "start": "2026-11-21",
     "equity": 1000,
     "cash": 1000,
     "positions": []
   },
-  "status": "No coin is eligible. Bitcoin is 17% under a falling 200-day.",
+  "status": "No coin is eligible. Bitcoin is 16% under a falling 200-day.",
   "rules": [
     "Bitcoin must close above its 200-day before any buy.",
     "Each coin must also be above its own rising 200-day.",
@@ -20,13 +20,13 @@
     "Daily marks at the 00:00 UTC close."
   ],
   "watchlist": [
-    {"symbol": "BTC", "name": "Bitcoin", "price": 59747.77, "chg30d": -25, "vs200d": -17, "ma200": 72129.89, "note": ""},
-    {"symbol": "ETH", "name": "Ethereum", "price": 1677.69, "chg30d": -28, "vs200d": -21, "ma200": 2116.21, "note": ""},
-    {"symbol": "SOL", "name": "Solana", "price": 69.64, "chg30d": -31, "vs200d": -21, "ma200": 88.13, "note": ""},
-    {"symbol": "XRP", "name": "XRP", "price": 0.9244, "chg30d": -29, "vs200d": -25, "ma200": 1.23, "note": ""},
-    {"symbol": "ADA", "name": "Cardano", "price": 0.1444, "chg30d": -29, "vs200d": -28, "ma200": 0.1992, "note": ""},
-    {"symbol": "DOGE", "name": "Dogecoin", "price": 0.0552, "chg30d": -28, "vs200d": -33, "ma200": 0.0818, "note": ""},
-    {"symbol": "SHIB", "name": "Shiba Inu", "price": 0.0000035371376686207174, "chg30d": -27, "vs200d": -28, "ma200": 0.000004942500543248, "note": ""},
-    {"symbol": "CC", "name": "Canton Coin", "price": 0.075, "chg30d": -26, "vs200d": -39, "ma200": 0.1221, "note": "under the $20M volume minimum."}
+    {"symbol": "BTC", "name": "Bitcoin", "price": 60378.2, "chg30d": -25, "vs200d": -16, "ma200": 72028.46, "note": ""},
+    {"symbol": "ETH", "name": "Ethereum", "price": 1690.77, "chg30d": -27, "vs200d": -20, "ma200": 2113.03, "note": ""},
+    {"symbol": "SOL", "name": "Solana", "price": 70.39, "chg30d": -30, "vs200d": -20, "ma200": 88.01, "note": ""},
+    {"symbol": "XRP", "name": "XRP", "price": 0.9369, "chg30d": -28, "vs200d": -24, "ma200": 1.23, "note": ""},
+    {"symbol": "ADA", "name": "Cardano", "price": 0.1458, "chg30d": -29, "vs200d": -27, "ma200": 0.1985, "note": ""},
+    {"symbol": "DOGE", "name": "Dogecoin", "price": 0.056, "chg30d": -28, "vs200d": -31, "ma200": 0.0816, "note": ""},
+    {"symbol": "SHIB", "name": "Shiba Inu", "price": 0.000003588413527047938, "chg30d": -27, "vs200d": -27, "ma200": 0.000004928658860114, "note": ""},
+    {"symbol": "CC", "name": "Canton Coin", "price": 0.0775, "chg30d": -22, "vs200d": -36, "ma200": 0.1218, "note": "under the $20M volume minimum."}
   ]
 }
