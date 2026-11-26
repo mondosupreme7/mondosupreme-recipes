@@ -92,6 +92,16 @@
           small.textContent = crop.note;
           item.appendChild(small);
         }
+        var seed = crop.seed;
+        if (seed && typeof seed.url === 'string' && seed.url.indexOf('https://') === 0) {
+          var link = document.createElement('a');
+          link.className = 'plant-seed';
+          link.href = seed.url;
+          link.target = '_blank';
+          link.rel = 'noopener nofollow';
+          link.textContent = 'Seeds: ' + seed.variety + ', ' + seed.seller;
+          item.appendChild(link);
+        }
         list.appendChild(item);
       });
       section.append(heading, list);
@@ -112,6 +122,11 @@
     var bits = [data.frostNote, data.varietyNote, data.disclaimer].filter(Boolean);
     fine.replaceChildren();
     fine.appendChild(document.createTextNode(bits.join(' ')));
+    var seedNote = $('plantSeedNote');
+    if (seedNote) {
+      seedNote.hidden = !data.seedNote;
+      seedNote.textContent = data.seedNote || '';
+    }
     (data.sources || []).forEach(function (source) {
       fine.appendChild(document.createTextNode(' '));
       var link = document.createElement('a');
@@ -134,7 +149,7 @@
     if (ctrl) ctrl.abort();
     else failZone();
   }, 4000);
-  fetch('plants.json?v=2', ctrl ? { signal: ctrl.signal } : {}).then(function (res) {
+  fetch('plants.json?v=3', ctrl ? { signal: ctrl.signal } : {}).then(function (res) {
     if (!res.ok) throw new Error('plants');
     return res.json();
   }).then(function (doc) {
