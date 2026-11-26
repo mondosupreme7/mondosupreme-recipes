@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-11-25T21:40:52Z",
+ "fetchedAt": "2026-11-26T21:29:51Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -14,6 +14,34 @@
  ],
  "count": 120,
  "videos": [
+  {
+   "videoId": "vLV_idr28lI",
+   "title": "Easy Air Fryer Chicken Thighs Recipe",
+   "channel": "Preppy Kitchen",
+   "handle": "preppykitchen",
+   "published": "2026-11-26",
+   "thumbnail": "https://i.ytimg.com/vi/vLV_idr28lI/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=vLV_idr28lI",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "This Air Fryer Chicken Thighs recipe is a delicious and easy dinner for any night of the week! It takes less than 20 minutes to make perfectly seasoned chicken that’s juicy on the inside and crispy on the outside. RECIPE:  ORDER MY NEW BOOK! Amazon:  Amazon CA:  Barnes & Noble:  BAM:  Bookshop:  Hudson Booksellers:  Target:  Walmart:"
+  },
+  {
+   "videoId": "h-FGjrytyB0",
+   "title": "Why You Should Let Pie Rest Before Slicing",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-11-26",
+   "thumbnail": "https://i.ytimg.com/vi/h-FGjrytyB0/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=h-FGjrytyB0",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "There's a reason every pie recipe tells you to let your pie cool before slicing. Eric breaks down the science behind what happens as your pie cools and why waiting makes for a better slice. Subscribe to America's Test Kitchen:  ​ Watch full episodes of America's Test Kitchen and Cook's Country for free on our new YouTube channel:  Watch More! ​ In The Test Kitchen:  ​ The Taste Test:  ​ Techniquely With Lan Lam:  ​ Most Popular:  Follow America's Test Kitchen: ​ Instagram:  ​ Pinterest:  ​ TikTok:  ​ Facebook:  ​ Twitter:  ​ At America’s Test Kitchen, we investigate every aspect of cooking—rec"
+  },
   {
    "videoId": "uDLIV-FLgfg",
    "title": "Jersey-style Sloppy Joes are built different #sandwichcity #newjersey #nytcooking",
@@ -1801,34 +1829,6 @@
     "Watch the full method in the video."
    ],
    "blurb": "Chef John recommends cooking your bacon before adding it to bacon burger recipes to produce a better flavor and texture. It would be the perfect recipe for leftover bacon, but as he rightly points out, there is no such thing as leftover bacon!"
-  },
-  {
-   "videoId": "xqqZI_S_spQ",
-   "title": "Hunter Schafer and Michelle Yeoh take on the #PizzaInterview 🍕 #nytcooking",
-   "channel": "NYT Cooking",
-   "handle": "nytcooking",
-   "published": "2026-10-30",
-   "thumbnail": "https://i.ytimg.com/vi/xqqZI_S_spQ/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=xqqZI_S_spQ",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Download the Cooking app for daily dinner picks, helpful tools, and even more videos:  VISIT NYT COOKING:  SUBSCRIBE to NYT COOKING:  A paid subscription gets you full access to our recipes, daily inspiration and a digital Recipe Box. YOUTUBE:  INSTAGRAM:  FACEBOOK:  PINTEREST:  About NYT Cooking: All the food that’s fit to eat (yes, it’s an official New York Times production)."
-  },
-  {
-   "videoId": "s6liqS8PTF8",
-   "title": "Braised Kabocha Squash Season!",
-   "channel": "J. Kenji López-Alt",
-   "handle": "JKenjiLopezAlt",
-   "published": "2026-10-30",
-   "thumbnail": "https://i.ytimg.com/vi/s6liqS8PTF8/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=s6liqS8PTF8",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": ""
   }
  ]
 }
