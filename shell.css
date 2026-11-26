@@ -281,6 +281,7 @@ body.is-playing .crt{height:calc((100dvh / var(--page-scale, 1)) - var(--nav-h) 
 }
 @media print{
   @page{margin:.5in}
+  :root{color-scheme:light !important;background:#fff !important}
   html,body,html[data-theme],html[data-theme] body:not(.print-keep){
     zoom:1 !important;font-size:100% !important;width:auto !important;height:auto !important;
     max-width:none !important;overflow:visible !important;background:#fff !important;color:#111 !important;

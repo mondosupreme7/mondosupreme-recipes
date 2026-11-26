@@ -234,5 +234,6 @@ html[data-theme="light"] #cookMode,html[data-theme="warm"] #cookMode{background:
   .detail-hero{display:none !important}
   .cols{display:block !important}
   .cols li{break-inside:avoid;page-break-inside:avoid}
+  .detail h2,.detail h3{break-after:avoid;page-break-after:avoid}
   .cols ol li::before{background:#111 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
