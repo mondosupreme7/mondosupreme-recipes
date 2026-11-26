@@ -48,7 +48,7 @@ body.home-page main.wrap{
   color:var(--ink);
   font-variant-numeric:tabular-nums
 }
-#homeLaunchLine{overflow:visible;white-space:normal;text-overflow:clip}
+#homeLaunchLine,#homeTide{min-height:2.5em;overflow:visible;white-space:normal;text-overflow:clip}
 html[data-page-scale="110"] .home-brief-row,
 html[data-page-scale="125"] .home-brief-row{
   align-items:flex-start;
