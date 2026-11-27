@@ -140,6 +140,9 @@ html[data-theme="retro"] dialog::backdrop{background:#000080}
 @keyframes grocery-in{from{transform:translateX(28px)}to{transform:none}}
 .grocery-row{display:flex;gap:8px;align-items:flex-start;min-height:44px;padding:6px 2px;border-bottom:1px solid #808080}
 .grocery-row.is-checked span{text-decoration:line-through;color:#404040}
+.detail .grocery-row{width:100%;align-items:center;border-bottom:0}
+.detail .cols ol .grocery-row{margin-left:-44px;padding-left:44px;width:calc(100% + 44px)}
+.detail .grocery-row.is-checked span{color:var(--ink-muted,#334155)}
 .copy-buffer{position:fixed;top:0;left:0;opacity:0}
 .scale-bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
 .scale-bar .btn{min-height:44px}
@@ -236,4 +239,5 @@ html[data-theme="light"] #cookMode,html[data-theme="warm"] #cookMode{background:
   .cols li{break-inside:avoid;page-break-inside:avoid}
   .detail h2,.detail h3{break-after:avoid;page-break-after:avoid}
   .cols ol li::before{background:#111 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .detail .grocery-row.is-checked span{text-decoration:none !important}
 }
