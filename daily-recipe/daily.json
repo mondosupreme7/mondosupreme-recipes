@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-11-26T21:29:51Z",
+ "fetchedAt": "2026-11-27T21:16:14Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -14,6 +14,34 @@
  ],
  "count": 120,
  "videos": [
+  {
+   "videoId": "bhh26jZ8W14",
+   "title": "The Secret Ingredient for Easy-to-Roll Pie Dough",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-11-27",
+   "thumbnail": "https://i.ytimg.com/vi/bhh26jZ8W14/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=bhh26jZ8W14",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Want pie dough that’s easier to roll out? The secret might already be in your fridge. Subscribe to America's Test Kitchen:  ​ Watch full episodes of America's Test Kitchen and Cook's Country for free on our new YouTube channel:  Watch More! ​ In The Test Kitchen:  ​ The Taste Test:  ​ Techniquely With Lan Lam:  ​ Most Popular:  Follow America's Test Kitchen: ​ Instagram:  ​ Pinterest:  ​ TikTok:  ​ Facebook:  ​ Twitter:  ​ At America’s Test Kitchen, we investigate every aspect of cooking—recipes, equipment, ingredients, and techniques—with a goal to empower and inspire home cooks. Since 1992, "
+  },
+  {
+   "videoId": "IuQASA7uKHQ",
+   "title": "A Cheeseburger-Forward Take on Mac and Cheese | America’s Test Kitchen",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-11-27",
+   "thumbnail": "https://i.ytimg.com/vi/IuQASA7uKHQ/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=IuQASA7uKHQ",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Upgrade weeknight comfort food with this foolproof, one-skillet cheeseburger mac and cheese from Cook's Country! Morgan Bolling shows Julia Collin Davison how to pack all the bold, savory flavors of a classic diner cheeseburger into creamy, stovetop macaroni and cheese Cheeseburger Mac Recipe:  Discover more recipes through the America’s Test Kitchen App:  Get exclusive access to every recipe, review, and more via our homepage:  Buy The Complete Cook's Country TV Show Cookbook, Season 18:  Get more weeknight cooking inspiration from our newsletter Dinner Tonight:  Discover the latest recipes, "
+  },
   {
    "videoId": "vLV_idr28lI",
    "title": "Easy Air Fryer Chicken Thighs Recipe",
@@ -58,7 +86,7 @@
   },
   {
    "videoId": "jG3hCM89nxQ",
-   "title": "F*ck Pumpkin Pie, This Is The Only Way I’ll Eat Pumpkin",
+   "title": "This Tiramisu Was Made To Convert Pumpkin Haters",
    "channel": "NOT ANOTHER COOKING SHOW",
    "handle": "notanothercookingshow",
    "published": "2026-11-25",
@@ -594,7 +622,7 @@
   },
   {
    "videoId": "ldBz90NKZBA",
-   "title": "Thanksgiving Showstopper - Crispy Brussels Sprouts With Bacon and Goat Cheese",
+   "title": "Brussels Sprouts for People Who Think They Hate Them",
    "channel": "Sip and Feast",
    "handle": "sipandfeast",
    "published": "2026-11-19",
@@ -1801,34 +1829,6 @@
     "Watch the full method in the video."
    ],
    "blurb": "Lan Lam demonstrates how to crimp and finish your pie so it looks as good as it tastes. Subscribe to America's Test Kitchen:  ​ Watch full episodes of America's Test Kitchen and Cook's Country for free on our new YouTube channel:  Watch More! ​ In The Test Kitchen:  ​ The Taste Test:  ​ Techniquely With Lan Lam:  ​ Most Popular:  Follow America's Test Kitchen: ​ Instagram:  ​ Pinterest:  ​ TikTok:  ​ Facebook:  ​ Twitter:  ​ At America’s Test Kitchen, we investigate every aspect of cooking—recipes, equipment, ingredients, and techniques—with a goal to empower and inspire home cooks. Since 1992"
-  },
-  {
-   "videoId": "WQJBqvy1rR4",
-   "title": "It's a BADOP! drop. It's a BADROP!",
-   "channel": "J. Kenji López-Alt",
-   "handle": "JKenjiLopezAlt",
-   "published": "2026-10-31",
-   "thumbnail": "https://i.ytimg.com/vi/WQJBqvy1rR4/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=WQJBqvy1rR4",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Get yours today at"
-  },
-  {
-   "videoId": "ztid0aQH1oI",
-   "title": "The Truth About Leftover Bacon 🥓",
-   "channel": "Food Wishes",
-   "handle": "foodwishes",
-   "published": "2026-10-30",
-   "thumbnail": "https://i.ytimg.com/vi/ztid0aQH1oI/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=ztid0aQH1oI",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Chef John recommends cooking your bacon before adding it to bacon burger recipes to produce a better flavor and texture. It would be the perfect recipe for leftover bacon, but as he rightly points out, there is no such thing as leftover bacon!"
   }
  ]
 }
