@@ -932,6 +932,23 @@ function renderDetail(id){
   }
   location.hash='#/';
 }
+function doneKey(id){return 'mondosupreme.done.'+id}
+function readDone(id){
+  try{
+    const data=JSON.parse(sessionStorage.getItem(doneKey(id)));
+    if(data&&Array.isArray(data.i)&&Array.isArray(data.s))return data;
+  }catch(e){}
+  return {i:[],s:[]};
+}
+function writeDone(id,data){
+  try{
+    if(!data.i.length&&!data.s.length)sessionStorage.removeItem(doneKey(id));
+    else sessionStorage.setItem(doneKey(id),JSON.stringify(data));
+  }catch(e){}
+}
+function doneItem(kind,index,text,on){
+  return `<li><label class="grocery-row${on?' is-checked':''}"><input type="checkbox" data-done="${kind}" data-i="${index}"${on?' checked':''}><span>${esc(text)}</span></label></li>`;
+}
 function paintDetail(r, readonly){
   if(detailFor!==r.id){detailScale=1;detailFor=r.id;}
   const v=$('#detailView');
@@ -940,6 +957,8 @@ function paintDetail(r, readonly){
   const notes=readonly?publicNotes(r):String(r.notes||'').trim();
   const partial=!!(r.partial||/INCOMPLETE\s*:/i.test(r.notes||''));
   const factors=[[0.5,'½x'],[1,'1x'],[2,'2x'],[3,'3x']];
+  const done=readDone(r.id);
+  const anyDone=done.i.length||done.s.length;
   v.innerHTML=`<article class="detail"><div class="detail-hero">🍽️</div><div class="detail-inner">
    <div class="dbar"><a href="#/" class="btn ghost">← Back</a>${favButton(r.id,false)}${planButton(r.id,r.title,false)}
    <button class="btn ghost" id="dPrint">🖨 Print</button>${own?'<button class="btn ghost" id="dEdit">✎ Edit</button><button class="btn danger" id="dDel">🗑 Delete</button>':''}</div>
@@ -953,14 +972,31 @@ function paintDetail(r, readonly){
    <div class="stats"><div class="stat"><b>${+r.prep||0} min</b><span>Prep</span></div><div class="stat"><b>${+r.cook||0} min</b><span>Cook</span></div>
    <div class="stat"><b>${total(r)} min</b><span>Total</span></div><div class="stat"><b>${esc(r.servings||'–')}</b><span>Servings</span></div></div>
    <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
+   <button type="button" class="btn ghost" id="doneReset"${anyDone?'':' hidden'}>Reset</button>
    <div class="cols"><section><h2>Ingredients</h2>
    <div class="scale-bar" role="group" aria-label="Serving scale">${factors.map(([n,label])=>`<button type="button" class="btn ghost scale-btn" data-scale="${n}" aria-pressed="${detailScale===n?'true':'false'}">${label}</button>`).join('')}
    <button type="button" class="btn primary" id="addGrocery">Add ingredients to Grocery List</button>
    <button type="button" class="btn" id="cookOpen">Cook</button></div>
-   <ul>${lines.map(i=>`<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul></section>
-   <section><h2>Steps</h2><ol>${(r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section></div>
+   <ul>${lines.map((text,i)=>doneItem('i',i,text,done.i.indexOf(i)>=0)).join('')}</ul></section>
+   <section><h2>Steps</h2><ol>${(r.steps||[]).map((text,i)=>doneItem('s',i,text,done.s.indexOf(i)>=0)).join('')}</ol></section></div>
    ${notes?`<div class="notes"><strong>Notes:</strong> ${esc(notes)}</div>`:''}</div></article>`;
   paintPhoto(v.querySelector('.detail-hero'),r.photo);
+  function syncDone(){
+    const data={i:[],s:[]};
+    v.querySelectorAll('input[data-done]').forEach(box=>{
+      const label=box.closest('label');
+      if(label)label.classList.toggle('is-checked', box.checked);
+      if(box.checked)data[box.dataset.done==='s'?'s':'i'].push(Number(box.dataset.i));
+    });
+    writeDone(r.id, data);
+    const reset=$('#doneReset');
+    if(reset)reset.hidden=!(data.i.length||data.s.length);
+  }
+  v.querySelectorAll('input[data-done]').forEach(box=>box.addEventListener('change', syncDone));
+  if($('#doneReset'))$('#doneReset').onclick=()=>{
+    v.querySelectorAll('input[data-done]').forEach(box=>{box.checked=false});
+    syncDone();
+  };
   v.querySelectorAll('.scale-btn').forEach(btn=>{
     btn.onclick=()=>{detailScale=Number(btn.dataset.scale)||1;renderDetail(r.id);};
   });
