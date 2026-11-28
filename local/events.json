@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T19:01:26Z",
+ "updated": "2026-11-28T02:04:26Z",
  "sources": [
   {
    "name": "City of Cocoa",
@@ -16,38 +16,44 @@
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar",
-   "ok": true,
-   "count": 1
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Cocoa Beach",
    "url": "https://www.cityofcocoabeach.com/common/modules/iCalendar/iCalendar.aspx?catID=32&feed=calendar",
-   "ok": true,
-   "count": 5
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=14&feed=calendar",
-   "ok": true,
-   "count": 2
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Titusville",
    "url": "https://www.titusville.com/common/modules/iCalendar/iCalendar.aspx?catID=41&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=23&feed=calendar",
-   "ok": true,
-   "count": 2
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "City of Rockledge",
    "url": "https://www.cityofrockledge.org/common/modules/iCalendar/iCalendar.aspx?catID=22&feed=calendar",
-   "ok": true,
-   "count": 0
+   "ok": false,
+   "count": 0,
+   "error": "URLError"
   },
   {
    "name": "Visit Space Coast",
@@ -70,20 +76,6 @@
  ],
  "events": [
   {
-   "id": "7c300ac7333876d7",
-   "title": "City of Rockledge Holiday Food Drive",
-   "start": "2026-11-02T05:00:00Z",
-   "end": "2026-12-11T05:00:00Z",
-   "town": "Rockledge",
-   "venue": "- Rockledge FL 32955",
-   "category": "Food & Markets",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2990",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "3963a8b6d97da9f9",
    "title": "Holiday Lights at Brevard Zoo",
    "start": "2026-11-20T13:00:00Z",
@@ -95,20 +87,6 @@
    "description": "Select Nights: November 20, 2026 \u2013 January 2, 2027 Event Hours: 6:00 PM \u2013 9:00 PM | Final Admission: 8:00 PM November 20 \u2013 December 12: Friday and Saturday evenings December 18 \u2013 January 2: Nightly, excluding Christmas Eve and Christmas Day Make new family memories under the glow of sparkling lights during this all-new nighttime experience. Immerse yourself in the magic of the holidays as visions ",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
-  },
-  {
-   "id": "6430f659a7ba0f8f",
-   "title": "City Hall Closed - Thanksgiving Holiday",
-   "start": "2026-11-26T13:00:00Z",
-   "end": "2026-11-27T22:00:00Z",
-   "town": "Titusville",
-   "venue": "City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2487",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2487",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
    "kind": "event"
   },
   {
@@ -180,20 +158,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "49eed9ba9819193b",
-   "title": "Cocoa Beach Art Show",
-   "start": "2026-11-27T22:00:00Z",
-   "end": "2026-11-29T22:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "- Cocoa Beach FL 32932",
-   "category": "Arts",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9792",
-   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9792",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
   },
   {
    "id": "d32660e83ba460d7",
@@ -560,34 +524,6 @@
    "kind": "cruise"
   },
   {
-   "id": "e611d1f1c257ca63",
-   "title": "Cocoa Beach Woman's Club Meeting",
-   "start": "2026-12-03T14:30:00Z",
-   "end": "2026-12-03T16:30:00Z",
-   "town": "Cocoa Beach",
-   "venue": "Cocoa Beach Country Club - Open to the Public - 5000 Tom Warriner Blvd Cocoa Beach FL 32931",
-   "category": "Arts",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9725",
-   "description": "The Cocoa Beach Woman's Club welcomes you to visit our monthly meetings! We are a volunteer organization focusing on Arts and Culture, Civic Engagement, Education and Library, Environment and Health and Wellness. We support local schools and other non-profit Organizations. We are a part of the General Federation of Women's Clubs (GFWC). Find us on Facebook and our website listed below. https://www",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
-   "id": "4efde7cc6417d120",
-   "title": "Board of Adjustments and Appeals",
-   "start": "2026-12-03T23:00:00Z",
-   "end": "2026-12-04T00:00:00Z",
-   "town": "Titusville",
-   "venue": "Council Chambers at City Hall - 555 South Washington Avenue Titusville FL 32796",
-   "category": "Family",
-   "url": "https://www.titusville.com/calendar.aspx?EID=2361",
-   "description": "https://www.titusville.com/calendar.aspx?EID=2361",
-   "source": "City of Titusville",
-   "sourceUrl": "https://www.titusville.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "92d6696369809a8e",
    "title": "Disney Wish in port",
    "start": "2026-12-04T11:00:00Z",
@@ -798,20 +734,6 @@
    "kind": "event"
   },
   {
-   "id": "8763f860c6136bad",
-   "title": "WinterFest - Cocoa Beach Main Street",
-   "start": "2026-12-05T15:00:00Z",
-   "end": "2026-12-05T21:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "- Cocoa Beach FL 32932",
-   "category": "Outdoors",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9796",
-   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9796",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "0470925d1a273995",
    "title": "Cocoa Village Saturday Art Market",
    "start": "2026-12-05T16:00:00Z",
@@ -826,20 +748,6 @@
    "kind": "event"
   },
   {
-   "id": "bc42bc4ac83ddc70",
-   "title": "Christmas Parade - by Kiwanis of Cocoa Beach",
-   "start": "2026-12-05T17:00:00Z",
-   "end": "2026-12-05T21:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "- Cocoa Beach FL 32932",
-   "category": "Family",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9781",
-   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9781",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
-  },
-  {
    "id": "be487b7cf1f1db60",
    "title": "3rd Annual Christmas Market on Magnolia",
    "start": "2026-12-05T20:00:00Z",
@@ -851,20 +759,6 @@
    "description": "Kick off the holiday season at our Christmas Market in Merritt Island on December 5! Bring the whole family for a festive evening filled with live music, local vendors, delicious food trucks, visits with Santa and the Grinch, and fun children\u2019s activities including holiday crafts. Shop for unique Christmas gifts, enjoy great food, make memories with the kids, and celebrate the season with your com",
    "source": "Visit Space Coast",
    "sourceUrl": "https://www.visitspacecoast.com/events-calendar/",
-   "kind": "event"
-  },
-  {
-   "id": "249e42525792d76a",
-   "title": "Light Up Rockledge",
-   "start": "2026-12-05T21:00:00Z",
-   "end": "2026-12-06T00:00:00Z",
-   "town": "Rockledge",
-   "venue": "Rockledge Civic Hub - 530 Barton Boulevard Rockledge FL 32955",
-   "category": "Family",
-   "url": "https://www.cityofrockledge.org/calendar.aspx?EID=2987",
-   "description": "https://www.cityofrockledge.org/calendar.aspx?EID=2987",
-   "source": "City of Rockledge",
-   "sourceUrl": "https://www.cityofrockledge.org/calendar.aspx",
    "kind": "event"
   },
   {
@@ -922,20 +816,6 @@
    "source": "Canaveral Port Authority",
    "sourceUrl": "https://www.portcanaveral.com/cruise/cruise-ship-schedule",
    "kind": "cruise"
-  },
-  {
-   "id": "0187c7beabab2b3d",
-   "title": "Silent Piano Concert",
-   "start": "2026-12-06T21:00:00Z",
-   "end": "2026-12-06T23:00:00Z",
-   "town": "Cocoa Beach",
-   "venue": "Alan Shepard Park - 299 East Cocoa Beach Cswy Cocoa Beach FL 32931",
-   "category": "Music",
-   "url": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9797",
-   "description": "https://www.cityofcocoabeach.com/calendar.aspx?EID=9797",
-   "source": "City of Cocoa Beach",
-   "sourceUrl": "https://www.cityofcocoabeach.com/calendar.aspx",
-   "kind": "event"
   }
  ]
 }
