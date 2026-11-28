@@ -24,6 +24,9 @@ dialog input{font:16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Ve
 .face-8{position:absolute;left:50%;top:46%;width:42%;height:42%;transform:translate(-50%,-50%);border-radius:50%;background:#f4f4f4;color:#111;font:700 42px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 3px #111}
 .sphere.is-revealed .face-8{display:none}
 .window{position:absolute;left:50%;top:46%;width:58%;height:58%;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;opacity:0;background:radial-gradient(circle at 40% 35%,#1d4eaa 0%,#071433 62%,#020712 100%);box-shadow:inset 0 0 18px #000,0 0 0 3px #111}
+.sphere[data-tone="yes"] .window{background:radial-gradient(circle at 40% 35%,#2f8f6e 0%,#123044 40%,#071433 72%,#020712 100%)}
+.sphere[data-tone="maybe"] .window{background:radial-gradient(circle at 40% 35%,#9a7a3a 0%,#2a2844 40%,#071433 72%,#020712 100%)}
+.sphere[data-tone="no"] .window{background:radial-gradient(circle at 40% 35%,#9a4a5c 0%,#2a1838 40%,#071433 72%,#020712 100%)}
 .sphere.is-revealed .window{opacity:1}
 .bub{position:absolute;border-radius:50%;background:rgba(150,196,255,.35);animation:bub 2.8s linear infinite}
 .b1{width:10px;height:10px;left:18%;bottom:10%;animation-delay:0s}
@@ -35,7 +38,7 @@ dialog input{font:16px -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Ve
 #triText{filter:drop-shadow(0 0 1px #9ec2ff)}
 .sphere.is-revealed .tri{animation:rise .8s ease forwards}
 @keyframes rise{from{opacity:0;transform:translate(-50%,22px) rotate(-12deg)}to{opacity:1;transform:translate(-50%,0) rotate(4deg)}}
-.answer-line{min-height:1.4em;font:700 1.05rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-align:center;color:#111827;letter-spacing:.04em}
+.answer-line{min-height:2.8em;line-height:1.4;font:700 1.05rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;text-align:center;color:#111827;letter-spacing:.04em}
 .mode-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .mode-tabs button{flex:1 1 140px;min-height:44px;padding:8px 10px;font:700 .82rem -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Verdana, Roboto, Helvetica, Arial, sans-serif;background:#d4d0c8;color:#111827;cursor:pointer;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #404040;border-bottom:2px solid #404040}
 .mode-tabs button[aria-pressed="true"]{background:#000080;color:#fff;border-color:#111827}

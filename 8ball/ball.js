@@ -18,6 +18,12 @@
   var anonTimer = 0;
   var clearArmed = false;
   var logSig = '';
+  var captionGen = 0;
+  var captionTimer = 0;
+  var captionWatch = null;
+  var RISE_MS = 800;
+  var CAPTION_FALLBACK_MS = RISE_MS + 150;
+  var CAPTION_HOLD = 'The ink is still. Ask a question, then shake.';
 
   function $(id) { return document.getElementById(id); }
   function isAdminNow() {
@@ -232,8 +238,63 @@
     var last = oracle.load().last;
     if (!last || !last.text) return;
     paintTriangle(last.text);
+    paintTone(last.tone);
     $('sphere').classList.add('is-revealed');
     $('answerCaption').textContent = last.text;
+  }
+  function paintTone(tone) {
+    var sphere = $('sphere');
+    if (!sphere) return;
+    if (tone === 'yes' || tone === 'maybe' || tone === 'no') sphere.setAttribute('data-tone', tone);
+    else sphere.removeAttribute('data-tone');
+  }
+  function dropCaptionWatch() {
+    if (captionTimer) {
+      clearTimeout(captionTimer);
+      captionTimer = 0;
+    }
+    if (captionWatch) {
+      captionWatch.tri.removeEventListener('animationend', captionWatch.onEnd);
+      captionWatch = null;
+    }
+  }
+  function cancelCaption() {
+    captionGen += 1;
+    dropCaptionWatch();
+  }
+  function holdCaption() {
+    var node = $('answerCaption');
+    if (!node || node.textContent === CAPTION_HOLD) return;
+    node.setAttribute('aria-live', 'off');
+    node.textContent = CAPTION_HOLD;
+    node.setAttribute('aria-live', 'polite');
+  }
+  function commitCaption(node, text, gen) {
+    if (gen !== captionGen || !node) return;
+    captionGen += 1;
+    dropCaptionWatch();
+    node.textContent = text;
+  }
+  function armCaption(text) {
+    var node = $('answerCaption');
+    if (!node) return;
+    var gen = captionGen;
+    if (reduceMotion()) {
+      commitCaption(node, text, gen);
+      return;
+    }
+    var tri = document.querySelector('#sphere .tri');
+    function onEnd(event) {
+      if (!event || event.animationName !== 'rise') return;
+      commitCaption(node, text, gen);
+    }
+    if (tri) {
+      tri.addEventListener('animationend', onEnd);
+      captionWatch = { tri: tri, onEnd: onEnd };
+    }
+    captionTimer = setTimeout(function () {
+      commitCaption(node, text, gen);
+    }, CAPTION_FALLBACK_MS);
   }
   function bumpPrivate(tone) {
     var data = oracle.load();
@@ -448,15 +509,19 @@
   }
   async function reveal(result, question, priv) {
     var sphere = $('sphere');
+    cancelCaption();
+    holdCaption();
     sphere.classList.remove('is-revealed');
+    sphere.removeAttribute('data-tone');
     void sphere.offsetWidth;
     if (!reduceMotion()) sphere.classList.add('is-shaking');
     playSound();
     await sleep(reduceMotion() ? 40 : 720);
     sphere.classList.remove('is-shaking');
     paintTriangle(result.text);
+    paintTone(result.tone);
+    armCaption(result.text);
     sphere.classList.add('is-revealed');
-    $('answerCaption').textContent = result.text;
     rememberLast(result, question);
     var entry = {
       id: uid(),
