@@ -1,7 +1,7 @@
 {
  "about": "Daily YouTube recipe pool for MondoTV '98. The updater reads each channel's public RSS feed at youtube.com/feeds/videos.xml. When that feed does not answer, it reads the public channel page and the video description instead, and a failed run keeps the previous file. The page picks today's show from the viewer's calendar date, so the featured video changes every day between updates. Descriptions are parsed for an ingredients list and numbered steps when the chef included them. Not a replacement for the chef's own written recipe.",
  "source": "YouTube channel RSS (feeds/videos.xml)",
- "fetchedAt": "2026-11-27T21:16:14Z",
+ "fetchedAt": "2026-11-28T20:00:07Z",
  "channels": [
   "Food Wishes",
   "Brian Lagerstrom",
@@ -14,6 +14,20 @@
  ],
  "count": 120,
  "videos": [
+  {
+   "videoId": "8nMr4A30A1Y",
+   "title": "The Secret to Chewy Carrot Cake Cookies That Never Turn Cakey | America’s Test Kitchen",
+   "channel": "America's Test Kitchen",
+   "handle": "AmericasTestKitchen",
+   "published": "2026-11-28",
+   "thumbnail": "https://i.ytimg.com/vi/8nMr4A30A1Y/hqdefault.jpg",
+   "youtube": "https://www.youtube.com/watch?v=8nMr4A30A1Y",
+   "ingredients": [],
+   "steps": [
+    "Watch the full method in the video."
+   ],
+   "blurb": "Transforming a classic carrot layer cake into a chewy, handheld cookie comes with one major obstacle: water. Fresh carrots are roughly 90% water, which creates a tender crumb in cake form, but can turn cookie dough into a crumbly, muffin-like mess. But fear not--Morgan Bolling unlocks the baking science behind foolproof carrot cake cookies, topped with tangy cream cheese frosting. Carrot Cake Cookies Recipe:  Buy The New Cookie: Creative Takes on the Classics You Love:  Discover more recipes through the America’s Test Kitchen App:  Get exclusive access to every recipe, review, and more via our"
+  },
   {
    "videoId": "bhh26jZ8W14",
    "title": "The Secret Ingredient for Easy-to-Roll Pie Dough",
@@ -1815,20 +1829,6 @@
     "Watch the full method in the video."
    ],
    "blurb": "Lan Lam shares tips on how to roll out pie dough so it's round (and even). Subscribe to America's Test Kitchen:  ​ Watch full episodes of America's Test Kitchen and Cook's Country for free on our new YouTube channel:  Watch More! ​ In The Test Kitchen:  ​ The Taste Test:  ​ Techniquely With Lan Lam:  ​ Most Popular:  Follow America's Test Kitchen: ​ Instagram:  ​ Pinterest:  ​ TikTok:  ​ Facebook:  ​ Twitter:  ​ At America’s Test Kitchen, we investigate every aspect of cooking—recipes, equipment, ingredients, and techniques—with a goal to empower and inspire home cooks. Since 1992, our team of"
-  },
-  {
-   "videoId": "5n4v9fDMNY0",
-   "title": "How to Crimp, Ventilate, and Finish a Double Pie Crust",
-   "channel": "America's Test Kitchen",
-   "handle": "AmericasTestKitchen",
-   "published": "2026-11-01",
-   "thumbnail": "https://i.ytimg.com/vi/5n4v9fDMNY0/hqdefault.jpg",
-   "youtube": "https://www.youtube.com/watch?v=5n4v9fDMNY0",
-   "ingredients": [],
-   "steps": [
-    "Watch the full method in the video."
-   ],
-   "blurb": "Lan Lam demonstrates how to crimp and finish your pie so it looks as good as it tastes. Subscribe to America's Test Kitchen:  ​ Watch full episodes of America's Test Kitchen and Cook's Country for free on our new YouTube channel:  Watch More! ​ In The Test Kitchen:  ​ The Taste Test:  ​ Techniquely With Lan Lam:  ​ Most Popular:  Follow America's Test Kitchen: ​ Instagram:  ​ Pinterest:  ​ TikTok:  ​ Facebook:  ​ Twitter:  ​ At America’s Test Kitchen, we investigate every aspect of cooking—recipes, equipment, ingredients, and techniques—with a goal to empower and inspire home cooks. Since 1992"
   }
  ]
 }
