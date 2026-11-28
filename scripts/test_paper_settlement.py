@@ -34,14 +34,34 @@ def quiet(day):
     return bar(50, 51, 49, 50)
 
 
+TERMINAL_ORDER = {"expired", "canceled", "cancelled", "filled", "rejected"}
+TERMINAL_FIELDS = ("at", "expiredOn", "reason", "filledOn", "filledAt", "fillPrice", "filled")
+
+
+def opening_order(order):
+    """The order as placed, before a later expired or filled record.
+
+    Production stores the latest record for an id. Replay still needs the
+    working buy limit. Terminal fields stay off that opening copy. This does
+    not rewrite the production file.
+    """
+    status = str(order.get("status") or "working").lower()
+    if status not in TERMINAL_ORDER:
+        return order
+    opening = {key: value for key, value in order.items() if key not in TERMINAL_FIELDS}
+    opening["status"] = "working"
+    note = str(opening.get("note") or "")
+    if note.startswith(("Expired", "Filled", "Canceled", "Cancelled")):
+        del opening["note"]
+    return opening
+
+
 def load_book():
     """Opening book for a scenario.
 
-    The production ledger is append-only. Settlement adds marks and a later
-    record with the same order id. A later stretch restart is a manual event,
-    not part of the opening book. Scenarios replay the original working
-    order, before those marks, that later status, and that restart. This does
-    not rewrite the production file.
+    Settlement tests replay the working buy limit, before later marks, the
+    expiry, and the stretch restart. The production file keeps only the
+    latest record for each order id. This does not rewrite that file.
     """
     book = json.loads(PRODUCTION_TEXT)
     book["events"] = [
@@ -58,7 +78,7 @@ def load_book():
             if order_id in seen:
                 continue
             seen.add(order_id)
-        original.append(order)
+        original.append(opening_order(order))
     book["workingOrders"] = original
     book["openPositions"] = []
     book["closedTrades"] = []
@@ -919,23 +939,24 @@ class PaperSettlementTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "marks exist"):
             self.assert_daily_marks(book)
 
-    def test_production_ledger_keeps_the_original_zd_order(self):
+    def test_production_ledger_zd_order_is_expired_once(self):
         self.assertEqual(LEDGER.read_text(encoding="utf-8"), PRODUCTION_TEXT)
         book = json.loads(PRODUCTION_TEXT)
-        original = book["workingOrders"][0]
-        self.assertEqual(original["id"], "paper-2026-11-10-ZD")
-        self.assertEqual(original["status"], "working")
-        self.assertEqual(original["symbol"], "ZD")
-        self.assertEqual(original["limitPrice"], 46.65)
-        self.assertEqual(original["shares"], 5)
-        self.assertEqual(original["firstEligibleSession"], "2026-11-11")
-        latest = {}
-        for order in book["workingOrders"]:
-            if isinstance(order, dict) and order.get("id"):
-                latest[order["id"]] = order
-        self.assertEqual(latest["paper-2026-11-10-ZD"]["status"], "expired")
-        self.assertEqual(latest["paper-2026-11-10-ZD"]["expiredOn"], "2026-11-17")
-        self.assertNotIn("fillPrice", latest["paper-2026-11-10-ZD"])
+        orders = [order for order in book["workingOrders"] if isinstance(order, dict)]
+        self.assertEqual(len(orders), 1)
+        order = orders[0]
+        self.assertEqual(order["id"], "paper-2026-11-10-ZD")
+        self.assertEqual(order["status"], "expired")
+        self.assertEqual(order["symbol"], "ZD")
+        self.assertEqual(order["limitPrice"], 46.65)
+        self.assertEqual(order["shares"], 5)
+        self.assertEqual(order["firstEligibleSession"], "2026-11-11")
+        self.assertEqual(order["expiredOn"], "2026-11-17")
+        self.assertNotIn("fillPrice", order)
+        self.assertEqual(
+            [item for item in orders if str(item.get("status") or "").lower() == "working"],
+            [],
+        )
         self.assertEqual(book["openPositions"], [])
         self.assertEqual(book["closedTrades"], [])
         self.assertEqual(book["balances"]["cash"], 1000)
